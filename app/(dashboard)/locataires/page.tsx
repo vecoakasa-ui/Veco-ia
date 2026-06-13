@@ -1,0 +1,336 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { 
+  Users, 
+  Search, 
+  Plus, 
+  X, 
+  Mail, 
+  Phone, 
+  Calendar,
+  Building,
+  UserCheck,
+  Briefcase
+} from "lucide-react";
+import { db } from "@/lib/store";
+import { Tenant, Property } from "@/lib/types";
+import { formatDate, getPropertyTypeLabel } from "@/lib/utils";
+
+export default function LocatairesPage() {
+  const [tenants, setTenants] = useState<Tenant[]>([]);
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [search, setSearch] = useState("");
+  const [showAddModal, setShowAddModal] = useState(false);
+
+  // Form states
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [propertyId, setPropertyId] = useState("");
+  const [leaseStart, setLeaseStart] = useState("");
+  const [leaseEnd, setLeaseEnd] = useState("");
+  const [leaseType, setLeaseType] = useState<"residential" | "commercial">("residential");
+
+  const loadData = () => {
+    setTenants(db.getTenants());
+    setProperties(db.getProperties());
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const handleAddTenant = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!fullName || !email || !phone || !propertyId || !leaseStart || !leaseEnd) return;
+
+    db.addTenant({
+      profile_id: "tp-" + Math.random().toString(36).substring(2, 9),
+      property_id: propertyId,
+      lease_start: leaseStart,
+      lease_end: leaseEnd,
+      lease_type: leaseType,
+      status: "active",
+      full_name: fullName,
+      email,
+      phone
+    });
+
+    // Reset form
+    setFullName("");
+    setEmail("");
+    setPhone("");
+    setPropertyId("");
+    setLeaseStart("");
+    setLeaseEnd("");
+    setLeaseType("residential");
+    setShowAddModal(false);
+
+    // Reload lists
+    loadData();
+    // Dispatch storage event to sync other pages
+    window.dispatchEvent(new Event("storage"));
+  };
+
+  const filteredTenants = tenants.filter((t) => {
+    const term = search.toLowerCase();
+    const matchesSearch = 
+      (t.full_name?.toLowerCase() || "").includes(term) ||
+      (t.email?.toLowerCase() || "").includes(term) ||
+      (t.phone?.toLowerCase() || "").includes(term) ||
+      (t.property_name?.toLowerCase() || "").includes(term);
+    return matchesSearch;
+  });
+
+  // Only show vacant/maintenance properties to assign, plus already assigned ones
+  const availableProperties = properties;
+
+  return (
+    <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
+      {/* Header section */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "var(--space-4)" }}>
+        <div>
+          <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", margin: 0 }}>Suivi des baux et fiches de contact</p>
+          <h2 style={{ fontSize: "var(--text-xl)", fontWeight: "800", color: "var(--gray-900)", margin: 0 }}>Gestion des Locataires</h2>
+        </div>
+        <button className="btn btn-primary" onClick={() => setShowAddModal(true)} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <Plus size={16} /> Ajouter un locataire
+        </button>
+      </div>
+
+      {/* Filter and search bar */}
+      <div className="card" style={{ padding: "var(--space-4)" }}>
+        <div className="input-with-icon" style={{ width: "100%" }}>
+          <Search className="input-icon" size={16} />
+          <input
+            type="text"
+            placeholder="Rechercher par nom, email, téléphone ou bien loué..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="input"
+          />
+        </div>
+      </div>
+
+      {/* Tenants Table */}
+      <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+        <div className="table-container">
+          <table className="table">
+            <thead>
+              <tr>
+                <th>Nom du locataire</th>
+                <th>Coordonnées</th>
+                <th>Bien assigné</th>
+                <th>Période du bail</th>
+                <th>Type</th>
+                <th>Statut</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredTenants.length === 0 ? (
+                <tr>
+                  <td colSpan={6} style={{ textAlign: "center", padding: "var(--space-16)", color: "var(--gray-400)" }}>
+                    Aucun locataire enregistré.
+                  </td>
+                </tr>
+              ) : (
+                filteredTenants.map((t) => (
+                  <tr key={t.id}>
+                    <td>
+                      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
+                        <div className="avatar avatar-sm" style={{ background: "var(--primary-lightest)", color: "var(--primary-dark)" }}>
+                          {t.full_name?.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) || "L"}
+                        </div>
+                        <div>
+                          <h4 style={{ fontSize: "var(--text-sm)", fontWeight: "700", margin: 0 }}>{t.full_name}</h4>
+                          <span style={{ fontSize: "10px", color: "var(--gray-400)" }}>ID: {t.id}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "2px", fontSize: "var(--text-xs)", color: "var(--gray-600)" }}>
+                        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Mail size={12} /> {t.email}</span>
+                        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Phone size={12} /> {t.phone}</span>
+                      </div>
+                    </td>
+                    <td style={{ fontWeight: 600, color: "var(--gray-800)" }}>
+                      <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                        <Building size={14} style={{ color: "var(--gray-400)" }} />
+                        {t.property_name || "Non assigné"}
+                      </span>
+                    </td>
+                    <td>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "2px", fontSize: "var(--text-xs)" }}>
+                        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                          <Calendar size={12} style={{ color: "var(--gray-400)" }} />
+                          Du {formatDate(t.lease_start)}
+                        </span>
+                        <span style={{ paddingLeft: "16px", color: "var(--gray-500)" }}>
+                          Au {formatDate(t.lease_end)}
+                        </span>
+                      </div>
+                    </td>
+                    <td>
+                      <span className={`badge ${t.lease_type === 'commercial' ? 'badge-primary' : 'badge-info'}`} style={{ textTransform: "capitalize", fontSize: "10px" }}>
+                        {t.lease_type === 'commercial' ? "Commercial" : "Résidentiel"}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={`badge badge-success`} style={{ fontSize: "10px" }}>
+                        Actif
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* ============================================
+         Add Tenant Modal
+         ============================================ */}
+      {showAddModal && (
+        <div 
+          style={{
+            position: "fixed",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 100,
+            padding: "var(--space-4)",
+            backdropFilter: "blur(4px)"
+          }}
+          className="animate-fade-in"
+        >
+          <div 
+            className="card animate-scale-in"
+            style={{
+              width: "100%",
+              maxWidth: "500px",
+              background: "white",
+              padding: "var(--space-6)",
+              maxHeight: "90vh",
+              overflowY: "auto"
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-6)" }}>
+              <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800" }}>Ajouter un nouveau locataire</h3>
+              <button className="btn btn-ghost btn-sm" onClick={() => setShowAddModal(false)} style={{ padding: "4px" }}>
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddTenant} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+              <div className="input-group">
+                <label className="input-label">Nom complet du locataire</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="Ex: Koffi Kouassi..."
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="input"
+                />
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Adresse E-mail</label>
+                <input
+                  type="email"
+                  required
+                  placeholder="Ex: koffi@mail.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="input"
+                />
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Numéro de Téléphone</label>
+                <input
+                  type="tel"
+                  required
+                  placeholder="Ex: +225 05 55 55 55 55"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="input"
+                />
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Associer un bien immobilier</label>
+                <select
+                  required
+                  value={propertyId}
+                  onChange={(e) => setPropertyId(e.target.value)}
+                  className="input"
+                  style={{ appearance: "auto" }}
+                >
+                  <option value="">Sélectionnez un logement</option>
+                  {availableProperties.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} ({getPropertyTypeLabel(p.type)} - {p.city}) • {p.monthly_rent.toLocaleString()} FCFA/mois
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-4)" }}>
+                <div className="input-group">
+                  <label className="input-label">Début du bail</label>
+                  <input
+                    type="date"
+                    required
+                    value={leaseStart}
+                    onChange={(e) => setLeaseStart(e.target.value)}
+                    className="input"
+                  />
+                </div>
+                <div className="input-group">
+                  <label className="input-label">Fin du bail</label>
+                  <input
+                    type="date"
+                    required
+                    value={leaseEnd}
+                    onChange={(e) => setLeaseEnd(e.target.value)}
+                    className="input"
+                  />
+                </div>
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Type de bail</label>
+                <select
+                  value={leaseType}
+                  onChange={(e) => setLeaseType(e.target.value as "residential" | "commercial")}
+                  className="input"
+                  style={{ appearance: "auto" }}
+                >
+                  <option value="residential">Résidentiel (Habitation)</option>
+                  <option value="commercial">Commercial (Bureaux, Boutiques)</option>
+                </select>
+              </div>
+
+              <div style={{ display: "flex", gap: "var(--space-3)", marginTop: "var(--space-2)" }}>
+                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowAddModal(false)}>
+                  Annuler
+                </button>
+                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
+                  Enregistrer le locataire
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
