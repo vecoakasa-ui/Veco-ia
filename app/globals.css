@@ -720,6 +720,7 @@ h1, h2, h3, h4, h5, h6 {
 .hero-title span {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 

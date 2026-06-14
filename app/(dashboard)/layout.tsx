@@ -15,8 +15,6 @@ import {
   Bell,
   Menu,
   X,
-  User,
-  Settings,
   Sparkles
 } from "lucide-react";
 import { db } from "@/lib/store";

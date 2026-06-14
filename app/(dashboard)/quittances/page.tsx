@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FileText, Download, Search } from "lucide-react";
+import { Download, Search } from "lucide-react";
 import { db } from "@/lib/store";
 import { Payment } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
@@ -12,7 +12,10 @@ export default function QuittancesPage() {
 
   useEffect(() => {
     // Only get paid payments to generate quittances
-    setPayments(db.getPayments().filter(p => p.status === "paid"));
+    const paidPayments = db.getPayments().filter(p => p.status === "paid");
+    Promise.resolve().then(() => {
+      setPayments(paidPayments);
+    });
   }, []);
 
   const filtered = payments.filter(p => 

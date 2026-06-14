@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Lock, Mail, Shield } from "lucide-react";
+import { ArrowLeft, Lock, Mail } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -36,7 +36,7 @@ export default function LoginPage() {
       <div className="card" style={{ width: '100%', maxWidth: '440px', background: 'white', padding: 'var(--space-8)' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', marginBottom: 'var(--space-6)', position: 'relative' }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: 'var(--text-xs)', color: 'var(--gray-500)', marginBottom: 'var(--space-2)' }}>
-            <ArrowLeft size={12} /> Retour à l'accueil
+            <ArrowLeft size={12} /> Retour à l&apos;accueil
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
             <div className="logo-icon">V</div>
@@ -119,7 +119,7 @@ export default function LoginPage() {
         </form>
 
         <div style={{ textAlign: 'center', marginTop: 'var(--space-6)', fontSize: 'var(--text-xs)', color: 'var(--gray-500)' }}>
-          Vous n'avez pas encore de compte ?{" "}
+          Vous n&apos;avez pas encore de compte ?{" "}
           <Link href="/register" style={{ color: 'var(--primary)', fontWeight: '600' }}>
             Inscrivez-vous gratuitement
           </Link>

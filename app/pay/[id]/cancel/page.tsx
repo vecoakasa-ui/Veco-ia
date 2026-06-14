@@ -2,7 +2,7 @@
 
 import { use } from "react";
 import { useRouter } from "next/navigation";
-import { XCircle, AlertCircle, RefreshCw, ArrowLeft } from "lucide-react";
+import { XCircle, RefreshCw, ArrowLeft } from "lucide-react";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -23,7 +23,7 @@ export default function PaymentCancelPage({ params }: PageProps) {
         </h2>
         
         <p style={{ color: "var(--gray-500)", fontSize: "var(--text-sm)", marginBottom: "var(--space-6)" }}>
-          La transaction a été annulée ou n'a pas pu aboutir. Aucun montant n'a été débité de votre compte.
+          La transaction a été annulée ou n&apos;a pas pu aboutir. Aucun montant n&apos;a été débité de votre compte.
         </p>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>

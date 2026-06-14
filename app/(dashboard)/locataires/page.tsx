@@ -2,16 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { 
-  Users, 
   Search, 
   Plus, 
   X, 
   Mail, 
   Phone, 
   Calendar,
-  Building,
-  UserCheck,
-  Briefcase
+  Building
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Tenant, Property } from "@/lib/types";
@@ -38,7 +35,9 @@ export default function LocatairesPage() {
   };
 
   useEffect(() => {
-    loadData();
+    Promise.resolve().then(() => {
+      loadData();
+    });
   }, []);
 
   const handleAddTenant = (e: React.FormEvent) => {

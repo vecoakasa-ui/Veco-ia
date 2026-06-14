@@ -6,18 +6,15 @@ import {
   MapPin, 
   DollarSign, 
   Search, 
-  Filter, 
   Plus, 
   X, 
-  Trash2,
   Edit3,
-  BadgeAlert,
   Map,
   List
 } from "lucide-react";
 import { db } from "@/lib/store";
 import MapModuleWrapper from "@/components/MapModuleWrapper";
-import { Property, PropertyType, PropertyStatus } from "@/lib/types";
+import { Property, PropertyType } from "@/lib/types";
 import { formatCurrency, getPropertyStatusClass, getPropertyStatusLabel, getPropertyTypeLabel } from "@/lib/utils";
 
 export default function BiensPage() {
@@ -42,7 +39,9 @@ export default function BiensPage() {
   };
 
   useEffect(() => {
-    loadProperties();
+    Promise.resolve().then(() => {
+      loadProperties();
+    });
   }, []);
 
   const handleAddProperty = (e: React.FormEvent) => {

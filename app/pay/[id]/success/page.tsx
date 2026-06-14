@@ -2,7 +2,7 @@
 
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle2, Calendar, Printer, Smartphone, User, Home, ArrowLeft } from "lucide-react";
+import { CheckCircle2, Printer, Smartphone, ArrowLeft } from "lucide-react";
 import { db } from "@/lib/store";
 import { Payment, PaymentMethod } from "@/lib/types";
 import { formatCurrency, formatDate } from "@/lib/utils";
@@ -22,7 +22,6 @@ export default function PaymentSuccessPage({ params, searchParams }: PageProps) 
 
   const [payment, setPayment] = useState<Payment | null>(null);
   const [loading, setLoading] = useState(true);
-  const [verified, setVerified] = useState(false);
 
   useEffect(() => {
     // 1. Fetch payment
@@ -85,7 +84,6 @@ export default function PaymentSuccessPage({ params, searchParams }: PageProps) 
           db.updatePayment(found);
           // Sync storage across pages
           window.dispatchEvent(new Event("storage"));
-          setVerified(true);
         }
       } catch (error) {
         console.error("Verification error:", error);

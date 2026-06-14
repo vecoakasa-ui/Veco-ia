@@ -40,10 +40,10 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error("Error in PayDunya create route:", error);
     return NextResponse.json(
-      { error: error.message || "Erreur interne du serveur." },
+      { error: (error as Error).message || "Erreur interne du serveur." },
       { status: 500 }
     );
   }

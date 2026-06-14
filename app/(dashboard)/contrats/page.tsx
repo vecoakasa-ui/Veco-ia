@@ -13,12 +13,15 @@ export default function ContratsPage() {
   const [selectedLease, setSelectedLease] = useState<Lease | null>(null);
 
   useEffect(() => {
-    setLeases(db.getLeases());
-    
+    const leasesList = db.getLeases();
     const props = db.getProperties().reduce((acc, p) => ({...acc, [p.id]: p}), {} as Record<string, Property>);
     const tens = db.getTenants().reduce((acc, t) => ({...acc, [t.id]: t}), {} as Record<string, Tenant>);
-    setProperties(props);
-    setTenants(tens);
+
+    Promise.resolve().then(() => {
+      setLeases(leasesList);
+      setProperties(props);
+      setTenants(tens);
+    });
   }, []);
 
   const filtered = leases.filter(l => {

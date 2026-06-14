@@ -35,7 +35,7 @@ export default function RegisterPage({ searchParams }: PageProps) {
       profile.full_name = fullName;
       profile.email = email;
       profile.phone = phone;
-      profile.subscription_plan = plan as any;
+      profile.subscription_plan = plan as "free" | "pro" | "business";
       db.updateProfile(profile);
 
       // Route to dashboard
@@ -55,7 +55,7 @@ export default function RegisterPage({ searchParams }: PageProps) {
       <div className="card" style={{ width: '100%', maxWidth: '480px', background: 'white', padding: 'var(--space-8)' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', marginBottom: 'var(--space-6)' }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: 'var(--text-xs)', color: 'var(--gray-500)', marginBottom: 'var(--space-2)' }}>
-            <ArrowLeft size={12} /> Retour à l'accueil
+            <ArrowLeft size={12} /> Retour à l&apos;accueil
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
             <div className="logo-icon">V</div>
@@ -161,7 +161,7 @@ export default function RegisterPage({ searchParams }: PageProps) {
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--space-2)' }}>
             <input type="checkbox" id="terms" required style={{ accentColor: 'var(--primary)', marginTop: '3px' }} />
             <label htmlFor="terms" style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-600)', cursor: 'pointer', lineHeight: '1.4' }}>
-              J'accepte les <a href="#" style={{ color: 'var(--primary)', fontWeight: '500' }}>Conditions Générales d'Utilisation</a> et la <a href="#" style={{ color: 'var(--primary)', fontWeight: '500' }}>Politique de Confidentialité</a>.
+              J&apos;accepte les <a href="#" style={{ color: 'var(--primary)', fontWeight: '500' }}>Conditions Générales d&apos;Utilisation</a> et la <a href="#" style={{ color: 'var(--primary)', fontWeight: '500' }}>Politique de Confidentialité</a>.
             </label>
           </div>
 

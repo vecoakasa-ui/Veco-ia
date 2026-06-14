@@ -12,11 +12,15 @@ export default function IncidentsPage() {
   const [tenants, setTenants] = useState<Record<string, Tenant>>({});
 
   useEffect(() => {
-    setIncidents(db.getIncidents());
+    const list = db.getIncidents();
     const props = db.getProperties().reduce((acc, p) => ({...acc, [p.id]: p}), {} as Record<string, Property>);
     const tens = db.getTenants().reduce((acc, t) => ({...acc, [t.id]: t}), {} as Record<string, Tenant>);
-    setProperties(props);
-    setTenants(tens);
+
+    Promise.resolve().then(() => {
+      setIncidents(list);
+      setProperties(props);
+      setTenants(tens);
+    });
   }, []);
 
   const filtered = incidents.filter(i => {

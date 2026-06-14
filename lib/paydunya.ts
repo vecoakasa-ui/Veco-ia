@@ -62,8 +62,6 @@ export async function createPayDunyaInvoice(input: PayDunyaInvoiceInput): Promis
       isMock: true
     };
   }
-
-  const isSandbox = process.env.NEXT_PUBLIC_PAYDUNYA_MODE === 'sandbox';
   const apiBaseUrl = 'https://app.paydunya.com/api/v1';
 
   try {
@@ -124,11 +122,11 @@ export async function createPayDunyaInvoice(input: PayDunyaInvoiceInput): Promis
         isMock: false
       };
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to create PayDunya invoice:", error);
     return {
       success: false,
-      error: error.message || "Impossible de se connecter aux serveurs de PayDunya.",
+      error: (error as Error).message || "Impossible de se connecter aux serveurs de PayDunya.",
       isMock: false
     };
   }
@@ -195,11 +193,11 @@ export async function verifyPayDunyaPayment(token: string): Promise<PayDunyaVeri
         error: data.response_text
       };
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error("Failed to verify PayDunya payment:", error);
     return {
       success: false,
-      error: error.message || "Échec de vérification du statut du paiement auprès de PayDunya.",
+      error: (error as Error).message || "Échec de vérification du statut du paiement auprès de PayDunya.",
       isMock: false
     };
   }

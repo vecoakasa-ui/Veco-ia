@@ -4,20 +4,15 @@ import { useEffect, useState } from "react";
 import { 
   DollarSign, 
   Search, 
-  Filter, 
-  Plus, 
   X, 
   CheckCircle, 
-  AlertCircle, 
-  FileCheck,
-  Smartphone,
+  Smartphone, 
   CreditCard,
-  UserCheck,
   Copy,
   ExternalLink
 } from "lucide-react";
 import { db } from "@/lib/store";
-import { Payment, PaymentMethod, PaymentStatus } from "@/lib/types";
+import { Payment, PaymentMethod } from "@/lib/types";
 import { formatCurrency, formatDate, getPaymentStatusClass, getPaymentStatusLabel } from "@/lib/utils";
 
 export default function PaiementsPage() {
@@ -46,7 +41,9 @@ export default function PaiementsPage() {
   };
 
   useEffect(() => {
-    loadPayments();
+    Promise.resolve().then(() => {
+      loadPayments();
+    });
   }, []);
 
   const handleSettlePayment = (e: React.FormEvent) => {

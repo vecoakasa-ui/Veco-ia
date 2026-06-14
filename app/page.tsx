@@ -14,9 +14,6 @@ import {
   ArrowRight,
   ChevronRight,
   TrendingUp,
-  Percent,
-  Plus,
-  ShieldCheck,
   Clock,
   Sparkles,
   Phone,
@@ -57,10 +54,12 @@ export default function Home({ searchParams }: HomeProps) {
 
   useEffect(() => {
     if (mockToken && queryPlan) {
-      setCheckoutActive(true);
-      setSelectedPlan(queryPlan);
-      setSelectedPrice(parseInt(queryPrice));
-      setSimStep('method_select');
+      Promise.resolve().then(() => {
+        setCheckoutActive(true);
+        setSelectedPlan(queryPlan);
+        setSelectedPrice(parseInt(queryPrice));
+        setSimStep('method_select');
+      });
     }
   }, [mockToken, queryPlan, queryPrice]);
 
@@ -90,9 +89,9 @@ export default function Home({ searchParams }: HomeProps) {
         setSelectedPrice(price);
         setSimStep('method_select');
       } else if (data.url) {
-        window.location.href = data.url;
+        window.location.assign(data.url);
       }
-    } catch (err) {
+    } catch {
       setCheckoutActive(true);
       setSelectedPlan(planKey);
       setSelectedPrice(price);
@@ -318,7 +317,7 @@ export default function Home({ searchParams }: HomeProps) {
               </div>
               <div className="hero-metric-item">
                 <h3 style={{ fontSize: 'var(--text-2xl)', fontWeight: '800', color: 'var(--primary-dark)' }}>92%</h3>
-                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-500)', fontWeight: '500' }}>Taux d'occupation moyen</p>
+                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-500)', fontWeight: '500' }}>Taux d&apos;occupation moyen</p>
               </div>
               <div className="hero-metric-item">
                 <h3 style={{ fontSize: 'var(--text-2xl)', fontWeight: '800', color: 'var(--primary-dark)' }}>98%</h3>
@@ -392,7 +391,7 @@ export default function Home({ searchParams }: HomeProps) {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }} className="animate-fade-in">
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3)' }}>
                       <div className="card-flat" style={{ padding: '10px 14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--gray-200)' }}>
-                        <span style={{ fontSize: '11px', color: 'var(--gray-500)' }}>Taux d'occupation</span>
+                        <span style={{ fontSize: '11px', color: 'var(--gray-500)' }}>Taux d&apos;occupation</span>
                         <h4 style={{ fontSize: '16px', fontWeight: '800', margin: '2px 0 0 0' }}>92 %</h4>
                       </div>
                       <div className="card-flat" style={{ padding: '10px 14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--gray-200)' }}>
@@ -491,7 +490,7 @@ export default function Home({ searchParams }: HomeProps) {
           <span className="section-label">Fonctionnalités</span>
           <h2 className="section-title">Tout ce dont vous avez besoin pour gérer vos biens</h2>
           <p className="section-subtitle" style={{ margin: '0 auto' }}>
-            Oubliez les fichiers Excel complexes et les relances manuelles pénibles. Notre outil gère l'ensemble du cycle de location.
+            Oubliez les fichiers Excel complexes et les relances manuelles pénibles. Notre outil gère l&apos;ensemble du cycle de location.
           </p>
         </div>
 
@@ -503,7 +502,7 @@ export default function Home({ searchParams }: HomeProps) {
             </div>
             <h3 style={{ fontSize: 'var(--text-lg)', marginBottom: 'var(--space-2)' }}>Gestion des Biens</h3>
             <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)' }}>
-              Ajoutez vos appartements, studios, villas et bureaux. Renseignez les loyers, charges, photos et suivez instantanément le statut d'occupation.
+              Ajoutez vos appartements, studios, villas et bureaux. Renseignez les loyers, charges, photos et suivez instantanément le statut d&apos;occupation.
             </p>
           </div>
 
@@ -514,7 +513,7 @@ export default function Home({ searchParams }: HomeProps) {
             </div>
             <h3 style={{ fontSize: 'var(--text-lg)', marginBottom: 'var(--space-2)' }}>Suivi des Loyers</h3>
             <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)' }}>
-              Sachez en un coup d'œil qui a payé, qui est en retard, et les loyers à venir. Marquez les paiements en cash ou suivez-les automatiquement.
+              Sachez en un coup d&apos;œil qui a payé, qui est en retard, et les loyers à venir. Marquez les paiements en cash ou suivez-les automatiquement.
             </p>
           </div>
 
@@ -536,7 +535,7 @@ export default function Home({ searchParams }: HomeProps) {
             </div>
             <h3 style={{ fontSize: 'var(--text-lg)', marginBottom: 'var(--space-2)' }}>Espace Locataire</h3>
             <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)' }}>
-              Vos locataires disposent d'un espace personnel sécurisé pour consulter leur bail de location, télécharger les quittances et signaler les incidents.
+              Vos locataires disposent d&apos;un espace personnel sécurisé pour consulter leur bail de location, télécharger les quittances et signaler les incidents.
             </p>
           </div>
 
@@ -558,7 +557,7 @@ export default function Home({ searchParams }: HomeProps) {
             </div>
             <h3 style={{ fontSize: 'var(--text-lg)', marginBottom: 'var(--space-2)' }}>Rapports et Statistiques</h3>
             <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)' }}>
-              Visualisez l'évolution de vos revenus locatifs nets, estimez vos impôts, observez votre taux d'occupation et téléchargez des rapports complets.
+              Visualisez l&apos;évolution de vos revenus locatifs nets, estimez vos impôts, observez votre taux d&apos;occupation et téléchargez des rapports complets.
             </p>
           </div>
         </div>
@@ -597,7 +596,7 @@ export default function Home({ searchParams }: HomeProps) {
             <div className="step-num">3</div>
             <h3 style={{ fontSize: 'var(--text-lg)', marginBottom: 'var(--space-2)' }}>Gérez et encaissez</h3>
             <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)' }}>
-              Suivez les échéances. Notre plateforme s'occupe des relances, de la facturation et génère vos quittances automatiquement.
+              Suivez les échéances. Notre plateforme s&apos;occupe des relances, de la facturation et génère vos quittances automatiquement.
             </p>
           </div>
         </div>
@@ -685,7 +684,7 @@ export default function Home({ searchParams }: HomeProps) {
         <div className="cta-section">
           <h2 className="section-title cta-title">Prêt à simplifier votre gestion immobilière ?</h2>
           <p className="cta-desc">
-            Rejoignez des centaines de propriétaires immobiliers et agences en Côte d'Ivoire, au Sénégal, au Gabon et partout en Afrique qui utilisent VENANCE IMO pour automatiser leur gestion quotidienne.
+            Rejoignez des centaines de propriétaires immobiliers et agences en Côte d&apos;Ivoire, au Sénégal, au Gabon et partout en Afrique qui utilisent VENANCE IMO pour automatiser leur gestion quotidienne.
           </p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
             <Link href="/register" className="btn btn-primary btn-lg" style={{ fontWeight: '700' }}>
@@ -734,7 +733,7 @@ export default function Home({ searchParams }: HomeProps) {
                 <h4 style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-2)', fontSize: 'var(--text-base)' }}>
                   <MapPin size={18} style={{ color: 'var(--primary)' }} /> Adresse
                 </h4>
-                <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', margin: 0 }}>Cocody Riviera Faya, Abidjan, Côte d'Ivoire</p>
+                <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', margin: 0 }}>Cocody Riviera Faya, Abidjan, Côte d&apos;Ivoire</p>
               </div>
             </div>
 
@@ -814,7 +813,7 @@ export default function Home({ searchParams }: HomeProps) {
             <div className="footer-links">
               <a href="#" className="footer-link">Mentions Légales</a>
               <a href="#" className="footer-link">Politique de Confidentialité</a>
-              <a href="#" className="footer-link">Conditions d'Utilisation</a>
+              <a href="#" className="footer-link">Conditions d&apos;Utilisation</a>
               <a href="#" className="footer-link">CGV</a>
             </div>
           </div>
@@ -834,7 +833,7 @@ export default function Home({ searchParams }: HomeProps) {
         <div className="container footer-bottom">
           <p>© {new Date().getFullYear()} VENANCE IMO. Tous droits réservés. Développé pour VENANCE.</p>
           <p style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-500)' }}>
-            Côte d'Ivoire • Sénégal • Gabon • Cameroun • Mali
+            Côte d&apos;Ivoire • Sénégal • Gabon • Cameroun • Mali
           </p>
         </div>
       </footer>
@@ -944,7 +943,7 @@ export default function Home({ searchParams }: HomeProps) {
                     style={{ width: "100%", background: "white", borderColor: "var(--success)", color: "var(--success-dark)" }}
                     onClick={() => setSimStep('otp_verification')}
                   >
-                    <Check size={12} /> J'ai scanné et validé sur mon mobile
+                    <Check size={12} /> J&apos;ai scanné et validé sur mon mobile
                   </button>
                 </div>
 
@@ -957,7 +956,7 @@ export default function Home({ searchParams }: HomeProps) {
                 {/* Phone number form option */}
                 <form onSubmit={handlePhoneNumberSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
                   <div className="input-group">
-                    <label className="input-label" style={{ fontSize: "11px", fontWeight: "700" }}>Option 2 : Saisir votre numéro de téléphone (Côte d'Ivoire)</label>
+                    <label className="input-label" style={{ fontSize: "11px", fontWeight: "700" }}>Option 2 : Saisir votre numéro de téléphone (Côte d&apos;Ivoire)</label>
                     <div className="input-with-icon" style={{ position: "relative" }}>
                       <Smartphone className="input-icon" size={16} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--gray-400)" }} />
                       <input
@@ -1009,7 +1008,7 @@ export default function Home({ searchParams }: HomeProps) {
                       Retour
                     </button>
                     <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
-                      Confirmer l'abonnement
+                      Confirmer l&apos;abonnement
                     </button>
                   </div>
                 </form>
@@ -1019,7 +1018,7 @@ export default function Home({ searchParams }: HomeProps) {
             {simStep === 'processing' && (
               <div style={{ textAlign: "center", padding: "var(--space-4)" }}>
                 <Loader2 className="animate-spin" size={40} style={{ color: "var(--primary)", margin: "0 auto var(--space-4)" }} />
-                <h3>Activation de l'abonnement...</h3>
+                <h3>Activation de l&apos;abonnement...</h3>
                 <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>Veuillez patienter pendant la validation de la transaction.</p>
               </div>
             )}

@@ -3,7 +3,6 @@
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { 
-  CreditCard, 
   Smartphone, 
   Lock, 
   Check, 
@@ -25,10 +24,9 @@ interface PageProps {
 
 type Step = 'invoice' | 'method_select' | 'payment_details' | 'otp_verification' | 'processing';
 
-export default function TenantPaymentPage({ params, searchParams }: PageProps) {
+export default function TenantPaymentPage({ params }: PageProps) {
   const router = useRouter();
   const { id } = use(params);
-  const resolvedSearchParams = use(searchParams);
 
   const [payment, setPayment] = useState<Payment | null>(null);
   const [loading, setLoading] = useState(true);
@@ -70,8 +68,11 @@ export default function TenantPaymentPage({ params, searchParams }: PageProps) {
       };
     }
     
-    setPayment(found);
-    setLoading(false);
+    const paymentData = found;
+    Promise.resolve().then(() => {
+      setPayment(paymentData);
+      setLoading(false);
+    });
   }, [id]);
 
   const handlePayClick = async () => {
@@ -107,7 +108,7 @@ export default function TenantPaymentPage({ params, searchParams }: PageProps) {
         // Redirect to real PayDunya checkout URL
         window.location.href = data.url;
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
       // Fallback to simulation checkout if API failed, so the demo ALWAYS works
       setSimStep('method_select');
@@ -168,7 +169,7 @@ export default function TenantPaymentPage({ params, searchParams }: PageProps) {
             Le lien de paiement que vous avez suivi semble expiré ou invalide.
           </p>
           <button className="btn btn-outline" style={{ width: "100%" }} onClick={() => router.push("/")}>
-            Retour à l'accueil
+            Retour à l&apos;accueil
           </button>
         </div>
       </div>
@@ -425,7 +426,7 @@ export default function TenantPaymentPage({ params, searchParams }: PageProps) {
                   style={{ width: "100%", background: "white", borderColor: "var(--success)", color: "var(--success-dark)" }}
                   onClick={() => setSimStep('otp_verification')}
                 >
-                  <Check size={12} /> J'ai scanné et validé sur mon mobile
+                  <Check size={12} /> J&apos;ai scanné et validé sur mon mobile
                 </button>
               </div>
 
@@ -438,7 +439,7 @@ export default function TenantPaymentPage({ params, searchParams }: PageProps) {
               {/* Phone number form option */}
               <form onSubmit={handlePhoneNumberSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
                 <div className="input-group">
-                  <label className="input-label" style={{ fontSize: "11px", fontWeight: "700" }}>Option 2 : Saisir votre numéro de téléphone (Côte d'Ivoire)</label>
+                  <label className="input-label" style={{ fontSize: "11px", fontWeight: "700" }}>Option 2 : Saisir votre numéro de téléphone (Côte d&apos;Ivoire)</label>
                   <div className="input-with-icon">
                     <Smartphone className="input-icon" size={16} />
                     <input
@@ -512,7 +513,7 @@ export default function TenantPaymentPage({ params, searchParams }: PageProps) {
               <Loader2 className="animate-spin" size={48} style={{ color: "var(--primary)", margin: "0 auto var(--space-4)" }} />
               <h3 style={{ marginBottom: "var(--space-2)" }}>Traitement de la transaction...</h3>
               <p style={{ color: "var(--gray-500)", fontSize: "var(--text-sm)" }}>
-                Vérification du statut de votre règlement auprès de l'opérateur. Veuillez ne pas fermer cette page.
+                Vérification du statut de votre règlement auprès de l&apos;opérateur. Veuillez ne pas fermer cette page.
               </p>
             </div>
           )}
@@ -523,7 +524,7 @@ export default function TenantPaymentPage({ params, searchParams }: PageProps) {
       {/* Footer */}
       <footer style={{ padding: "var(--space-6) 0", borderTop: "1px solid var(--gray-200)", background: "white", textAlign: "center", fontSize: "var(--text-xs)", color: "var(--gray-400)" }}>
         <p>© 2026 Venance Imo. Tous droits réservés.</p>
-        <p style={{ marginTop: "4px" }}>Plateforme d'encaissement de loyers sécurisée.</p>
+        <p style={{ marginTop: "4px" }}>Plateforme d&apos;encaissement de loyers sécurisée.</p>
       </footer>
     </div>
   );

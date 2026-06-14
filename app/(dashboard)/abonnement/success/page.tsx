@@ -19,13 +19,15 @@ export default function SubscriptionSuccessPage({ searchParams }: PageProps) {
   useEffect(() => {
     // Update profile plan in localStorage
     const profile = db.getProfile();
-    profile.subscription_plan = plan as any;
+    profile.subscription_plan = plan as "free" | "pro" | "business";
     db.updateProfile(profile);
 
     // Dispatch custom event to notify layout (sidebar) to reload profile
     window.dispatchEvent(new Event("storage"));
     
-    setLoading(false);
+    Promise.resolve().then(() => {
+      setLoading(false);
+    });
   }, [plan]);
 
   if (loading) {

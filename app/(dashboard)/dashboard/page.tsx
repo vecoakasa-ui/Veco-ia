@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/navigation";
 import { useRouter } from "next/navigation";
 import {
   Building2,
@@ -9,11 +8,8 @@ import {
   DollarSign,
   AlertTriangle,
   TrendingUp,
-  Clock,
-  ArrowUpRight,
   Plus,
   ChevronRight,
-  CheckCircle2,
   ArrowRight
 } from "lucide-react";
 import { db } from "@/lib/store";
@@ -56,7 +52,7 @@ export default function DashboardPage() {
             Bonjour, Venance
           </h2>
           <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", margin: "4px 0 0 0" }}>
-            Voici un aperçu de vos activités de gestion immobilière pour aujourd'hui.
+            Voici un aperçu de vos activités de gestion immobilière pour aujourd&apos;hui.
           </p>
         </div>
         <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
@@ -153,7 +149,7 @@ export default function DashboardPage() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-6)" }}>
               <div>
                 <h3 style={{ fontSize: "var(--text-base)", fontWeight: "700", color: "var(--gray-900)" }}>Évolution des Revenus Mensuels</h3>
-                <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>Revenus de l'année 2026</span>
+                <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>Revenus de l&apos;année 2026</span>
               </div>
               <span className="badge badge-success" style={{ display: "flex", gap: "4px" }}><TrendingUp size={12} /> Global</span>
             </div>
@@ -255,7 +251,7 @@ export default function DashboardPage() {
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
           {/* Occupancy circular gauge */}
           <div className="card" style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
-            <h3 style={{ fontSize: "var(--text-base)", fontWeight: "700", alignSelf: "flex-start", marginBottom: "var(--space-4)" }}>Taux d'occupation</h3>
+            <h3 style={{ fontSize: "var(--text-base)", fontWeight: "700", alignSelf: "flex-start", marginBottom: "var(--space-4)" }}>Taux d&apos;occupation</h3>
             
             {/* SVG circular gauge */}
             <div style={{ position: "relative", width: "130px", height: "130px", margin: "var(--space-4) 0" }}>

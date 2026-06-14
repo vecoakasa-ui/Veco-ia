@@ -3,15 +3,10 @@
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { 
-  Sparkles, 
   Check, 
   Smartphone, 
-  Lock, 
   Loader2, 
   AlertCircle, 
-  DollarSign, 
-  ArrowRight,
-  TrendingUp,
   Award
 } from "lucide-react";
 import { db } from "@/lib/store";
@@ -50,13 +45,17 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
   };
 
   useEffect(() => {
-    loadProfile();
+    Promise.resolve().then(() => {
+      loadProfile();
+    });
   }, []);
 
   useEffect(() => {
     if (mockToken && queryPlan) {
-      setCheckoutActive(true);
-      setSimStep('method_select');
+      Promise.resolve().then(() => {
+        setCheckoutActive(true);
+        setSimStep('method_select');
+      });
     }
   }, [mockToken, queryPlan]);
 
@@ -87,9 +86,9 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
         setSimStep('method_select');
       } else if (data.url) {
         // Redirect to real PayDunya checkout URL
-        window.location.href = data.url;
+        window.location.assign(data.url);
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
       // Fallback to simulation checkout if API failed, so demo ALWAYS works
       setCheckoutActive(true);
@@ -411,7 +410,7 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
                     style={{ width: "100%", background: "white", borderColor: "var(--success)", color: "var(--success-dark)" }}
                     onClick={() => setSimStep('otp_verification')}
                   >
-                    <Check size={12} /> J'ai scanné et validé sur mon mobile
+                    <Check size={12} /> J&apos;ai scanné et validé sur mon mobile
                   </button>
                 </div>
 
@@ -424,7 +423,7 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
                 {/* Phone number form option */}
                 <form onSubmit={handlePhoneNumberSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
                   <div className="input-group">
-                    <label className="input-label" style={{ fontSize: "11px", fontWeight: "700" }}>Option 2 : Saisir votre numéro de téléphone (Côte d'Ivoire)</label>
+                    <label className="input-label" style={{ fontSize: "11px", fontWeight: "700" }}>Option 2 : Saisir votre numéro de téléphone (Côte d&apos;Ivoire)</label>
                     <div className="input-with-icon" style={{ position: "relative" }}>
                       <Smartphone className="input-icon" size={16} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--gray-400)" }} />
                       <input
@@ -476,7 +475,7 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
                       Retour
                     </button>
                     <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
-                      Confirmer l'abonnement
+                      Confirmer l&apos;abonnement
                     </button>
                   </div>
                 </form>
@@ -486,7 +485,7 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
             {simStep === 'processing' && (
               <div style={{ textAlign: "center", padding: "var(--space-4)" }}>
                 <Loader2 className="animate-spin" size={40} style={{ color: "var(--primary)", margin: "0 auto var(--space-4)" }} />
-                <h3>Activation de l'abonnement...</h3>
+                <h3>Activation de l&apos;abonnement...</h3>
                 <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>Veuillez patienter pendant la validation de la transaction.</p>
               </div>
             )}

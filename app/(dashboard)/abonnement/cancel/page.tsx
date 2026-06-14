@@ -17,7 +17,7 @@ export default function SubscriptionCancelPage() {
         </h2>
         
         <p style={{ color: "var(--gray-500)", fontSize: "var(--text-sm)", marginBottom: "var(--space-6)" }}>
-          La souscription à votre formule a été annulée ou n'a pas pu être finalisée. Aucun montant n'a été prélevé.
+          La souscription à votre formule a été annulée ou n&apos;a pas pu être finalisée. Aucun montant n&apos;a été prélevé.
         </p>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
