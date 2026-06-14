@@ -182,32 +182,42 @@ export default function Home({ searchParams }: HomeProps) {
   ];
 
   return (
-    <div className="animate-fade-in">
+    <div className="animate-fade-in" style={{ overflowX: 'hidden' }}>
       {/* ============================================
          Header / Navbar
          ============================================ */}
       <header className="navbar">
         <div className="container navbar-container">
-          <Link href="/" className="logo-text">
-            <div className="logo-icon">V</div>
-            <span>VENANCE IMO</span>
+          <Link href="/" className="logo-text" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--primary)', color: 'white', padding: '6px', borderRadius: '8px', fontWeight: 'bold' }}>
+                <Building2 size={20} className="text-orange" />
+              </div>
+              <span style={{ fontSize: 'var(--text-lg)', fontWeight: '900', color: 'var(--primary)', letterSpacing: '-0.02em' }}>
+                GESTIMMO<span className="text-orange">.CI</span>
+              </span>
+            </div>
+            <span style={{ fontSize: '9px', fontWeight: '600', color: 'var(--gray-500)', marginTop: '-2px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+              Le gestionnaire, notre métier
+            </span>
           </Link>
 
           {/* Desktop Menu */}
           <nav className="navbar-menu hide-mobile">
-            <a href="#features" className="navbar-link">Fonctionnalités</a>
-            <a href="#how-it-works" className="navbar-link">Comment ça marche</a>
+            <a href="#about" className="navbar-link">À propos</a>
+            <a href="#services" className="navbar-link">Nos services</a>
+            <a href="#why-us" className="navbar-link">Pourquoi nous choisir</a>
             <a href="#pricing" className="navbar-link">Tarifs</a>
             <a href="#contact" className="navbar-link">Contact</a>
           </nav>
 
           <div className="navbar-actions hide-mobile">
-            <Link href="/login" className="btn btn-ghost">
+            <Link href="/login" className="btn btn-ghost" style={{ fontSize: 'var(--text-sm)', fontWeight: '600' }}>
               Connexion
             </Link>
-            <Link href="/register" className="btn btn-primary">
-              Créer un compte
-            </Link>
+            <a href="#contact" className="btn btn-orange" style={{ padding: '8px 16px', fontSize: 'var(--text-sm)' }}>
+              Demander un devis <ArrowRight size={14} style={{ marginLeft: '4px' }} />
+            </a>
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -241,20 +251,28 @@ export default function Home({ searchParams }: HomeProps) {
             }}
           >
             <a 
-              href="#features" 
+              href="#about" 
               className="navbar-link" 
               onClick={() => setMobileMenuOpen(false)}
               style={{ fontSize: 'var(--text-lg)', padding: 'var(--space-2) 0' }}
             >
-              Fonctionnalités
+              À propos
             </a>
             <a 
-              href="#how-it-works" 
+              href="#services" 
               className="navbar-link" 
               onClick={() => setMobileMenuOpen(false)}
               style={{ fontSize: 'var(--text-lg)', padding: 'var(--space-2) 0' }}
             >
-              Comment ça marche
+              Nos services
+            </a>
+            <a 
+              href="#why-us" 
+              className="navbar-link" 
+              onClick={() => setMobileMenuOpen(false)}
+              style={{ fontSize: 'var(--text-lg)', padding: 'var(--space-2) 0' }}
+            >
+              Pourquoi nous choisir
             </a>
             <a 
               href="#pricing" 
@@ -277,9 +295,9 @@ export default function Home({ searchParams }: HomeProps) {
               <Link href="/login" className="btn btn-outline" style={{ width: '100%' }}>
                 Connexion
               </Link>
-              <Link href="/register" className="btn btn-primary" style={{ width: '100%' }}>
-                Créer un compte
-              </Link>
+              <a href="#contact" className="btn btn-orange" style={{ width: '100%', display: 'flex', justifyContent: 'center' }} onClick={() => setMobileMenuOpen(false)}>
+                Demander un devis
+              </a>
             </div>
           </div>
         )}
@@ -288,177 +306,122 @@ export default function Home({ searchParams }: HomeProps) {
       {/* ============================================
          Hero Section
          ============================================ */}
-      <section className="hero-section">
+      <section 
+        className="hero-section"
+        style={{
+          background: 'linear-gradient(rgba(10, 61, 42, 0.88) 0%, rgba(10, 61, 42, 0.5) 100%), url("/gestimmo_hero_bg.png") center/cover no-repeat',
+          paddingTop: 'var(--space-20)',
+          paddingBottom: 'var(--space-24)',
+          color: 'white'
+        }}
+      >
         <div className="container hero-grid">
-          <div className="hero-content animate-fade-in-up">
-            <div className="badge badge-primary" style={{ marginBottom: 'var(--space-4)', display: 'inline-flex', gap: 'var(--space-1)', alignItems: 'center' }}>
-              <Sparkles size={14} /> La gestion immobilière réinventée en Afrique
+          <div className="hero-content animate-fade-in-up" style={{ textAlign: 'left', alignItems: 'flex-start' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.15)', padding: '6px 14px', borderRadius: 'var(--radius-full)', color: 'white', fontSize: 'var(--text-xs)', fontWeight: '600', marginBottom: 'var(--space-6)', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+              <span style={{ display: 'inline-flex', width: '16px', height: '12px', background: 'linear-gradient(to right, #E25822 33.3%, white 33.3%, white 66.6%, #0A3D2A 66.6%)', borderRadius: '1px' }}></span>
+              Depuis la Côte d&apos;Ivoire
             </div>
-            <h1 className="hero-title">
-              Gerez vos biens, locataires et loyers en <span>toute simplicité</span>
+            
+            <h1 className="hero-title" style={{ color: 'white', fontSize: 'var(--text-5xl)', fontWeight: '900', lineHeight: 1.15, marginBottom: 'var(--space-6)' }}>
+              La gestion de vos biens immobiliers, en toute <span className="text-orange underline-green">sérénité.</span>
             </h1>
-            <p className="hero-description-card">
-              Suivi des paiements mobiles (<strong>Orange Money</strong>, <strong>MTN MoMo</strong>, <strong>Wave</strong>), édition automatique des baux et quittances, gestion des demandes de maintenance. Gagnez du temps et optimisez vos revenus.
+            
+            <p style={{ fontSize: 'var(--text-base)', color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.65, maxWidth: '580px', marginBottom: 'var(--space-8)' }}>
+              GESTIMMO CI est une SAS spécialisée dans la gestion immobilière. Nous vous accompagnons pour valoriser, protéger et rentabiliser vos biens en toute confiance.
             </p>
-            <div className="hero-buttons">
-              <Link href="/register" className="btn btn-primary btn-lg">
-                Essayer gratuitement <ArrowRight size={18} />
-              </Link>
-              <a href="#how-it-works" className="btn btn-outline btn-lg">
-                Voir comment ça marche
+            
+            <div className="hero-buttons" style={{ display: 'flex', gap: 'var(--space-4)', width: '100%', maxWidth: '440px', flexWrap: 'wrap' }}>
+              <a href="#services" className="btn btn-orange btn-lg" style={{ flex: '1 1 auto', minWidth: '180px' }}>
+                Découvrir nos services <ArrowRight size={18} style={{ marginLeft: '6px' }} />
+              </a>
+              <a href="#contact" className="btn btn-contact btn-lg" style={{ flex: '1 1 auto', minWidth: '180px', background: 'transparent', borderColor: 'white', color: 'white' }}>
+                Nous contacter
               </a>
             </div>
+          </div>
+        </div>
+      </section>
 
-            {/* Quick trust metrics */}
-            <div className="hero-metrics">
-              <div className="hero-metric-item">
-                <h3 style={{ fontSize: 'var(--text-2xl)', fontWeight: '800', color: 'var(--primary-dark)' }}>24+</h3>
-                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-500)', fontWeight: '500' }}>Biens gérés par bailleur</p>
-              </div>
-              <div className="hero-metric-item">
-                <h3 style={{ fontSize: 'var(--text-2xl)', fontWeight: '800', color: 'var(--primary-dark)' }}>92%</h3>
-                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-500)', fontWeight: '500' }}>Taux d&apos;occupation moyen</p>
-              </div>
-              <div className="hero-metric-item">
-                <h3 style={{ fontSize: 'var(--text-2xl)', fontWeight: '800', color: 'var(--primary-dark)' }}>98%</h3>
-                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-500)', fontWeight: '500' }}>Loyers payés à temps</p>
-              </div>
+      {/* Values Banner overlapping hero */}
+      <div className="container" style={{ position: 'relative', zIndex: 10 }}>
+        <div className="values-banner animate-scale-in">
+          <div className="value-item">
+            <div className="value-icon-wrapper">
+              <Building2 size={18} />
+            </div>
+            <div>
+              <div className="value-title">Gestion complète</div>
+              <div className="value-desc">Nous nous occupons de tout, de A à Z.</div>
             </div>
           </div>
-
-          {/* Interactive visual mockup dashboard */}
-          <div className="hero-visual animate-scale-in">
-            <div className="mockup-bg"></div>
-
-            {/* Floating micro-interactions */}
-            <div className="floating-card floating-card-1">
-              <div style={{ background: 'var(--success-light)', color: 'var(--success-dark)', borderRadius: '50%', padding: '6px' }}>
-                <TrendingUp size={16} />
-              </div>
-              <div>
-                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-500)', fontWeight: '500', margin: 0 }}>Revenus du mois</p>
-                <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: '700', margin: 0 }}>2 450 000 FCFA</h4>
-              </div>
+          <div className="value-item">
+            <div className="value-icon-wrapper">
+              <FileText size={18} />
             </div>
-
-            <div className="floating-card floating-card-2">
-              <div style={{ background: 'var(--warning-light)', color: 'var(--warning-dark)', borderRadius: '50%', padding: '6px' }}>
-                <Clock size={16} />
-              </div>
-              <div>
-                <p style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-500)', fontWeight: '500', margin: 0 }}>Retards de paiement</p>
-                <h4 style={{ fontSize: 'var(--text-sm)', fontWeight: '700', margin: 0, color: 'var(--danger-dark)' }}>3 locataires</h4>
-              </div>
+            <div>
+              <div className="value-title">Transparence</div>
+              <div className="value-desc">Suivi clair et régulier de vos biens.</div>
             </div>
+          </div>
+          <div className="value-item">
+            <div className="value-icon-wrapper">
+              <TrendingUp size={18} />
+            </div>
+            <div>
+              <div className="value-title">Performance</div>
+              <div className="value-desc">Nous optimisons la rentabilité.</div>
+            </div>
+          </div>
+          <div className="value-item">
+            <div className="value-icon-wrapper">
+              <MapPin size={18} />
+            </div>
+            <div>
+              <div className="value-title">Proximité en CI</div>
+              <div className="value-desc">Une expertise locale à votre service.</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-            {/* Main mockup card */}
-            <div className="dashboard-mockup">
-              <div className="mockup-header">
-                <span className="mockup-dot red"></span>
-                <span className="mockup-dot yellow"></span>
-                <span className="mockup-dot green"></span>
-                <span style={{ fontSize: '11px', color: 'var(--gray-400)', marginLeft: 'var(--space-2)', fontWeight: '500' }}>dashboard.venanceimo.com</span>
+      {/* ============================================
+         About Us Section
+         ============================================ */}
+      <section id="about" className="section" style={{ background: 'var(--white)', paddingTop: 'var(--space-24)' }}>
+        <div className="container about-grid">
+          <div className="animate-slide-in-left">
+            <span className="section-label" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+              <Sparkles size={14} className="text-orange" /> À PROPOS DE GESTIMMO CI
+            </span>
+            <h2 style={{ fontSize: 'var(--text-4xl)', fontWeight: '800', margin: 'var(--space-3) 0 var(--space-6) 0', color: 'var(--gray-900)' }}>
+              Votre partenaire immobilier de <span className="text-orange">confiance</span> en Côte d&apos;Ivoire
+            </h2>
+            <p style={{ color: 'var(--gray-600)', marginBottom: 'var(--space-4)', fontSize: 'var(--text-base)', lineHeight: 1.65 }}>
+              GESTIMMO CI accompagne les propriétaires, investisseurs et entreprises dans la gestion efficace de leurs biens immobiliers.
+            </p>
+            <p style={{ color: 'var(--gray-600)', marginBottom: 'var(--space-8)', fontSize: 'var(--text-base)', lineHeight: 1.65 }}>
+              Notre mission : vous offrir des solutions sur-mesure, basées sur l&apos;expertise locale, la rigueur et l&apos;innovation, pour vous permettre de tirer le meilleur de votre patrimoine immobilier.
+            </p>
+            <a href="#contact" className="btn btn-outline" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+              En savoir plus sur nous <ArrowRight size={16} />
+            </a>
+          </div>
+
+          <div className="animate-scale-in" style={{ position: 'relative', width: '100%', height: 'auto', display: 'flex', justifyContent: 'center' }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src="/gestimmo_about_img.png" 
+              alt="Salon chic Gestimmo" 
+              style={{ width: '100%', maxWidth: '480px', borderRadius: 'var(--radius-2xl)', boxShadow: 'var(--shadow-xl)', objectFit: 'cover' }}
+            />
+            {/* Floating badge on image */}
+            <div className="about-badge-floating hide-mobile">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.2)', borderRadius: '50%', padding: '8px' }}>
+                <Users size={20} />
               </div>
-
-              {/* Tabs selector */}
-              <div style={{ display: 'flex', background: 'white', padding: '10px 16px', gap: '4px', borderBottom: '1px solid var(--gray-200)' }}>
-                <button 
-                  onClick={() => setActiveTab("revenue")}
-                  className={`btn btn-sm ${activeTab === "revenue" ? "btn-primary" : "btn-ghost"}`}
-                  style={{ borderRadius: 'var(--radius-md)', padding: '6px 12px' }}
-                >
-                  <BarChart3 size={14} /> &nbsp;Revenus
-                </button>
-                <button 
-                  onClick={() => setActiveTab("properties")}
-                  className={`btn btn-sm ${activeTab === "properties" ? "btn-primary" : "btn-ghost"}`}
-                  style={{ borderRadius: 'var(--radius-md)', padding: '6px 12px' }}
-                >
-                  <Building2 size={14} /> &nbsp;Nos Biens
-                </button>
-                <button 
-                  onClick={() => setActiveTab("tenants")}
-                  className={`btn btn-sm ${activeTab === "tenants" ? "btn-primary" : "btn-ghost"}`}
-                  style={{ borderRadius: 'var(--radius-md)', padding: '6px 12px' }}
-                >
-                  <Users size={14} /> &nbsp;Locataires
-                </button>
-              </div>
-
-              {/* Mockup content according to active tab */}
-              <div className="mockup-body">
-                {activeTab === "revenue" && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }} className="animate-fade-in">
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-3)' }}>
-                      <div className="card-flat" style={{ padding: '10px 14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--gray-200)' }}>
-                        <span style={{ fontSize: '11px', color: 'var(--gray-500)' }}>Taux d&apos;occupation</span>
-                        <h4 style={{ fontSize: '16px', fontWeight: '800', margin: '2px 0 0 0' }}>92 %</h4>
-                      </div>
-                      <div className="card-flat" style={{ padding: '10px 14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--gray-200)' }}>
-                        <span style={{ fontSize: '11px', color: 'var(--gray-500)' }}>Total Loyers</span>
-                        <h4 style={{ fontSize: '16px', fontWeight: '800', margin: '2px 0 0 0', color: 'var(--success-dark)' }}>2.45M FCFA</h4>
-                      </div>
-                    </div>
-                    {/* Small visual chart */}
-                    <div>
-                      <div style={{ display: 'flex', justifySelf: 'stretch', justifyContent: 'space-between', alignItems: 'flex-end', height: '100px', padding: '10px 10px 0 10px', background: 'white', borderRadius: 'var(--radius-md)', border: '1px solid var(--gray-200)' }}>
-                        {[40, 60, 45, 80, 90, 85, 95, 75, 100].map((h, i) => (
-                          <div key={i} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '8%' }}>
-                            <div style={{ width: '100%', height: `${h}%`, background: i === 8 ? 'var(--primary)' : 'var(--primary-lighter)', borderRadius: '3px 3px 0 0', transition: 'height 0.5s' }}></div>
-                            <span style={{ fontSize: '8px', color: 'var(--gray-400)', marginTop: '4px' }}>M{i+1}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === "properties" && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }} className="animate-fade-in">
-                    {[
-                      { name: "Villa Hibiscus", type: "Villa", rent: "450 000 FCFA", status: "occupied", statusLabel: "Occupé" },
-                      { name: "Appartement Riviera C2", type: "Appartement", rent: "250 000 FCFA", status: "occupied", statusLabel: "Occupé" },
-                      { name: "Studio Zone 4", type: "Studio", rent: "150 000 FCFA", status: "vacant", statusLabel: "Vacant" }
-                    ].map((item, index) => (
-                      <div key={index} style={{ background: 'white', padding: '10px 14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--gray-200)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div>
-                          <h5 style={{ fontSize: '13px', margin: 0, fontWeight: '700' }}>{item.name}</h5>
-                          <span style={{ fontSize: '10px', color: 'var(--gray-500)' }}>{item.type} • {item.rent}</span>
-                        </div>
-                        <span className={`badge ${item.status === 'occupied' ? 'badge-success' : 'badge-warning'}`} style={{ fontSize: '9px', padding: '2px 8px' }}>
-                          {item.statusLabel}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {activeTab === "tenants" && (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }} className="animate-fade-in">
-                    {[
-                      { name: "Koffi Kouassi", property: "Villa Hibiscus", amount: "450k FCFA", status: "paid", statusLabel: "Payé" },
-                      { name: "Awa Diop", property: "Appartement Riviera C2", amount: "250k FCFA", status: "late", statusLabel: "En retard" },
-                      { name: "Jean Dupont", property: "Studio Zone 4", amount: "150k FCFA", status: "pending", statusLabel: "En attente" }
-                    ].map((item, index) => (
-                      <div key={index} style={{ background: 'white', padding: '10px 14px', borderRadius: 'var(--radius-md)', border: '1px solid var(--gray-200)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div>
-                          <h5 style={{ fontSize: '13px', margin: 0, fontWeight: '700' }}>{item.name}</h5>
-                          <span style={{ fontSize: '10px', color: 'var(--gray-500)' }}>{item.property} • {item.amount}</span>
-                        </div>
-                        <span className={`badge ${item.status === 'paid' ? 'badge-success' : item.status === 'late' ? 'badge-danger' : 'badge-warning'}`} style={{ fontSize: '9px', padding: '2px 8px' }}>
-                          {item.statusLabel}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 'var(--space-2)' }}>
-                  <span style={{ fontSize: '10px', color: 'var(--gray-400)', fontWeight: '500' }}>Données simulées en temps réel</span>
-                  <Link href="/register" style={{ fontSize: '11px', color: 'var(--primary)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '2px' }}>
-                    Voir le vrai dashboard <ChevronRight size={12} />
-                  </Link>
-                </div>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ fontSize: 'var(--text-lg)', fontWeight: '800' }}>+100</span>
+                <span style={{ fontSize: '9px', fontWeight: '600', lineHeight: 1.2 }}>biens gérés avec succès en Côte d&apos;Ivoire</span>
               </div>
             </div>
           </div>
@@ -466,148 +429,163 @@ export default function Home({ searchParams }: HomeProps) {
       </section>
 
       {/* ============================================
-         Trust Band / Partners
+         Services Section
          ============================================ */}
-      <section className="partners">
-        <div className="container">
-          <p className="partners-title">Ils font confiance à VENANCE IMO</p>
-          <div className="partners-grid">
-            <span className="partner-logo">ImmoGabon</span>
-            <span className="partner-logo">SenLogement</span>
-            <span className="partner-logo">CamerImmo</span>
-            <span className="partner-logo">IvoirBat</span>
-            <span className="partner-logo">MaliBail</span>
-            <span className="partner-logo">GbinLoc</span>
-          </div>
-        </div>
-      </section>
-
-      {/* ============================================
-         Features Section
-         ============================================ */}
-      <section id="features" className="section">
+      <section id="services" className="section" style={{ background: 'var(--gray-50)' }}>
         <div className="container" style={{ textAlign: 'center', marginBottom: 'var(--space-16)' }}>
-          <span className="section-label">Fonctionnalités</span>
-          <h2 className="section-title">Tout ce dont vous avez besoin pour gérer vos biens</h2>
-          <p className="section-subtitle" style={{ margin: '0 auto' }}>
-            Oubliez les fichiers Excel complexes et les relances manuelles pénibles. Notre outil gère l&apos;ensemble du cycle de location.
-          </p>
+          <span className="section-label">Nos Services</span>
+          <h2 className="section-title">
+            Une gestion immobilière complète adaptée à <span className="text-orange underline-green">vos besoins</span>
+          </h2>
         </div>
 
-        <div className="container grid-3">
+        <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--space-6)' }}>
           {/* Card 1 */}
-          <div className="card feature-card">
-            <div className="feature-icon-wrapper">
+          <div className="service-card">
+            <div className="service-icon-wrapper">
               <Building2 size={24} />
             </div>
-            <h3 style={{ fontSize: 'var(--text-lg)', marginBottom: 'var(--space-2)' }}>Gestion des Biens</h3>
-            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)' }}>
-              Ajoutez vos appartements, studios, villas et bureaux. Renseignez les loyers, charges, photos et suivez instantanément le statut d&apos;occupation.
+            <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: '700', marginBottom: 'var(--space-2)' }}>Gestion locative</h3>
+            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', lineHeight: 1.5, marginBottom: 'var(--space-4)' }}>
+              Recherche de locataires, rédaction de baux, encaissement des loyers et suivi.
             </p>
+            <a href="#contact" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: 'var(--text-xs)', fontWeight: '700', color: 'var(--orange)', marginTop: 'auto' }}>
+              En savoir plus <ArrowRight size={12} />
+            </a>
           </div>
 
           {/* Card 2 */}
-          <div className="card feature-card">
-            <div className="feature-icon-wrapper">
-              <DollarSign size={24} />
+          <div className="service-card">
+            <div className="service-icon-wrapper">
+              <Sparkles size={24} />
             </div>
-            <h3 style={{ fontSize: 'var(--text-lg)', marginBottom: 'var(--space-2)' }}>Suivi des Loyers</h3>
-            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)' }}>
-              Sachez en un coup d&apos;œil qui a payé, qui est en retard, et les loyers à venir. Marquez les paiements en cash ou suivez-les automatiquement.
+            <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: '700', marginBottom: 'var(--space-2)' }}>Gestion technique</h3>
+            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', lineHeight: 1.5, marginBottom: 'var(--space-4)' }}>
+              Entretien, réparations et suivi des travaux pour préserver vos biens.
             </p>
+            <a href="#contact" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: 'var(--text-xs)', fontWeight: '700', color: 'var(--orange)', marginTop: 'auto' }}>
+              En savoir plus <ArrowRight size={12} />
+            </a>
           </div>
 
           {/* Card 3 */}
-          <div className="card feature-card">
-            <div className="feature-icon-wrapper">
+          <div className="service-card">
+            <div className="service-icon-wrapper">
               <FileText size={24} />
             </div>
-            <h3 style={{ fontSize: 'var(--text-lg)', marginBottom: 'var(--space-2)' }}>Quittances Automatiques</h3>
-            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)' }}>
-              Générez instantanément des quittances conformes au format PDF dès que le paiement est validé, et envoyez-les directement par email au locataire.
+            <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: '700', marginBottom: 'var(--space-2)' }}>Gestion administrative</h3>
+            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', lineHeight: 1.5, marginBottom: 'var(--space-4)' }}>
+              Gestion des contrats, documents légaux et relations avec les administrations.
             </p>
+            <a href="#contact" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: 'var(--text-xs)', fontWeight: '700', color: 'var(--orange)', marginTop: 'auto' }}>
+              En savoir plus <ArrowRight size={12} />
+            </a>
           </div>
 
           {/* Card 4 */}
-          <div className="card feature-card">
-            <div className="feature-icon-wrapper">
-              <Users size={24} />
+          <div className="service-card">
+            <div className="service-icon-wrapper">
+              <BarChart3 size={24} />
             </div>
-            <h3 style={{ fontSize: 'var(--text-lg)', marginBottom: 'var(--space-2)' }}>Espace Locataire</h3>
-            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)' }}>
-              Vos locataires disposent d&apos;un espace personnel sécurisé pour consulter leur bail de location, télécharger les quittances et signaler les incidents.
+            <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: '700', marginBottom: 'var(--space-2)' }}>Gestion financière</h3>
+            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', lineHeight: 1.5, marginBottom: 'var(--space-4)' }}>
+              Suivi des revenus et dépenses, reportings réguliers et transparents.
             </p>
+            <a href="#contact" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: 'var(--text-xs)', fontWeight: '700', color: 'var(--orange)', marginTop: 'auto' }}>
+              En savoir plus <ArrowRight size={12} />
+            </a>
           </div>
 
           {/* Card 5 */}
-          <div className="card feature-card">
-            <div className="feature-icon-wrapper">
-              <CreditCard size={24} />
+          <div className="service-card">
+            <div className="service-icon-wrapper">
+              <TrendingUp size={24} />
             </div>
-            <h3 style={{ fontSize: 'var(--text-lg)', marginBottom: 'var(--space-2)' }}>Paiement en Ligne</h3>
-            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)' }}>
-              Permettez le règlement en ligne par cartes bancaires (Stripe) et par paiements mobiles locaux (Orange Money, MTN Mobile Money) pour réduire les délais.
+            <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: '700', marginBottom: 'var(--space-2)' }}>Conseil & valorisation</h3>
+            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', lineHeight: 1.5, marginBottom: 'var(--space-4)' }}>
+              Stratégies pour améliorer la valeur et la rentabilité de votre patrimoine.
             </p>
-          </div>
-
-          {/* Card 6 */}
-          <div className="card feature-card">
-            <div className="feature-icon-wrapper">
-              <BarChart3 size={24} />
-            </div>
-            <h3 style={{ fontSize: 'var(--text-lg)', marginBottom: 'var(--space-2)' }}>Rapports et Statistiques</h3>
-            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)' }}>
-              Visualisez l&apos;évolution de vos revenus locatifs nets, estimez vos impôts, observez votre taux d&apos;occupation et téléchargez des rapports complets.
-            </p>
+            <a href="#contact" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: 'var(--text-xs)', fontWeight: '700', color: 'var(--orange)', marginTop: 'auto' }}>
+              En savoir plus <ArrowRight size={12} />
+            </a>
           </div>
         </div>
       </section>
 
       {/* ============================================
-         How It Works Section
+         Why Choose Us Section
          ============================================ */}
-      <section id="how-it-works" className="section" style={{ background: 'var(--gray-50)' }}>
-        <div className="container" style={{ textAlign: 'center', marginBottom: 'var(--space-16)' }}>
-          <span className="section-label">Processus</span>
-          <h2 className="section-title">Commencez en seulement 3 étapes</h2>
-          <p className="section-subtitle" style={{ margin: '0 auto' }}>
-            La transition vers une gestion immobilière automatisée et sereine ne prend que quelques minutes.
-          </p>
-        </div>
-
-        <div className="container grid-3">
-          <div className="card step-card" style={{ background: 'white' }}>
-            <div className="step-num">1</div>
-            <h3 style={{ fontSize: 'var(--text-lg)', marginBottom: 'var(--space-2)' }}>Créez votre compte</h3>
-            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)' }}>
-              Inscrivez-vous en choisissant le rôle Propriétaire/Bailleur. Configurez votre profil et votre devise en quelques clics.
-            </p>
+      <section id="why-us" className="section" style={{ background: 'var(--white)' }}>
+        <div className="container about-grid">
+          <div className="animate-slide-in-left">
+            <span className="section-label">Pourquoi nous choisir ?</span>
+            <h2 style={{ fontSize: 'var(--text-4xl)', fontWeight: '800', margin: 'var(--space-3) 0 var(--space-6) 0', color: 'var(--gray-900)' }}>
+              L&apos;expertise locale, la performance au cœur de notre <span className="text-orange underline-green">engagement.</span>
+            </h2>
+            
+            <ul style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+              {[
+                "Une équipe expérimentée et réactive",
+                "Une connaissance approfondie du marché ivoirien",
+                "Des outils digitaux pour un suivi en temps réel",
+                "Un engagement pour votre tranquillité d&apos;esprit"
+              ].map((item, index) => (
+                <li key={index} style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', fontSize: 'var(--text-base)', color: 'var(--gray-700)', fontWeight: '500' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--primary-lighter)', color: 'var(--primary)', borderRadius: '50%', padding: '4px' }}>
+                    <Check size={16} />
+                  </div>
+                  <span dangerouslySetInnerHTML={{ __html: item }}></span>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <div className="card step-card" style={{ background: 'white' }}>
-            <div className="step-num">2</div>
-            <h3 style={{ fontSize: 'var(--text-lg)', marginBottom: 'var(--space-2)' }}>Ajoutez vos biens</h3>
-            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)' }}>
-              Saisissez les détails de vos logements (adresse, type, loyer) et associez vos locataires actuels avec les dates de bail de location.
-            </p>
-          </div>
+          <div className="stats-grid animate-scale-in">
+            {/* Stat 1 */}
+            <div className="stat-card">
+              <div className="stat-icon orange">
+                <Building2 size={20} />
+              </div>
+              <div className="stat-number">+100</div>
+              <div className="stat-label">Biens gérés</div>
+            </div>
 
-          <div className="card step-card" style={{ background: 'white' }}>
-            <div className="step-num">3</div>
-            <h3 style={{ fontSize: 'var(--text-lg)', marginBottom: 'var(--space-2)' }}>Gérez et encaissez</h3>
-            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)' }}>
-              Suivez les échéances. Notre plateforme s&apos;occupe des relances, de la facturation et génère vos quittances automatiquement.
-            </p>
+            {/* Stat 2 */}
+            <div className="stat-card">
+              <div className="stat-icon green">
+                <Users size={20} />
+              </div>
+              <div className="stat-number">+80</div>
+              <div className="stat-label">Clients satisfaits</div>
+            </div>
+
+            {/* Stat 3 */}
+            <div className="stat-card">
+              <div className="stat-icon green">
+                <Clock size={20} />
+              </div>
+              <div className="stat-number">+5</div>
+              <div className="stat-label">Années d&apos;expérience</div>
+            </div>
+
+            {/* Stat 4 */}
+            <div className="stat-card">
+              <div className="stat-icon orange">
+                <MapPin size={20} />
+              </div>
+              <div className="stat-number">Abidjan</div>
+              <div className="stat-label">Couverture nationale</div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ============================================
-         Pricing Section
+         Pricing Section (SaaS Integration)
          ============================================ */}
-      <section id="pricing" className="section">
+      <section id="pricing" className="section" style={{ background: 'var(--gray-50)' }}>
         <div className="container" style={{ textAlign: 'center', marginBottom: 'var(--space-10)' }}>
-          <span className="section-label">Tarifs simples</span>
+          <span className="section-label">Tarifs</span>
           <h2 className="section-title">Choisissez le plan adapté à vos besoins</h2>
           <p className="section-subtitle" style={{ margin: '0 auto' }}>
             Tous nos plans incluent les fonctionnalités fondamentales de gestion. Sans engagement de durée.
@@ -632,8 +610,8 @@ export default function Home({ searchParams }: HomeProps) {
 
         <div className="container grid-3">
           {plans.map((plan, index) => (
-            <div key={index} className={`card pricing-card ${plan.popular ? 'popular' : ''}`}>
-              {plan.popular && <span className="pricing-badge">Populaire</span>}
+            <div key={index} className={`card pricing-card ${plan.popular ? 'popular' : ''}`} style={plan.popular ? { borderColor: 'var(--orange)', boxShadow: 'var(--shadow-lg)' } : {}}>
+              {plan.popular && <span className="pricing-badge" style={{ background: 'var(--orange)' }}>Populaire</span>}
               <h3 style={{ fontSize: 'var(--text-xl)', fontWeight: '700', marginBottom: 'var(--space-2)' }}>{plan.name}</h3>
               <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-500)', marginBottom: 'var(--space-4)' }}>{plan.desc}</p>
               
@@ -650,7 +628,7 @@ export default function Home({ searchParams }: HomeProps) {
               <div className="pricing-features">
                 {plan.features.map((feature, fIndex) => (
                   <div key={fIndex} className="pricing-feature-item">
-                    <Check size={16} className="pricing-feature-icon" />
+                    <Check size={16} className="pricing-feature-icon" style={{ color: 'var(--primary)' }} />
                     <span>{feature}</span>
                   </div>
                 ))}
@@ -658,7 +636,7 @@ export default function Home({ searchParams }: HomeProps) {
 
               <button 
                 type="button"
-                className={`btn ${plan.popular ? 'btn-primary' : 'btn-outline'}`}
+                className={`btn ${plan.popular ? 'btn-orange' : 'btn-outline'}`}
                 style={{ width: '100%', marginTop: 'auto', display: 'flex', justifyContent: 'center' }}
                 onClick={() => handlePlanClick(plan.key, plan.price)}
                 disabled={isApiLoading !== null}
@@ -678,20 +656,19 @@ export default function Home({ searchParams }: HomeProps) {
       </section>
 
       {/* ============================================
-         CTA Section (Call to Action)
+         CTA Banner Section
          ============================================ */}
       <section className="container section">
-        <div className="cta-section">
-          <h2 className="section-title cta-title">Prêt à simplifier votre gestion immobilière ?</h2>
-          <p className="cta-desc">
-            Rejoignez des centaines de propriétaires immobiliers et agences en Côte d&apos;Ivoire, au Sénégal, au Gabon et partout en Afrique qui utilisent VENANCE IMO pour automatiser leur gestion quotidienne.
-          </p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
-            <Link href="/register" className="btn btn-primary btn-lg" style={{ fontWeight: '700' }}>
-              Créer mon compte gratuit
-            </Link>
-            <a href="#contact" className="btn btn-outline btn-lg" style={{ color: 'white', borderColor: 'rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.1)' }}>
-              Demander une démonstration
+        <div className="cta-gestimmo animate-fade-in-up">
+          <div className="cta-gestimmo-content">
+            <h2 className="cta-gestimmo-title">Vous avez un bien immobilier ?</h2>
+            <p className="cta-gestimmo-desc">
+              Confiez-le à des professionnels pour valoriser, sécuriser et rentabiliser votre patrimoine. Nous nous occupons du reste.
+            </p>
+          </div>
+          <div className="cta-gestimmo-actions">
+            <a href="#contact" className="btn btn-white-green btn-lg" style={{ fontWeight: '700', borderRadius: 'var(--radius-lg)' }}>
+              Demander un devis gratuit <ArrowRight size={18} style={{ marginLeft: '6px', display: 'inline-block', verticalAlign: 'middle' }} />
             </a>
           </div>
         </div>
@@ -714,26 +691,26 @@ export default function Home({ searchParams }: HomeProps) {
             {/* Info */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
               <div className="card" style={{ background: 'white' }}>
-                <h4 style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-2)', fontSize: 'var(--text-base)' }}>
-                  <Phone size={18} style={{ color: 'var(--primary)' }} /> Téléphone & WhatsApp
+                <h4 style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-2)', fontSize: 'var(--text-base)', color: 'var(--primary)' }}>
+                  <Phone size={18} /> Téléphone & WhatsApp
                 </h4>
-                <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', margin: 0 }}>+225 07 00 00 00 00</p>
+                <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', margin: 0, fontWeight: '600' }}>+225 07 07 07 07 07</p>
                 <p style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-400)', marginTop: '4px' }}>Lun - Ven, 8h00 à 18h00</p>
               </div>
 
               <div className="card" style={{ background: 'white' }}>
-                <h4 style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-2)', fontSize: 'var(--text-base)' }}>
-                  <Mail size={18} style={{ color: 'var(--primary)' }} /> E-mail
+                <h4 style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-2)', fontSize: 'var(--text-base)', color: 'var(--primary)' }}>
+                  <Mail size={18} /> E-mail
                 </h4>
-                <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', margin: 0 }}>contact@venanceimo.com</p>
+                <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', margin: 0, fontWeight: '600' }}>contact@gestimmoci.ci</p>
                 <p style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-400)', marginTop: '4px' }}>Réponse sous 24h ouvrées</p>
               </div>
 
               <div className="card" style={{ background: 'white' }}>
-                <h4 style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-2)', fontSize: 'var(--text-base)' }}>
-                  <MapPin size={18} style={{ color: 'var(--primary)' }} /> Adresse
+                <h4 style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-2)', fontSize: 'var(--text-base)', color: 'var(--primary)' }}>
+                  <MapPin size={18} /> Adresse
                 </h4>
-                <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', margin: 0 }}>Cocody Riviera Faya, Abidjan, Côte d&apos;Ivoire</p>
+                <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', margin: 0, fontWeight: '600' }}>Riviera Palmeraie, Cocody, Abidjan, Côte d&apos;Ivoire</p>
               </div>
             </div>
 
@@ -760,9 +737,9 @@ export default function Home({ searchParams }: HomeProps) {
                   <label className="input-label">Sujet</label>
                   <select className="input" required style={{ appearance: 'auto' }}>
                     <option value="">Sélectionnez un sujet</option>
-                    <option value="demo">Demande de démonstration</option>
+                    <option value="demo">Demande de devis</option>
                     <option value="pricing">Question sur les tarifs</option>
-                    <option value="partnership">Partenariat / SaaS Business</option>
+                    <option value="partnership">Partenariat / Affiliation</option>
                     <option value="other">Autre demande</option>
                   </select>
                 </div>
@@ -772,7 +749,7 @@ export default function Home({ searchParams }: HomeProps) {
                   <textarea placeholder="Décrivez votre besoin ou vos questions ici..." required className="input" rows={4} style={{ resize: 'none' }}></textarea>
                 </div>
 
-                <button type="submit" className="btn btn-primary" style={{ width: '100%', padding: 'var(--space-3)' }}>
+                <button type="submit" className="btn btn-orange" style={{ width: '100%', padding: 'var(--space-3)' }}>
                   Envoyer mon message
                 </button>
               </form>
@@ -784,56 +761,67 @@ export default function Home({ searchParams }: HomeProps) {
       {/* ============================================
          Footer Section
          ============================================ */}
-      <footer className="footer">
+      <footer className="gestimmo-footer">
         <div className="container footer-grid">
           <div>
-            <div className="footer-logo">VENANCE IMO</div>
+            <div className="gestimmo-footer-logo-title">GESTIMMO<span className="text-orange">.CI</span></div>
+            <div className="gestimmo-footer-logo-desc">Le gestionnaire, notre métier</div>
             <p className="footer-desc">
-              La solution moderne de gestion immobilière conçue pour les bailleurs et agences en Afrique. Suivez, générez, encaissez en toute sérénité.
+              SAS spécialisée dans la gestion immobilière en Côte d&apos;Ivoire. Notre mission est de vous offrir des solutions fiables et performantes pour la gestion de vos biens.
             </p>
             <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-              <span style={{ cursor: 'pointer', background: 'var(--gray-800)', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', color: 'white', fontWeight: 'bold', justifyContent: 'center' }}>f</span>
-              <span style={{ cursor: 'pointer', background: 'var(--gray-800)', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', color: 'white', fontWeight: 'bold', justifyContent: 'center' }}>in</span>
-              <span style={{ cursor: 'pointer', background: 'var(--gray-800)', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', color: 'white', fontWeight: 'bold', justifyContent: 'center' }}>w</span>
+              <span className="footer-social-badge" style={{ cursor: 'pointer' }}>f</span>
+              <span className="footer-social-badge" style={{ cursor: 'pointer' }}>in</span>
+              <span className="footer-social-badge" style={{ cursor: 'pointer' }}>w</span>
+              <span className="footer-social-badge" style={{ cursor: 'pointer' }}>ig</span>
             </div>
           </div>
 
           <div>
-            <h4 className="footer-title">Plateforme</h4>
+            <h4 className="gestimmo-footer-title">Liens rapides</h4>
             <div className="footer-links">
-              <a href="#features" className="footer-link">Fonctionnalités</a>
+              <a href="#about" className="footer-link">À propos</a>
+              <a href="#services" className="footer-link">Nos services</a>
+              <a href="#why-us" className="footer-link">Pourquoi nous choisir</a>
               <a href="#pricing" className="footer-link">Tarifs</a>
-              <Link href="/register" className="footer-link">Créer un compte</Link>
-              <Link href="/login" className="footer-link">Connexion</Link>
+              <a href="#contact" className="footer-link">Contact</a>
             </div>
           </div>
 
           <div>
-            <h4 className="footer-title">Légal</h4>
+            <h4 className="gestimmo-footer-title">Nos services</h4>
             <div className="footer-links">
-              <a href="#" className="footer-link">Mentions Légales</a>
-              <a href="#" className="footer-link">Politique de Confidentialité</a>
-              <a href="#" className="footer-link">Conditions d&apos;Utilisation</a>
-              <a href="#" className="footer-link">CGV</a>
+              <a href="#services" className="footer-link">Gestion locative</a>
+              <a href="#services" className="footer-link">Gestion technique</a>
+              <a href="#services" className="footer-link">Gestion administrative</a>
+              <a href="#services" className="footer-link">Gestion financière</a>
+              <a href="#services" className="footer-link">Conseil & valorisation</a>
             </div>
           </div>
 
           <div>
-            <h4 className="footer-title">Newsletter</h4>
-            <p className="footer-desc" style={{ fontSize: 'var(--text-xs)' }}>
-              Abonnez-vous pour recevoir nos conseils de gestion immobilière et nouveautés.
-            </p>
-            <form onSubmit={(e) => { e.preventDefault(); alert('Merci pour votre abonnement !'); }} style={{ display: 'flex', gap: 'var(--space-2)' }}>
-              <input type="email" placeholder="Votre email" required className="input btn-sm" style={{ background: 'var(--gray-800)', borderColor: 'var(--gray-700)', color: 'white' }} />
-              <button type="submit" className="btn btn-primary btn-sm">Ok</button>
-            </form>
+            <h4 className="gestimmo-footer-title">Contactez-nous</h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Phone size={14} className="text-orange" />
+                <span>+225 07 07 07 07 07</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Mail size={14} className="text-orange" />
+                <span>contact@gestimmoci.ci</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
+                <MapPin size={14} className="text-orange" style={{ flexShrink: 0, marginTop: '3px' }} />
+                <span>Riviera Palmeraie, Cocody, Abidjan, Côte d&apos;Ivoire</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="container footer-bottom">
-          <p>© {new Date().getFullYear()} VENANCE IMO. Tous droits réservés. Développé pour VENANCE.</p>
+        <div className="container footer-bottom" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+          <p>© {new Date().getFullYear()} GESTIMMO CI. Tous droits réservés.</p>
           <p style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-500)' }}>
-            Côte d&apos;Ivoire • Sénégal • Gabon • Cameroun • Mali
+            Abidjan • Yamoussoukro • Bouaké • San-Pédro • Korhogo
           </p>
         </div>
       </footer>
@@ -866,14 +854,15 @@ export default function Home({ searchParams }: HomeProps) {
               maxWidth: "460px",
               background: "white",
               padding: "var(--space-6)",
-              borderTop: "6px solid var(--primary)"
+              borderTop: "6px solid var(--primary)",
+              color: "var(--gray-800)"
             }}
           >
             {simStep === 'method_select' && (
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
                 <div style={{ textAlign: "center", marginBottom: "var(--space-2)" }}>
                   <span style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "1px", color: "var(--primary)" }}>PayDunya Sandbox Checkout</span>
-                  <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800", marginTop: "2px" }}>Abonnement Plan {selectedPlan.toUpperCase()}</h3>
+                  <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800", marginTop: "2px", color: "var(--gray-900)" }}>Abonnement Plan {selectedPlan.toUpperCase()}</h3>
                   <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-400)" }}>Total à payer : <strong style={{ color: "var(--gray-800)" }}>{selectedPrice.toLocaleString("fr-FR")} FCFA</strong></p>
                 </div>
 
@@ -919,13 +908,13 @@ export default function Home({ searchParams }: HomeProps) {
 
             {simStep === 'payment_details' && (
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
-                <h3 style={{ fontSize: "var(--text-md)", fontWeight: "800", textTransform: "capitalize", textAlign: "center" }}>
+                <h3 style={{ fontSize: "var(--text-md)", fontWeight: "800", textTransform: "capitalize", textAlign: "center", color: "var(--gray-900)" }}>
                   Abonnement par {selectedOperator === 'orange' ? 'Orange Money' : selectedOperator === 'mtn' ? 'MTN MoMo' : selectedOperator === 'wave' ? 'Wave' : 'Moov Money'}
                 </h3>
 
                 {/* QR Code Option */}
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-3)", background: "var(--gray-50)", padding: "var(--space-4)", borderRadius: "var(--radius-lg)", border: "1px dashed var(--gray-300)" }}>
-                  <span style={{ fontSize: "var(--text-xs)", fontWeight: "700", color: "var(--primary-dark)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Option 1 : Paiement Sécurisé par Code QR</span>
+                  <span style={{ fontSize: "var(--text-xs)", fontWeight: "700", color: "var(--primary)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Option 1 : Paiement Sécurisé par Code QR</span>
                   <div style={{ padding: "8px", background: "white", borderRadius: "8px", boxShadow: "var(--shadow-sm)" }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img 
@@ -986,7 +975,7 @@ export default function Home({ searchParams }: HomeProps) {
             {simStep === 'otp_verification' && (
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
                 <div style={{ textAlign: "center" }}>
-                  <h3 style={{ fontSize: "var(--text-md)", fontWeight: "800" }}>Validation OTP</h3>
+                  <h3 style={{ fontSize: "var(--text-md)", fontWeight: "800", color: "var(--gray-900)" }}>Validation OTP</h3>
                   <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>Code démo envoyé par SMS : <strong>1234</strong></p>
                 </div>
                 <form onSubmit={handleOtpSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
@@ -1018,7 +1007,7 @@ export default function Home({ searchParams }: HomeProps) {
             {simStep === 'processing' && (
               <div style={{ textAlign: "center", padding: "var(--space-4)" }}>
                 <Loader2 className="animate-spin" size={40} style={{ color: "var(--primary)", margin: "0 auto var(--space-4)" }} />
-                <h3>Activation de l&apos;abonnement...</h3>
+                <h3 style={{ color: "var(--gray-900)" }}>Activation de l&apos;abonnement...</h3>
                 <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>Veuillez patienter pendant la validation de la transaction.</p>
               </div>
             )}

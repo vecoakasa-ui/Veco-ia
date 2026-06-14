@@ -9,13 +9,21 @@
    CSS Custom Properties (Design Tokens)
    ============================================ */
 :root {
-  /* Primary Colors */
-  --primary: #F97316;
-  --primary-light: #FB923C;
-  --primary-lighter: #FED7AA;
-  --primary-lightest: #FFF7ED;
-  --primary-dark: #EA580C;
-  --primary-darker: #C2410C;
+  /* Primary brand color - Forest Green */
+  --primary: #0A3D2A;
+  --primary-light: #0E523A;
+  --primary-lighter: #E6F0EC;
+  --primary-lightest: #F0F7F4;
+  --primary-dark: #072C1E;
+  --primary-darker: #051E14;
+
+  /* Accent color - Coral Orange */
+  --orange: #E25822;
+  --orange-light: #F97316;
+  --orange-lighter: #FFEDD5;
+  --orange-lightest: #FFF7ED;
+  --orange-dark: #C2410C;
+  --orange-darker: #A0330A;
 
   /* Neutral Colors */
   --white: #FFFFFF;
@@ -1286,5 +1294,383 @@ h1, h2, h3, h4, h5, h6 {
     flex-direction: column;
     gap: var(--space-4);
     text-align: center;
+  }
+}
+
+/* ============================================
+   GESTIMMO CI — Refined Branding & Mockup Layout Styles
+   ============================================ */
+
+/* Accent elements and badges */
+.badge-orange {
+  background: var(--orange-lighter);
+  color: var(--orange-dark);
+}
+
+.text-orange {
+  color: var(--orange);
+}
+
+.underline-green {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 2px;
+}
+
+.underline-green::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 4px;
+  background: var(--orange); /* Use Orange for the decorative underline line */
+  border-radius: 2px;
+}
+
+/* Custom buttons */
+.btn-orange {
+  background: var(--orange);
+  color: var(--white);
+}
+
+.btn-orange:hover {
+  background: var(--orange-dark);
+  color: var(--white);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-contact {
+  background: var(--white);
+  color: var(--gray-800);
+  border: 1.5px solid var(--gray-800);
+}
+
+.btn-contact:hover {
+  background: var(--gray-100);
+}
+
+/* Values Green Banner below Hero */
+.values-banner {
+  background: var(--primary); /* Deep Green */
+  color: var(--white);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6) var(--space-8);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-6);
+  box-shadow: var(--shadow-lg);
+  margin-top: -3rem; /* Overlaps hero section */
+  position: relative;
+  z-index: 10;
+}
+
+.value-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.value-icon-wrapper {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  flex-shrink: 0;
+}
+
+.value-title {
+  font-weight: 700;
+  font-size: var(--text-sm);
+  margin-bottom: 2px;
+}
+
+.value-desc {
+  font-size: var(--text-xs);
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.4;
+}
+
+/* About Us section metrics */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: var(--space-12);
+  align-items: center;
+}
+
+.about-badge-floating {
+  position: absolute;
+  bottom: var(--space-6);
+  right: var(--space-6);
+  background: var(--orange);
+  color: var(--white);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  box-shadow: var(--shadow-lg);
+  max-width: 200px;
+}
+
+/* Services section cards overrides */
+.service-icon-wrapper {
+  width: 56px;
+  height: 56px;
+  background: var(--primary-lightest);
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--orange); /* Use Accent Orange for service icons */
+  margin-bottom: var(--space-5);
+  transition: all var(--transition-fast);
+}
+
+.service-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  transition: all var(--transition-base);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.service-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--primary-lighter);
+  box-shadow: var(--shadow-lg);
+}
+
+.service-card:hover .service-icon-wrapper {
+  background: var(--orange-lighter);
+  transform: scale(1.05);
+}
+
+/* Stats counter grid in Choose Us section */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+}
+
+.stat-card {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-100);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition-base);
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-3);
+}
+
+.stat-icon.orange {
+  background: var(--orange-lighter);
+  color: var(--orange-dark);
+}
+
+.stat-icon.green {
+  background: var(--primary-lighter);
+  color: var(--primary);
+}
+
+.stat-number {
+  font-size: var(--text-3xl);
+  font-weight: 800;
+  color: var(--gray-900);
+  margin-bottom: 2px;
+}
+
+.stat-label {
+  font-size: var(--text-xs);
+  color: var(--gray-500);
+  font-weight: 600;
+}
+
+/* Gestimmo Custom CTA Banner */
+.cta-gestimmo {
+  background: linear-gradient(135deg, var(--orange) 0%, var(--primary) 100%);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-12) var(--space-8);
+  position: relative;
+  overflow: hidden;
+  color: var(--white);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-12);
+  box-shadow: var(--shadow-xl);
+}
+
+.cta-gestimmo::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath d='M10 90 L50 20 L90 90 Z' fill='none' stroke='white' stroke-width='2' stroke-opacity='0.05'/%3E%3C/svg%3E") repeat;
+  pointer-events: none;
+}
+
+.cta-gestimmo-content {
+  position: relative;
+  z-index: 2;
+  max-width: 650px;
+}
+
+.cta-gestimmo-title {
+  color: var(--white);
+  font-size: var(--text-3xl);
+  font-weight: 800;
+  margin-bottom: var(--space-3);
+}
+
+.cta-gestimmo-desc {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: var(--text-base);
+}
+
+.cta-gestimmo-actions {
+  position: relative;
+  z-index: 2;
+  flex-shrink: 0;
+}
+
+.btn-white-green {
+  background: var(--white);
+  color: var(--primary);
+  border: 1.5px solid var(--white);
+}
+
+.btn-white-green:hover {
+  background: var(--primary-lightest);
+  transform: translateY(-1px);
+}
+
+/* Footer overrides */
+.gestimmo-footer {
+  background: var(--primary-dark);
+  color: rgba(255, 255, 255, 0.7);
+  padding: var(--space-16) 0 var(--space-8) 0;
+  font-size: var(--text-sm);
+  border-top: 2px solid var(--orange);
+}
+
+.gestimmo-footer-title {
+  color: var(--white);
+  font-weight: 700;
+  font-size: var(--text-base);
+  margin-bottom: var(--space-5);
+  position: relative;
+  display: inline-block;
+  padding-bottom: var(--space-1);
+}
+
+.gestimmo-footer-title::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 32px;
+  height: 2px;
+  background: var(--orange);
+}
+
+.gestimmo-footer-logo-title {
+  color: var(--white);
+  font-size: var(--text-2xl);
+  font-weight: 900;
+  margin-bottom: var(--space-3);
+  letter-spacing: -0.01em;
+}
+
+.gestimmo-footer-logo-desc {
+  font-size: var(--text-xs);
+  color: var(--orange);
+  font-weight: 600;
+  margin-top: -10px;
+  margin-bottom: var(--space-4);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.footer-social-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  transition: all var(--transition-fast);
+}
+
+.footer-social-badge:hover {
+  background: var(--orange);
+  transform: scale(1.08);
+}
+
+/* Responsive Gestimmo Media Queries */
+@media (max-width: 992px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-8);
+  }
+  
+  .cta-gestimmo {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-6);
+  }
+  
+  .cta-gestimmo-content {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .values-banner {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    padding: var(--space-5);
+    margin-top: -1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .values-banner {
+    grid-template-columns: 1fr;
+  }
+  
+  .stats-grid {
+    grid-template-columns: 1fr;
   }
 }

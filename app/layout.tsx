@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "VENANCE IMO — Gestion Immobilière SaaS",
-  description: "La plateforme moderne de gestion immobilière en Afrique. Suivez vos loyers, gérez vos locataires, générez vos quittances et encaissez par Stripe, Orange Money et MTN Mobile Money.",
+  title: "GESTIMMO CI — Gestion Immobilière en Côte d'Ivoire",
+  description: "GESTIMMO CI est une SAS spécialisée dans la gestion immobilière en Côte d'Ivoire. Nous vous accompagnons pour valoriser, protéger et rentabiliser vos biens en toute confiance. Suivez vos loyers, gérez vos locataires, générez vos quittances et encaissez par cartes bancaires et paiements mobiles locaux (Orange Money, MTN MoMo, Wave, Moov).",
 };
 
 export default function RootLayout({
