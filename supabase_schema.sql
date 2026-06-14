@@ -99,9 +99,92 @@ CREATE TABLE IF NOT EXISTS incidents (
 );
 
 -- ============================================
--- ROW LEVEL SECURITY (RLS) & POLICIES (Optional setup for secure production)
+-- ROW LEVEL SECURITY (RLS) & SECURE POLICIES
 -- ============================================
 
--- RLS can be configured if integrating Supabase Auth users directly.
--- Since the application uses a mock owner profile 'owner-1' out-of-the-box,
--- it is recommended to enable RLS after integrating Supabase Auth.
+-- Enable Row Level Security on all tables
+ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE properties ENABLE ROW LEVEL SECURITY;
+ALTER TABLE tenants ENABLE ROW LEVEL SECURITY;
+ALTER TABLE leases ENABLE ROW LEVEL SECURITY;
+ALTER TABLE payments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE incidents ENABLE ROW LEVEL SECURITY;
+
+-- 1. PROFILES Policies
+CREATE POLICY "Users can manage their own profile" 
+  ON profiles FOR ALL 
+  USING (id = auth.uid()::text);
+
+-- 2. PROPERTIES Policies
+CREATE POLICY "Owners can manage their properties" 
+  ON properties FOR ALL 
+  USING (owner_id = auth.uid()::text);
+
+CREATE POLICY "Tenants can view assigned properties" 
+  ON properties FOR SELECT 
+  USING (id IN (SELECT property_id FROM tenants WHERE profile_id = auth.uid()::text));
+
+-- 3. TENANTS Policies
+CREATE POLICY "Owners can manage their tenants" 
+  ON tenants FOR ALL 
+  USING (owner_id = auth.uid()::text);
+
+CREATE POLICY "Tenants can view their own tenant record" 
+  ON tenants FOR SELECT 
+  USING (profile_id = auth.uid()::text);
+
+-- 4. LEASES Policies
+CREATE POLICY "Owners can manage leases" 
+  ON leases FOR ALL 
+  USING (owner_id = auth.uid()::text);
+
+CREATE POLICY "Tenants can view their own leases" 
+  ON leases FOR SELECT 
+  USING (tenant_id IN (SELECT id FROM tenants WHERE profile_id = auth.uid()::text));
+
+-- 5. PAYMENTS Policies
+CREATE POLICY "Owners can manage payments" 
+  ON payments FOR ALL 
+  USING (owner_id = auth.uid()::text);
+
+CREATE POLICY "Tenants can view and manage their payments" 
+  ON payments FOR ALL 
+  USING (tenant_id IN (SELECT id FROM tenants WHERE profile_id = auth.uid()::text));
+
+-- 6. INCIDENTS Policies
+CREATE POLICY "Owners can manage incidents of their properties" 
+  ON incidents FOR ALL 
+  USING (property_id IN (SELECT id FROM properties WHERE owner_id = auth.uid()::text));
+
+CREATE POLICY "Tenants can manage their own incidents" 
+  ON incidents FOR ALL 
+  USING (tenant_id IN (SELECT id FROM tenants WHERE profile_id = auth.uid()::text));
+
+
+-- ============================================
+-- AUTHENTICATION TRIGGERS (Auto-Profile Creation)
+-- ============================================
+
+-- Automatically sync profiles table when a new user signs up via Supabase Auth
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS trigger AS $$
+BEGIN
+  INSERT INTO public.profiles (id, full_name, email, phone, role, subscription_plan)
+  VALUES (
+    new.id::text,
+    COALESCE(new.raw_user_meta_data->>'full_name', ''),
+    new.email,
+    new.phone,
+    COALESCE(new.raw_user_meta_data->>'role', 'owner'),
+    'free'
+  );
+  RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Drop trigger if exists first to avoid duplicates
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
