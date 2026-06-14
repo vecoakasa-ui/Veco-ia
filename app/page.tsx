@@ -318,7 +318,7 @@ export default function Home({ searchParams }: HomeProps) {
             </div>
             
             <h1 className="hero-title" style={{ color: 'white', fontSize: 'var(--text-5xl)', fontWeight: '900', lineHeight: 1.15, marginBottom: 'var(--space-6)', textAlign: 'center' }}>
-              La gestion de vos biens immobiliers, en toute <span className="underline-white" style={{ color: '#FF9000' }}>sérénité.</span>
+              La gestion de vos biens immobiliers, en toute <span className="underline-white" style={{ color: '#FF9000', background: 'none', WebkitBackgroundClip: 'unset', backgroundClip: 'unset', WebkitTextFillColor: '#FF9000' }}>sérénité.</span>
             </h1>
             
             <p style={{ fontSize: 'var(--text-base)', color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.65, maxWidth: '640px', marginBottom: 'var(--space-8)', textAlign: 'center', marginInline: 'auto' }}>
