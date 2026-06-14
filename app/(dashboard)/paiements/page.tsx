@@ -12,7 +12,9 @@ import {
   FileCheck,
   Smartphone,
   CreditCard,
-  UserCheck
+  UserCheck,
+  Copy,
+  ExternalLink
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Payment, PaymentMethod, PaymentStatus } from "@/lib/types";
@@ -31,6 +33,16 @@ export default function PaiementsPage() {
 
   const loadPayments = () => {
     setPayments(db.getPayments());
+  };
+
+  const copyPaymentLink = (id: string) => {
+    if (typeof window !== "undefined") {
+      const origin = window.location.origin;
+      const url = `${origin}/pay/${id}`;
+      navigator.clipboard.writeText(url)
+        .then(() => alert("Lien de paiement copié dans le presse-papiers !"))
+        .catch((err) => console.error("Erreur de copie :", err));
+    }
   };
 
   useEffect(() => {
@@ -152,12 +164,13 @@ export default function PaiementsPage() {
                 <th>Date règlement</th>
                 <th>Méthode</th>
                 <th>Statut</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredPayments.length === 0 ? (
                 <tr>
-                  <td colSpan={8} style={{ textAlign: "center", padding: "var(--space-16)", color: "var(--gray-400)" }}>
+                  <td colSpan={9} style={{ textAlign: "center", padding: "var(--space-16)", color: "var(--gray-400)" }}>
                     Aucun paiement trouvé pour ce filtre.
                   </td>
                 </tr>
@@ -182,6 +195,8 @@ export default function PaiementsPage() {
                           {p.payment_method === 'stripe' && <CreditCard size={12} style={{ color: "var(--primary)" }} />}
                           {p.payment_method === 'orange_money' && <Smartphone size={12} style={{ color: "var(--warning-dark)" }} />}
                           {p.payment_method === 'mtn' && <Smartphone size={12} style={{ color: "var(--info-dark)" }} />}
+                          {p.payment_method === 'wave' && <Smartphone size={12} style={{ color: "#00A3E0" }} />}
+                          {p.payment_method === 'paydunya' && <Smartphone size={12} style={{ color: "var(--primary)" }} />}
                           {p.payment_method === 'cash' && <DollarSign size={12} style={{ color: "var(--success-dark)" }} />}
                           {p.payment_method?.replace("_", " ")}
                         </span>
@@ -191,6 +206,35 @@ export default function PaiementsPage() {
                       <span className={`badge ${getPaymentStatusClass(p.status)}`}>
                         {getPaymentStatusLabel(p.status)}
                       </span>
+                    </td>
+                    <td>
+                      {p.status !== "paid" ? (
+                        <div style={{ display: "flex", gap: "6px" }}>
+                          <button 
+                            type="button"
+                            className="btn btn-ghost btn-sm" 
+                            style={{ padding: "4px 8px", fontSize: "11px", display: "flex", alignItems: "center", gap: "4px" }}
+                            onClick={() => copyPaymentLink(p.id)}
+                            title="Copier le lien de paiement"
+                          >
+                            <Copy size={12} /> Lien
+                          </button>
+                          <a 
+                            href={`/pay/${p.id}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="btn btn-ghost btn-sm text-primary" 
+                            style={{ padding: "4px 8px", fontSize: "11px", display: "flex", alignItems: "center", gap: "4px", color: "var(--primary)" }}
+                            title="Ouvrir la page de paiement"
+                          >
+                            <ExternalLink size={12} /> Payer
+                          </a>
+                        </div>
+                      ) : (
+                        <span style={{ color: "var(--success)", fontSize: "11px", fontWeight: 600, display: "flex", alignItems: "center", gap: "4px" }}>
+                          <CheckCircle size={12} /> Réglé
+                        </span>
+                      )}
                     </td>
                   </tr>
                 ))
@@ -267,6 +311,8 @@ export default function PaiementsPage() {
                   <option value="cash">Espèces (Cash)</option>
                   <option value="orange_money">Orange Money</option>
                   <option value="mtn">MTN Mobile Money</option>
+                  <option value="wave">Wave</option>
+                  <option value="paydunya">PayDunya</option>
                   <option value="stripe">Carte Bancaire (Stripe)</option>
                 </select>
               </div>

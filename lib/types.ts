@@ -39,7 +39,7 @@ export interface Property {
 }
 
 export type PaymentStatus = 'paid' | 'pending' | 'late' | 'upcoming';
-export type PaymentMethod = 'stripe' | 'orange_money' | 'mtn' | 'cash';
+export type PaymentMethod = 'stripe' | 'orange_money' | 'mtn' | 'cash' | 'paydunya' | 'wave';
 
 export interface Payment {
   id: string;
