@@ -188,17 +188,12 @@ export default function Home({ searchParams }: HomeProps) {
          ============================================ */}
       <header className="navbar">
         <div className="container navbar-container">
-          <Link href="/" className="logo-text" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--primary)', color: 'white', padding: '6px', borderRadius: '8px', fontWeight: 'bold' }}>
-                <Building2 size={20} className="text-orange" />
-              </div>
-              <span style={{ fontSize: 'var(--text-lg)', fontWeight: '900', color: 'var(--primary)', letterSpacing: '-0.02em' }}>
-                GESTIMMO<span className="text-orange">.CI</span>
-              </span>
+          <Link href="/" className="logo-text" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', textDecoration: 'none' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--primary)', color: 'white', padding: '6px', borderRadius: '8px', fontWeight: 'bold' }}>
+              <Building2 size={20} className="text-orange" />
             </div>
-            <span style={{ fontSize: '9px', fontWeight: '600', color: 'var(--gray-500)', marginTop: '-2px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-              Le gestionnaire, notre métier
+            <span style={{ fontSize: 'var(--text-lg)', fontWeight: '900', color: 'var(--primary)', letterSpacing: '-0.02em' }}>
+              VENANCE IMO<span className="text-orange">.CI</span>
             </span>
           </Link>
 
@@ -327,7 +322,7 @@ export default function Home({ searchParams }: HomeProps) {
             </h1>
             
             <p style={{ fontSize: 'var(--text-base)', color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.65, maxWidth: '580px', marginBottom: 'var(--space-8)' }}>
-              GESTIMMO CI est une SAS spécialisée dans la gestion immobilière. Nous vous accompagnons pour valoriser, protéger et rentabiliser vos biens en toute confiance.
+              VENANCE IMO.CI est spécialisée dans la gestion immobilière. Nous vous accompagnons pour valoriser, protéger et rentabiliser vos biens en toute confiance.
             </p>
             
             <div className="hero-buttons" style={{ display: 'flex', gap: 'var(--space-4)', width: '100%', maxWidth: '440px', flexWrap: 'wrap' }}>
@@ -391,13 +386,13 @@ export default function Home({ searchParams }: HomeProps) {
         <div className="container about-grid">
           <div className="animate-slide-in-left">
             <span className="section-label" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-              <Sparkles size={14} className="text-orange" /> À PROPOS DE GESTIMMO CI
+              <Sparkles size={14} className="text-orange" /> À PROPOS DE VENANCE IMO.CI
             </span>
             <h2 style={{ fontSize: 'var(--text-4xl)', fontWeight: '800', margin: 'var(--space-3) 0 var(--space-6) 0', color: 'var(--gray-900)' }}>
               Votre partenaire immobilier de <span className="text-orange">confiance</span> en Côte d&apos;Ivoire
             </h2>
             <p style={{ color: 'var(--gray-600)', marginBottom: 'var(--space-4)', fontSize: 'var(--text-base)', lineHeight: 1.65 }}>
-              GESTIMMO CI accompagne les propriétaires, investisseurs et entreprises dans la gestion efficace de leurs biens immobiliers.
+              VENANCE IMO.CI accompagne les propriétaires, investisseurs et entreprises dans la gestion efficace de leurs biens immobiliers.
             </p>
             <p style={{ color: 'var(--gray-600)', marginBottom: 'var(--space-8)', fontSize: 'var(--text-base)', lineHeight: 1.65 }}>
               Notre mission : vous offrir des solutions sur-mesure, basées sur l&apos;expertise locale, la rigueur et l&apos;innovation, pour vous permettre de tirer le meilleur de votre patrimoine immobilier.
@@ -764,8 +759,7 @@ export default function Home({ searchParams }: HomeProps) {
       <footer className="gestimmo-footer">
         <div className="container footer-grid">
           <div>
-            <div className="gestimmo-footer-logo-title">GESTIMMO<span className="text-orange">.CI</span></div>
-            <div className="gestimmo-footer-logo-desc">Le gestionnaire, notre métier</div>
+            <div className="gestimmo-footer-logo-title">VENANCE IMO<span className="text-orange">.CI</span></div>
             <p className="footer-desc">
               SAS spécialisée dans la gestion immobilière en Côte d&apos;Ivoire. Notre mission est de vous offrir des solutions fiables et performantes pour la gestion de vos biens.
             </p>
@@ -819,7 +813,7 @@ export default function Home({ searchParams }: HomeProps) {
         </div>
 
         <div className="container footer-bottom" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-          <p>© {new Date().getFullYear()} GESTIMMO CI. Tous droits réservés.</p>
+          <p>© {new Date().getFullYear()} VENANCE IMO.CI. Tous droits réservés.</p>
           <p style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-500)' }}>
             Abidjan • Yamoussoukro • Bouaké • San-Pédro • Korhogo
           </p>

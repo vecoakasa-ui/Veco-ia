@@ -97,7 +97,7 @@ export default function DashboardLayout({
               <Building2 size={16} className="text-orange" />
             </div>
             <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--white)" }}>
-              GESTIMMO<span className="text-orange">.CI</span>
+              VENANCE IMO<span className="text-orange">.CI</span>
             </span>
           </Link>
         </div>
@@ -216,7 +216,7 @@ export default function DashboardLayout({
                   <Building2 size={16} className="text-orange" />
                 </div>
                 <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--white)" }}>
-                  GESTIMMO<span className="text-orange">.CI</span>
+                  VENANCE IMO<span className="text-orange">.CI</span>
                 </span>
               </div>
               <button onClick={() => setMobileOpen(false)} style={{ color: "var(--white)" }}>
