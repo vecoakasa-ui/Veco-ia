@@ -1335,6 +1335,70 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 2px;
 }
 
+.underline-white {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 2px;
+}
+
+.underline-white::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 4px;
+  background: var(--white);
+  border-radius: 2px;
+}
+
+/* Infinite Scrolling Marquee for Key Features / Values */
+.values-banner-marquee {
+  background: var(--primary);
+  color: var(--white);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6) 0;
+  box-shadow: var(--shadow-lg);
+  margin-top: -3rem;
+  position: relative;
+  z-index: 10;
+  overflow: hidden;
+  width: 100%;
+  display: flex;
+}
+
+.marquee-content {
+  display: flex;
+  width: max-content;
+  animation: scrollLeftMarquee 25s linear infinite;
+}
+
+.marquee-content:hover {
+  animation-play-state: paused;
+}
+
+.marquee-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  padding-right: var(--space-12);
+  flex-shrink: 0;
+}
+
+.marquee-group .value-item {
+  width: 320px;
+  flex-shrink: 0;
+}
+
+@keyframes scrollLeftMarquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
 /* Custom buttons */
 .btn-orange {
   background: var(--orange);

@@ -318,7 +318,7 @@ export default function Home({ searchParams }: HomeProps) {
             </div>
             
             <h1 className="hero-title" style={{ color: 'white', fontSize: 'var(--text-5xl)', fontWeight: '900', lineHeight: 1.15, marginBottom: 'var(--space-6)', textAlign: 'center' }}>
-              La gestion de vos biens immobiliers, en toute <span className="text-orange underline-green">sérénité.</span>
+              La gestion de vos biens immobiliers, en toute <span className="text-orange underline-white">sérénité.</span>
             </h1>
             
             <p style={{ fontSize: 'var(--text-base)', color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.65, maxWidth: '640px', marginBottom: 'var(--space-8)', textAlign: 'center', marginInline: 'auto' }}>
@@ -339,41 +339,86 @@ export default function Home({ searchParams }: HomeProps) {
 
       {/* Values Banner overlapping hero */}
       <div className="container" style={{ position: 'relative', zIndex: 10 }}>
-        <div className="values-banner animate-scale-in">
-          <div className="value-item">
-            <div className="value-icon-wrapper">
-              <Building2 size={18} />
+        <div className="values-banner-marquee animate-scale-in">
+          <div className="marquee-content">
+            {/* Group 1 */}
+            <div className="marquee-group">
+              <div className="value-item">
+                <div className="value-icon-wrapper">
+                  <Building2 size={18} />
+                </div>
+                <div>
+                  <div className="value-title">Gestion complète</div>
+                  <div className="value-desc">Nous nous occupons de tout, de A à Z.</div>
+                </div>
+              </div>
+              <div className="value-item">
+                <div className="value-icon-wrapper">
+                  <FileText size={18} />
+                </div>
+                <div>
+                  <div className="value-title">Transparence</div>
+                  <div className="value-desc">Suivi clair et régulier de vos biens.</div>
+                </div>
+              </div>
+              <div className="value-item">
+                <div className="value-icon-wrapper">
+                  <TrendingUp size={18} />
+                </div>
+                <div>
+                  <div className="value-title">Performance</div>
+                  <div className="value-desc">Nous optimisons la rentabilité.</div>
+                </div>
+              </div>
+              <div className="value-item">
+                <div className="value-icon-wrapper">
+                  <MapPin size={18} />
+                </div>
+                <div>
+                  <div className="value-title">Proximité en CI</div>
+                  <div className="value-desc">Une expertise locale à votre service.</div>
+                </div>
+              </div>
             </div>
-            <div>
-              <div className="value-title">Gestion complète</div>
-              <div className="value-desc">Nous nous occupons de tout, de A à Z.</div>
-            </div>
-          </div>
-          <div className="value-item">
-            <div className="value-icon-wrapper">
-              <FileText size={18} />
-            </div>
-            <div>
-              <div className="value-title">Transparence</div>
-              <div className="value-desc">Suivi clair et régulier de vos biens.</div>
-            </div>
-          </div>
-          <div className="value-item">
-            <div className="value-icon-wrapper">
-              <TrendingUp size={18} />
-            </div>
-            <div>
-              <div className="value-title">Performance</div>
-              <div className="value-desc">Nous optimisons la rentabilité.</div>
-            </div>
-          </div>
-          <div className="value-item">
-            <div className="value-icon-wrapper">
-              <MapPin size={18} />
-            </div>
-            <div>
-              <div className="value-title">Proximité en CI</div>
-              <div className="value-desc">Une expertise locale à votre service.</div>
+
+            {/* Group 2 (Duplicate for seamless infinite marquee scroll) */}
+            <div className="marquee-group">
+              <div className="value-item">
+                <div className="value-icon-wrapper">
+                  <Building2 size={18} />
+                </div>
+                <div>
+                  <div className="value-title">Gestion complète</div>
+                  <div className="value-desc">Nous nous occupons de tout, de A à Z.</div>
+                </div>
+              </div>
+              <div className="value-item">
+                <div className="value-icon-wrapper">
+                  <FileText size={18} />
+                </div>
+                <div>
+                  <div className="value-title">Transparence</div>
+                  <div className="value-desc">Suivi clair et régulier de vos biens.</div>
+                </div>
+              </div>
+              <div className="value-item">
+                <div className="value-icon-wrapper">
+                  <TrendingUp size={18} />
+                </div>
+                <div>
+                  <div className="value-title">Performance</div>
+                  <div className="value-desc">Nous optimisons la rentabilité.</div>
+                </div>
+              </div>
+              <div className="value-item">
+                <div className="value-icon-wrapper">
+                  <MapPin size={18} />
+                </div>
+                <div>
+                  <div className="value-title">Proximité en CI</div>
+                  <div className="value-desc">Une expertise locale à votre service.</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
