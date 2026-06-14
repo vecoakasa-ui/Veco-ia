@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -20,6 +20,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { db } from "@/lib/store";
+import { Profile } from "@/lib/types";
 
 export default function DashboardLayout({
   children,
@@ -30,7 +31,17 @@ export default function DashboardLayout({
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   
-  const profile = db.getProfile();
+  const [profile, setProfile] = useState<Profile>(() => {
+    return db.getProfile();
+  });
+
+  useEffect(() => {
+    const handleStorage = () => {
+      setProfile(db.getProfile());
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
 
   const navigation = [
     { name: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard },
@@ -40,6 +51,7 @@ export default function DashboardLayout({
     { name: "Quittances", href: "/quittances", icon: FileText },
     { name: "Contrats de bail", href: "/contrats", icon: FolderLock },
     { name: "Incidents", href: "/incidents", icon: AlertTriangle },
+    { name: "Mon Abonnement", href: "/abonnement", icon: Sparkles },
   ];
 
   const handleLogout = () => {
@@ -114,8 +126,8 @@ export default function DashboardLayout({
             </div>
             <div style={{ overflow: "hidden" }}>
               <h5 style={{ fontSize: "var(--text-sm)", fontWeight: "600", color: "var(--white)", margin: 0 }}>{profile.full_name}</h5>
-              <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", display: "flex", alignItems: "center", gap: "2px" }}>
-                <Sparkles size={10} style={{ color: "var(--warning)" }} /> Plan PRO
+              <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", display: "flex", alignItems: "center", gap: "2px", textTransform: "uppercase" }}>
+                <Sparkles size={10} style={{ color: "var(--warning)" }} /> Plan {profile.subscription_plan}
               </span>
             </div>
           </div>
@@ -229,7 +241,7 @@ export default function DashboardLayout({
                 </div>
                 <div>
                   <h5 style={{ fontSize: "var(--text-sm)", fontWeight: "600", margin: 0 }}>{profile.full_name}</h5>
-                  <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>Plan PRO</span>
+                  <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", textTransform: "uppercase" }}>Plan {profile.subscription_plan}</span>
                 </div>
               </div>
               <button
