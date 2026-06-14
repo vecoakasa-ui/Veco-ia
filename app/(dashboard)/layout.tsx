@@ -93,8 +93,12 @@ export default function DashboardLayout({
         {/* Logo */}
         <div style={{ height: "var(--topbar-height)", display: "flex", alignItems: "center", padding: "0 var(--space-6)", borderBottom: "1px solid var(--gray-800)" }}>
           <Link href="/dashboard" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", textDecoration: "none" }}>
-            <div className="logo-icon" style={{ background: "var(--primary)" }}>V</div>
-            <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--white)" }}>VENANCE IMO</span>
+            <div className="logo-icon" style={{ background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Building2 size={16} className="text-orange" />
+            </div>
+            <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--white)" }}>
+              GESTIMMO<span className="text-orange">.CI</span>
+            </span>
           </Link>
         </div>
 
@@ -117,6 +121,8 @@ export default function DashboardLayout({
                   fontWeight: isActive ? 600 : 500,
                   color: isActive ? "var(--white)" : "var(--gray-400)",
                   background: isActive ? "var(--primary)" : "transparent",
+                  borderLeft: isActive ? "4px solid var(--orange)" : "4px solid transparent",
+                  paddingLeft: isActive ? "calc(var(--space-4) - 4px)" : "var(--space-4)",
                   transition: "all var(--transition-fast)",
                   textDecoration: "none"
                 }}
@@ -206,8 +212,12 @@ export default function DashboardLayout({
             {/* Logo and close */}
             <div style={{ height: "var(--topbar-height)", display: "flex", alignItems: "center", padding: "0 var(--space-6)", borderBottom: "1px solid var(--gray-800)", justifyContent: 'space-between' }}>
               <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
-                <div className="logo-icon">V</div>
-                <span style={{ fontSize: "var(--text-lg)", fontWeight: "800" }}>VENANCE IMO</span>
+                <div className="logo-icon" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "var(--primary)" }}>
+                  <Building2 size={16} className="text-orange" />
+                </div>
+                <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--white)" }}>
+                  GESTIMMO<span className="text-orange">.CI</span>
+                </span>
               </div>
               <button onClick={() => setMobileOpen(false)} style={{ color: "var(--white)" }}>
                 <X size={20} />
@@ -234,6 +244,8 @@ export default function DashboardLayout({
                       fontWeight: isActive ? 600 : 500,
                       color: isActive ? "var(--white)" : "var(--gray-400)",
                       background: isActive ? "var(--primary)" : "transparent",
+                      borderLeft: isActive ? "4px solid var(--orange)" : "4px solid transparent",
+                      paddingLeft: isActive ? "calc(var(--space-4) - 4px)" : "var(--space-4)",
                       textDecoration: "none"
                     }}
                   >

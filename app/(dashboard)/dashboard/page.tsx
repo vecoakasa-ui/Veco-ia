@@ -77,13 +77,13 @@ export default function DashboardPage() {
       {/* Stats Cards Grid */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "var(--space-6)" }}>
         {/* Card 1: Biens */}
-        <div className="card" onClick={() => router.push("/biens")} style={{ cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <div className="card" onClick={() => router.push("/biens")} style={{ cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "space-between", borderLeft: "4px solid var(--orange)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-4)" }}>
             <div>
               <span style={{ fontSize: "var(--text-xs)", fontWeight: "600", color: "var(--gray-500)", textTransform: "uppercase" }}>Biens Immobiliers</span>
               <h3 style={{ fontSize: "var(--text-3xl)", fontWeight: "800", color: "var(--gray-900)", margin: "4px 0 0 0" }}>{stats.total_properties}</h3>
             </div>
-            <div style={{ padding: "10px", background: "var(--primary-lightest)", color: "var(--primary)", borderRadius: "var(--radius-lg)" }}>
+            <div style={{ padding: "10px", background: "var(--orange-lighter)", color: "var(--orange)", borderRadius: "var(--radius-lg)" }}>
               <Building2 size={20} />
             </div>
           </div>
@@ -93,13 +93,13 @@ export default function DashboardPage() {
         </div>
 
         {/* Card 2: Locataires */}
-        <div className="card" onClick={() => router.push("/locataires")} style={{ cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <div className="card" onClick={() => router.push("/locataires")} style={{ cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "space-between", borderLeft: "4px solid var(--primary)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-4)" }}>
             <div>
               <span style={{ fontSize: "var(--text-xs)", fontWeight: "600", color: "var(--gray-500)", textTransform: "uppercase" }}>Locataires Actifs</span>
               <h3 style={{ fontSize: "var(--text-3xl)", fontWeight: "800", color: "var(--gray-900)", margin: "4px 0 0 0" }}>{stats.total_tenants}</h3>
             </div>
-            <div style={{ padding: "10px", background: "var(--info-light)", color: "var(--info-dark)", borderRadius: "var(--radius-lg)" }}>
+            <div style={{ padding: "10px", background: "var(--primary-lighter)", color: "var(--primary)", borderRadius: "var(--radius-lg)" }}>
               <Users size={20} />
             </div>
           </div>
@@ -109,13 +109,13 @@ export default function DashboardPage() {
         </div>
 
         {/* Card 3: Revenus */}
-        <div className="card" onClick={() => router.push("/paiements")} style={{ cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <div className="card" onClick={() => router.push("/paiements")} style={{ cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "space-between", borderLeft: "4px solid var(--primary)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-4)" }}>
             <div>
               <span style={{ fontSize: "var(--text-xs)", fontWeight: "600", color: "var(--gray-500)", textTransform: "uppercase" }}>Revenus Net Encaisés</span>
               <h3 style={{ fontSize: "var(--text-2xl)", fontWeight: "800", color: "var(--success-dark)", margin: "6px 0 0 0" }}>{formatCurrency(stats.total_revenue)}</h3>
             </div>
-            <div style={{ padding: "10px", background: "var(--success-light)", color: "var(--success-dark)", borderRadius: "var(--radius-lg)" }}>
+            <div style={{ padding: "10px", background: "var(--primary-lighter)", color: "var(--primary)", borderRadius: "var(--radius-lg)" }}>
               <DollarSign size={20} />
             </div>
           </div>
@@ -125,13 +125,13 @@ export default function DashboardPage() {
         </div>
 
         {/* Card 4: Retards */}
-        <div className="card" onClick={() => router.push("/paiements")} style={{ cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+        <div className="card" onClick={() => router.push("/paiements")} style={{ cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "space-between", borderLeft: stats.late_payments > 0 ? "4px solid var(--danger)" : "4px solid var(--orange)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-4)" }}>
             <div>
               <span style={{ fontSize: "var(--text-xs)", fontWeight: "600", color: "var(--gray-500)", textTransform: "uppercase" }}>Paiements en Retard</span>
               <h3 style={{ fontSize: "var(--text-3xl)", fontWeight: "800", color: stats.late_payments > 0 ? "var(--danger)" : "var(--gray-900)", margin: "4px 0 0 0" }}>{stats.late_payments}</h3>
             </div>
-            <div style={{ padding: "10px", background: stats.late_payments > 0 ? "var(--danger-light)" : "var(--gray-100)", color: stats.late_payments > 0 ? "var(--danger)" : "var(--gray-500)", borderRadius: "var(--radius-lg)" }}>
+            <div style={{ padding: "10px", background: stats.late_payments > 0 ? "var(--danger-light)" : "var(--orange-lighter)", color: stats.late_payments > 0 ? "var(--danger)" : "var(--orange)", borderRadius: "var(--radius-lg)" }}>
               <AlertTriangle size={20} />
             </div>
           </div>
@@ -184,7 +184,11 @@ export default function DashboardPage() {
                         width: "60%", 
                         height: `${bar.val || 5}px`, 
                         minHeight: bar.val > 0 ? `${bar.val * 1.5}px` : "4px",
-                        background: idx === 5 ? "var(--primary)" : "var(--primary-lighter)",
+                        background: idx === 5 
+                          ? "var(--orange)" 
+                          : idx % 2 === 0 
+                            ? "var(--primary-lighter)" 
+                            : "var(--orange-lighter)",
                         borderRadius: "4px 4px 0 0",
                         transition: "all 0.5s ease"
                       }}
@@ -273,7 +277,7 @@ export default function DashboardPage() {
                   r="55"
                   style={{
                     fill: "transparent",
-                    stroke: "var(--primary)",
+                    stroke: "var(--orange)",
                     strokeWidth: "10",
                     strokeDasharray: "345.5", // 2 * pi * r = 2 * 3.1415 * 55
                     strokeDashoffset: `${345.5 - (345.5 * stats.occupancy_rate) / 100}`,
@@ -300,11 +304,11 @@ export default function DashboardPage() {
 
             <div style={{ display: "flex", gap: "var(--space-4)", width: "100%", justifyContent: "center", marginTop: "var(--space-2)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "var(--primary)" }}></span>
+                <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "var(--orange)" }}></span>
                 <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>Biens loués</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "var(--gray-200)" }}></span>
+                <span style={{ width: "8px", height: "8px", borderRadius: "50%", background: "var(--primary)" }}></span>
                 <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>Vacants / Maintenance</span>
               </div>
             </div>
