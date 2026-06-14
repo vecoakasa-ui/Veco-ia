@@ -34,8 +34,9 @@ export default function BiensPage() {
   const [rent, setRent] = useState("");
   const [desc, setDesc] = useState("");
 
-  const loadProperties = () => {
-    setProperties(db.getProperties());
+  const loadProperties = async () => {
+    const props = await db.getProperties();
+    setProperties(props);
   };
 
   useEffect(() => {
@@ -44,11 +45,11 @@ export default function BiensPage() {
     });
   }, []);
 
-  const handleAddProperty = (e: React.FormEvent) => {
+  const handleAddProperty = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !address || !rent) return;
 
-    db.addProperty({
+    await db.addProperty({
       name,
       type,
       address,
@@ -71,7 +72,7 @@ export default function BiensPage() {
     setShowAddModal(false);
 
     // Reload list
-    loadProperties();
+    await loadProperties();
     // Dispatch storage event to update dashboard if open
     window.dispatchEvent(new Event("storage"));
   };

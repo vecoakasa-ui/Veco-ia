@@ -27,19 +27,22 @@ export default function RegisterPage({ searchParams }: PageProps) {
     setLoading(true);
 
     // Simulate register delay
-    setTimeout(() => {
-      setLoading(false);
-      
-      // Save profile with selected plan to local database
-      const profile = db.getProfile();
-      profile.full_name = fullName;
-      profile.email = email;
-      profile.phone = phone;
-      profile.subscription_plan = plan as "free" | "pro" | "business";
-      db.updateProfile(profile);
-
-      // Route to dashboard
-      router.push("/dashboard");
+    setTimeout(async () => {
+      try {
+        // Save profile with selected plan to local database or Supabase
+        const profile = await db.getProfile();
+        profile.full_name = fullName;
+        profile.email = email;
+        profile.phone = phone;
+        profile.subscription_plan = plan as "free" | "pro" | "business";
+        await db.updateProfile(profile);
+      } catch (err) {
+        console.error("Error during profile update:", err);
+      } finally {
+        setLoading(false);
+        // Route to dashboard
+        router.push("/dashboard");
+      }
     }, 1000);
   };
 

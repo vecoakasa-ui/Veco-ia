@@ -24,36 +24,35 @@ export default function PaymentSuccessPage({ params, searchParams }: PageProps) 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1. Fetch payment
-    const list = db.getPayments();
-    let found = list.find(p => p.id === id);
-
-    // Fallback mock payment if opened in a different browser/session
-    if (!found) {
-      found = {
-        id: id,
-        tenant_id: "tenant-mock",
-        property_id: "prop-mock",
-        owner_id: "owner-1",
-        amount: 250000,
-        charges: 15000,
-        total: 265000,
-        month: "Juin",
-        year: 2026,
-        status: "pending",
-        payment_method: "paydunya",
-        stripe_payment_id: null,
-        payment_date: null,
-        due_date: "2026-06-15",
-        created_at: new Date().toISOString(),
-        tenant_name: "Koffi Kouassi (Locataire Démo)",
-        property_name: "Villa Hibiscus"
-      };
-    }
-
-    // 2. Perform verification and state update
+    // Perform verification and state update
     const verifyAndSettle = async () => {
       try {
+        const list = await db.getPayments();
+        let found = list.find(p => p.id === id);
+
+        // Fallback mock payment if opened in a different browser/session
+        if (!found) {
+          found = {
+            id: id,
+            tenant_id: "tenant-mock",
+            property_id: "prop-mock",
+            owner_id: "owner-1",
+            amount: 250000,
+            charges: 15000,
+            total: 265000,
+            month: "Juin",
+            year: 2026,
+            status: "pending",
+            payment_method: "paydunya",
+            stripe_payment_id: null,
+            payment_date: null,
+            due_date: "2026-06-15",
+            created_at: new Date().toISOString(),
+            tenant_name: "Koffi Kouassi (Locataire Démo)",
+            property_name: "Villa Hibiscus"
+          };
+        }
+
         let isSuccess = false;
         let finalMethod = queryMethod;
 
@@ -81,14 +80,15 @@ export default function PaymentSuccessPage({ params, searchParams }: PageProps) 
           found.status = "paid";
           found.payment_method = finalMethod as PaymentMethod;
           found.payment_date = new Date().toISOString().split('T')[0];
-          db.updatePayment(found);
+          await db.updatePayment(found);
           // Sync storage across pages
           window.dispatchEvent(new Event("storage"));
         }
+        
+        setPayment(found);
       } catch (error) {
         console.error("Verification error:", error);
       } finally {
-        setPayment(found);
         setLoading(false);
       }
     };

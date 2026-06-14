@@ -12,10 +12,11 @@ export default function QuittancesPage() {
 
   useEffect(() => {
     // Only get paid payments to generate quittances
-    const paidPayments = db.getPayments().filter(p => p.status === "paid");
-    Promise.resolve().then(() => {
-      setPayments(paidPayments);
-    });
+    const loadQuittances = async () => {
+      const allPayments = await db.getPayments();
+      setPayments(allPayments.filter(p => p.status === "paid"));
+    };
+    loadQuittances();
   }, []);
 
   const filtered = payments.filter(p => 

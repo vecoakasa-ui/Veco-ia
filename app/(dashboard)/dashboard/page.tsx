@@ -29,10 +29,11 @@ export default function DashboardPage() {
   const [upcomingPayments, setUpcomingPayments] = useState<Payment[]>([]);
 
   useEffect(() => {
-    // Load dynamic data from localStorage
-    const runLoad = () => {
-      setStats(db.getStats());
-      const allPayments = db.getPayments();
+    // Load dynamic data from localStorage or Supabase
+    const runLoad = async () => {
+      const s = await db.getStats();
+      setStats(s);
+      const allPayments = await db.getPayments();
       setRecentPayments(allPayments.filter(p => p.status === "paid").slice(0, 4));
       setUpcomingPayments(allPayments.filter(p => p.status === "upcoming" || p.status === "pending").slice(0, 3));
     };
@@ -58,7 +59,7 @@ export default function DashboardPage() {
         <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
           <button 
             className="btn btn-outline" 
-            onClick={() => db.reset()}
+            onClick={async () => { await db.reset(); }}
             style={{ fontSize: 'var(--text-xs)' }}
           >
             Réinitialiser les données

@@ -29,9 +29,9 @@ export default function LocatairesPage() {
   const [leaseEnd, setLeaseEnd] = useState("");
   const [leaseType, setLeaseType] = useState<"residential" | "commercial">("residential");
 
-  const loadData = () => {
-    setTenants(db.getTenants());
-    setProperties(db.getProperties());
+  const loadData = async () => {
+    setTenants(await db.getTenants());
+    setProperties(await db.getProperties());
   };
 
   useEffect(() => {
@@ -40,11 +40,11 @@ export default function LocatairesPage() {
     });
   }, []);
 
-  const handleAddTenant = (e: React.FormEvent) => {
+  const handleAddTenant = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName || !email || !phone || !propertyId || !leaseStart || !leaseEnd) return;
 
-    db.addTenant({
+    await db.addTenant({
       profile_id: "tp-" + Math.random().toString(36).substring(2, 9),
       property_id: propertyId,
       lease_start: leaseStart,
@@ -67,7 +67,7 @@ export default function LocatairesPage() {
     setShowAddModal(false);
 
     // Reload lists
-    loadData();
+    await loadData();
     // Dispatch storage event to sync other pages
     window.dispatchEvent(new Event("storage"));
   };

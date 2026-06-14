@@ -17,17 +17,18 @@ export default function SubscriptionSuccessPage({ searchParams }: PageProps) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Update profile plan in localStorage
-    const profile = db.getProfile();
-    profile.subscription_plan = plan as "free" | "pro" | "business";
-    db.updateProfile(profile);
+    // Update profile plan in localStorage or Supabase
+    const updatePlan = async () => {
+      const profile = await db.getProfile();
+      profile.subscription_plan = plan as "free" | "pro" | "business";
+      await db.updateProfile(profile);
 
-    // Dispatch custom event to notify layout (sidebar) to reload profile
-    window.dispatchEvent(new Event("storage"));
-    
-    Promise.resolve().then(() => {
+      // Dispatch custom event to notify layout (sidebar) to reload profile
+      window.dispatchEvent(new Event("storage"));
+      
       setLoading(false);
-    });
+    };
+    updatePlan();
   }, [plan]);
 
   if (loading) {

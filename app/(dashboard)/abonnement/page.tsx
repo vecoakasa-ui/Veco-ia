@@ -40,8 +40,9 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
   const [otpError, setOtpError] = useState("");
   const [phoneError, setPhoneError] = useState("");
 
-  const loadProfile = () => {
-    setProfile(db.getProfile());
+  const loadProfile = async () => {
+    const p = await db.getProfile();
+    setProfile(p);
   };
 
   useEffect(() => {

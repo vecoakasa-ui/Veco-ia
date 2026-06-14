@@ -26,8 +26,9 @@ export default function PaiementsPage() {
   const [payMethod, setPayMethod] = useState<PaymentMethod>("cash");
   const [payDate, setPayDate] = useState(new Date().toISOString().split('T')[0]);
 
-  const loadPayments = () => {
-    setPayments(db.getPayments());
+  const loadPayments = async () => {
+    const list = await db.getPayments();
+    setPayments(list);
   };
 
   const copyPaymentLink = (id: string) => {
@@ -46,23 +47,23 @@ export default function PaiementsPage() {
     });
   }, []);
 
-  const handleSettlePayment = (e: React.FormEvent) => {
+  const handleSettlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedPaymentId) return;
 
-    const list = db.getPayments();
+    const list = await db.getPayments();
     const payment = list.find(p => p.id === selectedPaymentId);
     if (payment) {
       payment.status = "paid";
       payment.payment_method = payMethod;
       payment.payment_date = payDate;
-      db.updatePayment(payment);
+      await db.updatePayment(payment);
       
       // Reset & Reload
       setSelectedPaymentId("");
       setPayMethod("cash");
       setShowPayModal(false);
-      loadPayments();
+      await loadPayments();
       // Dispatch storage update
       window.dispatchEvent(new Event("storage"));
     }

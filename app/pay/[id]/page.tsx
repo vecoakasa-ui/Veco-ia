@@ -42,37 +42,37 @@ export default function TenantPaymentPage({ params }: PageProps) {
   const [phoneError, setPhoneError] = useState("");
 
   useEffect(() => {
-    const list = db.getPayments();
-    let found = list.find(p => p.id === id);
-    
-    // If not found in localStorage (e.g. opened on another device/browser), create a fallback mock payment
-    if (!found) {
-      found = {
-        id: id,
-        tenant_id: "tenant-mock",
-        property_id: "prop-mock",
-        owner_id: "owner-1",
-        amount: 250000,
-        charges: 15000,
-        total: 265000,
-        month: "Juin",
-        year: 2026,
-        status: "pending",
-        payment_method: "paydunya",
-        stripe_payment_id: null,
-        payment_date: null,
-        due_date: "2026-06-15",
-        created_at: new Date().toISOString(),
-        tenant_name: "Koffi Kouassi (Locataire Démo)",
-        property_name: "Villa Hibiscus"
-      };
-    }
-    
-    const paymentData = found;
-    Promise.resolve().then(() => {
-      setPayment(paymentData);
+    const loadPayment = async () => {
+      const list = await db.getPayments();
+      let found = list.find(p => p.id === id);
+      
+      // If not found in localStorage (e.g. opened on another device/browser), create a fallback mock payment
+      if (!found) {
+        found = {
+          id: id,
+          tenant_id: "tenant-mock",
+          property_id: "prop-mock",
+          owner_id: "owner-1",
+          amount: 250000,
+          charges: 15000,
+          total: 265000,
+          month: "Juin",
+          year: 2026,
+          status: "pending",
+          payment_method: "paydunya",
+          stripe_payment_id: null,
+          payment_date: null,
+          due_date: "2026-06-15",
+          created_at: new Date().toISOString(),
+          tenant_name: "Koffi Kouassi (Locataire Démo)",
+          property_name: "Villa Hibiscus"
+        };
+      }
+      
+      setPayment(found);
       setLoading(false);
-    });
+    };
+    loadPayment();
   }, [id]);
 
   const handlePayClick = async () => {

@@ -29,13 +29,26 @@ export default function DashboardLayout({
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   
-  const [profile, setProfile] = useState<Profile>(() => {
-    return db.getProfile();
+  const [profile, setProfile] = useState<Profile>({
+    id: "owner-1",
+    full_name: "Venance",
+    email: "venance@venanceimo.com",
+    phone: "+225 07 00 00 00 00",
+    role: "owner",
+    avatar_url: null,
+    subscription_plan: "pro",
+    created_at: "",
   });
 
   useEffect(() => {
+    const loadProfile = async () => {
+      const p = await db.getProfile();
+      setProfile(p);
+    };
+    loadProfile();
+
     const handleStorage = () => {
-      setProfile(db.getProfile());
+      loadProfile();
     };
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);

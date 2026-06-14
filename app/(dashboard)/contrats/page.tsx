@@ -13,15 +13,18 @@ export default function ContratsPage() {
   const [selectedLease, setSelectedLease] = useState<Lease | null>(null);
 
   useEffect(() => {
-    const leasesList = db.getLeases();
-    const props = db.getProperties().reduce((acc, p) => ({...acc, [p.id]: p}), {} as Record<string, Property>);
-    const tens = db.getTenants().reduce((acc, t) => ({...acc, [t.id]: t}), {} as Record<string, Tenant>);
-
-    Promise.resolve().then(() => {
+    const loadLeasesData = async () => {
+      const leasesList = await db.getLeases();
+      const rawProps = await db.getProperties();
+      const rawTens = await db.getTenants();
+      const props = rawProps.reduce((acc, p) => ({...acc, [p.id]: p}), {} as Record<string, Property>);
+      const tens = rawTens.reduce((acc, t) => ({...acc, [t.id]: t}), {} as Record<string, Tenant>);
+      
       setLeases(leasesList);
       setProperties(props);
       setTenants(tens);
-    });
+    };
+    loadLeasesData();
   }, []);
 
   const filtered = leases.filter(l => {

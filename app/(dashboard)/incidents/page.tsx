@@ -12,15 +12,18 @@ export default function IncidentsPage() {
   const [tenants, setTenants] = useState<Record<string, Tenant>>({});
 
   useEffect(() => {
-    const list = db.getIncidents();
-    const props = db.getProperties().reduce((acc, p) => ({...acc, [p.id]: p}), {} as Record<string, Property>);
-    const tens = db.getTenants().reduce((acc, t) => ({...acc, [t.id]: t}), {} as Record<string, Tenant>);
-
-    Promise.resolve().then(() => {
+    const loadIncidentsData = async () => {
+      const list = await db.getIncidents();
+      const rawProps = await db.getProperties();
+      const rawTens = await db.getTenants();
+      const props = rawProps.reduce((acc, p) => ({...acc, [p.id]: p}), {} as Record<string, Property>);
+      const tens = rawTens.reduce((acc, t) => ({...acc, [t.id]: t}), {} as Record<string, Tenant>);
+      
       setIncidents(list);
       setProperties(props);
       setTenants(tens);
-    });
+    };
+    loadIncidentsData();
   }, []);
 
   const filtered = incidents.filter(i => {
@@ -93,11 +96,12 @@ export default function IncidentsPage() {
                  </div>
                  {i.status !== "resolved" && (
                    <div style={{ borderTop: "1px solid var(--gray-100)", paddingTop: "var(--space-3)", marginTop: "var(--space-2)" }}>
-                     <button className="btn btn-outline btn-sm" style={{ display: "flex", alignItems: "center", gap: "6px" }} onClick={() => {
-                        const updated = {...i, status: "resolved", resolved_at: new Date().toISOString()};
-                        db.updateIncident(updated as Incident);
-                        setIncidents(db.getIncidents());
-                     }}>
+                      <button className="btn btn-outline btn-sm" style={{ display: "flex", alignItems: "center", gap: "6px" }} onClick={async () => {
+                         const updated = {...i, status: "resolved", resolved_at: new Date().toISOString()};
+                         await db.updateIncident(updated as Incident);
+                         const list = await db.getIncidents();
+                         setIncidents(list);
+                      }}>
                        <CheckCircle size={14} /> Marquer comme résolu
                      </button>
                    </div>
