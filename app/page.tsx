@@ -318,7 +318,7 @@ export default function Home({ searchParams }: HomeProps) {
             </div>
             
             <h1 className="hero-title" style={{ color: 'white', fontSize: 'var(--text-5xl)', fontWeight: '900', lineHeight: 1.15, marginBottom: 'var(--space-6)', textAlign: 'center' }}>
-              La gestion de vos biens immobiliers, en toute <span className="text-orange underline-white">sérénité.</span>
+              La gestion de vos biens immobiliers, en toute <span className="underline-white" style={{ color: '#FF9000' }}>sérénité.</span>
             </h1>
             
             <p style={{ fontSize: 'var(--text-base)', color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.65, maxWidth: '640px', marginBottom: 'var(--space-8)', textAlign: 'center', marginInline: 'auto' }}>
@@ -434,7 +434,7 @@ export default function Home({ searchParams }: HomeProps) {
               <Sparkles size={14} className="text-orange" /> À PROPOS DE VENANCE IMO.CI
             </span>
             <h2 style={{ fontSize: 'var(--text-4xl)', fontWeight: '800', margin: 'var(--space-3) 0 var(--space-6) 0', color: 'var(--gray-900)' }}>
-              Votre partenaire immobilier de <span className="text-orange">confiance</span> en Côte d&apos;Ivoire
+              Votre partenaire immobilier de <span style={{ color: 'var(--orange)' }}>confiance</span>{" "}en Côte d&apos;Ivoire
             </h2>
             <p style={{ color: 'var(--gray-600)', marginBottom: 'var(--space-4)', fontSize: 'var(--text-base)', lineHeight: 1.65 }}>
               VENANCE IMO.CI accompagne les propriétaires, investisseurs et entreprises dans la gestion efficace de leurs biens immobiliers.
@@ -442,7 +442,7 @@ export default function Home({ searchParams }: HomeProps) {
             <p style={{ color: 'var(--gray-600)', marginBottom: 'var(--space-8)', fontSize: 'var(--text-base)', lineHeight: 1.65 }}>
               Notre mission : vous offrir des solutions sur-mesure, basées sur l&apos;expertise locale, la rigueur et l&apos;innovation, pour vous permettre de tirer le meilleur de votre patrimoine immobilier.
             </p>
-            <a href="#contact" className="btn btn-outline" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+            <a href="#contact" className="btn btn-green-to-white" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
               En savoir plus sur nous <ArrowRight size={16} />
             </a>
           </div>
@@ -452,7 +452,7 @@ export default function Home({ searchParams }: HomeProps) {
             <img 
               src="/gestimmo_about_img.png" 
               alt="Salon chic Gestimmo" 
-              style={{ width: '100%', maxWidth: '480px', borderRadius: 'var(--radius-2xl)', boxShadow: 'var(--shadow-xl)', objectFit: 'cover' }}
+              className="about-image-3d"
             />
             {/* Floating badge on image */}
             <div className="about-badge-floating hide-mobile">

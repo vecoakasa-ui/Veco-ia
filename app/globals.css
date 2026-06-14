@@ -1422,6 +1422,37 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--gray-100);
 }
 
+.btn-green-to-white {
+  background: var(--primary);
+  color: var(--white);
+  border: 1.5px solid var(--primary) !important;
+  transition: all var(--transition-fast) !important;
+}
+
+.btn-green-to-white:hover {
+  background: var(--white) !important;
+  color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.about-image-3d {
+  width: 100%;
+  max-width: 480px;
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-xl);
+  object-fit: cover;
+  transform-style: preserve-3d;
+  transform: perspective(1000px) rotateY(-8deg) rotateX(4deg);
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.6s ease;
+}
+
+.about-image-3d:hover {
+  transform: perspective(1000px) rotateY(0deg) rotateX(0deg) translateZ(15px);
+  box-shadow: 0 30px 60px -15px rgba(10, 61, 42, 0.2);
+}
+
 /* Values Green Banner below Hero */
 .values-banner {
   background: var(--primary); /* Deep Green */
@@ -1508,16 +1539,18 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid var(--gray-200);
   border-radius: var(--radius-xl);
   padding: var(--space-6);
-  transition: all var(--transition-base);
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.4s ease, box-shadow 0.4s ease;
   display: flex;
   flex-direction: column;
   height: 100%;
+  transform-style: preserve-3d;
+  transform: perspective(1000px) translateZ(0);
 }
 
 .service-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--primary-lighter);
-  box-shadow: var(--shadow-lg);
+  transform: perspective(1000px) translateZ(25px) rotateX(3deg) rotateY(-3deg);
+  border-color: var(--primary-light);
+  box-shadow: 0 20px 35px -10px rgba(10, 61, 42, 0.12);
 }
 
 .service-card:hover .service-icon-wrapper {
@@ -1543,12 +1576,14 @@ h1, h2, h3, h4, h5, h6 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: transform var(--transition-base);
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease;
+  transform-style: preserve-3d;
+  transform: perspective(1000px) translateZ(0);
 }
 
 .stat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  transform: perspective(1000px) translateZ(15px) rotateX(2deg) rotateY(-2deg);
+  box-shadow: 0 15px 30px -10px rgba(226, 88, 34, 0.12);
 }
 
 .stat-icon {
