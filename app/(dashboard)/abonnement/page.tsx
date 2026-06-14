@@ -190,7 +190,7 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
       {/* Current Subscription Card */}
       <div className="card" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "var(--space-6)", background: "linear-gradient(135deg, var(--gray-900) 0%, var(--gray-800) 100%)", color: "white", border: "none" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)" }}>
-          <div style={{ background: "rgba(249, 115, 22, 0.15)", color: "var(--primary)", padding: "var(--space-3)", borderRadius: "var(--radius-lg)" }}>
+          <div style={{ background: "rgba(249, 115, 22, 0.15)", color: "var(--orange)", padding: "var(--space-3)", borderRadius: "var(--radius-lg)" }}>
             <Award size={32} />
           </div>
           <div>
@@ -203,7 +203,7 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-          <span style={{ fontSize: "var(--text-2xl)", fontWeight: 900, color: "var(--primary)" }}>
+          <span style={{ fontSize: "var(--text-2xl)", fontWeight: 900, color: "white" }}>
             {currentPlanObj.price === 0 ? "Gratuit" : `${currentPlanObj.price.toLocaleString("fr-FR")} FCFA/mois`}
           </span>
           <span style={{ fontSize: "10px", color: "var(--gray-400)", marginTop: "2px" }}>Facturation sans engagement</span>
@@ -250,18 +250,18 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
               }}
             >
               {p.key === 'pro' && (
-                <span className="badge badge-success" style={{ position: "absolute", top: "-12px", right: "var(--space-6)", fontSize: "10px" }}>Recommandé</span>
+                <span style={{ position: "absolute", top: "-12px", right: "var(--space-6)", fontSize: "10px", background: "var(--orange)", color: "white", padding: "4px 8px", borderRadius: "100px", fontWeight: "bold" }}>Recommandé</span>
               )}
 
               <h3 style={{ fontSize: "var(--text-md)", fontWeight: "800", marginBottom: "var(--space-1)" }}>{p.name}</h3>
               <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", marginBottom: "var(--space-4)" }}>{p.desc}</p>
               
-              <div style={{ marginBottom: "var(--space-6)", display: "flex", alignItems: "baseline" }}>
+              <div style={{ marginBottom: "var(--space-6)", display: "flex", alignItems: "baseline", color: p.price > 0 ? "var(--orange)" : "inherit" }}>
                 <span style={{ fontSize: "var(--text-2xl)", fontWeight: "900" }}>
                   {p.price === 0 ? "0" : p.price.toLocaleString("fr-FR")}
                 </span>
                 {p.price > 0 && <span style={{ fontSize: "var(--text-sm)", fontWeight: "700", marginLeft: "2px" }}>FCFA</span>}
-                <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-400)", marginLeft: "4px" }}>/mois</span>
+                <span style={{ fontSize: "var(--text-xs)", color: p.price > 0 ? "var(--orange)" : "var(--gray-400)", marginLeft: "4px" }}>/mois</span>
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)", marginBottom: "var(--space-8)", flex: 1 }}>
@@ -273,13 +273,9 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
                 ))}
               </div>
 
-              {isCurrent ? (
-                <button className="btn btn-outline" style={{ width: "100%" }} disabled>
-                  Formule Actuelle
-                </button>
-              ) : isHigher ? (
+              {p.price > 0 ? (
                 <button 
-                  className={`btn ${p.key === 'pro' ? 'btn-primary' : 'btn-outline'}`} 
+                  className={`btn ${p.key === 'pro' ? 'btn-orange' : 'btn-outline'}`} 
                   style={{ width: "100%" }}
                   disabled={isApiLoading !== null}
                   onClick={() => handleUpgrade(p.key, p.price)}
@@ -291,13 +287,13 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
                     </>
                   ) : (
                     <>
-                      <span>Passer au plan {p.name}</span>
+                      <span>Plan {p.name}</span>
                     </>
                   )}
                 </button>
               ) : (
-                <button className="btn btn-ghost" style={{ width: "100%" }} disabled>
-                  —
+                <button className="btn btn-outline" style={{ width: "100%" }} disabled>
+                  Formule Actuelle
                 </button>
               )}
             </div>

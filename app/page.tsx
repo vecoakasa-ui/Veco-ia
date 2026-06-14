@@ -750,7 +750,7 @@ export default function Home({ searchParams }: HomeProps) {
                 <h4 style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-2)', fontSize: 'var(--text-base)', color: 'var(--primary)' }}>
                   <MapPin size={18} /> Adresse
                 </h4>
-                <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', margin: 0, fontWeight: '600' }}>Riviera Palmeraie, Cocody, Abidjan, Côte d&apos;Ivoire</p>
+                <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', margin: 0, fontWeight: '600' }}>Yamoussoukro, Côte d&apos;Ivoire</p>
               </div>
             </div>
 
@@ -843,15 +843,15 @@ export default function Home({ searchParams }: HomeProps) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Phone size={14} className="text-orange" />
-                <span>+225 07 07 07 07 07</span>
+                <span>+225 0103596203</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Mail size={14} className="text-orange" />
-                <span>contact@gestimmoci.ci</span>
+                <span>djafe247@gmail.com</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
                 <MapPin size={14} className="text-orange" style={{ flexShrink: 0, marginTop: '3px' }} />
-                <span>Riviera Palmeraie, Cocody, Abidjan, Côte d&apos;Ivoire</span>
+                <span>Yamoussoukro, Côte d&apos;Ivoire</span>
               </div>
             </div>
           </div>

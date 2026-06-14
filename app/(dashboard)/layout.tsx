@@ -7,7 +7,7 @@ import {
   LayoutDashboard,
   Building2,
   Users,
-  DollarSign,
+  Banknote,
   FileText,
   AlertTriangle,
   FolderLock,
@@ -58,7 +58,7 @@ export default function DashboardLayout({
     { name: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard },
     { name: "Biens immobiliers", href: "/biens", icon: Building2 },
     { name: "Locataires", href: "/locataires", icon: Users },
-    { name: "Loyers & Paiements", href: "/paiements", icon: DollarSign },
+    { name: "Loyers & Paiements", href: "/paiements", icon: Banknote },
     { name: "Quittances", href: "/quittances", icon: FileText },
     { name: "Contrats de bail", href: "/contrats", icon: FolderLock },
     { name: "Incidents", href: "/incidents", icon: AlertTriangle },
@@ -92,7 +92,7 @@ export default function DashboardLayout({
       >
         {/* Logo */}
         <div style={{ height: "var(--topbar-height)", display: "flex", alignItems: "center", padding: "0 var(--space-6)", borderBottom: "1px solid var(--gray-800)" }}>
-          <Link href="/dashboard" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", textDecoration: "none" }}>
+          <Link href="/" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", textDecoration: "none" }}>
             <div className="logo-icon" style={{ background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Building2 size={16} className="text-orange" />
             </div>
@@ -128,7 +128,7 @@ export default function DashboardLayout({
                 }}
                 className={isActive ? "" : "hover-sidebar-link"}
               >
-                <Icon size={18} />
+                {Icon ? <Icon size={18} /> : <div style={{ width: 18, height: 18 }} />}
                 <span>{item.name}</span>
               </Link>
             );
@@ -211,14 +211,14 @@ export default function DashboardLayout({
           >
             {/* Logo and close */}
             <div style={{ height: "var(--topbar-height)", display: "flex", alignItems: "center", padding: "0 var(--space-6)", borderBottom: "1px solid var(--gray-800)", justifyContent: 'space-between' }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
+              <Link href="/" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", textDecoration: "none" }}>
                 <div className="logo-icon" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "var(--primary)" }}>
                   <Building2 size={16} className="text-orange" />
                 </div>
                 <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--white)" }}>
                   VENANCE IMO<span className="text-orange">.CI</span>
                 </span>
-              </div>
+              </Link>
               <button onClick={() => setMobileOpen(false)} style={{ color: "var(--white)" }}>
                 <X size={20} />
               </button>
@@ -249,7 +249,7 @@ export default function DashboardLayout({
                       textDecoration: "none"
                     }}
                   >
-                    <Icon size={18} />
+                    {Icon ? <Icon size={18} /> : <div style={{ width: 18, height: 18 }} />}
                     <span>{item.name}</span>
                   </Link>
                 );

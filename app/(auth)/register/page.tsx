@@ -61,7 +61,7 @@ export default function RegisterPage({ searchParams }: PageProps) {
             <ArrowLeft size={12} /> Retour à l&apos;accueil
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-            <div className="logo-icon">V</div>
+            <div className="logo-icon" style={{ background: 'var(--orange)' }}>V</div>
             <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: '800', margin: 0 }}>VENANCE IMO</h2>
           </div>
           <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-500)', margin: 0 }}>
@@ -92,7 +92,7 @@ export default function RegisterPage({ searchParams }: PageProps) {
               </button>
               <button
                 type="button"
-                className={`btn btn-sm ${role === 'tenant' ? 'btn-primary' : 'btn-ghost'}`}
+                className={`btn btn-sm ${role === 'tenant' ? 'btn-orange' : 'btn-ghost'}`}
                 onClick={() => setRole('tenant')}
                 style={{ flex: 1, borderRadius: 'var(--radius-md)', padding: '6px' }}
               >
