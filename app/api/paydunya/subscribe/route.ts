@@ -4,7 +4,7 @@ import { isPayDunyaConfigured } from '@/lib/paydunya';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { planName, price, isYearly } = body;
+    const { planName, price, isYearly, isSignup } = body;
 
     if (!planName || !price) {
       return NextResponse.json(
@@ -14,8 +14,10 @@ export async function POST(request: NextRequest) {
     }
 
     const { origin } = new URL(request.url);
-    const cancelUrl = `${origin}/abonnement/cancel`;
-    const returnUrl = `${origin}/abonnement/success?plan=${planName}`;
+    const cancelUrl = isSignup ? `${origin}/#pricing` : `${origin}/abonnement/cancel`;
+    const returnUrl = isSignup 
+      ? `${origin}/register?plan=${planName}&status=success` 
+      : `${origin}/abonnement/success?plan=${planName}`;
 
     const isConfigured = isPayDunyaConfigured();
 
@@ -24,7 +26,9 @@ export async function POST(request: NextRequest) {
       const mockToken = 'mock_tok_sub_' + Math.random().toString(36).substring(2, 15);
       return NextResponse.json({
         token: mockToken,
-        url: `/abonnement?mock_token=${mockToken}&plan=${planName}&price=${price}`,
+        url: isSignup 
+          ? `/?mock_token=${mockToken}&plan=${planName}&price=${price}&isSignup=true#pricing`
+          : `/abonnement?mock_token=${mockToken}&plan=${planName}&price=${price}`,
         isMock: true
       });
     }

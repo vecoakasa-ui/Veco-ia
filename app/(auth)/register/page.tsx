@@ -1,12 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Lock, Mail, Phone, User, CheckCircle2 } from "lucide-react";
+import { db } from "@/lib/store";
 
-export default function RegisterPage() {
+interface PageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default function RegisterPage({ searchParams }: PageProps) {
   const router = useRouter();
+  const resolvedSearchParams = use(searchParams);
+  const plan = (resolvedSearchParams.plan as string) || "free";
+
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -21,6 +29,15 @@ export default function RegisterPage() {
     // Simulate register delay
     setTimeout(() => {
       setLoading(false);
+      
+      // Save profile with selected plan to local database
+      const profile = db.getProfile();
+      profile.full_name = fullName;
+      profile.email = email;
+      profile.phone = phone;
+      profile.subscription_plan = plan as any;
+      db.updateProfile(profile);
+
       // Route to dashboard
       router.push("/dashboard");
     }, 1000);
@@ -44,7 +61,17 @@ export default function RegisterPage() {
             <div className="logo-icon">V</div>
             <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: '800', margin: 0 }}>VENANCE IMO</h2>
           </div>
-          <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-500)', margin: 0 }}>Créez votre compte gratuit en moins de 2 minutes</p>
+          <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-500)', margin: 0 }}>
+            {plan !== 'free' ? "Créez votre compte pour activer votre abonnement" : "Créez votre compte gratuit en moins de 2 minutes"}
+          </p>
+          {(plan === 'pro' || plan === 'business') && (
+            <div style={{ background: "var(--primary-lightest)", padding: "10px 12px", borderRadius: "8px", border: "1px dashed var(--primary)", marginTop: "10px", display: "flex", alignItems: "center", gap: "6px" }}>
+              <CheckCircle2 size={14} style={{ color: "var(--success)" }} />
+              <span style={{ fontSize: "11px", color: "var(--primary-dark)", fontWeight: "600" }}>
+                Paiement validé ! Plan {plan.toUpperCase()} pré-activé.
+              </span>
+            </div>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, use } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Building2,
   Users,
@@ -22,17 +23,112 @@ import {
   Mail,
   MapPin,
   Menu,
-  X
+  X,
+  Loader2
 } from "lucide-react";
 
-export default function Home() {
+interface HomeProps {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default function Home({ searchParams }: HomeProps) {
+  const router = useRouter();
+  const resolvedSearchParams = searchParams ? use(searchParams) : {};
+  const mockToken = resolvedSearchParams.mock_token as string || "";
+  const queryPlan = resolvedSearchParams.plan as string || "";
+  const queryPrice = resolvedSearchParams.price as string || "0";
+
   const [isYearly, setIsYearly] = useState(false);
   const [activeTab, setActiveTab] = useState<"revenue" | "properties" | "tenants">("revenue");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Simulation states
+  const [isApiLoading, setIsApiLoading] = useState<string | null>(null);
+  const [checkoutActive, setCheckoutActive] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<string>("");
+  const [selectedPrice, setSelectedPrice] = useState<number>(0);
+  const [simStep, setSimStep] = useState<'method_select' | 'payment_details' | 'otp_verification' | 'processing'>('method_select');
+  const [selectedOperator, setSelectedOperator] = useState<'orange' | 'mtn' | 'wave' | 'moov' | null>(null);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [otp, setOtp] = useState("");
+  const [otpError, setOtpError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+
+  useEffect(() => {
+    if (mockToken && queryPlan) {
+      setCheckoutActive(true);
+      setSelectedPlan(queryPlan);
+      setSelectedPrice(parseInt(queryPrice));
+      setSimStep('method_select');
+    }
+  }, [mockToken, queryPlan, queryPrice]);
+
+  const handlePlanClick = async (planKey: string, price: number) => {
+    if (planKey === 'free') {
+      router.push('/register?plan=free');
+      return;
+    }
+    setIsApiLoading(planKey);
+    try {
+      const response = await fetch("/api/paydunya/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          planName: planKey,
+          price: price,
+          isYearly: isYearly,
+          isSignup: true
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.isMock) {
+        setCheckoutActive(true);
+        setSelectedPlan(planKey);
+        setSelectedPrice(price);
+        setSimStep('method_select');
+      } else if (data.url) {
+        window.location.href = data.url;
+      }
+    } catch (err) {
+      setCheckoutActive(true);
+      setSelectedPlan(planKey);
+      setSelectedPrice(price);
+      setSimStep('method_select');
+    } finally {
+      setIsApiLoading(null);
+    }
+  };
+
+  const handlePhoneNumberSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!phoneNumber || phoneNumber.length < 8) {
+      setPhoneError("Veuillez saisir un numéro de téléphone valide.");
+      return;
+    }
+    setPhoneError("");
+    setSimStep('otp_verification');
+  };
+
+  const handleOtpSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (otp !== "1234" && otp.length < 4) {
+      setOtpError("Code de confirmation incorrect (Entrez 1234 pour la démo).");
+      return;
+    }
+    setOtpError("");
+    setSimStep('processing');
+
+    setTimeout(() => {
+      router.push(`/register?plan=${selectedPlan}&status=success`);
+    }, 2500);
+  };
+
   // Pricing plans helper
   const plans = [
     {
+      key: "free" as const,
       name: "Gratuit",
       price: 0,
       desc: "Idéal pour débuter avec quelques biens immobiliers.",
@@ -48,6 +144,7 @@ export default function Home() {
       color: "var(--gray-600)"
     },
     {
+      key: "pro" as const,
       name: "Professionnel",
       price: isYearly ? 12000 : 15000,
       desc: "Le choix idéal pour les propriétaires indépendants.",
@@ -61,10 +158,11 @@ export default function Home() {
         "Support prioritaire"
       ],
       popular: true,
-      cta: "Essayer gratuitement",
+      cta: "Plan Professionnel",
       color: "var(--primary)"
     },
     {
+      key: "business" as const,
       name: "Business",
       price: isYearly ? 24000 : 30000,
       desc: "Conçu pour les agences immobilières et multi-propriétaires.",
@@ -78,7 +176,7 @@ export default function Home() {
         "Support téléphonique 24h/7j"
       ],
       popular: false,
-      cta: "Contacter le service commercial",
+      cta: "Plan Business",
       color: "var(--gray-900)"
     }
   ];
@@ -558,13 +656,22 @@ export default function Home() {
                 ))}
               </div>
 
-              <Link 
-                href="/register" 
+              <button 
+                type="button"
                 className={`btn ${plan.popular ? 'btn-primary' : 'btn-outline'}`}
-                style={{ width: '100%', marginTop: 'auto' }}
+                style={{ width: '100%', marginTop: 'auto', display: 'flex', justifyContent: 'center' }}
+                onClick={() => handlePlanClick(plan.key, plan.price)}
+                disabled={isApiLoading !== null}
               >
-                {plan.cta}
-              </Link>
+                {isApiLoading === plan.key ? (
+                  <>
+                    <Loader2 className="animate-spin" size={16} />
+                    <span>Redirection...</span>
+                  </>
+                ) : (
+                  <span>{plan.cta}</span>
+                )}
+              </button>
             </div>
           ))}
         </div>
@@ -730,6 +837,159 @@ export default function Home() {
           </p>
         </div>
       </footer>
+
+      {/* ============================================
+         PayDunya Simulation Checkout Overlay for Landing Page
+         ============================================ */}
+      {checkoutActive && (
+        <div 
+          style={{
+            position: "fixed",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+            padding: "var(--space-4)",
+            backdropFilter: "blur(4px)"
+          }}
+          className="animate-fade-in"
+        >
+          <div 
+            className="card animate-scale-in"
+            style={{
+              width: "100%",
+              maxWidth: "460px",
+              background: "white",
+              padding: "var(--space-6)",
+              borderTop: "6px solid var(--primary)"
+            }}
+          >
+            {simStep === 'method_select' && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+                <div style={{ textAlign: "center", marginBottom: "var(--space-2)" }}>
+                  <span style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "1px", color: "var(--primary)" }}>PayDunya Sandbox Checkout</span>
+                  <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800", marginTop: "2px" }}>Abonnement Plan {selectedPlan.toUpperCase()}</h3>
+                  <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-400)" }}>Total à payer : <strong style={{ color: "var(--gray-800)" }}>{selectedPrice.toLocaleString("fr-FR")} FCFA</strong></p>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-4)" }}>
+                  <button 
+                    onClick={() => { setSelectedOperator('orange'); setSimStep('payment_details'); }}
+                    style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", padding: "var(--space-4)", background: "#FFF7ED", border: "2px solid #FF6600", borderRadius: "var(--radius-lg)" }}
+                  >
+                    <div style={{ width: "40px", height: "40px", background: "#FF6600", color: "white", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "900" }}>OM</div>
+                    <span style={{ fontSize: "var(--text-xs)", fontWeight: "700", color: "#C2410C" }}>Orange Money</span>
+                  </button>
+
+                  <button 
+                    onClick={() => { setSelectedOperator('mtn'); setSimStep('payment_details'); }}
+                    style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", padding: "var(--space-4)", background: "#FEFCE8", border: "2px solid #FFCC00", borderRadius: "var(--radius-lg)" }}
+                  >
+                    <div style={{ width: "40px", height: "40px", background: "#FFCC00", color: "#1E3A8A", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "900" }}>MTN</div>
+                    <span style={{ fontSize: "var(--text-xs)", fontWeight: "700", color: "#854D0E" }}>MTN MoMo</span>
+                  </button>
+
+                  <button 
+                    onClick={() => { setSelectedOperator('wave'); setSimStep('payment_details'); }}
+                    style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", padding: "var(--space-4)", background: "#EFF6FF", border: "2px solid #00A3E0", borderRadius: "var(--radius-lg)" }}
+                  >
+                    <div style={{ width: "40px", height: "40px", background: "#00A3E0", color: "white", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "900" }}>W</div>
+                    <span style={{ fontSize: "var(--text-xs)", fontWeight: "700", color: "#1E40AF" }}>Wave</span>
+                  </button>
+
+                  <button 
+                    onClick={() => { setSelectedOperator('moov'); setSimStep('payment_details'); }}
+                    style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", padding: "var(--space-4)", background: "#ECFDF5", border: "2px solid #10B981", borderRadius: "var(--radius-lg)" }}
+                  >
+                    <div style={{ width: "40px", height: "40px", background: "#10B981", color: "white", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "900" }}>MOOV</div>
+                    <span style={{ fontSize: "var(--text-xs)", fontWeight: "700", color: "#065F46" }}>Moov Money</span>
+                  </button>
+                </div>
+
+                <button className="btn btn-outline" style={{ width: "100%" }} onClick={() => setCheckoutActive(false)}>
+                  Annuler la transaction
+                </button>
+              </div>
+            )}
+
+            {simStep === 'payment_details' && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+                <h3 style={{ fontSize: "var(--text-md)", fontWeight: "800", textTransform: "capitalize" }}>
+                  Abonnement par {selectedOperator === 'orange' ? 'Orange Money' : selectedOperator === 'mtn' ? 'MTN MoMo' : selectedOperator === 'wave' ? 'Wave' : 'Moov Money'}
+                </h3>
+                <form onSubmit={handlePhoneNumberSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+                  <div className="input-group">
+                    <label className="input-label">Numéro de téléphone mobile</label>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="Ex: 0707070707"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      className="input"
+                    />
+                    {phoneError && <span style={{ fontSize: "var(--text-xs)", color: "var(--danger)" }}>{phoneError}</span>}
+                  </div>
+                  <div style={{ display: "flex", gap: "var(--space-3)", marginTop: "var(--space-2)" }}>
+                    <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setSimStep('method_select')}>
+                      Retour
+                    </button>
+                    <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
+                      Suivant
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+            {simStep === 'otp_verification' && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+                <div style={{ textAlign: "center" }}>
+                  <h3 style={{ fontSize: "var(--text-md)", fontWeight: "800" }}>Validation OTP</h3>
+                  <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>Code démo envoyé par SMS : <strong>1234</strong></p>
+                </div>
+                <form onSubmit={handleOtpSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+                  <div className="input-group">
+                    <input
+                      type="text"
+                      required
+                      placeholder="1234"
+                      maxLength={6}
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value)}
+                      className="input"
+                      style={{ textAlign: "center", fontSize: "var(--text-lg)", letterSpacing: "8px", fontWeight: "700" }}
+                    />
+                    {otpError && <span style={{ fontSize: "var(--text-xs)", color: "var(--danger)", textAlign: "center" }}>{otpError}</span>}
+                  </div>
+                  <div style={{ display: "flex", gap: "var(--space-3)", marginTop: "var(--space-2)" }}>
+                    <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setSimStep('payment_details')}>
+                      Retour
+                    </button>
+                    <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
+                      Confirmer l'abonnement
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+
+            {simStep === 'processing' && (
+              <div style={{ textAlign: "center", padding: "var(--space-4)" }}>
+                <Loader2 className="animate-spin" size={40} style={{ color: "var(--primary)", margin: "0 auto var(--space-4)" }} />
+                <h3>Activation de l'abonnement...</h3>
+                <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>Veuillez patienter pendant la validation de la transaction.</p>
+              </div>
+            )}
+
+          </div>
+        </div>
+      )}
     </div>
   );
 }
