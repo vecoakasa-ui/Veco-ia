@@ -622,18 +622,25 @@ h1, h2, h3, h4, h5, h6 {
    VENANCE IMO — Landing Page (Vitrine) Styles
    ============================================ */
 
-/* Navbar */
 .navbar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
   z-index: 100;
   height: var(--navbar-height);
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--gray-200);
+  -webkit-backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
   transition: all var(--transition-fast);
+  border-bottom: 2px solid transparent;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), linear-gradient(90deg, var(--primary) 0%, var(--orange) 50%, var(--primary) 100%);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  box-shadow: 0 4px 20px -5px rgba(10, 61, 42, 0.08);
 }
 
 .navbar-container {

@@ -305,31 +305,31 @@ export default function Home({ searchParams }: HomeProps) {
         className="hero-section"
         style={{
           background: 'linear-gradient(rgba(10, 61, 42, 0.88) 0%, rgba(10, 61, 42, 0.5) 100%), url("/gestimmo_hero_bg.png") center/cover no-repeat',
-          paddingTop: 'var(--space-20)',
+          paddingTop: 'calc(var(--navbar-height) + var(--space-20))',
           paddingBottom: 'var(--space-24)',
           color: 'white'
         }}
       >
-        <div className="container hero-grid">
-          <div className="hero-content animate-fade-in-up" style={{ textAlign: 'left', alignItems: 'flex-start' }}>
+        <div className="container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', justifyContent: 'center' }}>
+          <div className="hero-content animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', width: '100%', maxWidth: '800px' }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.15)', padding: '6px 14px', borderRadius: 'var(--radius-full)', color: 'white', fontSize: 'var(--text-xs)', fontWeight: '600', marginBottom: 'var(--space-6)', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
               <span style={{ display: 'inline-flex', width: '16px', height: '12px', background: 'linear-gradient(to right, #E25822 33.3%, white 33.3%, white 66.6%, #0A3D2A 66.6%)', borderRadius: '1px' }}></span>
               Depuis la Côte d&apos;Ivoire
             </div>
             
-            <h1 className="hero-title" style={{ color: 'white', fontSize: 'var(--text-5xl)', fontWeight: '900', lineHeight: 1.15, marginBottom: 'var(--space-6)' }}>
+            <h1 className="hero-title" style={{ color: 'white', fontSize: 'var(--text-5xl)', fontWeight: '900', lineHeight: 1.15, marginBottom: 'var(--space-6)', textAlign: 'center' }}>
               La gestion de vos biens immobiliers, en toute <span className="text-orange underline-green">sérénité.</span>
             </h1>
             
-            <p style={{ fontSize: 'var(--text-base)', color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.65, maxWidth: '580px', marginBottom: 'var(--space-8)' }}>
+            <p style={{ fontSize: 'var(--text-base)', color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.65, maxWidth: '640px', marginBottom: 'var(--space-8)', textAlign: 'center', marginInline: 'auto' }}>
               VENANCE IMO.CI est spécialisée dans la gestion immobilière. Nous vous accompagnons pour valoriser, protéger et rentabiliser vos biens en toute confiance.
             </p>
             
-            <div className="hero-buttons" style={{ display: 'flex', gap: 'var(--space-4)', width: '100%', maxWidth: '440px', flexWrap: 'wrap' }}>
-              <a href="#services" className="btn btn-orange btn-lg" style={{ flex: '1 1 auto', minWidth: '180px' }}>
-                Découvrir nos services <ArrowRight size={18} style={{ marginLeft: '6px' }} />
+            <div className="hero-buttons" style={{ display: 'flex', gap: 'var(--space-4)', justifyContent: 'center', flexWrap: 'wrap', width: '100%', maxWidth: '440px', margin: '0 auto' }}>
+              <a href="#services" className="btn btn-orange" style={{ minWidth: '160px', padding: '10px 24px', fontSize: 'var(--text-sm)', fontWeight: '600' }}>
+                Découvrir nos services <ArrowRight size={16} style={{ marginLeft: '6px' }} />
               </a>
-              <a href="#contact" className="btn btn-contact btn-lg" style={{ flex: '1 1 auto', minWidth: '180px', background: 'transparent', borderColor: 'white', color: 'white' }}>
+              <a href="#contact" className="btn btn-contact" style={{ minWidth: '160px', padding: '10px 24px', fontSize: 'var(--text-sm)', fontWeight: '600', background: 'transparent', borderColor: 'white', color: 'white' }}>
                 Nous contacter
               </a>
             </div>
