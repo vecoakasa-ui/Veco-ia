@@ -289,17 +289,17 @@ export default function Home({ searchParams }: HomeProps) {
       {/* ============================================
          Hero Section
          ============================================ */}
-      <section className="section" style={{ background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.85) 100%), url("/hero-bg.png") center/cover no-repeat', overflow: 'hidden' }}>
+      <section className="hero-section">
         <div className="container hero-grid">
           <div className="hero-content animate-fade-in-up">
             <div className="badge badge-primary" style={{ marginBottom: 'var(--space-4)', display: 'inline-flex', gap: 'var(--space-1)', alignItems: 'center' }}>
               <Sparkles size={14} /> La gestion immobilière réinventée en Afrique
             </div>
             <h1 className="hero-title">
-              Gérez vos biens, locataires et loyers en <span>toute simplicité</span>
+              Gerez vos biens, locataires et loyers en <span>toute simplicité</span>
             </h1>
-            <p className="hero-desc" style={{ color: '#22c55e', fontWeight: 600, background: 'rgba(255, 255, 255, 0.9)', padding: 'var(--space-4)', borderRadius: 'var(--radius-lg)' }}>
-              Suivi des paiements mobiles (Orange Money, MTN MoMo, Stripe), édition automatique des baux et quittances, gestion des demandes de maintenance. Gagnez du temps et optimisez vos revenus.
+            <p className="hero-description-card">
+              Suivi des paiements mobiles (<strong>Orange Money</strong>, <strong>MTN MoMo</strong>, <strong>Wave</strong>), édition automatique des baux et quittances, gestion des demandes de maintenance. Gagnez du temps et optimisez vos revenus.
             </p>
             <div className="hero-buttons">
               <Link href="/register" className="btn btn-primary btn-lg">
@@ -311,16 +311,16 @@ export default function Home({ searchParams }: HomeProps) {
             </div>
 
             {/* Quick trust metrics */}
-            <div style={{ display: 'flex', gap: 'var(--space-8)', marginTop: 'var(--space-12)' }}>
-              <div>
+            <div className="hero-metrics">
+              <div className="hero-metric-item">
                 <h3 style={{ fontSize: 'var(--text-2xl)', fontWeight: '800', color: 'var(--primary-dark)' }}>24+</h3>
                 <p style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-500)', fontWeight: '500' }}>Biens gérés par bailleur</p>
               </div>
-              <div style={{ borderLeft: '1px solid var(--gray-200)', paddingLeft: 'var(--space-8)' }}>
+              <div className="hero-metric-item">
                 <h3 style={{ fontSize: 'var(--text-2xl)', fontWeight: '800', color: 'var(--primary-dark)' }}>92%</h3>
                 <p style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-500)', fontWeight: '500' }}>Taux d'occupation moyen</p>
               </div>
-              <div style={{ borderLeft: '1px solid var(--gray-200)', paddingLeft: 'var(--space-8)' }}>
+              <div className="hero-metric-item">
                 <h3 style={{ fontSize: 'var(--text-2xl)', fontWeight: '800', color: 'var(--primary-dark)' }}>98%</h3>
                 <p style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-500)', fontWeight: '500' }}>Loyers payés à temps</p>
               </div>
@@ -711,7 +711,7 @@ export default function Home({ searchParams }: HomeProps) {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: 'var(--space-12)', maxWidth: '1000px', margin: '0 auto' }} className="grid-3">
+          <div className="contact-grid">
             {/* Info */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
               <div className="card" style={{ background: 'white' }}>
@@ -741,7 +741,7 @@ export default function Home({ searchParams }: HomeProps) {
             {/* Form */}
             <div className="card" style={{ background: 'white' }}>
               <form onSubmit={(e) => { e.preventDefault(); alert('Message envoyé avec succès ! Notre équipe vous contactera rapidement.'); }} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-4)' }}>
+                <div className="form-row-2col">
                   <div className="input-group">
                     <label className="input-label">Nom complet</label>
                     <input type="text" placeholder="Ex: Jean Koffi" required className="input" />

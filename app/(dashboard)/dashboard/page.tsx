@@ -145,7 +145,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Main Grid Content */}
-      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "var(--space-6)" }} className="grid-3">
+      <div className="dashboard-grid">
         {/* Left Column: Revenue Chart & Recent Payments */}
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
           {/* Chart Wrapper */}

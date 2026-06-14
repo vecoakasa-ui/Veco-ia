@@ -680,13 +680,33 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Hero Section */
+.hero-section {
+  position: relative;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0.85) 100%), url("/hero-bg.png") center/cover no-repeat;
+  overflow: hidden;
+  padding-top: var(--space-12);
+  padding-bottom: var(--space-12);
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 80% 20%, rgba(249, 115, 22, 0.08) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 1;
+}
+
 .hero-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-12);
   align-items: center;
-  padding-top: var(--space-16);
-  padding-bottom: var(--space-16);
+  position: relative;
+  z-index: 2;
 }
 
 .hero-title {
@@ -703,16 +723,43 @@ h1, h2, h3, h4, h5, h6 {
   -webkit-text-fill-color: transparent;
 }
 
-.hero-desc {
-  font-size: var(--text-lg);
+.hero-description-card {
+  font-size: var(--text-base);
   color: var(--gray-600);
+  line-height: 1.65;
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
   margin-bottom: var(--space-8);
-  line-height: 1.6;
+}
+
+.hero-description-card strong {
+  color: var(--primary-dark);
+  font-weight: 700;
 }
 
 .hero-buttons {
   display: flex;
   gap: var(--space-4);
+}
+
+.hero-metrics {
+  display: flex;
+  gap: var(--space-8);
+  margin-top: var(--space-12);
+}
+
+.hero-metric-item {
+  flex: 1;
+}
+
+.hero-metric-item:not(:first-child) {
+  border-left: 1px solid var(--gray-200);
+  padding-left: var(--space-8);
 }
 
 /* Dashboard Mockup Visual */
@@ -845,6 +892,26 @@ h1, h2, h3, h4, h5, h6 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-8);
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  gap: var(--space-12);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.form-row-2col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-6);
 }
 
 /* Feature Card */
@@ -1115,6 +1182,9 @@ h1, h2, h3, h4, h5, h6 {
   
   .hero-content {
     max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
   .hero-buttons {
@@ -1122,11 +1192,16 @@ h1, h2, h3, h4, h5, h6 {
   }
   
   .hero-visual {
-    order: -1;
+    order: 2; /* Put mockup visual below hero content on tablet/mobile */
   }
   
   .grid-3 {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .contact-grid,
+  .dashboard-grid {
+    grid-template-columns: 1fr;
   }
   
   .footer-grid {
@@ -1138,6 +1213,62 @@ h1, h2, h3, h4, h5, h6 {
 @media (max-width: 768px) {
   .grid-3 {
     grid-template-columns: 1fr;
+  }
+
+  .form-row-2col {
+    grid-template-columns: 1fr;
+  }
+  
+  .hero-title {
+    font-size: var(--text-3xl) !important;
+    line-height: 1.2;
+    text-align: center;
+  }
+
+  .hero-description-card {
+    font-size: var(--text-sm);
+    padding: var(--space-4);
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: var(--space-3);
+  }
+
+  .hero-buttons .btn {
+    width: 100%;
+  }
+
+  .hero-metrics {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-4);
+    width: 100%;
+  }
+
+  .hero-metric-item {
+    flex: 1 1 40%;
+    min-width: 110px;
+    text-align: center;
+  }
+
+  .hero-metric-item:not(:first-child) {
+    border-left: none;
+    padding-left: 0;
+  }
+
+  /* Prevent floating cards from overflowing and causing scrollbars on phone views */
+  .floating-card {
+    display: none !important;
+  }
+  
+  .dashboard-mockup {
+    transform: none !important; /* Flatten mockup rotation on mobile for sharper text */
+    max-width: 100%;
   }
   
   .pricing-card.popular {
