@@ -24,7 +24,8 @@ import {
   MapPin,
   Menu,
   X,
-  Loader2
+  Loader2,
+  Smartphone
 } from "lucide-react";
 
 interface HomeProps {
@@ -919,20 +920,56 @@ export default function Home({ searchParams }: HomeProps) {
 
             {simStep === 'payment_details' && (
               <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
-                <h3 style={{ fontSize: "var(--text-md)", fontWeight: "800", textTransform: "capitalize" }}>
+                <h3 style={{ fontSize: "var(--text-md)", fontWeight: "800", textTransform: "capitalize", textAlign: "center" }}>
                   Abonnement par {selectedOperator === 'orange' ? 'Orange Money' : selectedOperator === 'mtn' ? 'MTN MoMo' : selectedOperator === 'wave' ? 'Wave' : 'Moov Money'}
                 </h3>
+
+                {/* QR Code Option */}
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-3)", background: "var(--gray-50)", padding: "var(--space-4)", borderRadius: "var(--radius-lg)", border: "1px dashed var(--gray-300)" }}>
+                  <span style={{ fontSize: "var(--text-xs)", fontWeight: "700", color: "var(--primary-dark)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Option 1 : Paiement Sécurisé par Code QR</span>
+                  <div style={{ padding: "8px", background: "white", borderRadius: "8px", boxShadow: "var(--shadow-sm)" }}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img 
+                      src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&color=111827&data=paydunya_${selectedOperator}_sub_${selectedPlan || 'pro'}_${selectedPrice || '15000'}`} 
+                      alt="Code QR de paiement" 
+                      style={{ width: "150px", height: "150px" }}
+                    />
+                  </div>
+                  <p style={{ fontSize: "11px", color: "var(--gray-500)", textAlign: "center", margin: 0 }}>
+                    Scannez ce code QR avec votre application mobile <strong>{selectedOperator?.toUpperCase()}</strong> pour confirmer le règlement instantanément.
+                  </p>
+                  <button 
+                    type="button" 
+                    className="btn btn-outline btn-sm" 
+                    style={{ width: "100%", background: "white", borderColor: "var(--success)", color: "var(--success-dark)" }}
+                    onClick={() => setSimStep('otp_verification')}
+                  >
+                    <Check size={12} /> J'ai scanné et validé sur mon mobile
+                  </button>
+                </div>
+
+                <div style={{ display: "flex", alignItems: "center", gap: "10px", margin: "var(--space-2) 0", color: "var(--gray-400)", fontSize: "11px", fontWeight: 600 }}>
+                  <div style={{ flex: 1, height: "1px", background: "var(--gray-200)" }}></div>
+                  <span>OU</span>
+                  <div style={{ flex: 1, height: "1px", background: "var(--gray-200)" }}></div>
+                </div>
+
+                {/* Phone number form option */}
                 <form onSubmit={handlePhoneNumberSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
                   <div className="input-group">
-                    <label className="input-label">Numéro de téléphone mobile</label>
-                    <input
-                      type="tel"
-                      required
-                      placeholder="Ex: 0707070707"
-                      value={phoneNumber}
-                      onChange={(e) => setPhoneNumber(e.target.value)}
-                      className="input"
-                    />
+                    <label className="input-label" style={{ fontSize: "11px", fontWeight: "700" }}>Option 2 : Saisir votre numéro de téléphone (Côte d'Ivoire)</label>
+                    <div className="input-with-icon" style={{ position: "relative" }}>
+                      <Smartphone className="input-icon" size={16} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--gray-400)" }} />
+                      <input
+                        type="tel"
+                        required
+                        placeholder="Ex: 0707070707"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        className="input"
+                        style={{ paddingLeft: "36px" }}
+                      />
+                    </div>
                     {phoneError && <span style={{ fontSize: "var(--text-xs)", color: "var(--danger)" }}>{phoneError}</span>}
                   </div>
                   <div style={{ display: "flex", gap: "var(--space-3)", marginTop: "var(--space-2)" }}>
@@ -940,7 +977,7 @@ export default function Home({ searchParams }: HomeProps) {
                       Retour
                     </button>
                     <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
-                      Suivant
+                      Valider le numéro
                     </button>
                   </div>
                 </form>

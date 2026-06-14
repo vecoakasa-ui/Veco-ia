@@ -398,16 +398,47 @@ export default function TenantPaymentPage({ params, searchParams }: PageProps) {
             </div>
           )}
 
-          {/* SIMULATION STEP 3: Phone number input */}
+          {/* SIMULATION STEP 3: Phone number or QR Code input */}
           {simStep === 'payment_details' && (
             <div className="card animate-scale-in" style={{ padding: "var(--space-6)", boxShadow: "var(--shadow-xl)" }}>
-              <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800", marginBottom: "var(--space-4)", textTransform: "capitalize" }}>
-                Paiement par {selectedOperator === 'orange' ? 'Orange Money' : selectedOperator === 'mtn' ? 'MTN Mobile Money' : selectedOperator === 'wave' ? 'Wave' : 'Moov Money'}
+              <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800", marginBottom: "var(--space-4)", textTransform: "capitalize", textAlign: "center" }}>
+                Règlement par {selectedOperator === 'orange' ? 'Orange Money' : selectedOperator === 'mtn' ? 'MTN Mobile Money' : selectedOperator === 'wave' ? 'Wave' : 'Moov Money'}
               </h3>
 
+              {/* QR Code Option */}
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-3)", background: "var(--gray-50)", padding: "var(--space-4)", borderRadius: "var(--radius-lg)", border: "1px dashed var(--gray-300)", marginBottom: "var(--space-4)" }}>
+                <span style={{ fontSize: "var(--text-xs)", fontWeight: "700", color: "var(--primary-dark)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Option 1 : Paiement Sécurisé par Code QR</span>
+                <div style={{ padding: "8px", background: "white", borderRadius: "8px", boxShadow: "var(--shadow-sm)" }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img 
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&color=111827&data=paydunya_${selectedOperator}_${payment.id}_${payment.total}`} 
+                    alt="Code QR de paiement" 
+                    style={{ width: "150px", height: "150px" }}
+                  />
+                </div>
+                <p style={{ fontSize: "11px", color: "var(--gray-500)", textAlign: "center", margin: 0 }}>
+                  Scannez ce code QR avec votre application mobile <strong>{selectedOperator?.toUpperCase()}</strong> pour confirmer le règlement instantanément.
+                </p>
+                <button 
+                  type="button" 
+                  className="btn btn-outline btn-sm" 
+                  style={{ width: "100%", background: "white", borderColor: "var(--success)", color: "var(--success-dark)" }}
+                  onClick={() => setSimStep('otp_verification')}
+                >
+                  <Check size={12} /> J'ai scanné et validé sur mon mobile
+                </button>
+              </div>
+
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", margin: "var(--space-3) 0", color: "var(--gray-400)", fontSize: "11px", fontWeight: 600 }}>
+                <div style={{ flex: 1, height: "1px", background: "var(--gray-200)" }}></div>
+                <span>OU</span>
+                <div style={{ flex: 1, height: "1px", background: "var(--gray-200)" }}></div>
+              </div>
+
+              {/* Phone number form option */}
               <form onSubmit={handlePhoneNumberSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
                 <div className="input-group">
-                  <label className="input-label">Saisissez votre numéro de téléphone (Côte d'Ivoire)</label>
+                  <label className="input-label" style={{ fontSize: "11px", fontWeight: "700" }}>Option 2 : Saisir votre numéro de téléphone (Côte d'Ivoire)</label>
                   <div className="input-with-icon">
                     <Smartphone className="input-icon" size={16} />
                     <input
@@ -427,7 +458,7 @@ export default function TenantPaymentPage({ params, searchParams }: PageProps) {
                     Retour
                   </button>
                   <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
-                    Valider
+                    Valider le numéro
                   </button>
                 </div>
               </form>
