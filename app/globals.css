@@ -1760,23 +1760,132 @@ h1, h2, h3, h4, h5, h6 {
   .cta-gestimmo-content {
     max-width: 100%;
   }
+
+  .hero-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: var(--space-8);
+  }
+  
+  .hero-title {
+    font-size: var(--text-4xl);
+  }
+
+  .hero-buttons {
+    justify-content: center;
+  }
 }
 
 @media (max-width: 768px) {
+  /* Hero Section Centering & Fluidity */
+  .hero-section {
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-8);
+    text-align: center;
+  }
+  
+  .hero-title {
+    font-size: var(--text-3xl);
+    line-height: 1.2;
+    margin-bottom: var(--space-4);
+  }
+
+  .hero-description-card {
+    margin: 0 auto var(--space-5) auto;
+  }
+  
+  .hero-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    width: 100%;
+  }
+
+  .hero-buttons .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Values Banner & Stats */
   .values-banner {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: var(--space-4);
     padding: var(--space-5);
     margin-top: -1.5rem;
+    text-align: center;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  /* Generic Grids */
+  .grid-2col, .grid-3col, .contact-grid, .footer-grid, .pricing-grid, .features-grid {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-6) !important;
+    text-align: center;
+  }
+
+  /* Footer Centering */
+  .gestimmo-footer {
+    text-align: center;
+    padding-top: var(--space-10);
+  }
+  
+  .gestimmo-footer-title::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .gestimmo-footer > .container > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  
+  .footer-links {
+    align-items: center;
+  }
+
+  /* Contact Section Adjustments */
+  .contact-grid > div {
+    text-align: center;
+    align-items: center;
+  }
+  
+  .contact-grid .card h4 {
+    justify-content: center;
+  }
+
+  .form-row-2col {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+  
+  /* Utilities */
+  .section {
+    padding: var(--space-12) 0;
+  }
+  
+  .section-title {
+    font-size: var(--text-2xl);
+  }
+  
+  .section-subtitle {
+    margin: 0 auto;
+    font-size: var(--text-base);
   }
 }
 
 @media (max-width: 480px) {
-  .values-banner {
-    grid-template-columns: 1fr;
+  .hero-title {
+    font-size: 2rem;
   }
   
-  .stats-grid {
-    grid-template-columns: 1fr;
+  .container {
+    padding: 0 var(--space-4);
   }
 }
+
