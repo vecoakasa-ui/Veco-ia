@@ -1,6 +1,6 @@
 "use client";
 
-import { Property, Tenant, Payment, Lease, Incident, Profile, DashboardStats, PaymentStatus, PaymentMethod, Landlord } from "./types";
+import { Property, Tenant, Payment, Lease, Incident, Profile, DashboardStats, PaymentStatus, PaymentMethod, Landlord, Expense } from "./types";
 import { generateId } from "./utils";
 import { supabase, isSupabaseConfigured } from "./supabase";
 
@@ -53,6 +53,31 @@ interface DBPaymentRow {
 // ============================================
 // INITIAL MOCK DATA
 // ============================================
+
+const DEFAULT_EXPENSES: Expense[] = [
+  {
+    id: "exp-1",
+    owner_id: "owner-1",
+    amount: 15000,
+    description: "Réparation plomberie (Fuite d'eau)",
+    category: "maintenance",
+    date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    created_at: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    property_id: "prop-1",
+    property_name: "Villa Hibiscus"
+  },
+  {
+    id: "exp-2",
+    owner_id: "owner-1",
+    amount: 50000,
+    description: "Reversement loyer propriétaire Bédié",
+    category: "payout",
+    date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    landlord_id: "landlord-1",
+    landlord_name: "Jean-Paul Bédié"
+  }
+];
 
 const DEFAULT_PROFILE: Profile = {
   id: "owner-1",
@@ -896,11 +921,68 @@ export const db = {
       }
     }
     const incidents = getFromStorage("incidents", DEFAULT_INCIDENTS);
-    const index = incidents.findIndex(i => i.id === incident.id);
+    const index = incidents.findIndex((i) => i.id === incident.id);
     if (index !== -1) {
       incidents[index] = incident;
       setToStorage("incidents", incidents);
     }
+  },
+
+  // Expenses
+  getExpenses: async (): Promise<Expense[]> => {
+    if (isSupabaseConfigured()) {
+      try {
+        const { data, error } = await supabase
+          .from("expenses")
+          .select("*")
+          .order("date", { ascending: false });
+        if (error) throw error;
+        if (data) return data as Expense[];
+      } catch (err) {
+        console.error("Error fetching expenses:", err);
+      }
+    }
+    return getFromStorage("expenses", DEFAULT_EXPENSES).sort((a: Expense, b: Expense) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  },
+
+  addExpense: async (expense: Omit<Expense, "id" | "owner_id" | "created_at">): Promise<Expense> => {
+    const newExpense: Expense = {
+      ...expense,
+      id: "exp-" + generateId(),
+      owner_id: "owner-1",
+      created_at: new Date().toISOString(),
+    };
+
+    if (isSupabaseConfigured()) {
+      try {
+        const { error } = await supabase
+          .from("expenses")
+          .insert(newExpense);
+        if (error) throw error;
+        return newExpense;
+      } catch (err) {
+        console.error("Error adding expense:", err);
+      }
+    }
+    const expenses = getFromStorage("expenses", DEFAULT_EXPENSES);
+    setToStorage("expenses", [newExpense, ...expenses]);
+    return newExpense;
+  },
+
+  deleteExpense: async (expenseId: string): Promise<void> => {
+    if (isSupabaseConfigured()) {
+      try {
+        const { error } = await supabase
+          .from("expenses")
+          .delete()
+          .eq("id", expenseId);
+        if (error) throw error;
+      } catch (err) {
+        console.error("Error deleting expense:", err);
+      }
+    }
+    const expenses = getFromStorage("expenses", DEFAULT_EXPENSES);
+    setToStorage("expenses", expenses.filter((e: Expense) => e.id !== expenseId));
   },
 
   // Calculate stats in real-time

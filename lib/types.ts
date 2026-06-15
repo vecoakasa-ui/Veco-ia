@@ -74,6 +74,23 @@ export interface Payment {
   property_name?: string;
 }
 
+export type ExpenseCategory = 'maintenance' | 'tax' | 'admin' | 'insurance' | 'payout' | 'other';
+
+export interface Expense {
+  id: string;
+  owner_id: string; // The platform user
+  property_id?: string; // Optional: linked property
+  landlord_id?: string; // Optional: linked landlord
+  amount: number;
+  description: string;
+  category: ExpenseCategory;
+  date: string;
+  created_at: string;
+  receipt_url?: string;
+  property_name?: string;
+  landlord_name?: string;
+}
+
 export type LeaseStatus = 'active' | 'expired' | 'terminated';
 
 export interface Lease {

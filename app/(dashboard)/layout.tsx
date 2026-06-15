@@ -16,7 +16,8 @@ import {
   Menu,
   X,
   Sparkles,
-  Briefcase
+  Briefcase,
+  Wallet
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Profile } from "@/lib/types";
@@ -61,6 +62,7 @@ export default function DashboardLayout({
     { name: "Biens immobiliers", href: "/biens", icon: Building2 },
     { name: "Locataires", href: "/locataires", icon: Users },
     { name: "Loyers & Paiements", href: "/paiements", icon: Banknote },
+    { name: "Comptabilité", href: "/comptabilite", icon: Wallet },
     { name: "Quittances", href: "/quittances", icon: FileText },
     { name: "Contrats de bail", href: "/contrats", icon: FolderLock },
     { name: "Incidents", href: "/incidents", icon: AlertTriangle },
