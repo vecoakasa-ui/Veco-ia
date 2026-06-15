@@ -278,7 +278,7 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
                   className={`btn ${p.key === 'pro' ? 'btn-orange' : 'btn-outline'}`} 
                   style={{ width: "100%" }}
                   disabled={isApiLoading !== null}
-                  onClick={() => handleUpgrade(p.key, p.price)}
+                  onClick={() => handleUpgrade(p.key as "pro" | "business", p.price)}
                 >
                   {isApiLoading === p.key ? (
                     <>
