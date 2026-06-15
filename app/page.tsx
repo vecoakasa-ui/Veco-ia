@@ -22,7 +22,8 @@ import {
   Menu,
   X,
   Loader2,
-  Smartphone
+  Smartphone,
+  ArrowUp
 } from "lucide-react";
 
 interface HomeProps {
@@ -51,6 +52,23 @@ export default function Home({ searchParams }: HomeProps) {
   const [otp, setOtp] = useState("");
   const [otpError, setOtpError] = useState("");
   const [phoneError, setPhoneError] = useState("");
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 300) {
+        setShowScrollTop(true);
+      } else {
+        setShowScrollTop(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   useEffect(() => {
     if (mockToken && queryPlan) {
@@ -734,7 +752,7 @@ export default function Home({ searchParams }: HomeProps) {
                 <h4 style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-2)', fontSize: 'var(--text-base)', color: 'var(--primary)' }}>
                   <Phone size={18} /> Téléphone & WhatsApp
                 </h4>
-                <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', margin: 0, fontWeight: '600' }}>+225 07 07 07 07 07</p>
+                <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', margin: 0, fontWeight: '600' }}>+225 07 48 11 09 42</p>
                 <p style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-400)', marginTop: '4px' }}>Lun - Ven, 8h00 à 18h00</p>
               </div>
 
@@ -742,7 +760,7 @@ export default function Home({ searchParams }: HomeProps) {
                 <h4 style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-2)', fontSize: 'var(--text-base)', color: 'var(--primary)' }}>
                   <Mail size={18} /> E-mail
                 </h4>
-                <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', margin: 0, fontWeight: '600' }}>contact@gestimmoci.ci</p>
+                <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', margin: 0, fontWeight: '600' }}>djafe247@gmail.com</p>
                 <p style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-400)', marginTop: '4px' }}>Réponse sous 24h ouvrées</p>
               </div>
 
@@ -798,6 +816,34 @@ export default function Home({ searchParams }: HomeProps) {
         </div>
       </section>
 
+      {/* Back to Top Button */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          style={{
+            position: 'fixed',
+            bottom: '30px',
+            right: '30px',
+            background: 'var(--orange)',
+            color: 'white',
+            width: '45px',
+            height: '45px',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: 'var(--shadow-lg)',
+            cursor: 'pointer',
+            border: 'none',
+            zIndex: 99,
+            transition: 'all 0.3s ease',
+          }}
+          aria-label="Retour en haut"
+        >
+          <ArrowUp size={24} />
+        </button>
+      )}
+
       {/* ============================================
          Footer Section
          ============================================ */}
@@ -843,7 +889,7 @@ export default function Home({ searchParams }: HomeProps) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Phone size={14} className="text-orange" />
-                <span>+225 0103596203</span>
+                <span>+225 07 48 11 09 42</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Mail size={14} className="text-orange" />
