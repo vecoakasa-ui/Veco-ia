@@ -60,6 +60,13 @@ CREATE TABLE IF NOT EXISTS leases (
   end_date TEXT NOT NULL,
   rent_amount NUMERIC NOT NULL,
   deposit_amount NUMERIC NOT NULL,
+  deposit_status TEXT DEFAULT 'held',
+  deposit_returned NUMERIC,
+  deposit_deductions NUMERIC,
+  inventory_in_status TEXT DEFAULT 'pending',
+  inventory_in_date TEXT,
+  inventory_out_status TEXT DEFAULT 'pending',
+  inventory_out_date TEXT,
   document_url TEXT,
   status TEXT NOT NULL DEFAULT 'active', -- 'active' | 'expired' | 'terminated'
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()

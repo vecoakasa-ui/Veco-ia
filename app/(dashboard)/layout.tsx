@@ -19,7 +19,8 @@ import {
   Briefcase,
   Wallet,
   MessageSquare,
-  ClipboardCheck
+  ClipboardCheck,
+  Settings
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Profile } from "@/lib/types";
@@ -67,7 +68,8 @@ export default function DashboardLayout({
     { name: "Relances", href: "/relances", icon: MessageSquare },
     { name: "Comptabilité", href: "/comptabilite", icon: Wallet },
     { name: "Quittances", href: "/quittances", icon: FileText },
-    { name: "États des lieux & Cautions", href: "/cautions", icon: ClipboardCheck },
+    { name: "Cautions & États des lieux", href: "/cautions", icon: ClipboardCheck },
+    { name: "Paramètres (Base de données)", href: "/settings", icon: Settings },
     { name: "Contrats de bail", href: "/contrats", icon: FolderLock },
     { name: "Incidents", href: "/incidents", icon: AlertTriangle },
     { name: "Mon Abonnement", href: "/abonnement", icon: Sparkles },
