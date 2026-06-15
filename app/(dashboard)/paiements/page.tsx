@@ -9,7 +9,8 @@ import {
   Smartphone, 
   CreditCard,
   Copy,
-  ExternalLink
+  ExternalLink,
+  MessageSquare
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Payment, PaymentMethod } from "@/lib/types";
@@ -226,6 +227,14 @@ export default function PaiementsPage() {
                             title="Ouvrir la page de paiement"
                           >
                             <ExternalLink size={12} /> Payer
+                          </a>
+                          <a 
+                            href="/relances" 
+                            className="btn btn-outline btn-sm" 
+                            style={{ padding: "4px 8px", fontSize: "11px", display: "flex", alignItems: "center", gap: "4px", borderColor: "var(--warning)", color: "var(--warning-dark)" }}
+                            title="Relancer le locataire"
+                          >
+                            <MessageSquare size={12} /> Relancer
                           </a>
                         </div>
                       ) : (
