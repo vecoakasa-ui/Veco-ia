@@ -92,6 +92,8 @@ export interface Expense {
 }
 
 export type LeaseStatus = 'active' | 'expired' | 'terminated';
+export type DepositStatus = 'held' | 'refunded' | 'partially_refunded' | 'pending';
+export type InventoryStatus = 'pending' | 'completed';
 
 export interface Lease {
   id: string;
@@ -102,9 +104,18 @@ export interface Lease {
   end_date: string;
   rent_amount: number;
   deposit_amount: number;
+  deposit_status?: DepositStatus;
+  deposit_returned?: number; // How much was returned
+  deposit_deductions?: number; // How much was deducted for repairs
+  inventory_in_status?: InventoryStatus;
+  inventory_in_date?: string;
+  inventory_out_status?: InventoryStatus;
+  inventory_out_date?: string;
   document_url: string | null;
   status: LeaseStatus;
   created_at: string;
+  tenant_name?: string;
+  property_name?: string;
 }
 
 export type IncidentPriority = 'low' | 'medium' | 'high' | 'urgent';

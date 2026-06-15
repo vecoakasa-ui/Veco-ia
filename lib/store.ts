@@ -337,8 +337,13 @@ const DEFAULT_LEASES: Lease[] = [
     end_date: "2027-01-01",
     rent_amount: 450000,
     deposit_amount: 900000,
+    deposit_status: "held",
+    inventory_in_status: "completed",
+    inventory_in_date: "2026-01-01",
     document_url: "#",
     status: "active",
+    tenant_name: "Koffi Kouassi",
+    property_name: "Villa Hibiscus",
     created_at: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString()
   },
   {
@@ -350,8 +355,12 @@ const DEFAULT_LEASES: Lease[] = [
     end_date: "2027-02-15",
     rent_amount: 250000,
     deposit_amount: 500000,
+    deposit_status: "held",
+    inventory_in_status: "pending",
     document_url: "#",
     status: "active",
+    tenant_name: "Awa Diop",
+    property_name: "Appartement Riviera C2",
     created_at: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString()
   }
 ];
@@ -868,6 +877,34 @@ export const db = {
     const leases = getFromStorage("leases", DEFAULT_LEASES);
     setToStorage("leases", [...leases, newLease]);
     return newLease;
+  },
+  updateLease: async (lease: Lease): Promise<void> => {
+    if (isSupabaseConfigured()) {
+      try {
+        const { error } = await supabase
+          .from("leases")
+          .update({
+            deposit_status: lease.deposit_status,
+            deposit_returned: lease.deposit_returned,
+            deposit_deductions: lease.deposit_deductions,
+            inventory_in_status: lease.inventory_in_status,
+            inventory_in_date: lease.inventory_in_date,
+            inventory_out_status: lease.inventory_out_status,
+            inventory_out_date: lease.inventory_out_date,
+            status: lease.status
+          })
+          .eq("id", lease.id);
+        if (error) throw error;
+      } catch (err) {
+        console.error("Error updating lease in Supabase:", err);
+      }
+    }
+    const leases = getFromStorage("leases", DEFAULT_LEASES);
+    const index = leases.findIndex(l => l.id === lease.id);
+    if (index !== -1) {
+      leases[index] = lease;
+      setToStorage("leases", leases);
+    }
   },
 
   // Incidents
