@@ -98,7 +98,7 @@ export default function PortailLocatairePage() {
       {/* Welcome Section */}
       <div>
         <h1 style={{ fontSize: "var(--text-2xl)", fontWeight: 800, color: "var(--gray-900)", marginBottom: "4px" }}>
-          Bonjour, {tenant.full_name.split(' ')[0]} 👋
+          Bonjour, {tenant.full_name?.split(' ')[0] || "Locataire"} 👋
         </h1>
         <p style={{ color: "var(--gray-500)", margin: 0 }}>Bienvenue sur votre espace locataire personnel.</p>
       </div>
