@@ -8,7 +8,9 @@ import {
   Mail, 
   Phone, 
   Calendar,
-  Building
+  Building,
+  MoreVertical,
+  ExternalLink
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Tenant, Property } from "@/lib/types";
@@ -124,12 +126,13 @@ export default function LocatairesPage() {
                 <th>Période du bail</th>
                 <th>Type</th>
                 <th>Statut</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredTenants.length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ textAlign: "center", padding: "var(--space-16)", color: "var(--gray-400)" }}>
+                  <td colSpan={7} style={{ textAlign: "center", padding: "var(--space-16)", color: "var(--gray-400)" }}>
                     Aucun locataire enregistré.
                   </td>
                 </tr>
@@ -179,6 +182,16 @@ export default function LocatairesPage() {
                       <span className={`badge badge-success`} style={{ fontSize: "10px" }}>
                         Actif
                       </span>
+                    </td>
+                    <td>
+                      <div style={{ display: "flex", gap: "8px" }}>
+                        <a href={`/locataire/${t.id}`} target="_blank" rel="noopener noreferrer" className="btn btn-outline btn-sm text-primary" style={{ padding: "4px 8px", fontSize: "11px", borderColor: "var(--primary-light)" }} title="Voir l'espace locataire">
+                          <ExternalLink size={14} style={{ marginRight: "4px" }} /> Espace Client
+                        </a>
+                        <button className="btn btn-ghost" style={{ padding: "4px" }}>
+                          <MoreVertical size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
