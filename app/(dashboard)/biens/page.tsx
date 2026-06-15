@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { db } from "@/lib/store";
 import MapModuleWrapper from "@/components/MapModuleWrapper";
-import { Property, PropertyType } from "@/lib/types";
+import { Property, PropertyType, Landlord } from "@/lib/types";
 import { formatCurrency, getPropertyStatusClass, getPropertyStatusLabel, getPropertyTypeLabel } from "@/lib/utils";
 
 export default function BiensPage() {
@@ -24,6 +24,7 @@ export default function BiensPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showAddModal, setShowAddModal] = useState(false);
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
+  const [landlords, setLandlords] = useState<Landlord[]>([]);
 
   // Form states
   const [name, setName] = useState("");
@@ -33,10 +34,12 @@ export default function BiensPage() {
   const [country, setCountry] = useState("Côte d'Ivoire");
   const [rent, setRent] = useState("");
   const [desc, setDesc] = useState("");
+  const [landlordId, setLandlordId] = useState("");
 
   const loadProperties = async () => {
     const props = await db.getProperties();
     setProperties(props);
+    setLandlords(await db.getLandlords());
   };
 
   useEffect(() => {
@@ -58,6 +61,7 @@ export default function BiensPage() {
       monthly_rent: Number(rent),
       status: "vacant",
       description: desc,
+      landlord_id: landlordId || undefined,
       images: []
     });
 
@@ -69,6 +73,7 @@ export default function BiensPage() {
     setCountry("Côte d'Ivoire");
     setRent("");
     setDesc("");
+    setLandlordId("");
     setShowAddModal(false);
 
     // Reload list
@@ -223,6 +228,7 @@ export default function BiensPage() {
 
               <div style={{ borderTop: "1px solid var(--gray-100)", paddingTop: "var(--space-4)", marginTop: "var(--space-4)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>
+                  {p.landlord_name && <span style={{display: "block", color: "var(--gray-700)", fontWeight: 600, marginBottom: "2px"}}>{p.landlord_name}</span>}
                   {p.tenant_count && p.tenant_count > 0 ? `${p.tenant_count} Locataire(s)` : "Aucun locataire"}
                 </span>
                 <div style={{ display: "flex", gap: "var(--space-2)" }}>
@@ -300,6 +306,21 @@ export default function BiensPage() {
                   <option value="villa">Villa</option>
                   <option value="studio">Studio</option>
                   <option value="house">Maison</option>
+                </select>
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Propriétaire (Bailleur)</label>
+                <select
+                  value={landlordId}
+                  onChange={(e) => setLandlordId(e.target.value)}
+                  className="input"
+                  style={{ appearance: "auto" }}
+                >
+                  <option value="">-- Propriété de l'agence (Aucun) --</option>
+                  {landlords.map((l) => (
+                    <option key={l.id} value={l.id}>{l.full_name}</option>
+                  ))}
                 </select>
               </div>
 

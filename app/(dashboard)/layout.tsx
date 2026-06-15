@@ -15,7 +15,8 @@ import {
   Bell,
   Menu,
   X,
-  Sparkles
+  Sparkles,
+  Briefcase
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Profile } from "@/lib/types";
@@ -56,6 +57,7 @@ export default function DashboardLayout({
 
   const navigation = [
     { name: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard },
+    { name: "Propriétaires", href: "/proprietaires", icon: Briefcase },
     { name: "Biens immobiliers", href: "/biens", icon: Building2 },
     { name: "Locataires", href: "/locataires", icon: Users },
     { name: "Loyers & Paiements", href: "/paiements", icon: Banknote },

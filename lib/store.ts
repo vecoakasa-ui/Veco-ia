@@ -1,6 +1,6 @@
 "use client";
 
-import { Property, Tenant, Payment, Lease, Incident, Profile, DashboardStats, PaymentStatus, PaymentMethod } from "./types";
+import { Property, Tenant, Payment, Lease, Incident, Profile, DashboardStats, PaymentStatus, PaymentMethod, Landlord } from "./types";
 import { generateId } from "./utils";
 import { supabase, isSupabaseConfigured } from "./supabase";
 
@@ -65,6 +65,29 @@ const DEFAULT_PROFILE: Profile = {
   created_at: new Date().toISOString(),
 };
 
+const DEFAULT_LANDLORDS: Landlord[] = [
+  {
+    id: "landlord-1",
+    owner_id: "owner-1",
+    full_name: "Jean-Paul Bédié",
+    email: "jpbedie@mail.com",
+    phone: "+225 01 02 03 04 05",
+    commission_rate: 10,
+    created_at: new Date().toISOString(),
+    property_count: 2
+  },
+  {
+    id: "landlord-2",
+    owner_id: "owner-1",
+    full_name: "Marie Koné",
+    email: "mariek@mail.com",
+    phone: "+225 05 11 22 33 44",
+    commission_rate: 8,
+    created_at: new Date().toISOString(),
+    property_count: 2
+  }
+];
+
 const DEFAULT_PROPERTIES: Property[] = [
   {
     id: "prop-1",
@@ -80,6 +103,8 @@ const DEFAULT_PROPERTIES: Property[] = [
     images: [],
     is_validated: true,
     created_at: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
+    landlord_id: "landlord-1",
+    landlord_name: "Jean-Paul Bédié",
     tenant_count: 1,
     lat: 5.345317,
     lng: -4.001925
@@ -98,6 +123,8 @@ const DEFAULT_PROPERTIES: Property[] = [
     images: [],
     is_validated: true,
     created_at: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
+    landlord_id: "landlord-2",
+    landlord_name: "Marie Koné",
     tenant_count: 1,
     lat: 5.359951,
     lng: -4.008256
@@ -116,6 +143,8 @@ const DEFAULT_PROPERTIES: Property[] = [
     images: [],
     is_validated: true,
     created_at: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+    landlord_id: "landlord-1",
+    landlord_name: "Jean-Paul Bédié",
     tenant_count: 0,
     lat: 5.293421,
     lng: -3.989821
@@ -134,6 +163,8 @@ const DEFAULT_PROPERTIES: Property[] = [
     images: [],
     is_validated: true,
     created_at: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(),
+    landlord_id: "landlord-2",
+    landlord_name: "Marie Koné",
     tenant_count: 0,
     lat: 5.391211,
     lng: -3.962134
@@ -390,6 +421,65 @@ export const db = {
     setToStorage("profile", profile);
   },
 
+  // Landlords
+  getLandlords: async (): Promise<Landlord[]> => {
+    if (isSupabaseConfigured()) {
+      try {
+        const { data, error } = await supabase
+          .from("landlords")
+          .select("*")
+          .order("created_at", { ascending: true });
+        if (error) throw error;
+        if (data) return data as Landlord[];
+      } catch (err) {
+        console.error("Error fetching landlords from Supabase:", err);
+      }
+    }
+    return getFromStorage("landlords", DEFAULT_LANDLORDS);
+  },
+  addLandlord: async (landlord: Omit<Landlord, "id" | "owner_id" | "created_at" | "property_count">): Promise<Landlord> => {
+    const newLandlord: Landlord = {
+      ...landlord,
+      id: "landlord-" + generateId(),
+      owner_id: "owner-1",
+      created_at: new Date().toISOString(),
+      property_count: 0
+    };
+    if (isSupabaseConfigured()) {
+      try {
+        const { error } = await supabase
+          .from("landlords")
+          .insert(newLandlord);
+        if (error) throw error;
+        return newLandlord;
+      } catch (err) {
+        console.error("Error adding landlord to Supabase:", err);
+      }
+    }
+    const landlords = getFromStorage("landlords", DEFAULT_LANDLORDS);
+    setToStorage("landlords", [...landlords, newLandlord]);
+    return newLandlord;
+  },
+  updateLandlord: async (landlord: Landlord): Promise<void> => {
+    if (isSupabaseConfigured()) {
+      try {
+        const { error } = await supabase
+          .from("landlords")
+          .update(landlord)
+          .eq("id", landlord.id);
+        if (error) throw error;
+      } catch (err) {
+        console.error("Error updating landlord in Supabase:", err);
+      }
+    }
+    const landlords = getFromStorage("landlords", DEFAULT_LANDLORDS);
+    const index = landlords.findIndex(l => l.id === landlord.id);
+    if (index !== -1) {
+      landlords[index] = landlord;
+      setToStorage("landlords", landlords);
+    }
+  },
+
   // Properties
   getProperties: async (): Promise<Property[]> => {
     if (isSupabaseConfigured()) {
@@ -417,6 +507,18 @@ export const db = {
       lat: 5.28 + Math.random() * 0.12,
       lng: -4.05 + Math.random() * 0.12
     };
+
+    // If property has a landlord, update landlord count
+    if (newProperty.landlord_id) {
+      const landlords = await db.getLandlords();
+      const landlord = landlords.find(l => l.id === newProperty.landlord_id);
+      if (landlord) {
+        newProperty.landlord_name = landlord.full_name;
+        landlord.property_count = (landlord.property_count || 0) + 1;
+        await db.updateLandlord(landlord);
+      }
+    }
+
     if (isSupabaseConfigured()) {
       try {
         const { error } = await supabase

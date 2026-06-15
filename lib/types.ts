@@ -16,6 +16,17 @@ export interface Profile {
   created_at: string;
 }
 
+export interface Landlord {
+  id: string;
+  owner_id: string; // The platform user who manages this landlord
+  full_name: string;
+  email: string;
+  phone: string;
+  commission_rate: number; // e.g. 10 for 10%
+  created_at: string;
+  property_count?: number;
+}
+
 export type PropertyType = 'apartment' | 'studio' | 'villa' | 'house';
 export type PropertyStatus = 'occupied' | 'vacant' | 'maintenance';
 
@@ -33,6 +44,8 @@ export interface Property {
   images: string[];
   is_validated: boolean;
   created_at: string;
+  landlord_id?: string;
+  landlord_name?: string;
   tenant_count?: number;
   lat?: number;
   lng?: number;
