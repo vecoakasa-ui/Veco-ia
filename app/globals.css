@@ -983,6 +983,7 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: center;
   gap: var(--space-4);
   margin-bottom: var(--space-12);
+  flex-wrap: wrap;
 }
 
 .toggle-switch {
@@ -993,7 +994,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   cursor: pointer;
   position: relative;
-  width: 220px;
+  width: 280px;
 }
 
 .toggle-option {
