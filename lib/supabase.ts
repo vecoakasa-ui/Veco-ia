@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 
 // Serveur (ou clés par défaut)
 let supabaseUrl = "https://nunntgrphkkebbmbumxs.supabase.co";
-let supabaseAnonKey = "sb_publishable_YsaZPBjgSudqX1qinVk9uA_ZkszI3zy";
+let supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im51bm50Z3JwaGtrZWJibWJ1bXhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1Mzg0NjMsImV4cCI6MjA5NzExNDQ2M30.oshJ6ldeAziRxdOAjNFL3nRhipgQNxLsCrcYgswN53Y";
 
 // Si on est dans le navigateur, on essaie de récupérer les clés magiques (au cas où l'utilisateur en met d'autres plus tard)
 if (typeof window !== 'undefined') {
