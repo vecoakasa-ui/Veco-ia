@@ -1,10 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Serveur (ou clés par défaut)
-let supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-let supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+let supabaseUrl = "https://nunntgrphkkebbmbumxs.supabase.co";
+let supabaseAnonKey = "sb_publishable_YsaZPBjgSudqX1qinVk9uA_ZkszI3zy";
 
-// Si on est dans le navigateur, on essaie de récupérer les clés magiques
+// Si on est dans le navigateur, on essaie de récupérer les clés magiques (au cas où l'utilisateur en met d'autres plus tard)
 if (typeof window !== 'undefined') {
   const storedUrl = localStorage.getItem("V_SUPABASE_URL");
   const storedKey = localStorage.getItem("V_SUPABASE_KEY");
