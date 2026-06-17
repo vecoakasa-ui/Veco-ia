@@ -10,7 +10,9 @@ import {
   X, 
   Edit3,
   Map,
-  List
+  List,
+  Image as ImageIcon,
+  Trash2
 } from "lucide-react";
 import { db } from "@/lib/store";
 import MapModuleWrapper from "@/components/MapModuleWrapper";
@@ -23,6 +25,8 @@ export default function BiensPage() {
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [editProperty, setEditProperty] = useState<Property | null>(null);
+  const [deleteProperty, setDeleteProperty] = useState<Property | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
   const [landlords, setLandlords] = useState<Landlord[]>([]);
 
@@ -35,8 +39,18 @@ export default function BiensPage() {
   const [rent, setRent] = useState("");
   const [desc, setDesc] = useState("");
   const [landlordId, setLandlordId] = useState("");
+  const [mainImage, setMainImage] = useState("");
+
+  // Edit form state
+  const [editMainImage, setEditMainImage] = useState("");
 
   const loadProperties = async () => {
+    // 1. Instant load from cache (SWR)
+    const cached = localStorage.getItem("properties");
+    if (cached) {
+      try { setProperties(JSON.parse(cached)); } catch(e) {}
+    }
+    
     const props = await db.getProperties();
     setProperties(props);
     setLandlords(await db.getLandlords());
@@ -62,7 +76,7 @@ export default function BiensPage() {
       status: "vacant",
       description: desc,
       landlord_id: landlordId || undefined,
-      images: []
+      images: mainImage ? [mainImage] : []
     });
 
     // Reset form & close modal
@@ -74,12 +88,76 @@ export default function BiensPage() {
     setRent("");
     setDesc("");
     setLandlordId("");
+    setMainImage("");
     setShowAddModal(false);
 
     // Reload list
     await loadProperties();
     // Dispatch storage event to update dashboard if open
     window.dispatchEvent(new Event("storage"));
+  };
+
+  const handleSaveEditProperty = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editProperty) return;
+
+    await db.updateProperty({
+      ...editProperty,
+      images: editMainImage ? [editMainImage] : editProperty.images
+    });
+
+    setEditProperty(null);
+    await loadProperties();
+    window.dispatchEvent(new Event("storage"));
+  };
+
+  const handleDeleteProperty = async (id: string) => {
+    await db.deleteProperty(id);
+    setDeleteProperty(null);
+    await loadProperties();
+    window.dispatchEvent(new Event("storage"));
+  };
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>, isEdit: boolean) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const img = new window.Image();
+      img.src = reader.result as string;
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX_SIZE = 800; // 800px is good enough for property cards
+        let width = img.width;
+        let height = img.height;
+        
+        if (width > height) {
+          if (width > MAX_SIZE) {
+            height *= MAX_SIZE / width;
+            width = MAX_SIZE;
+          }
+        } else {
+          if (height > MAX_SIZE) {
+            width *= MAX_SIZE / height;
+            height = MAX_SIZE;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+        if (isEdit) {
+           setEditMainImage(compressedBase64);
+        } else {
+           setMainImage(compressedBase64);
+        }
+      };
+    };
+    reader.readAsDataURL(file);
   };
 
   const filteredProperties = properties.filter((p) => {
@@ -193,48 +271,71 @@ export default function BiensPage() {
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "var(--space-6)" }}>
           {filteredProperties.map((p) => (
-            <div key={p.id} className="card" style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-4)" }}>
-                <div>
-                  <span className={`badge ${p.type === 'villa' ? 'badge-primary' : 'badge-info'}`} style={{ textTransform: "uppercase", fontSize: "9px", padding: "2px 8px" }}>
-                    {getPropertyTypeLabel(p.type)}
-                  </span>
-                  <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--gray-900)", marginTop: "4px" }}>
-                    {p.name}
-                  </h3>
-                </div>
-                <span className={`badge ${getPropertyStatusClass(p.status)}`}>
+            <div key={p.id} className="card" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column", height: "100%" }}>
+              {/* Image Banner */}
+              <div style={{ 
+                height: "180px", 
+                background: p.images && p.images.length > 0 ? `url(${p.images[0]}) center/cover` : "var(--gray-200)", 
+                position: "relative",
+                borderBottom: "1px solid var(--gray-200)"
+              }}>
+                {!p.images || p.images.length === 0 && (
+                  <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", color: "var(--gray-400)", display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
+                    <ImageIcon size={32} />
+                    <span style={{ fontSize: "var(--text-xs)", fontWeight: 500 }}>Aucune image</span>
+                  </div>
+                )}
+                <span className={`badge ${getPropertyStatusClass(p.status)}`} style={{ position: "absolute", top: "12px", right: "12px", background: "rgba(255,255,255,0.9)", backdropFilter: "blur(4px)" }}>
                   {getPropertyStatusLabel(p.status)}
                 </span>
               </div>
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)", margin: "var(--space-4) 0", flexGrow: 1 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "var(--text-sm)", color: "var(--gray-600)" }}>
-                  <MapPin size={16} style={{ color: "var(--gray-400)", flexShrink: 0 }} />
-                  <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {p.address}, {p.city}
-                  </span>
+              <div style={{ padding: "var(--space-4)", display: "flex", flexDirection: "column", flexGrow: 1 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-4)" }}>
+                  <div>
+                    <span className={`badge ${p.type === 'villa' ? 'badge-primary' : 'badge-info'}`} style={{ textTransform: "uppercase", fontSize: "9px", padding: "2px 8px" }}>
+                      {getPropertyTypeLabel(p.type)}
+                    </span>
+                    <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--gray-900)", marginTop: "4px" }}>
+                      {p.name}
+                    </h3>
+                  </div>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "var(--text-base)", fontWeight: 700, color: "var(--primary-dark)" }}>
-                  <DollarSign size={18} style={{ color: "var(--primary)", flexShrink: 0 }} />
-                  <span>{formatCurrency(p.monthly_rent)} <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", fontWeight: 400 }}>/ mois</span></span>
-                </div>
-                {p.description && (
-                  <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", margin: "6px 0 0 0", lineClamp: 2, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                    {p.description}
-                  </p>
-                )}
-              </div>
 
-              <div style={{ borderTop: "1px solid var(--gray-100)", paddingTop: "var(--space-4)", marginTop: "var(--space-4)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>
-                  {p.landlord_name && <span style={{display: "block", color: "var(--gray-700)", fontWeight: 600, marginBottom: "2px"}}>{p.landlord_name}</span>}
-                  {p.tenant_count && p.tenant_count > 0 ? `${p.tenant_count} Locataire(s)` : "Aucun locataire"}
-                </span>
-                <div style={{ display: "flex", gap: "var(--space-2)" }}>
-                  <button className="btn btn-ghost btn-sm" onClick={() => alert("Fonctionnalité d'édition bientôt disponible dans la version finale.")} style={{ color: "var(--gray-600)" }}>
-                    <Edit3 size={14} /> Modifier
-                  </button>
+                <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)", margin: "var(--space-2) 0", flexGrow: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "var(--text-sm)", color: "var(--gray-600)" }}>
+                    <MapPin size={16} style={{ color: "var(--gray-400)", flexShrink: 0 }} />
+                    <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {p.address}, {p.city}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "var(--text-base)", fontWeight: 700, color: "var(--primary-dark)" }}>
+                    <DollarSign size={18} style={{ color: "var(--primary)", flexShrink: 0 }} />
+                    <span>{formatCurrency(p.monthly_rent)} <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", fontWeight: 400 }}>/ mois</span></span>
+                  </div>
+                  {p.description && (
+                    <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", margin: "6px 0 0 0", lineClamp: 2, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                      {p.description}
+                    </p>
+                  )}
+                </div>
+
+                <div style={{ borderTop: "1px solid var(--gray-100)", paddingTop: "var(--space-4)", marginTop: "var(--space-4)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                  <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>
+                    {p.landlord_name && <span style={{display: "block", color: "var(--gray-700)", fontWeight: 600, marginBottom: "2px"}}>{p.landlord_name}</span>}
+                    {p.tenant_count && p.tenant_count > 0 ? `${p.tenant_count} Locataire(s)` : "Aucun locataire"}
+                  </span>
+                  <div style={{ display: "flex", gap: "var(--space-2)" }}>
+                    <button className="btn btn-ghost btn-sm" onClick={() => {
+                      setEditProperty(p);
+                      setEditMainImage(p.images?.[0] || "");
+                    }} style={{ color: "var(--gray-600)" }}>
+                      <Edit3 size={14} /> Modifier
+                    </button>
+                    <button className="btn btn-ghost btn-sm" onClick={() => setDeleteProperty(p)} style={{ color: "var(--danger)" }}>
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -282,6 +383,28 @@ export default function BiensPage() {
             </div>
 
             <form onSubmit={handleAddProperty} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+              {/* Image Uploader */}
+              <div className="input-group">
+                <label className="input-label">Image principale du bien</label>
+                <div style={{ 
+                  border: "2px dashed var(--gray-300)", borderRadius: "var(--radius-md)", padding: "var(--space-4)", 
+                  textAlign: "center", cursor: "pointer", background: "var(--gray-50)", position: "relative"
+                }}>
+                  {mainImage ? (
+                    <div style={{ position: "relative" }}>
+                       <img src={mainImage} alt="Preview" style={{ width: "100%", maxHeight: "200px", objectFit: "contain", borderRadius: "var(--radius-sm)" }} />
+                       <button type="button" onClick={() => setMainImage("")} style={{ position: "absolute", top: 8, right: 8, background: "rgba(0,0,0,0.5)", color: "white", border: "none", borderRadius: "50%", padding: 4, cursor: "pointer" }}><X size={16} /></button>
+                    </div>
+                  ) : (
+                    <label style={{ cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", padding: "var(--space-4) 0" }}>
+                      <ImageIcon size={32} style={{ color: "var(--gray-400)" }} />
+                      <span style={{ color: "var(--gray-600)", fontSize: "var(--text-sm)" }}>Cliquez pour ajouter une image</span>
+                      <input type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => handleImageSelect(e, false)} />
+                    </label>
+                  )}
+                </div>
+              </div>
+
               <div className="input-group">
                 <label className="input-label">Nom du bien</label>
                 <input
@@ -392,6 +515,216 @@ export default function BiensPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================    
+         Edit Property Modal
+         ============================================ */}
+      {editProperty && (
+        <div 
+          style={{
+            position: "fixed",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 100,
+            padding: "var(--space-4)",
+            backdropFilter: "blur(4px)"
+          }}
+          className="animate-fade-in"
+        >
+          <div 
+            className="card animate-scale-in"
+            style={{
+              width: "100%",
+              maxWidth: "500px",
+              background: "white",
+              padding: "var(--space-6)",
+              maxHeight: "90vh",
+              overflowY: "auto"
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-6)" }}>
+              <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800" }}>Modifier le bien</h3>
+              <button className="btn btn-ghost btn-sm" onClick={() => setEditProperty(null)} style={{ padding: "4px" }}>
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEditProperty} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+              {/* Image Uploader */}
+              <div className="input-group">
+                <label className="input-label">Image principale du bien</label>
+                <div style={{ 
+                  border: "2px dashed var(--gray-300)", borderRadius: "var(--radius-md)", padding: "var(--space-4)", 
+                  textAlign: "center", cursor: "pointer", background: "var(--gray-50)", position: "relative"
+                }}>
+                  {editMainImage ? (
+                    <div style={{ position: "relative" }}>
+                       <img src={editMainImage} alt="Preview" style={{ width: "100%", maxHeight: "200px", objectFit: "contain", borderRadius: "var(--radius-sm)" }} />
+                       <button type="button" onClick={() => setEditMainImage("")} style={{ position: "absolute", top: 8, right: 8, background: "rgba(0,0,0,0.5)", color: "white", border: "none", borderRadius: "50%", padding: 4, cursor: "pointer" }}><X size={16} /></button>
+                    </div>
+                  ) : (
+                    <label style={{ cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", padding: "var(--space-4) 0" }}>
+                      <ImageIcon size={32} style={{ color: "var(--gray-400)" }} />
+                      <span style={{ color: "var(--gray-600)", fontSize: "var(--text-sm)" }}>Cliquez pour changer d'image</span>
+                      <input type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => handleImageSelect(e, true)} />
+                    </label>
+                  )}
+                </div>
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Nom du bien</label>
+                <input
+                  type="text"
+                  required
+                  value={editProperty.name}
+                  onChange={(e) => setEditProperty({...editProperty, name: e.target.value})}
+                  className="input"
+                />
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Type de bien</label>
+                <select
+                  value={editProperty.type}
+                  onChange={(e) => setEditProperty({...editProperty, type: e.target.value as PropertyType})}
+                  className="input"
+                  style={{ appearance: "auto" }}
+                >
+                  <option value="apartment">Appartement</option>
+                  <option value="villa">Villa</option>
+                  <option value="studio">Studio</option>
+                  <option value="house">Maison</option>
+                </select>
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Statut</label>
+                <select
+                  value={editProperty.status}
+                  onChange={(e) => setEditProperty({...editProperty, status: e.target.value as any})}
+                  className="input"
+                  style={{ appearance: "auto" }}
+                >
+                  <option value="vacant">Vacant</option>
+                  <option value="occupied">Occupé</option>
+                  <option value="maintenance">En travaux</option>
+                </select>
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Loyer mensuel (FCFA)</label>
+                <input
+                  type="number"
+                  required
+                  value={editProperty.monthly_rent}
+                  onChange={(e) => setEditProperty({...editProperty, monthly_rent: Number(e.target.value)})}
+                  className="input"
+                />
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Adresse physique</label>
+                <input
+                  type="text"
+                  required
+                  value={editProperty.address}
+                  onChange={(e) => setEditProperty({...editProperty, address: e.target.value})}
+                  className="input"
+                />
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-4)" }}>
+                <div className="input-group">
+                  <label className="input-label">Ville</label>
+                  <input
+                    type="text"
+                    required
+                    value={editProperty.city}
+                    onChange={(e) => setEditProperty({...editProperty, city: e.target.value})}
+                    className="input"
+                  />
+                </div>
+                <div className="input-group">
+                  <label className="input-label">Pays</label>
+                  <input
+                    type="text"
+                    required
+                    value={editProperty.country}
+                    onChange={(e) => setEditProperty({...editProperty, country: e.target.value})}
+                    className="input"
+                  />
+                </div>
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Description</label>
+                <textarea
+                  value={editProperty.description || ""}
+                  onChange={(e) => setEditProperty({...editProperty, description: e.target.value})}
+                  className="input"
+                  rows={3}
+                  style={{ resize: "none" }}
+                />
+              </div>
+
+              <div style={{ display: "flex", gap: "var(--space-3)", marginTop: "var(--space-2)" }}>
+                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setEditProperty(null)}>
+                  Annuler
+                </button>
+                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
+                  Sauvegarder
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Delete Property */}
+      {deleteProperty && (
+        <div 
+          style={{
+            position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+            background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center",
+            zIndex: 100, padding: "var(--space-4)", backdropFilter: "blur(4px)"
+          }}
+          className="animate-fade-in"
+          onClick={() => setDeleteProperty(null)}
+        >
+          <div 
+            className="card animate-scale-in"
+            style={{ width: "100%", maxWidth: "400px", background: "white", padding: "var(--space-6)", textAlign: "center" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: "var(--space-4)" }}>
+              <div style={{ background: "rgba(239, 68, 68, 0.1)", color: "var(--danger)", padding: "16px", borderRadius: "50%" }}>
+                <Trash2 size={32} />
+              </div>
+            </div>
+            
+            <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800", marginBottom: "var(--space-2)" }}>Supprimer ce bien ?</h3>
+            <p style={{ color: "var(--gray-500)", marginBottom: "var(--space-6)" }}>
+              Êtes-vous sûr de vouloir supprimer définitivement <strong>{deleteProperty.name}</strong> ? Cette action est irréversible.
+            </p>
+
+            <div style={{ display: "flex", gap: "var(--space-3)" }}>
+              <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setDeleteProperty(null)}>
+                Annuler
+              </button>
+              <button type="button" className="btn btn-primary" style={{ flex: 1, background: "var(--danger)", borderColor: "var(--danger)", color: "white" }} onClick={() => handleDeleteProperty(deleteProperty.id)}>
+                Oui, supprimer
+              </button>
+            </div>
           </div>
         </div>
       )}
