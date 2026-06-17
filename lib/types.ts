@@ -22,6 +22,7 @@ export interface Landlord {
   full_name: string;
   email: string;
   phone: string;
+  avatar_url?: string;
   commission_rate: number; // e.g. 10 for 10%
   created_at: string;
   property_count?: number;

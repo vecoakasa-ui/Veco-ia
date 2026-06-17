@@ -9,7 +9,8 @@ import {
   Phone, 
   Briefcase,
   Building,
-  Percent
+  Percent,
+  MoreHorizontal
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Landlord } from "@/lib/types";
@@ -23,6 +24,7 @@ export default function ProprietairesPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState("");
   const [commission, setCommission] = useState("10");
 
   const loadData = async () => {
@@ -49,6 +51,7 @@ export default function ProprietairesPage() {
       full_name: fullName,
       email: email,
       phone: phone,
+      avatar_url: avatarUrl,
       commission_rate: parseFloat(commission) || 10,
     });
 
@@ -56,6 +59,7 @@ export default function ProprietairesPage() {
     setFullName("");
     setEmail("");
     setPhone("");
+    setAvatarUrl("");
     setCommission("10");
     setShowAddModal(false);
     alert("Étape 2 : Modal fermé, chargement des données...");
@@ -107,16 +111,18 @@ export default function ProprietairesPage() {
           <table className="table">
             <thead>
               <tr>
-                <th>Nom du propriétaire</th>
-                <th>Coordonnées</th>
+                <th>Propriétaire</th>
+                <th>Téléphone</th>
+                <th>E-mail</th>
                 <th>Taux de commission</th>
                 <th>Biens associés</th>
+                <th style={{ textAlign: "right" }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredLandlords.length === 0 ? (
                 <tr>
-                  <td colSpan={4} style={{ textAlign: "center", padding: "var(--space-16)", color: "var(--gray-400)" }}>
+                  <td colSpan={6} style={{ textAlign: "center", padding: "var(--space-16)", color: "var(--gray-400)" }}>
                     Aucun propriétaire enregistré.
                   </td>
                 </tr>
@@ -125,9 +131,13 @@ export default function ProprietairesPage() {
                   <tr key={l.id}>
                     <td>
                       <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
-                        <div className="avatar avatar-sm" style={{ background: "var(--primary-lightest)", color: "var(--primary-dark)" }}>
-                          <Briefcase size={14} />
-                        </div>
+                        {l.avatar_url ? (
+                          <img src={l.avatar_url} alt={l.full_name} className="avatar avatar-sm" style={{ objectFit: "cover" }} />
+                        ) : (
+                          <div className="avatar avatar-sm" style={{ background: "var(--primary-lightest)", color: "var(--primary-dark)" }}>
+                            <Briefcase size={14} />
+                          </div>
+                        )}
                         <div>
                           <h4 style={{ fontSize: "var(--text-sm)", fontWeight: "700", margin: 0 }}>{l.full_name}</h4>
                           <span style={{ fontSize: "10px", color: "var(--gray-400)" }}>ID: {l.id}</span>
@@ -135,10 +145,14 @@ export default function ProprietairesPage() {
                       </div>
                     </td>
                     <td>
-                      <div style={{ display: "flex", flexDirection: "column", gap: "2px", fontSize: "var(--text-xs)", color: "var(--gray-600)" }}>
-                        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Mail size={12} /> {l.email || "Non renseigné"}</span>
-                        <span style={{ display: "flex", alignItems: "center", gap: "4px" }}><Phone size={12} /> {l.phone}</span>
-                      </div>
+                      <span style={{ fontSize: "var(--text-sm)", color: "var(--gray-800)", display: "flex", alignItems: "center", gap: "6px" }}>
+                        <Phone size={14} className="text-orange" /> {l.phone}
+                      </span>
+                    </td>
+                    <td>
+                      <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-600)", display: "flex", alignItems: "center", gap: "4px" }}>
+                        <Mail size={12} /> {l.email || "Non renseigné"}
+                      </span>
                     </td>
                     <td>
                       <span className="badge badge-warning" style={{ fontSize: "11px", display: "inline-flex", gap: "4px" }}>
@@ -151,6 +165,11 @@ export default function ProprietairesPage() {
                         <Building size={14} style={{ color: "var(--gray-400)" }} />
                         {l.property_count || 0} bien(s)
                       </span>
+                    </td>
+                    <td style={{ textAlign: "right" }}>
+                      <button className="btn btn-ghost btn-sm" style={{ padding: "8px" }} title="Options">
+                        <MoreHorizontal size={18} />
+                      </button>
                     </td>
                   </tr>
                 ))
@@ -220,6 +239,17 @@ export default function ProprietairesPage() {
                   placeholder="Ex: +225 01 02 03 04 05"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
+                  className="input"
+                />
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Photo du propriétaire (Lien URL de l'image)</label>
+                <input
+                  type="url"
+                  placeholder="Ex: https://exemple.com/photo.jpg (Optionnel)"
+                  value={avatarUrl}
+                  onChange={(e) => setAvatarUrl(e.target.value)}
                   className="input"
                 />
               </div>
