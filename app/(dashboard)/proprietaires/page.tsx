@@ -45,12 +45,8 @@ export default function ProprietairesPage() {
     const handleStorage = () => loadData();
     window.addEventListener("storage", handleStorage);
     
-    const handleClickOutside = () => setActiveDropdown(null);
-    document.addEventListener("click", handleClickOutside);
-
     return () => {
       window.removeEventListener("storage", handleStorage);
-      document.removeEventListener("click", handleClickOutside);
     };
   }, []);
 
@@ -247,8 +243,7 @@ export default function ProprietairesPage() {
                           className="btn btn-ghost btn-sm" 
                           style={{ padding: "8px" }} 
                           title="Options"
-                          onClick={(e) => {
-                            e.stopPropagation();
+                          onClick={() => {
                             setActiveDropdown(activeDropdown === l.id ? null : l.id);
                           }}
                         >
@@ -256,23 +251,31 @@ export default function ProprietairesPage() {
                         </button>
 
                         {activeDropdown === l.id && (
-                          <div 
-                            className="card animate-scale-in"
-                            style={{
-                              position: "absolute",
-                              right: "0",
-                              top: "100%",
-                              padding: "var(--space-2)",
-                              minWidth: "160px",
-                              zIndex: 9999,
-                              display: "flex",
-                              flexDirection: "column",
-                              gap: "4px",
-                              boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
-                              background: "white",
-                              border: "1px solid var(--gray-200)"
-                            }}
-                          >
+                          <>
+                            <div 
+                              style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 9998 }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveDropdown(null);
+                              }}
+                            />
+                            <div 
+                              className="card animate-scale-in"
+                              style={{
+                                position: "absolute",
+                                right: "0",
+                                top: "100%",
+                                padding: "var(--space-2)",
+                                minWidth: "160px",
+                                zIndex: 9999,
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: "4px",
+                                boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+                                background: "white",
+                                border: "1px solid var(--gray-200)"
+                              }}
+                            >
                             <button 
                               className="btn btn-ghost btn-sm" 
                               style={{ width: "100%", justifyContent: "flex-start", color: "var(--gray-700)", fontWeight: "500" }}
@@ -304,6 +307,7 @@ export default function ProprietairesPage() {
                               <Trash2 size={14} style={{ marginRight: "8px" }} /> Supprimer
                             </button>
                           </div>
+                          </>
                         )}
                       </div>
                     </td>
