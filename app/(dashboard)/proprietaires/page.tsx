@@ -74,14 +74,42 @@ export default function ProprietairesPage() {
     if (!file || !activePhotoId) return;
 
     const reader = new FileReader();
-    reader.onloadend = async () => {
-      const base64String = reader.result as string;
-      const landlord = landlords.find(l => l.id === activePhotoId);
-      if (landlord) {
-        await db.updateLandlord({ ...landlord, avatar_url: base64String });
-        await loadData();
-        window.dispatchEvent(new Event("storage"));
-      }
+    reader.onloadend = () => {
+      const img = new Image();
+      img.src = reader.result as string;
+      img.onload = async () => {
+        const canvas = document.createElement("canvas");
+        const MAX_SIZE = 200;
+        let width = img.width;
+        let height = img.height;
+        
+        if (width > height) {
+          if (width > MAX_SIZE) {
+            height *= MAX_SIZE / width;
+            width = MAX_SIZE;
+          }
+        } else {
+          if (height > MAX_SIZE) {
+            width *= MAX_SIZE / height;
+            height = MAX_SIZE;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        // Compress to 80% JPEG (very light weight)
+        const compressedBase64 = canvas.toDataURL("image/jpeg", 0.8);
+        
+        const landlord = landlords.find(l => l.id === activePhotoId);
+        if (landlord) {
+          await db.updateLandlord({ ...landlord, avatar_url: compressedBase64 });
+          await loadData();
+          window.dispatchEvent(new Event("storage"));
+        }
+      };
     };
     reader.readAsDataURL(file);
   };
@@ -157,13 +185,13 @@ export default function ProprietairesPage() {
           <table className="table">
             <thead>
               <tr>
-                <th style={{ width: "60px", textAlign: "center" }}>Photo</th>
-                <th>Propriétaire</th>
-                <th>Téléphone</th>
-                <th>E-mail</th>
-                <th>Taux de commission</th>
-                <th>Biens associés</th>
-                <th style={{ textAlign: "right" }}>Actions</th>
+                <th style={{ width: "80px", textAlign: "center" }}>Photo</th>
+                <th style={{ width: "25%" }}>Propriétaire</th>
+                <th style={{ width: "20%" }}>Téléphone</th>
+                <th style={{ width: "25%" }}>E-mail</th>
+                <th style={{ width: "15%" }}>Taux de commission</th>
+                <th style={{ width: "15%" }}>Biens associés</th>
+                <th style={{ width: "60px", textAlign: "right" }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -175,12 +203,12 @@ export default function ProprietairesPage() {
                 </tr>
               ) : (
                 filteredLandlords.map((l) => (
-                  <tr key={l.id}>
+                  <tr key={l.id} style={{ position: "relative", zIndex: activeDropdown === l.id ? 100 : 1 }}>
                     <td style={{ textAlign: "center" }}>
                       {l.avatar_url ? (
-                        <img src={l.avatar_url} alt={l.full_name} className="avatar" style={{ objectFit: "cover", width: "40px", height: "40px", cursor: "pointer", border: "2px solid var(--gray-200)" }} onClick={() => handlePhotoClick(l.id)} title="Modifier la photo" />
+                        <img src={l.avatar_url} alt={l.full_name} className="avatar avatar-zoomable" style={{ objectFit: "cover", width: "40px", height: "40px", cursor: "pointer", border: "2px solid var(--gray-200)", margin: "0 auto" }} onClick={() => handlePhotoClick(l.id)} title="Modifier la photo" />
                       ) : (
-                        <button className="btn btn-ghost btn-sm" style={{ padding: 0, borderRadius: "50%", background: "var(--gray-100)", width: "40px", height: "40px", display: "inline-flex", alignItems: "center", justifyContent: "center" }} onClick={() => handlePhotoClick(l.id)} title="Ajouter une photo">
+                        <button className="btn btn-ghost btn-sm" style={{ padding: 0, borderRadius: "50%", background: "var(--gray-100)", width: "40px", height: "40px", display: "inline-flex", alignItems: "center", justifyContent: "center", margin: "0 auto" }} onClick={() => handlePhotoClick(l.id)} title="Ajouter une photo">
                           <Plus size={18} style={{ color: "var(--gray-500)" }} />
                         </button>
                       )}

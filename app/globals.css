@@ -473,6 +473,17 @@ h1, h2, h3, h4, h5, h6 {
   font-size: var(--text-2xl);
 }
 
+.avatar-zoomable {
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
+}
+
+.avatar-zoomable:hover {
+  transform: scale(2.5);
+  z-index: 100;
+  position: relative;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
 /* ============================================
    Animations
    ============================================ */
