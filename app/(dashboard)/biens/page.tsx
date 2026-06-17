@@ -428,9 +428,9 @@ export default function BiensPage() {
               overflowY: "auto"
             }}
           >
-            <div style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "var(--space-6)", minHeight: "32px" }}>
+            <div style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "var(--space-6)", minHeight: "32px", marginTop: "12px" }}>
               <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800", textAlign: "center", margin: 0 }}>Ajouter un nouveau bien</h3>
-              <button className="btn btn-ghost btn-sm" onClick={() => setShowAddModal(false)} style={{ position: "absolute", right: 0, padding: "4px" }}>
+              <button className="btn btn-ghost btn-sm" onClick={() => setShowAddModal(false)} style={{ position: "absolute", right: 0, top: "-8px", padding: "4px" }}>
                 <X size={20} />
               </button>
             </div>
@@ -631,9 +631,9 @@ export default function BiensPage() {
               overflowY: "auto"
             }}
           >
-            <div style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "var(--space-6)", minHeight: "32px" }}>
+            <div style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "var(--space-6)", minHeight: "32px", marginTop: "12px" }}>
               <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800", textAlign: "center", margin: 0 }}>Modifier le bien</h3>
-              <button className="btn btn-ghost btn-sm" onClick={() => setEditProperty(null)} style={{ position: "absolute", right: 0, padding: "4px" }}>
+              <button className="btn btn-ghost btn-sm" onClick={() => setEditProperty(null)} style={{ position: "absolute", right: 0, top: "-8px", padding: "4px" }}>
                 <X size={20} />
               </button>
             </div>
