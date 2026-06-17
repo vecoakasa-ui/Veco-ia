@@ -10,7 +10,10 @@ import {
   Briefcase,
   Building,
   Percent,
-  MoreHorizontal
+  MoreHorizontal,
+  Eye,
+  Edit2,
+  Trash2
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Landlord } from "@/lib/types";
@@ -19,6 +22,7 @@ export default function ProprietairesPage() {
   const [landlords, setLandlords] = useState<Landlord[]>([]);
   const [search, setSearch] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   // Form states
   const [fullName, setFullName] = useState("");
@@ -36,8 +40,23 @@ export default function ProprietairesPage() {
     // Listen for storage changes from other tabs/pages
     const handleStorage = () => loadData();
     window.addEventListener("storage", handleStorage);
-    return () => window.removeEventListener("storage", handleStorage);
+    
+    const handleClickOutside = () => setActiveDropdown(null);
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      document.removeEventListener("click", handleClickOutside);
+    };
   }, []);
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm("Êtes-vous sûr de vouloir supprimer ce propriétaire ?")) {
+      await db.deleteLandlord(id);
+      await loadData();
+      window.dispatchEvent(new Event("storage"));
+    }
+  };
 
   const handleAddLandlord = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -166,10 +185,60 @@ export default function ProprietairesPage() {
                         {l.property_count || 0} bien(s)
                       </span>
                     </td>
-                    <td style={{ textAlign: "right" }}>
-                      <button className="btn btn-ghost btn-sm" style={{ padding: "8px" }} title="Options">
+                    <td style={{ textAlign: "right", position: "relative" }}>
+                      <button 
+                        className="btn btn-ghost btn-sm" 
+                        style={{ padding: "8px" }} 
+                        title="Options"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveDropdown(activeDropdown === l.id ? null : l.id);
+                        }}
+                      >
                         <MoreHorizontal size={18} />
                       </button>
+
+                      {activeDropdown === l.id && (
+                        <div 
+                          className="card animate-scale-in"
+                          style={{
+                            position: "absolute",
+                            right: "10px",
+                            top: "100%",
+                            padding: "var(--space-2)",
+                            minWidth: "180px",
+                            zIndex: 50,
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "4px",
+                            boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
+                            background: "white",
+                          }}
+                        >
+                          <button 
+                            className="btn btn-ghost btn-sm" 
+                            style={{ width: "100%", justifyContent: "flex-start", color: "var(--gray-700)", fontWeight: "500" }}
+                            onClick={() => alert("Détails du propriétaire " + l.full_name)}
+                          >
+                            <Eye size={14} style={{ marginRight: "8px" }} /> Voir les détails
+                          </button>
+                          <button 
+                            className="btn btn-ghost btn-sm" 
+                            style={{ width: "100%", justifyContent: "flex-start", color: "var(--gray-700)", fontWeight: "500" }}
+                            onClick={() => alert("Modifier le propriétaire " + l.full_name)}
+                          >
+                            <Edit2 size={14} style={{ marginRight: "8px" }} /> Modifier
+                          </button>
+                          <div style={{ height: "1px", background: "var(--gray-200)", margin: "4px 0" }}></div>
+                          <button 
+                            className="btn btn-ghost btn-sm" 
+                            style={{ width: "100%", justifyContent: "flex-start", color: "var(--red)", fontWeight: "600" }}
+                            onClick={() => handleDelete(l.id)}
+                          >
+                            <Trash2 size={14} style={{ marginRight: "8px" }} /> Supprimer
+                          </button>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))

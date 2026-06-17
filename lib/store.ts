@@ -514,6 +514,18 @@ export const db = {
       setToStorage("landlords", landlords);
     }
   },
+  deleteLandlord: async (id: string): Promise<void> => {
+    if (isSupabaseConfigured()) {
+      try {
+        const { error } = await supabase.from("landlords").delete().eq("id", id);
+        if (error) throw error;
+      } catch (err) {
+        console.error("Error deleting landlord in Supabase:", err);
+      }
+    }
+    const landlords = getFromStorage("landlords", DEFAULT_LANDLORDS);
+    setToStorage("landlords", landlords.filter((l) => l.id !== id));
+  },
 
   // Properties
   getProperties: async (): Promise<Property[]> => {
