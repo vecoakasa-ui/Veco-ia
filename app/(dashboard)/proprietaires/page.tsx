@@ -215,7 +215,7 @@ export default function ProprietairesPage() {
                   </td>
                 </tr>
               ) : (
-                filteredLandlords.map((l) => (
+                filteredLandlords.map((l, index) => (
                   <tr key={l.id}>
                     <td style={{ textAlign: "center" }}>
                       {l.avatar_url ? (
@@ -281,7 +281,8 @@ export default function ProprietairesPage() {
                               style={{
                                 position: "absolute",
                                 right: "0",
-                                top: "100%",
+                                top: index >= filteredLandlords.length - 2 && filteredLandlords.length > 3 ? "auto" : "100%",
+                                bottom: index >= filteredLandlords.length - 2 && filteredLandlords.length > 3 ? "100%" : "auto",
                                 padding: "var(--space-2)",
                                 minWidth: "160px",
                                 zIndex: 9999,
