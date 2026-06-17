@@ -9,8 +9,10 @@ import {
   Phone, 
   Calendar,
   Building,
-  MoreVertical,
-  ExternalLink
+  MoreHorizontal,
+  ExternalLink,
+  Edit3,
+  Trash2
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Tenant, Property } from "@/lib/types";
@@ -21,6 +23,9 @@ export default function LocatairesPage() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [search, setSearch] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [photoMenuId, setPhotoMenuId] = useState<string | null>(null);
+  const [deleteTenantId, setDeleteTenantId] = useState<string | null>(null);
 
   // Form states
   const [fullName, setFullName] = useState("");
@@ -74,6 +79,61 @@ export default function LocatairesPage() {
     window.dispatchEvent(new Event("storage"));
   };
 
+  const handlePhotoClick = (id: string) => {
+    setPhotoMenuId(id);
+  };
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !photoMenuId) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const img = new Image();
+      img.src = reader.result as string;
+      img.onload = async () => {
+        const canvas = document.createElement("canvas");
+        const MAX_SIZE = 200;
+        let width = img.width;
+        let height = img.height;
+        
+        if (width > height) {
+          if (width > MAX_SIZE) {
+            height *= MAX_SIZE / width;
+            width = MAX_SIZE;
+          }
+        } else {
+          if (height > MAX_SIZE) {
+            width *= MAX_SIZE / height;
+            height = MAX_SIZE;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        const compressedBase64 = canvas.toDataURL("image/jpeg", 0.8);
+        
+        const tenant = tenants.find(t => t.id === photoMenuId);
+        if (tenant) {
+          await db.updateTenant({ ...tenant, avatar_url: compressedBase64 });
+          await loadData();
+          window.dispatchEvent(new Event("storage"));
+        }
+      };
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleDelete = async (id: string) => {
+    await db.deleteTenant(id);
+    setDeleteTenantId(null);
+    await loadData();
+    window.dispatchEvent(new Event("storage"));
+  };
+
   const filteredTenants = tenants.filter((t) => {
     const term = search.toLowerCase();
     const matchesSearch = 
@@ -120,30 +180,37 @@ export default function LocatairesPage() {
           <table className="table">
             <thead>
               <tr>
+                <th style={{ width: "60px", textAlign: "center" }}>Photo</th>
                 <th>Nom du locataire</th>
                 <th>Coordonnées</th>
                 <th>Bien assigné</th>
                 <th>Période du bail</th>
                 <th>Type</th>
                 <th>Statut</th>
-                <th>Actions</th>
+                <th style={{ width: "80px", textAlign: "center" }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredTenants.length === 0 ? (
                 <tr>
-                  <td colSpan={7} style={{ textAlign: "center", padding: "var(--space-16)", color: "var(--gray-400)" }}>
+                  <td colSpan={8} style={{ textAlign: "center", padding: "var(--space-16)", color: "var(--gray-400)" }}>
                     Aucun locataire enregistré.
                   </td>
                 </tr>
               ) : (
                 filteredTenants.map((t) => (
                   <tr key={t.id}>
+                    <td style={{ textAlign: "center" }}>
+                      {t.avatar_url ? (
+                        <img src={t.avatar_url} alt={t.full_name} className="avatar avatar-zoomable" style={{ objectFit: "cover", width: "40px", height: "40px", cursor: "pointer", border: "2px solid var(--gray-200)", margin: "0 auto" }} onClick={() => handlePhotoClick(t.id)} title="Modifier la photo" />
+                      ) : (
+                        <button className="btn btn-ghost btn-sm" style={{ padding: 0, borderRadius: "50%", background: "var(--gray-100)", width: "40px", height: "40px", display: "inline-flex", alignItems: "center", justifyContent: "center", margin: "0 auto" }} onClick={() => handlePhotoClick(t.id)} title="Ajouter une photo">
+                          <Plus size={18} style={{ color: "var(--gray-500)" }} />
+                        </button>
+                      )}
+                    </td>
                     <td>
                       <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
-                        <div className="avatar avatar-sm" style={{ background: "var(--primary-lightest)", color: "var(--primary-dark)" }}>
-                          {t.full_name?.split(" ").map(n => n[0]).join("").toUpperCase().slice(0, 2) || "L"}
-                        </div>
                         <div>
                           <h4 style={{ fontSize: "var(--text-sm)", fontWeight: "700", margin: 0 }}>{t.full_name}</h4>
                           <span style={{ fontSize: "10px", color: "var(--gray-400)" }}>ID: {t.id}</span>
@@ -183,14 +250,70 @@ export default function LocatairesPage() {
                         Actif
                       </span>
                     </td>
-                    <td>
-                      <div style={{ display: "flex", gap: "8px" }}>
-                        <a href={`/locataire/${t.id}`} target="_blank" rel="noopener noreferrer" className="btn btn-outline btn-sm text-primary" style={{ padding: "4px 8px", fontSize: "11px", borderColor: "var(--primary-light)" }} title="Voir l'espace locataire">
-                          <ExternalLink size={14} style={{ marginRight: "4px" }} /> Espace Client
-                        </a>
-                        <button className="btn btn-ghost" style={{ padding: "4px" }}>
-                          <MoreVertical size={16} />
+                    <td style={{ textAlign: "center" }}>
+                      <div style={{ position: "relative", display: "inline-block" }}>
+                        <button 
+                          className="btn btn-ghost btn-sm" 
+                          style={{ padding: "8px" }} 
+                          title="Options"
+                          onClick={() => {
+                            setActiveDropdown(activeDropdown === t.id ? null : t.id);
+                          }}
+                        >
+                          <MoreHorizontal size={18} />
                         </button>
+
+                        {activeDropdown === t.id && (
+                          <>
+                            <div 
+                              style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 9998 }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveDropdown(null);
+                              }}
+                            />
+                            <div 
+                              className="card animate-scale-in"
+                              style={{
+                                position: "absolute",
+                                right: "0",
+                                top: "100%",
+                                padding: "var(--space-2)",
+                                minWidth: "160px",
+                                zIndex: 9999,
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: "4px",
+                                boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+                                background: "white",
+                                border: "1px solid var(--gray-200)"
+                              }}
+                            >
+                            <button 
+                              className="btn btn-ghost btn-sm" 
+                              style={{ width: "100%", justifyContent: "flex-start", color: "var(--gray-700)", fontWeight: "500" }}
+                              onClick={() => {
+                                setActiveDropdown(null);
+                                window.open(`/locataire/${t.id}`, '_blank');
+                              }}
+                            >
+                              <ExternalLink size={14} style={{ marginRight: "8px", color: "var(--gray-400)" }} /> 
+                              Espace Client
+                            </button>
+                            <button 
+                              className="btn btn-ghost btn-sm" 
+                              style={{ width: "100%", justifyContent: "flex-start", color: "var(--danger)", fontWeight: "500", borderTop: "1px solid var(--gray-100)", marginTop: "4px", paddingTop: "8px" }}
+                              onClick={() => {
+                                setActiveDropdown(null);
+                                setDeleteTenantId(t.id);
+                              }}
+                            >
+                              <Trash2 size={14} style={{ marginRight: "8px" }} /> 
+                              Supprimer
+                            </button>
+                            </div>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -200,6 +323,39 @@ export default function LocatairesPage() {
           </table>
         </div>
       </div>
+
+      {/* Hidden file input for photo upload */}
+      <input
+        type="file"
+        id="photo-upload"
+        accept="image/jpeg,image/png,image/webp"
+        style={{ display: "none" }}
+        onChange={handlePhotoUpload}
+      />
+
+      {/* Photo menu interceptor */}
+      {photoMenuId && (
+        <div 
+          style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999 }}
+          onClick={() => setPhotoMenuId(null)}
+        >
+           <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", background: "white", padding: "20px", borderRadius: "12px", boxShadow: "0 10px 40px rgba(0,0,0,0.2)" }}>
+              <h4 style={{ margin: "0 0 16px 0", fontSize: "16px" }}>Photo du locataire</h4>
+              <button 
+                className="btn btn-primary"
+                style={{ width: "100%", marginBottom: "8px" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  document.getElementById('photo-upload')?.click();
+                  setPhotoMenuId(null);
+                }}
+              >
+                Choisir une image
+              </button>
+              <button className="btn btn-outline" style={{ width: "100%" }} onClick={() => setPhotoMenuId(null)}>Annuler</button>
+           </div>
+        </div>
+      )}
 
       {/* ============================================
          Add Tenant Modal
@@ -340,6 +496,28 @@ export default function LocatairesPage() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteTenantId && (
+        <div 
+          style={{ position: "fixed", top: 0, bottom: 0, left: 0, right: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: "var(--space-4)", backdropFilter: "blur(4px)" }}
+        >
+          <div className="card" style={{ width: "100%", maxWidth: "400px", background: "white", padding: "var(--space-6)" }}>
+            <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--danger)", margin: "0 0 var(--space-2) 0" }}>Confirmer la suppression</h3>
+            <p style={{ color: "var(--gray-600)", margin: "0 0 var(--space-6) 0" }}>
+              Êtes-vous sûr de vouloir supprimer définitivement ce locataire ? Cette action est irréversible.
+            </p>
+            <div style={{ display: "flex", gap: "var(--space-3)" }}>
+              <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setDeleteTenantId(null)}>
+                Annuler
+              </button>
+              <button type="button" className="btn btn-primary" style={{ flex: 1, background: "var(--danger)", borderColor: "var(--danger)" }} onClick={() => handleDelete(deleteTenantId)}>
+                Supprimer
+              </button>
+            </div>
           </div>
         </div>
       )}

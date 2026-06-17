@@ -746,6 +746,50 @@ export const db = {
 
     return newTenant;
   },
+  updateTenant: async (tenant: Tenant): Promise<void> => {
+    if (isSupabaseConfigured()) {
+      try {
+        const { error: profileError } = await supabase.from("profiles").update({
+          full_name: tenant.full_name,
+          email: tenant.email,
+          phone: tenant.phone,
+          avatar_url: tenant.avatar_url
+        }).eq("id", tenant.profile_id);
+        if (profileError) throw profileError;
+
+        const { error } = await supabase.from("tenants").update({
+          property_id: tenant.property_id,
+          lease_start: tenant.lease_start,
+          lease_end: tenant.lease_end,
+          lease_type: tenant.lease_type,
+          status: tenant.status
+        }).eq("id", tenant.id);
+        if (error) throw error;
+        return;
+      } catch (err) {
+        console.error("Error updating tenant in Supabase:", err);
+      }
+    }
+    const tenants = getFromStorage("tenants", DEFAULT_TENANTS);
+    const index = tenants.findIndex(t => t.id === tenant.id);
+    if (index !== -1) {
+      tenants[index] = tenant;
+      setToStorage("tenants", tenants);
+    }
+  },
+  deleteTenant: async (id: string): Promise<void> => {
+    if (isSupabaseConfigured()) {
+      try {
+        const { error } = await supabase.from("tenants").delete().eq("id", id);
+        if (error) throw error;
+        return;
+      } catch (err) {
+        console.error("Error deleting tenant in Supabase:", err);
+      }
+    }
+    const tenants = getFromStorage("tenants", DEFAULT_TENANTS);
+    setToStorage("tenants", tenants.filter(t => t.id !== id));
+  },
 
   // Payments
   getPayments: async (): Promise<Payment[]> => {
