@@ -4,13 +4,8 @@ import { createClient } from '@supabase/supabase-js';
 let supabaseUrl = "https://nunntgrphkkebbmbumxs.supabase.co";
 let supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im51bm50Z3JwaGtrZWJibWJ1bXhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1Mzg0NjMsImV4cCI6MjA5NzExNDQ2M30.oshJ6ldeAziRxdOAjNFL3nRhipgQNxLsCrcYgswN53Y";
 
-// Si on est dans le navigateur, on essaie de récupérer les clés magiques (au cas où l'utilisateur en met d'autres plus tard)
-if (typeof window !== 'undefined') {
-  const storedUrl = localStorage.getItem("V_SUPABASE_URL");
-  const storedKey = localStorage.getItem("V_SUPABASE_KEY");
-  if (storedUrl && storedUrl.length > 5) supabaseUrl = storedUrl;
-  if (storedKey && storedKey.length > 10) supabaseAnonKey = storedKey;
-}
+// Les clés sont codées en dur pour garantir le fonctionnement.
+// (La vérification du localStorage a été désactivée pour éviter les conflits avec d'anciennes clés erronées)
 
 export function isSupabaseConfigured(): boolean {
   return (
