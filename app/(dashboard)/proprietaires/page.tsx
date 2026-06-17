@@ -25,6 +25,7 @@ export default function ProprietairesPage() {
   const [viewLandlord, setViewLandlord] = useState<Landlord | null>(null);
   const [editLandlord, setEditLandlord] = useState<Landlord | null>(null);
   const [deleteLandlord, setDeleteLandlord] = useState<Landlord | null>(null);
+  const [photoMenuId, setPhotoMenuId] = useState<string | null>(null);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   // Photo Upload State
@@ -69,10 +70,7 @@ export default function ProprietairesPage() {
   };
 
   const handlePhotoClick = (id: string) => {
-    setActivePhotoId(id);
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
+    setPhotoMenuId(id);
   };
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -317,7 +315,7 @@ export default function ProprietairesPage() {
                             </button>
                             <button 
                               className="btn btn-ghost btn-sm" 
-                              style={{ width: "100%", justifyContent: "flex-start", color: "var(--red)", fontWeight: "500" }}
+                              style={{ width: "100%", justifyContent: "flex-start", color: "var(--danger)", fontWeight: "500" }}
                               onClick={() => {
                                 setDeleteLandlord(l);
                                 setActiveDropdown(null);
@@ -663,7 +661,7 @@ export default function ProprietairesPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: "flex", justifyContent: "center", marginBottom: "var(--space-4)" }}>
-              <div style={{ background: "rgba(239, 68, 68, 0.1)", color: "var(--red)", padding: "16px", borderRadius: "50%" }}>
+              <div style={{ background: "rgba(239, 68, 68, 0.1)", color: "var(--danger)", padding: "16px", borderRadius: "50%" }}>
                 <Trash2 size={32} />
               </div>
             </div>
@@ -677,8 +675,44 @@ export default function ProprietairesPage() {
               <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setDeleteLandlord(null)}>
                 Annuler
               </button>
-              <button type="button" className="btn btn-primary" style={{ flex: 1, background: "var(--red)", borderColor: "var(--red)", color: "white" }} onClick={() => handleDelete(deleteLandlord.id)}>
+              <button type="button" className="btn btn-primary" style={{ flex: 1, background: "var(--danger)", borderColor: "var(--danger)", color: "white" }} onClick={() => handleDelete(deleteLandlord.id)}>
                 Oui, supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Photo Menu */}
+      {photoMenuId && (
+        <div 
+          style={{
+            position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+            background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center",
+            zIndex: 100, padding: "var(--space-4)", backdropFilter: "blur(4px)"
+          }}
+          className="animate-fade-in"
+          onClick={() => setPhotoMenuId(null)}
+        >
+          <div 
+            className="card animate-scale-in"
+            style={{ width: "100%", maxWidth: "400px", background: "white", padding: "var(--space-6)", textAlign: "center" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800", marginBottom: "var(--space-2)" }}>Modifier la photo</h3>
+            <p style={{ color: "var(--gray-500)", marginBottom: "var(--space-6)" }}>
+              Souhaitez-vous télécharger une nouvelle image depuis votre explorateur de fichiers ?
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
+              <button type="button" className="btn btn-primary" onClick={() => {
+                  setActivePhotoId(photoMenuId);
+                  if (fileInputRef.current) fileInputRef.current.click();
+                  setPhotoMenuId(null);
+              }}>
+                 Télécharger l'image
+              </button>
+              <button type="button" className="btn btn-outline" onClick={() => setPhotoMenuId(null)}>
+                Annuler
               </button>
             </div>
           </div>
