@@ -228,7 +228,7 @@ export default function Home({ searchParams }: HomeProps) {
             <Link href="/login" className="btn btn-orange" style={{ padding: '8px 16px', fontSize: 'var(--text-sm)' }}>
               Connexion
             </Link>
-            <a href="#contact" className="btn btn-ghost" style={{ padding: '8px 16px', fontSize: 'var(--text-sm)', fontWeight: '600' }}>
+            <a href="#contact" className="btn" style={{ background: 'var(--gray-100)', color: 'var(--gray-800)', padding: '8px 16px', fontSize: 'var(--text-sm)', fontWeight: '600' }}>
               Demander un devis <ArrowRight size={14} style={{ marginLeft: '4px' }} />
             </a>
           </div>
@@ -308,7 +308,7 @@ export default function Home({ searchParams }: HomeProps) {
               <Link href="/login" className="btn btn-orange" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
                 Connexion
               </Link>
-              <a href="#contact" className="btn btn-ghost" style={{ width: '100%', display: 'flex', justifyContent: 'center' }} onClick={() => setMobileMenuOpen(false)}>
+              <a href="#contact" className="btn" style={{ background: 'var(--gray-100)', color: 'var(--gray-800)', width: '100%', display: 'flex', justifyContent: 'center' }} onClick={() => setMobileMenuOpen(false)}>
                 Demander un devis
               </a>
             </div>
