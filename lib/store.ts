@@ -535,8 +535,10 @@ export const db = {
           .from("properties")
           .select("*")
           .order("created_at", { ascending: true });
-        if (error) throw error;
-        if (data) return data as Property[];
+        if (data) {
+          setToStorage("properties", data);
+          return data as Property[];
+        }
       } catch (err) {
         console.error("Error fetching properties from Supabase:", err);
       }
