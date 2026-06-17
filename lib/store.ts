@@ -488,7 +488,7 @@ export const db = {
         return newLandlord;
       } catch (err: unknown) {
         console.error("Error adding landlord to Supabase:", err);
-        alert("Erreur Supabase (Ajout Propriétaire) : " + (err.message || JSON.stringify(err)));
+        alert("Erreur Supabase (Ajout Propriétaire) : " + ((err as Error).message || JSON.stringify(err)));
       }
     }
     const landlords = getFromStorage("landlords", DEFAULT_LANDLORDS);
@@ -531,7 +531,7 @@ export const db = {
   getProperties: async (): Promise<Property[]> => {
     if (isSupabaseConfigured()) {
       try {
-        const { data, error } = await supabase
+        const { data } = await supabase
           .from("properties")
           .select("*")
           .order("created_at", { ascending: true });

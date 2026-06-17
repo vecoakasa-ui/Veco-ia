@@ -1,5 +1,5 @@
 "use client";
-/* eslint-disable react-hooks/set-state-in-effect */
+ 
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
@@ -52,7 +52,7 @@ export default function PortailLocatairePage() {
   };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
     loadData();
     const handleStorage = () => loadData();
     window.addEventListener("storage", handleStorage);

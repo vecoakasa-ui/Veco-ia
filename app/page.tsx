@@ -1,6 +1,6 @@
 "use client";
 
-/* eslint-disable react-hooks/exhaustive-deps */
+ 
 
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
@@ -464,7 +464,7 @@ export default function Home({ searchParams }: HomeProps) {
           </div>
 
           <div className="animate-scale-in" style={{ position: 'relative', width: '100%', height: 'auto', display: 'flex', justifyContent: 'center' }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+            { }
             <img 
               src="/gestimmo_about_img.png" 
               alt="Salon chic Gestimmo" 
@@ -999,7 +999,7 @@ export default function Home({ searchParams }: HomeProps) {
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-3)", background: "var(--gray-50)", padding: "var(--space-4)", borderRadius: "var(--radius-lg)", border: "1px dashed var(--gray-300)" }}>
                   <span style={{ fontSize: "var(--text-xs)", fontWeight: "700", color: "var(--primary)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Option 1 : Paiement Sécurisé par Code QR</span>
                   <div style={{ padding: "8px", background: "white", borderRadius: "8px", boxShadow: "var(--shadow-sm)" }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    { }
                     <img 
                       src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&color=111827&data=paydunya_${selectedOperator}_sub_${selectedPlan || 'pro'}_${selectedPrice || '15000'}`} 
                       alt="Code QR de paiement" 

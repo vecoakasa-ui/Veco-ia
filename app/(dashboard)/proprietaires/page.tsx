@@ -7,7 +7,6 @@ import {
   X, 
   Mail, 
   Phone, 
-  Briefcase,
   Building,
   Percent,
   MoreHorizontal,
@@ -36,7 +35,8 @@ export default function ProprietairesPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
+  const [, setAvatarUrl] = useState("");
+
   const [commission, setCommission] = useState("10");
 
   const loadData = async () => {

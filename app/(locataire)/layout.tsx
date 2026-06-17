@@ -1,5 +1,5 @@
 "use client";
-/* eslint-disable react-hooks/set-state-in-effect */
+ 
 
 import { usePathname } from "next/navigation";
 import { Home, FileText, AlertTriangle, User } from "lucide-react";
@@ -74,7 +74,6 @@ export default function LocataireLayout({
           {navItems.map((item) => {
             const Icon = item.icon;
             // Simplified active state check for single-page dashboard with hashes
-            const isActive = item.hash === "" ? true : false; // Placeholder, real scroll spy could be added
 
             return (
               <a 

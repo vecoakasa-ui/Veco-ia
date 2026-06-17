@@ -21,7 +21,7 @@ const customStorage = {
     if (typeof window === 'undefined') return null;
     try {
       return window.localStorage.getItem(key);
-    } catch (e) {
+    } catch {
       return null;
     }
   },
@@ -29,13 +29,13 @@ const customStorage = {
     if (typeof window === 'undefined') return;
     try {
       window.localStorage.setItem(key, value);
-    } catch (e) {}
+    } catch {}
   },
   removeItem: (key: string) => {
     if (typeof window === 'undefined') return;
     try {
       window.localStorage.removeItem(key);
-    } catch (e) {}
+    } catch {}
   }
 };
 

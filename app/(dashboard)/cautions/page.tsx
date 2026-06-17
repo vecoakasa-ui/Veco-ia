@@ -6,8 +6,7 @@ import {
   Search, 
   ShieldCheck, 
   AlertCircle, 
-  CheckCircle2, 
-  Clock,
+  CheckCircle2,
   X,
   Camera,
   Banknote,
@@ -15,7 +14,7 @@ import {
   User
 } from "lucide-react";
 import { db } from "@/lib/store";
-import { Lease, DepositStatus, InventoryStatus } from "@/lib/types";
+import { Lease } from "@/lib/types";
 import { formatCurrency, formatDate } from "@/lib/utils";
 
 export default function CautionsPage() {

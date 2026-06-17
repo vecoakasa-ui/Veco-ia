@@ -1,5 +1,5 @@
 "use client";
-/* eslint-disable react-hooks/set-state-in-effect */
+ 
 
 import { useState, useEffect } from "react";
 import { Save, Database, Shield, CheckCircle2 } from "lucide-react";
@@ -13,9 +13,9 @@ export default function SettingsPage() {
     // Charger les clés depuis le localStorage si elles existent
     const storedUrl = localStorage.getItem("V_SUPABASE_URL");
     const storedKey = localStorage.getItem("V_SUPABASE_KEY");
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
     if (storedUrl) setUrl(storedUrl);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
     if (storedKey) setKey(storedKey);
   }, []);
 

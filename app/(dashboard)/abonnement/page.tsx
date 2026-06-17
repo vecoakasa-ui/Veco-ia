@@ -233,8 +233,6 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
       {/* Pricing Cards Grid */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "var(--space-6)" }}>
         {plans.map((p) => {
-          const isCurrent = profile.subscription_plan === p.key;
-          const isHigher = (profile.subscription_plan === 'free' && (p.key === 'pro' || p.key === 'business')) || (profile.subscription_plan === 'pro' && p.key === 'business');
           
           return (
             <div 
@@ -391,7 +389,7 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-3)", background: "var(--gray-50)", padding: "var(--space-4)", borderRadius: "var(--radius-lg)", border: "1px dashed var(--gray-300)" }}>
                   <span style={{ fontSize: "var(--text-xs)", fontWeight: "700", color: "var(--primary-dark)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Option 1 : Paiement Sécurisé par Code QR</span>
                   <div style={{ padding: "8px", background: "white", borderRadius: "8px", boxShadow: "var(--shadow-sm)" }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    { }
                     <img 
                       src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&color=111827&data=paydunya_${selectedOperator}_sub_${queryPlan || 'pro'}_${queryPrice || '15000'}`} 
                       alt="Code QR de paiement" 

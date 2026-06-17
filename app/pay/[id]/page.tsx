@@ -410,7 +410,7 @@ export default function TenantPaymentPage({ params }: PageProps) {
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-3)", background: "var(--gray-50)", padding: "var(--space-4)", borderRadius: "var(--radius-lg)", border: "1px dashed var(--gray-300)", marginBottom: "var(--space-4)" }}>
                 <span style={{ fontSize: "var(--text-xs)", fontWeight: "700", color: "var(--primary-dark)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Option 1 : Paiement Sécurisé par Code QR</span>
                 <div style={{ padding: "8px", background: "white", borderRadius: "8px", boxShadow: "var(--shadow-sm)" }}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  { }
                   <img 
                     src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&color=111827&data=paydunya_${selectedOperator}_${payment.id}_${payment.total}`} 
                     alt="Code QR de paiement" 

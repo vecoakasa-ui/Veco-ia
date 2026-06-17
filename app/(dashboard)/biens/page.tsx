@@ -48,7 +48,7 @@ export default function BiensPage() {
     // 1. Instant load from cache (SWR)
     const cached = localStorage.getItem("properties");
     if (cached) {
-      try { setProperties(JSON.parse(cached)); } catch(e) {}
+      try { setProperties(JSON.parse(cached)); } catch {}
     }
     
     const props = await db.getProperties();
