@@ -34,6 +34,7 @@ CREATE TABLE landlords (
   full_name TEXT NOT NULL,
   email TEXT NOT NULL,
   phone TEXT,
+  avatar_url TEXT,
   commission_rate NUMERIC DEFAULT 0,
   property_count INT DEFAULT 0,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
