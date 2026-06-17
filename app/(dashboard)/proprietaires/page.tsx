@@ -22,6 +22,8 @@ export default function ProprietairesPage() {
   const [landlords, setLandlords] = useState<Landlord[]>([]);
   const [search, setSearch] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
+  const [viewLandlord, setViewLandlord] = useState<Landlord | null>(null);
+  const [editLandlord, setEditLandlord] = useState<Landlord | null>(null);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   // Photo Upload State
@@ -143,6 +145,15 @@ export default function ProprietairesPage() {
     alert("Étape 2 : Modal fermé, chargement des données...");
 
     // Reload lists
+    await loadData();
+    window.dispatchEvent(new Event("storage"));
+  };
+
+  const handleSaveEditLandlord = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editLandlord) return;
+    await db.updateLandlord(editLandlord);
+    setEditLandlord(null);
     await loadData();
     window.dispatchEvent(new Event("storage"));
   };
@@ -288,7 +299,7 @@ export default function ProprietairesPage() {
                               className="btn btn-ghost btn-sm" 
                               style={{ width: "100%", justifyContent: "flex-start", color: "var(--gray-700)", fontWeight: "500" }}
                               onClick={() => {
-                                alert("Détails du propriétaire " + l.full_name);
+                                setViewLandlord(l);
                                 setActiveDropdown(null);
                               }}
                             >
@@ -298,7 +309,7 @@ export default function ProprietairesPage() {
                               className="btn btn-ghost btn-sm" 
                               style={{ width: "100%", justifyContent: "flex-start", color: "var(--gray-700)", fontWeight: "500" }}
                               onClick={() => {
-                                alert("Modifier le propriétaire " + l.full_name);
+                                setEditLandlord(l);
                                 setActiveDropdown(null);
                               }}
                             >
@@ -436,6 +447,183 @@ export default function ProprietairesPage() {
                 </button>
                 <button type="button" className="btn btn-primary" style={{ flex: 1 }} onClick={handleAddLandlord}>
                   Enregistrer
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Modal View Landlord */}
+      {viewLandlord && (
+        <div 
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 100,
+            padding: "var(--space-4)",
+            backdropFilter: "blur(4px)"
+          }}
+          className="animate-fade-in"
+          onClick={() => setViewLandlord(null)}
+        >
+          <div 
+            className="card animate-scale-in"
+            style={{
+              width: "100%",
+              maxWidth: "500px",
+              background: "white",
+              padding: "var(--space-6)",
+              maxHeight: "90vh",
+              overflowY: "auto"
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-6)" }}>
+              <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800" }}>Détails du Propriétaire</h3>
+              <button className="btn btn-ghost btn-sm" onClick={() => setViewLandlord(null)} style={{ padding: "4px" }}>
+                <X size={20} />
+              </button>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+              {viewLandlord.avatar_url && (
+                <div style={{ textAlign: "center", marginBottom: "var(--space-4)" }}>
+                  <img src={viewLandlord.avatar_url} alt={viewLandlord.full_name} style={{ width: "100px", height: "100px", borderRadius: "50%", objectFit: "cover", border: "4px solid var(--gray-100)" }} />
+                </div>
+              )}
+              <div>
+                <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", marginBottom: "4px" }}>Nom complet ou Société</p>
+                <p style={{ fontSize: "var(--text-md)", fontWeight: "600" }}>{viewLandlord.full_name}</p>
+              </div>
+              <div>
+                <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", marginBottom: "4px" }}>Numéro de Téléphone</p>
+                <p style={{ fontSize: "var(--text-md)", fontWeight: "600" }}>{viewLandlord.phone}</p>
+              </div>
+              <div>
+                <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", marginBottom: "4px" }}>Adresse E-mail</p>
+                <p style={{ fontSize: "var(--text-md)", fontWeight: "600" }}>{viewLandlord.email || "Non renseigné"}</p>
+              </div>
+              <div>
+                <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", marginBottom: "4px" }}>Taux de Commission</p>
+                <p style={{ fontSize: "var(--text-md)", fontWeight: "600" }}>{viewLandlord.commission_rate}% de frais de gestion</p>
+              </div>
+              <div>
+                <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", marginBottom: "4px" }}>Biens Associés</p>
+                <p style={{ fontSize: "var(--text-md)", fontWeight: "600" }}>{viewLandlord.property_count || 0} bien(s)</p>
+              </div>
+            </div>
+
+            <div style={{ marginTop: "var(--space-6)" }}>
+              <button type="button" className="btn btn-outline" style={{ width: "100%" }} onClick={() => setViewLandlord(null)}>
+                Fermer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Edit Landlord */}
+      {editLandlord && (
+        <div 
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 100,
+            padding: "var(--space-4)",
+            backdropFilter: "blur(4px)"
+          }}
+          className="animate-fade-in"
+          onClick={() => setEditLandlord(null)}
+        >
+          <div 
+            className="card animate-scale-in"
+            style={{
+              width: "100%",
+              maxWidth: "500px",
+              background: "white",
+              padding: "var(--space-6)",
+              maxHeight: "90vh",
+              overflowY: "auto"
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-6)" }}>
+              <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800" }}>Modifier un propriétaire</h3>
+              <button className="btn btn-ghost btn-sm" onClick={() => setEditLandlord(null)} style={{ padding: "4px" }}>
+                <X size={20} />
+              </button>
+            </div>
+
+            <form style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+              <div className="input-group">
+                <label className="input-label">Nom complet ou Société</label>
+                <input
+                  type="text"
+                  required
+                  value={editLandlord.full_name}
+                  onChange={(e) => setEditLandlord({...editLandlord, full_name: e.target.value})}
+                  className="input"
+                />
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Numéro de Téléphone</label>
+                <input
+                  type="tel"
+                  required
+                  value={editLandlord.phone}
+                  onChange={(e) => setEditLandlord({...editLandlord, phone: e.target.value})}
+                  className="input"
+                />
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Adresse E-mail (Optionnel)</label>
+                <input
+                  type="email"
+                  value={editLandlord.email}
+                  onChange={(e) => setEditLandlord({...editLandlord, email: e.target.value})}
+                  className="input"
+                />
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Frais de gestion (Commission %)</label>
+                <div className="input-with-icon">
+                  <Percent className="input-icon" size={16} />
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    required
+                    value={editLandlord.commission_rate}
+                    onChange={(e) => setEditLandlord({...editLandlord, commission_rate: parseFloat(e.target.value)})}
+                    className="input"
+                  />
+                </div>
+              </div>
+
+              <div style={{ display: "flex", gap: "var(--space-3)", marginTop: "var(--space-2)" }}>
+                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setEditLandlord(null)}>
+                  Annuler
+                </button>
+                <button type="button" className="btn btn-primary" style={{ flex: 1 }} onClick={handleSaveEditLandlord}>
+                  Sauvegarder
                 </button>
               </div>
             </form>
