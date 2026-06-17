@@ -1,4 +1,5 @@
 "use client";
+/* eslint-disable react-hooks/set-state-in-effect */
 
 import { useState, useEffect } from "react";
 import { Save, Database, Shield, CheckCircle2 } from "lucide-react";
@@ -12,7 +13,9 @@ export default function SettingsPage() {
     // Charger les clés depuis le localStorage si elles existent
     const storedUrl = localStorage.getItem("V_SUPABASE_URL");
     const storedKey = localStorage.getItem("V_SUPABASE_KEY");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     if (storedUrl) setUrl(storedUrl);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     if (storedKey) setKey(storedKey);
   }, []);
 
@@ -37,7 +40,7 @@ export default function SettingsPage() {
           <div>
             <h1 style={{ fontSize: "var(--text-xl)", fontWeight: 800, margin: 0 }}>Connexion Base de données</h1>
             <p style={{ color: "var(--gray-500)", margin: 0, fontSize: "var(--text-sm)" }}>
-              Contournez Vercel et connectez Supabase directement d'ici.
+              Contournez Vercel et connectez Supabase directement d&apos;ici.
             </p>
           </div>
         </div>

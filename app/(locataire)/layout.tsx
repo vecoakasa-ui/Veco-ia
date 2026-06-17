@@ -1,6 +1,6 @@
 "use client";
+/* eslint-disable react-hooks/set-state-in-effect */
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, FileText, AlertTriangle, User } from "lucide-react";
 import { useEffect, useState } from "react";

@@ -337,7 +337,7 @@ export default function CautionsPage() {
                 <label className="input-label">Action sur la caution</label>
                 <select
                   value={depositAction}
-                  onChange={(e) => setDepositAction(e.target.value as any)}
+                  onChange={(e) => setDepositAction(e.target.value as "refund_full" | "refund_partial" | "hold_full")}
                   className="input"
                   style={{ appearance: "auto" }}
                 >

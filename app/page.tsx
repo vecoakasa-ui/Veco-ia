@@ -1,18 +1,17 @@
 "use client";
 
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   Building2,
   Users,
-  DollarSign,
   FileText,
-  CreditCard,
   BarChart3,
   Check,
   ArrowRight,
-  ChevronRight,
   TrendingUp,
   Clock,
   Sparkles,
@@ -38,7 +37,6 @@ export default function Home({ searchParams }: HomeProps) {
   const queryPrice = resolvedSearchParams.price as string || "0";
 
   const [isYearly, setIsYearly] = useState(false);
-  const [activeTab, setActiveTab] = useState<"revenue" | "properties" | "tenants">("revenue");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Simulation states

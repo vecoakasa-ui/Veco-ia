@@ -486,7 +486,7 @@ export const db = {
           .insert(newLandlord);
         if (error) throw error;
         return newLandlord;
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Error adding landlord to Supabase:", err);
         alert("Erreur Supabase (Ajout Propriétaire) : " + (err.message || JSON.stringify(err)));
       }
@@ -575,9 +575,9 @@ export const db = {
           .insert(newProperty);
         if (error) throw error;
         return newProperty;
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Error adding property to Supabase:", err);
-        alert("Erreur Supabase (Ajout Bien) : " + (err.message || JSON.stringify(err)));
+        alert("Erreur Supabase (Ajout Bien) : " + ((err as Error).message || JSON.stringify(err)));
       }
     }
     const properties = getFromStorage("properties", DEFAULT_PROPERTIES);
@@ -602,6 +602,18 @@ export const db = {
       properties[index] = property;
       setToStorage("properties", properties);
     }
+  },
+  deleteProperty: async (id: string): Promise<void> => {
+    if (isSupabaseConfigured()) {
+      try {
+        const { error } = await supabase.from("properties").delete().eq("id", id);
+        if (error) throw error;
+      } catch (err) {
+        console.error("Error deleting property in Supabase:", err);
+      }
+    }
+    const properties = getFromStorage("properties", DEFAULT_PROPERTIES);
+    setToStorage("properties", properties.filter((p) => p.id !== id));
   },
 
   // Tenants

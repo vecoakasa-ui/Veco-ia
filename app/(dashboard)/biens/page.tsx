@@ -611,7 +611,7 @@ export default function BiensPage() {
                 <label className="input-label">Statut</label>
                 <select
                   value={editProperty.status}
-                  onChange={(e) => setEditProperty({...editProperty, status: e.target.value as any})}
+                  onChange={(e) => setEditProperty({...editProperty, status: e.target.value as "vacant" | "occupied" | "maintenance"})}
                   className="input"
                   style={{ appearance: "auto" }}
                 >
