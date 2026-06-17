@@ -25,6 +25,7 @@ export default function LocatairesPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [photoMenuId, setPhotoMenuId] = useState<string | null>(null);
+  const [activePhotoId, setActivePhotoId] = useState<string | null>(null);
   const [deleteTenantId, setDeleteTenantId] = useState<string | null>(null);
 
   // Form states
@@ -85,7 +86,7 @@ export default function LocatairesPage() {
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !photoMenuId) return;
+    if (!file || !activePhotoId) return;
 
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -116,7 +117,7 @@ export default function LocatairesPage() {
         
         const compressedBase64 = canvas.toDataURL("image/jpeg", 0.8);
         
-        const tenant = tenants.find(t => t.id === photoMenuId);
+        const tenant = tenants.find(t => t.id === activePhotoId);
         if (tenant) {
           await db.updateTenant({ ...tenant, avatar_url: compressedBase64 });
           await loadData();
@@ -346,6 +347,7 @@ export default function LocatairesPage() {
                 style={{ width: "100%", marginBottom: "8px" }}
                 onClick={(e) => {
                   e.stopPropagation();
+                  setActivePhotoId(photoMenuId);
                   document.getElementById('photo-upload')?.click();
                   setPhotoMenuId(null);
                 }}
