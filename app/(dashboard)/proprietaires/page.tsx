@@ -73,9 +73,16 @@ export default function ProprietairesPage() {
     setPhotoMenuId(id);
   };
 
+  const activePhotoIdRef = useRef<string | null>(null);
+
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !activePhotoId) return;
+    const targetId = activePhotoIdRef.current || activePhotoId;
+
+    // Reset input so the same file can be selected again
+    e.target.value = '';
+
+    if (!file || !targetId) return;
 
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -107,7 +114,7 @@ export default function ProprietairesPage() {
         // Compress to 80% JPEG (very light weight)
         const compressedBase64 = canvas.toDataURL("image/jpeg", 0.8);
         
-        const landlord = landlords.find(l => l.id === activePhotoId);
+        const landlord = landlords.find(l => l.id === targetId);
         if (landlord) {
           await db.updateLandlord({ ...landlord, avatar_url: compressedBase64 });
           await loadData();
@@ -339,6 +346,7 @@ export default function ProprietairesPage() {
 
       {/* Hidden file input for Avatar upload */}
       <input 
+        id="photo-upload"
         type="file" 
         accept="image/*" 
         ref={fileInputRef} 
@@ -705,9 +713,11 @@ export default function ProprietairesPage() {
               Souhaitez-vous télécharger une nouvelle image depuis votre explorateur de fichiers ?
             </p>
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
-              <button type="button" className="btn btn-primary" onClick={() => {
+              <button type="button" className="btn btn-primary" onClick={(e) => {
+                  e.stopPropagation();
                   setActivePhotoId(photoMenuId);
-                  if (fileInputRef.current) fileInputRef.current.click();
+                  activePhotoIdRef.current = photoMenuId;
+                  document.getElementById('photo-upload')?.click();
                   setPhotoMenuId(null);
               }}>
                  Télécharger l'image

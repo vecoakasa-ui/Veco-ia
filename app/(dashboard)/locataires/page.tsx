@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { 
   Search, 
   Plus, 
@@ -84,9 +84,16 @@ export default function LocatairesPage() {
     setPhotoMenuId(id);
   };
 
+  const activePhotoIdRef = useRef<string | null>(null);
+
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file || !activePhotoId) return;
+    const targetId = activePhotoIdRef.current || activePhotoId;
+    
+    // Reset input so the same file can be selected again
+    e.target.value = '';
+
+    if (!file || !targetId) return;
 
     const reader = new FileReader();
     reader.onloadend = () => {
@@ -117,7 +124,7 @@ export default function LocatairesPage() {
         
         const compressedBase64 = canvas.toDataURL("image/jpeg", 0.8);
         
-        const tenant = tenants.find(t => t.id === activePhotoId);
+        const tenant = tenants.find(t => t.id === targetId);
         if (tenant) {
           await db.updateTenant({ ...tenant, avatar_url: compressedBase64 });
           await loadData();
@@ -348,6 +355,7 @@ export default function LocatairesPage() {
                 onClick={(e) => {
                   e.stopPropagation();
                   setActivePhotoId(photoMenuId);
+                  activePhotoIdRef.current = photoMenuId;
                   document.getElementById('photo-upload')?.click();
                   setPhotoMenuId(null);
                 }}
