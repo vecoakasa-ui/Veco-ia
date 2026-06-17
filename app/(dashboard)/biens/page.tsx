@@ -282,8 +282,8 @@ export default function BiensPage() {
             <div key={p.id} className="card" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: viewMode === "grid" ? "column" : "row", height: "100%" }}>
               {/* Image Banner */}
               <div style={{ 
-                height: viewMode === "grid" ? "140px" : "auto", 
-                width: viewMode === "list" ? "200px" : "auto",
+                height: viewMode === "grid" ? "240px" : "auto", 
+                width: viewMode === "list" ? "280px" : "auto",
                 minHeight: viewMode === "list" ? "100%" : "auto",
                 background: p.images && p.images.length > 0 ? `url(${p.images[0]}) center/cover` : "var(--gray-200)", 
                 position: "relative",
@@ -301,8 +301,8 @@ export default function BiensPage() {
                 </span>
               </div>
 
-              <div style={{ padding: "var(--space-4)", display: "flex", flexDirection: "column", flexGrow: 1 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-4)" }}>
+              <div style={{ padding: "var(--space-3)", display: "flex", flexDirection: "column", flexGrow: 1, gap: "var(--space-2)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                   <div>
                     <span className={`badge ${p.type === 'villa' ? 'badge-primary' : 'badge-info'}`} style={{ textTransform: "uppercase", fontSize: "9px", padding: "2px 8px" }}>
                       {getPropertyTypeLabel(p.type)}
@@ -319,7 +319,7 @@ export default function BiensPage() {
                   )}
                 </div>
 
-                <div style={{ display: "flex", flexDirection: viewMode === "grid" ? "column" : "row", gap: viewMode === "grid" ? "var(--space-2)" : "var(--space-6)", margin: "var(--space-2) 0", flexGrow: 1 }}>
+                <div style={{ display: "flex", flexDirection: viewMode === "grid" ? "column" : "row", gap: viewMode === "grid" ? "4px" : "var(--space-6)", flexGrow: 1 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "var(--text-sm)", color: "var(--gray-600)" }}>
                     <MapPin size={16} style={{ color: "var(--gray-400)", flexShrink: 0 }} />
                     <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
@@ -345,7 +345,7 @@ export default function BiensPage() {
                   )}
                 </div>
 
-                <div style={{ borderTop: viewMode === "grid" ? "1px solid var(--gray-100)" : "none", paddingTop: viewMode === "grid" ? "var(--space-4)" : 0, marginTop: viewMode === "grid" ? "var(--space-4)" : "auto", display: "flex", justifyContent: viewMode === "grid" ? "space-between" : "flex-end", alignItems: "center" }}>
+                <div style={{ borderTop: viewMode === "grid" ? "1px solid var(--gray-100)" : "none", paddingTop: viewMode === "grid" ? "var(--space-2)" : 0, marginTop: "auto", display: "flex", justifyContent: viewMode === "grid" ? "space-between" : "flex-end", alignItems: "center" }}>
                   {viewMode === "grid" && (
                      <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>
                       {p.landlord_name && <span style={{display: "block", color: "var(--gray-700)", fontWeight: 600, marginBottom: "2px"}}>{p.landlord_name}</span>}
