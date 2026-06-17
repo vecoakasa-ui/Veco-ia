@@ -11,6 +11,7 @@ import {
   Edit3,
   Map,
   List,
+  Grid,
   Image as ImageIcon,
   Trash2
 } from "lucide-react";
@@ -27,7 +28,7 @@ export default function BiensPage() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [editProperty, setEditProperty] = useState<Property | null>(null);
   const [deleteProperty, setDeleteProperty] = useState<Property | null>(null);
-  const [viewMode, setViewMode] = useState<"list" | "map">("list");
+  const [viewMode, setViewMode] = useState<"list" | "grid" | "map">("grid");
   const [landlords, setLandlords] = useState<Landlord[]>([]);
 
   // Form states
@@ -217,11 +218,18 @@ export default function BiensPage() {
               <List size={16} /> Liste
             </button>
             <button 
+              className={`btn btn-sm ${viewMode === "grid" ? "" : "btn-ghost"}`} 
+              style={{ background: viewMode === "grid" ? "white" : "transparent", color: viewMode === "grid" ? "var(--gray-900)" : "var(--gray-500)", border: viewMode === "grid" ? "1px solid var(--gray-200)" : "none", display: "flex", alignItems: "center", gap: "6px", boxShadow: viewMode === "grid" ? "var(--shadow-sm)" : "none" }}
+              onClick={() => setViewMode("grid")}
+            >
+              <Grid size={16} /> Cartes
+            </button>
+            <button 
               className={`btn btn-sm ${viewMode === "map" ? "" : "btn-ghost"}`} 
               style={{ background: viewMode === "map" ? "white" : "transparent", color: viewMode === "map" ? "var(--gray-900)" : "var(--gray-500)", border: viewMode === "map" ? "1px solid var(--gray-200)" : "none", display: "flex", alignItems: "center", gap: "6px", boxShadow: viewMode === "map" ? "var(--shadow-sm)" : "none" }}
               onClick={() => setViewMode("map")}
             >
-              <Map size={16} /> Carte
+              <Map size={16} /> Plan
             </button>
           </div>
 
@@ -269,20 +277,23 @@ export default function BiensPage() {
           </button>
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: "var(--space-6)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: viewMode === "grid" ? "repeat(auto-fill, minmax(320px, 1fr))" : "1fr", gap: "var(--space-6)" }}>
           {filteredProperties.map((p) => (
-            <div key={p.id} className="card" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column", height: "100%" }}>
+            <div key={p.id} className="card" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: viewMode === "grid" ? "column" : "row", height: "100%" }}>
               {/* Image Banner */}
               <div style={{ 
-                height: "180px", 
+                height: viewMode === "grid" ? "140px" : "auto", 
+                width: viewMode === "list" ? "200px" : "auto",
+                minHeight: viewMode === "list" ? "100%" : "auto",
                 background: p.images && p.images.length > 0 ? `url(${p.images[0]}) center/cover` : "var(--gray-200)", 
                 position: "relative",
-                borderBottom: "1px solid var(--gray-200)"
+                borderBottom: viewMode === "grid" ? "1px solid var(--gray-200)" : "none",
+                borderRight: viewMode === "list" ? "1px solid var(--gray-200)" : "none"
               }}>
-                {!p.images || p.images.length === 0 && (
+                {(!p.images || p.images.length === 0) && (
                   <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", color: "var(--gray-400)", display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
                     <ImageIcon size={32} />
-                    <span style={{ fontSize: "var(--text-xs)", fontWeight: 500 }}>Aucune image</span>
+                    {viewMode === "grid" && <span style={{ fontSize: "var(--text-xs)", fontWeight: 500 }}>Aucune image</span>}
                   </div>
                 )}
                 <span className={`badge ${getPropertyStatusClass(p.status)}`} style={{ position: "absolute", top: "12px", right: "12px", background: "rgba(255,255,255,0.9)", backdropFilter: "blur(4px)" }}>
@@ -300,31 +311,47 @@ export default function BiensPage() {
                       {p.name}
                     </h3>
                   </div>
+                  {viewMode === "list" && (
+                     <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "var(--text-base)", fontWeight: 700, color: "var(--primary-dark)" }}>
+                       <DollarSign size={18} style={{ color: "var(--primary)", flexShrink: 0 }} />
+                       <span>{formatCurrency(p.monthly_rent)} <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", fontWeight: 400 }}>/ mois</span></span>
+                     </div>
+                  )}
                 </div>
 
-                <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)", margin: "var(--space-2) 0", flexGrow: 1 }}>
+                <div style={{ display: "flex", flexDirection: viewMode === "grid" ? "column" : "row", gap: viewMode === "grid" ? "var(--space-2)" : "var(--space-6)", margin: "var(--space-2) 0", flexGrow: 1 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "var(--text-sm)", color: "var(--gray-600)" }}>
                     <MapPin size={16} style={{ color: "var(--gray-400)", flexShrink: 0 }} />
                     <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {p.address}, {p.city}
                     </span>
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "var(--text-base)", fontWeight: 700, color: "var(--primary-dark)" }}>
-                    <DollarSign size={18} style={{ color: "var(--primary)", flexShrink: 0 }} />
-                    <span>{formatCurrency(p.monthly_rent)} <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", fontWeight: 400 }}>/ mois</span></span>
-                  </div>
-                  {p.description && (
+                  {viewMode === "grid" && (
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "var(--text-base)", fontWeight: 700, color: "var(--primary-dark)" }}>
+                      <DollarSign size={18} style={{ color: "var(--primary)", flexShrink: 0 }} />
+                      <span>{formatCurrency(p.monthly_rent)} <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", fontWeight: 400 }}>/ mois</span></span>
+                    </div>
+                  )}
+                  {p.description && viewMode === "grid" && (
                     <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", margin: "6px 0 0 0", lineClamp: 2, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                       {p.description}
                     </p>
                   )}
+                  {viewMode === "list" && (
+                     <span style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", display: "flex", alignItems: "center" }}>
+                      {p.landlord_name && <span style={{color: "var(--gray-700)", fontWeight: 600, marginRight: "8px"}}>{p.landlord_name} &bull;</span>}
+                      {p.tenant_count && p.tenant_count > 0 ? `${p.tenant_count} Locataire(s)` : "Aucun locataire"}
+                    </span>
+                  )}
                 </div>
 
-                <div style={{ borderTop: "1px solid var(--gray-100)", paddingTop: "var(--space-4)", marginTop: "var(--space-4)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>
-                    {p.landlord_name && <span style={{display: "block", color: "var(--gray-700)", fontWeight: 600, marginBottom: "2px"}}>{p.landlord_name}</span>}
-                    {p.tenant_count && p.tenant_count > 0 ? `${p.tenant_count} Locataire(s)` : "Aucun locataire"}
-                  </span>
+                <div style={{ borderTop: viewMode === "grid" ? "1px solid var(--gray-100)" : "none", paddingTop: viewMode === "grid" ? "var(--space-4)" : 0, marginTop: viewMode === "grid" ? "var(--space-4)" : "auto", display: "flex", justifyContent: viewMode === "grid" ? "space-between" : "flex-end", alignItems: "center" }}>
+                  {viewMode === "grid" && (
+                     <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>
+                      {p.landlord_name && <span style={{display: "block", color: "var(--gray-700)", fontWeight: 600, marginBottom: "2px"}}>{p.landlord_name}</span>}
+                      {p.tenant_count && p.tenant_count > 0 ? `${p.tenant_count} Locataire(s)` : "Aucun locataire"}
+                    </span>
+                  )}
                   <div style={{ display: "flex", gap: "var(--space-2)" }}>
                     <button className="btn btn-ghost btn-sm" onClick={() => {
                       setEditProperty(p);
