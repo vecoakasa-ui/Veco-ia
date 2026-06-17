@@ -18,5 +18,11 @@ export function isSupabaseConfigured(): boolean {
 
 // Toujours créer un client dummy si non configuré pour éviter les crashs
 export const supabase = isSupabaseConfigured()
-  ? createClient(supabaseUrl, supabaseAnonKey)
+  ? createClient(supabaseUrl, supabaseAnonKey, {
+      global: {
+        fetch: (url, options) => {
+          return fetch(url, { ...options, cache: 'no-store' });
+        }
+      }
+    })
   : (null as unknown as ReturnType<typeof createClient>);
