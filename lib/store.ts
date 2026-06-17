@@ -486,8 +486,9 @@ export const db = {
           .insert(newLandlord);
         if (error) throw error;
         return newLandlord;
-      } catch (err) {
+      } catch (err: any) {
         console.error("Error adding landlord to Supabase:", err);
+        alert("Erreur Supabase (Ajout Propriétaire) : " + (err.message || JSON.stringify(err)));
       }
     }
     const landlords = getFromStorage("landlords", DEFAULT_LANDLORDS);
@@ -560,8 +561,9 @@ export const db = {
           .insert(newProperty);
         if (error) throw error;
         return newProperty;
-      } catch (err) {
+      } catch (err: any) {
         console.error("Error adding property to Supabase:", err);
+        alert("Erreur Supabase (Ajout Bien) : " + (err.message || JSON.stringify(err)));
       }
     }
     const properties = getFromStorage("properties", DEFAULT_PROPERTIES);
