@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { 
   Search, 
   Plus, 
@@ -23,6 +23,10 @@ export default function ProprietairesPage() {
   const [search, setSearch] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+
+  // Photo Upload State
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [activePhotoId, setActivePhotoId] = useState<string | null>(null);
 
   // Form states
   const [fullName, setFullName] = useState("");
@@ -56,6 +60,30 @@ export default function ProprietairesPage() {
       await loadData();
       window.dispatchEvent(new Event("storage"));
     }
+  };
+
+  const handlePhotoClick = (id: string) => {
+    setActivePhotoId(id);
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !activePhotoId) return;
+
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64String = reader.result as string;
+      const landlord = landlords.find(l => l.id === activePhotoId);
+      if (landlord) {
+        await db.updateLandlord({ ...landlord, avatar_url: base64String });
+        await loadData();
+        window.dispatchEvent(new Event("storage"));
+      }
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleAddLandlord = async (e: React.FormEvent) => {
@@ -124,8 +152,8 @@ export default function ProprietairesPage() {
       </div>
 
       {/* Landlords Table */}
-      <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-        <div className="table-container">
+      <div className="card" style={{ padding: 0, overflow: "visible" }}>
+        <div style={{ width: "100%", borderRadius: "var(--radius-xl)", border: "1px solid var(--gray-200)" }}>
           <table className="table">
             <thead>
               <tr>
@@ -150,9 +178,9 @@ export default function ProprietairesPage() {
                   <tr key={l.id}>
                     <td style={{ textAlign: "center" }}>
                       {l.avatar_url ? (
-                        <img src={l.avatar_url} alt={l.full_name} className="avatar" style={{ objectFit: "cover", width: "40px", height: "40px", cursor: "pointer", border: "2px solid var(--gray-200)" }} onClick={() => alert("Modifier la photo de " + l.full_name)} title="Modifier la photo" />
+                        <img src={l.avatar_url} alt={l.full_name} className="avatar" style={{ objectFit: "cover", width: "40px", height: "40px", cursor: "pointer", border: "2px solid var(--gray-200)" }} onClick={() => handlePhotoClick(l.id)} title="Modifier la photo" />
                       ) : (
-                        <button className="btn btn-ghost btn-sm" style={{ padding: 0, borderRadius: "50%", background: "var(--gray-100)", width: "40px", height: "40px", display: "inline-flex", alignItems: "center", justifyContent: "center" }} onClick={() => alert("Ajouter une photo pour " + l.full_name)} title="Ajouter une photo">
+                        <button className="btn btn-ghost btn-sm" style={{ padding: 0, borderRadius: "50%", background: "var(--gray-100)", width: "40px", height: "40px", display: "inline-flex", alignItems: "center", justifyContent: "center" }} onClick={() => handlePhotoClick(l.id)} title="Ajouter une photo">
                           <Plus size={18} style={{ color: "var(--gray-500)" }} />
                         </button>
                       )}
@@ -247,6 +275,15 @@ export default function ProprietairesPage() {
           </table>
         </div>
       </div>
+
+      {/* Hidden file input for Avatar upload */}
+      <input 
+        type="file" 
+        accept="image/*" 
+        ref={fileInputRef} 
+        style={{ display: "none" }} 
+        onChange={handlePhotoUpload} 
+      />
 
       {/* ============================================
          Add Landlord Modal
