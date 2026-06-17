@@ -41,6 +41,8 @@ export default function BiensPage() {
   const [desc, setDesc] = useState("");
   const [landlordId, setLandlordId] = useState("");
   const [mainImage, setMainImage] = useState("");
+  const [lat, setLat] = useState<number | undefined>(undefined);
+  const [lng, setLng] = useState<number | undefined>(undefined);
 
   // Edit form state
   const [editMainImage, setEditMainImage] = useState("");
@@ -63,6 +65,26 @@ export default function BiensPage() {
     });
   }, []);
 
+  const handleGetLocation = (isEdit: boolean) => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          if (isEdit && editProperty) {
+            setEditProperty({...editProperty, lat: position.coords.latitude, lng: position.coords.longitude});
+          } else {
+            setLat(position.coords.latitude);
+            setLng(position.coords.longitude);
+          }
+        },
+        (error) => {
+          alert("Impossible d'obtenir votre position. Veuillez vérifier les autorisations de votre navigateur.");
+        }
+      );
+    } else {
+      alert("La géolocalisation n'est pas supportée par votre navigateur.");
+    }
+  };
+
   const handleAddProperty = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !address || !rent) return;
@@ -77,7 +99,9 @@ export default function BiensPage() {
       status: "vacant",
       description: desc,
       landlord_id: landlordId || undefined,
-      images: mainImage ? [mainImage] : []
+      images: mainImage ? [mainImage] : [],
+      lat,
+      lng
     });
 
     // Reset form & close modal
@@ -90,6 +114,8 @@ export default function BiensPage() {
     setDesc("");
     setLandlordId("");
     setMainImage("");
+    setLat(undefined);
+    setLng(undefined);
     setShowAddModal(false);
 
     // Reload list
@@ -522,6 +548,33 @@ export default function BiensPage() {
               </div>
 
               <div className="input-group">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                  <label className="input-label" style={{ margin: 0 }}>Coordonnées GPS (Optionnel)</label>
+                  <button type="button" className="btn btn-ghost btn-sm" onClick={() => handleGetLocation(false)} style={{ color: "var(--primary)", padding: "2px 8px", height: "auto", fontSize: "12px", minHeight: "24px" }}>
+                    <MapPin size={12} style={{ marginRight: "4px" }} /> Ma position actuelle
+                  </button>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-4)" }}>
+                  <input
+                    type="number"
+                    step="any"
+                    placeholder="Latitude (ex: 5.3599)"
+                    value={lat || ""}
+                    onChange={(e) => setLat(e.target.value ? Number(e.target.value) : undefined)}
+                    className="input"
+                  />
+                  <input
+                    type="number"
+                    step="any"
+                    placeholder="Longitude (ex: -4.0082)"
+                    value={lng || ""}
+                    onChange={(e) => setLng(e.target.value ? Number(e.target.value) : undefined)}
+                    className="input"
+                  />
+                </div>
+              </div>
+
+              <div className="input-group">
                 <label className="input-label">Description (Optionnel)</label>
                 <textarea
                   placeholder="Caractéristiques additionnelles (piscine, étage, balcon...)"
@@ -688,6 +741,33 @@ export default function BiensPage() {
                     required
                     value={editProperty.country}
                     onChange={(e) => setEditProperty({...editProperty, country: e.target.value})}
+                    className="input"
+                  />
+                </div>
+              </div>
+
+              <div className="input-group">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                  <label className="input-label" style={{ margin: 0 }}>Coordonnées GPS (Optionnel)</label>
+                  <button type="button" className="btn btn-ghost btn-sm" onClick={() => handleGetLocation(true)} style={{ color: "var(--primary)", padding: "2px 8px", height: "auto", fontSize: "12px", minHeight: "24px" }}>
+                    <MapPin size={12} style={{ marginRight: "4px" }} /> Ma position actuelle
+                  </button>
+                </div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-4)" }}>
+                  <input
+                    type="number"
+                    step="any"
+                    placeholder="Latitude (ex: 5.3599)"
+                    value={editProperty.lat || ""}
+                    onChange={(e) => setEditProperty({...editProperty, lat: e.target.value ? Number(e.target.value) : undefined})}
+                    className="input"
+                  />
+                  <input
+                    type="number"
+                    step="any"
+                    placeholder="Longitude (ex: -4.0082)"
+                    value={editProperty.lng || ""}
+                    onChange={(e) => setEditProperty({...editProperty, lng: e.target.value ? Number(e.target.value) : undefined})}
                     className="input"
                   />
                 </div>
