@@ -70,7 +70,6 @@ export default function ProprietairesPage() {
       full_name: fullName,
       email: email,
       phone: phone,
-      avatar_url: avatarUrl,
       commission_rate: parseFloat(commission) || 10,
     });
 
@@ -130,6 +129,7 @@ export default function ProprietairesPage() {
           <table className="table">
             <thead>
               <tr>
+                <th style={{ width: "60px", textAlign: "center" }}>Photo</th>
                 <th>Propriétaire</th>
                 <th>Téléphone</th>
                 <th>E-mail</th>
@@ -141,26 +141,26 @@ export default function ProprietairesPage() {
             <tbody>
               {filteredLandlords.length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ textAlign: "center", padding: "var(--space-16)", color: "var(--gray-400)" }}>
+                  <td colSpan={7} style={{ textAlign: "center", padding: "var(--space-16)", color: "var(--gray-400)" }}>
                     Aucun propriétaire enregistré.
                   </td>
                 </tr>
               ) : (
                 filteredLandlords.map((l) => (
                   <tr key={l.id}>
+                    <td style={{ textAlign: "center" }}>
+                      {l.avatar_url ? (
+                        <img src={l.avatar_url} alt={l.full_name} className="avatar" style={{ objectFit: "cover", width: "40px", height: "40px", cursor: "pointer", border: "2px solid var(--gray-200)" }} onClick={() => alert("Modifier la photo de " + l.full_name)} title="Modifier la photo" />
+                      ) : (
+                        <button className="btn btn-ghost btn-sm" style={{ padding: 0, borderRadius: "50%", background: "var(--gray-100)", width: "40px", height: "40px", display: "inline-flex", alignItems: "center", justifyContent: "center" }} onClick={() => alert("Ajouter une photo pour " + l.full_name)} title="Ajouter une photo">
+                          <Plus size={18} style={{ color: "var(--gray-500)" }} />
+                        </button>
+                      )}
+                    </td>
                     <td>
-                      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
-                        {l.avatar_url ? (
-                          <img src={l.avatar_url} alt={l.full_name} className="avatar avatar-sm" style={{ objectFit: "cover" }} />
-                        ) : (
-                          <div className="avatar avatar-sm" style={{ background: "var(--primary-lightest)", color: "var(--primary-dark)" }}>
-                            <Briefcase size={14} />
-                          </div>
-                        )}
-                        <div>
-                          <h4 style={{ fontSize: "var(--text-sm)", fontWeight: "700", margin: 0 }}>{l.full_name}</h4>
-                          <span style={{ fontSize: "10px", color: "var(--gray-400)" }}>ID: {l.id}</span>
-                        </div>
+                      <div>
+                        <h4 style={{ fontSize: "var(--text-sm)", fontWeight: "700", margin: 0 }}>{l.full_name}</h4>
+                        <span style={{ fontSize: "10px", color: "var(--gray-400)" }}>ID: {l.id}</span>
                       </div>
                     </td>
                     <td>
@@ -308,17 +308,6 @@ export default function ProprietairesPage() {
                   placeholder="Ex: +225 01 02 03 04 05"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="input"
-                />
-              </div>
-
-              <div className="input-group">
-                <label className="input-label">Photo du propriétaire (Lien URL de l'image)</label>
-                <input
-                  type="url"
-                  placeholder="Ex: https://exemple.com/photo.jpg (Optionnel)"
-                  value={avatarUrl}
-                  onChange={(e) => setAvatarUrl(e.target.value)}
                   className="input"
                 />
               </div>
