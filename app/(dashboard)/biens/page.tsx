@@ -295,12 +295,9 @@ export default function BiensPage() {
         <div className="card" style={{ textAlign: "center", padding: "var(--space-16)" }}>
           <Building2 size={48} style={{ color: "var(--gray-300)", margin: "0 auto var(--space-4) auto" }} />
           <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 700 }}>Aucun bien immobilier trouvé</h3>
-          <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", maxWidth: "400px", margin: "4px auto var(--space-6) auto" }}>
-            Essayez de modifier vos filtres ou ajoutez votre premier bien immobilier en cliquant sur le bouton ci-dessus.
+          <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", maxWidth: "400px", margin: "4px auto 0 auto" }}>
+            Essayez de modifier vos filtres ou ajoutez votre premier bien immobilier en utilisant le bouton ci-dessus.
           </p>
-          <button className="btn btn-primary" onClick={() => setShowAddModal(true)}>
-            Ajouter un bien immobilier
-          </button>
         </div>
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: viewMode === "grid" ? "repeat(auto-fill, minmax(320px, 1fr))" : "1fr", gap: "var(--space-6)" }}>
