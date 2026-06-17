@@ -199,7 +199,7 @@ export default function ProprietairesPage() {
               </button>
             </div>
 
-            <form onSubmit={handleAddLandlord} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+            <form style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
               <div className="input-group">
                 <label className="input-label">Nom complet ou Société</label>
                 <input
@@ -258,7 +258,7 @@ export default function ProprietairesPage() {
                 <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowAddModal(false)}>
                   Annuler
                 </button>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
+                <button type="button" className="btn btn-primary" style={{ flex: 1 }} onClick={handleAddLandlord}>
                   Enregistrer
                 </button>
               </div>
