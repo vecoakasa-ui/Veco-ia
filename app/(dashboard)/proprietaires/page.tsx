@@ -185,13 +185,13 @@ export default function ProprietairesPage() {
           <table className="table">
             <thead>
               <tr>
-                <th style={{ width: "80px", textAlign: "center" }}>Photo</th>
-                <th style={{ width: "25%" }}>Propriétaire</th>
-                <th style={{ width: "20%" }}>Téléphone</th>
-                <th style={{ width: "25%" }}>E-mail</th>
-                <th style={{ width: "15%" }}>Taux de commission</th>
-                <th style={{ width: "15%" }}>Biens associés</th>
-                <th style={{ width: "60px", textAlign: "right" }}>Actions</th>
+                <th style={{ width: "60px", textAlign: "center" }}>Photo</th>
+                <th>Propriétaire</th>
+                <th>Téléphone</th>
+                <th>E-mail</th>
+                <th style={{ whiteSpace: "nowrap" }}>Taux de commission</th>
+                <th style={{ whiteSpace: "nowrap" }}>Biens associés</th>
+                <th style={{ width: "80px", textAlign: "center" }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -203,7 +203,7 @@ export default function ProprietairesPage() {
                 </tr>
               ) : (
                 filteredLandlords.map((l) => (
-                  <tr key={l.id} style={{ position: "relative", zIndex: activeDropdown === l.id ? 100 : 1 }}>
+                  <tr key={l.id}>
                     <td style={{ textAlign: "center" }}>
                       {l.avatar_url ? (
                         <img src={l.avatar_url} alt={l.full_name} className="avatar avatar-zoomable" style={{ objectFit: "cover", width: "40px", height: "40px", cursor: "pointer", border: "2px solid var(--gray-200)", margin: "0 auto" }} onClick={() => handlePhotoClick(l.id)} title="Modifier la photo" />
@@ -241,60 +241,71 @@ export default function ProprietairesPage() {
                         {l.property_count || 0} bien(s)
                       </span>
                     </td>
-                    <td style={{ textAlign: "right", position: "relative" }}>
-                      <button 
-                        className="btn btn-ghost btn-sm" 
-                        style={{ padding: "8px" }} 
-                        title="Options"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setActiveDropdown(activeDropdown === l.id ? null : l.id);
-                        }}
-                      >
-                        <MoreHorizontal size={18} />
-                      </button>
-
-                      {activeDropdown === l.id && (
-                        <div 
-                          className="card animate-scale-in"
-                          style={{
-                            position: "absolute",
-                            right: "10px",
-                            top: "100%",
-                            padding: "var(--space-2)",
-                            minWidth: "180px",
-                            zIndex: 50,
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "4px",
-                            boxShadow: "0 10px 25px rgba(0,0,0,0.1)",
-                            background: "white",
+                    <td style={{ textAlign: "center" }}>
+                      <div style={{ position: "relative", display: "inline-block" }}>
+                        <button 
+                          className="btn btn-ghost btn-sm" 
+                          style={{ padding: "8px" }} 
+                          title="Options"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveDropdown(activeDropdown === l.id ? null : l.id);
                           }}
                         >
-                          <button 
-                            className="btn btn-ghost btn-sm" 
-                            style={{ width: "100%", justifyContent: "flex-start", color: "var(--gray-700)", fontWeight: "500" }}
-                            onClick={() => alert("Détails du propriétaire " + l.full_name)}
+                          <MoreHorizontal size={18} />
+                        </button>
+
+                        {activeDropdown === l.id && (
+                          <div 
+                            className="card animate-scale-in"
+                            style={{
+                              position: "absolute",
+                              right: "0",
+                              top: "100%",
+                              padding: "var(--space-2)",
+                              minWidth: "160px",
+                              zIndex: 9999,
+                              display: "flex",
+                              flexDirection: "column",
+                              gap: "4px",
+                              boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+                              background: "white",
+                              border: "1px solid var(--gray-200)"
+                            }}
                           >
-                            <Eye size={14} style={{ marginRight: "8px" }} /> Voir les détails
-                          </button>
-                          <button 
-                            className="btn btn-ghost btn-sm" 
-                            style={{ width: "100%", justifyContent: "flex-start", color: "var(--gray-700)", fontWeight: "500" }}
-                            onClick={() => alert("Modifier le propriétaire " + l.full_name)}
-                          >
-                            <Edit2 size={14} style={{ marginRight: "8px" }} /> Modifier
-                          </button>
-                          <div style={{ height: "1px", background: "var(--gray-200)", margin: "4px 0" }}></div>
-                          <button 
-                            className="btn btn-ghost btn-sm" 
-                            style={{ width: "100%", justifyContent: "flex-start", color: "var(--red)", fontWeight: "600" }}
-                            onClick={() => handleDelete(l.id)}
-                          >
-                            <Trash2 size={14} style={{ marginRight: "8px" }} /> Supprimer
-                          </button>
-                        </div>
-                      )}
+                            <button 
+                              className="btn btn-ghost btn-sm" 
+                              style={{ width: "100%", justifyContent: "flex-start", color: "var(--gray-700)", fontWeight: "500" }}
+                              onClick={() => {
+                                alert("Détails du propriétaire " + l.full_name);
+                                setActiveDropdown(null);
+                              }}
+                            >
+                              <Eye size={14} style={{ marginRight: "8px" }} /> Voir les détails
+                            </button>
+                            <button 
+                              className="btn btn-ghost btn-sm" 
+                              style={{ width: "100%", justifyContent: "flex-start", color: "var(--gray-700)", fontWeight: "500" }}
+                              onClick={() => {
+                                alert("Modifier le propriétaire " + l.full_name);
+                                setActiveDropdown(null);
+                              }}
+                            >
+                              <Edit2 size={14} style={{ marginRight: "8px" }} /> Modifier
+                            </button>
+                            <button 
+                              className="btn btn-ghost btn-sm" 
+                              style={{ width: "100%", justifyContent: "flex-start", color: "var(--red)", fontWeight: "500" }}
+                              onClick={() => {
+                                handleDelete(l.id);
+                                setActiveDropdown(null);
+                              }}
+                            >
+                              <Trash2 size={14} style={{ marginRight: "8px" }} /> Supprimer
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))

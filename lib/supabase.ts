@@ -5,7 +5,6 @@ let supabaseUrl = "https://nunntgrphkkebbmbumxs.supabase.co";
 let supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im51bm50Z3JwaGtrZWJibWJ1bXhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1Mzg0NjMsImV4cCI6MjA5NzExNDQ2M30.oshJ6ldeAziRxdOAjNFL3nRhipgQNxLsCrcYgswN53Y";
 
 // Les clés sont codées en dur pour garantir le fonctionnement.
-// (La vérification du localStorage a été désactivée pour éviter les conflits avec d'anciennes clés erronées)
 
 export function isSupabaseConfigured(): boolean {
   return (
@@ -16,9 +15,39 @@ export function isSupabaseConfigured(): boolean {
   );
 }
 
+// Adaptateur de stockage sécurisé pour éviter les erreurs en navigation privée
+const customStorage = {
+  getItem: (key: string) => {
+    if (typeof window === 'undefined') return null;
+    try {
+      return window.localStorage.getItem(key);
+    } catch (e) {
+      return null;
+    }
+  },
+  setItem: (key: string, value: string) => {
+    if (typeof window === 'undefined') return;
+    try {
+      window.localStorage.setItem(key, value);
+    } catch (e) {}
+  },
+  removeItem: (key: string) => {
+    if (typeof window === 'undefined') return;
+    try {
+      window.localStorage.removeItem(key);
+    } catch (e) {}
+  }
+};
+
 // Toujours créer un client dummy si non configuré pour éviter les crashs
 export const supabase = isSupabaseConfigured()
   ? createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        storage: customStorage,
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+      },
       global: {
         fetch: (url, options) => {
           return fetch(url, { ...options, cache: 'no-store' });
