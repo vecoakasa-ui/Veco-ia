@@ -15,7 +15,7 @@ import {
   Edit2,
   Trash2
 } from "lucide-react";
-import { db } from "@/lib/store";
+import { db, getFromStorage } from "@/lib/store";
 import { Landlord } from "@/lib/types";
 
 export default function ProprietairesPage() {
@@ -36,7 +36,15 @@ export default function ProprietairesPage() {
   const [commission, setCommission] = useState("10");
 
   const loadData = async () => {
-    setLandlords(await db.getLandlords());
+    // 1. Instant load from cache (Stale-While-Revalidate)
+    const cached = getFromStorage("landlords", []);
+    if (cached && cached.length > 0) {
+      setLandlords(cached);
+    }
+    
+    // 2. Background fetch for fresh data
+    const freshData = await db.getLandlords();
+    setLandlords(freshData);
   };
 
   useEffect(() => {

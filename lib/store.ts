@@ -396,7 +396,7 @@ const DEFAULT_INCIDENTS: Incident[] = [
 // HELPER FUNCTIONS (LOCAL STORAGE BRIDGE)
 // ============================================
 
-function getFromStorage<T>(key: string, defaultValue: T): T {
+export function getFromStorage<T>(key: string, defaultValue: T): T {
   if (typeof window === "undefined") return defaultValue;
   try {
     const item = localStorage.getItem(key);
@@ -407,7 +407,7 @@ function getFromStorage<T>(key: string, defaultValue: T): T {
   }
 }
 
-function setToStorage<T>(key: string, value: T): void {
+export function setToStorage<T>(key: string, value: T): void {
   if (typeof window === "undefined") return;
   try {
     localStorage.setItem(key, JSON.stringify(value));
