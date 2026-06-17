@@ -39,7 +39,11 @@ export default function ProprietairesPage() {
 
   const handleAddLandlord = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fullName || !phone) return;
+    alert("Étape 1 : Bouton cliqué ! Début de l'enregistrement...");
+    if (!fullName || !phone) {
+        alert("Étape 1.5 : Erreur, le nom ou le téléphone est vide.");
+        return;
+    }
 
     await db.addLandlord({
       full_name: fullName,
@@ -54,6 +58,7 @@ export default function ProprietairesPage() {
     setPhone("");
     setCommission("10");
     setShowAddModal(false);
+    alert("Étape 2 : Modal fermé, chargement des données...");
 
     // Reload lists
     await loadData();
