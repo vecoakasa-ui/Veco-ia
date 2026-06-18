@@ -169,6 +169,11 @@ CREATE POLICY "Users can manage their own profile"
   ON profiles FOR ALL 
   USING (id = auth.uid()::text);
 
+-- 1.5 LANDLORDS Policies
+CREATE POLICY "Owners can manage their landlords" 
+  ON landlords FOR ALL 
+  USING (owner_id = auth.uid()::text);
+
 -- 2. PROPERTIES Policies
 CREATE POLICY "Owners can manage their properties" 
   ON properties FOR ALL 
@@ -214,6 +219,11 @@ CREATE POLICY "Tenants can manage their own incidents"
   ON incidents FOR ALL 
   USING (tenant_id IN (SELECT id FROM tenants WHERE profile_id = auth.uid()::text));
 
+-- 7. EXPENSES Policies
+CREATE POLICY "Owners can manage their expenses" 
+  ON expenses FOR ALL 
+  USING (owner_id = auth.uid()::text);
+
 
 -- ============================================
 -- AUTHENTICATION TRIGGERS (Auto-Profile Creation)
@@ -242,3 +252,20 @@ DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- ============================================
+-- SECURITY FIXES (REVOKE EXECUTE)
+-- ============================================
+
+-- Revoke public execution of security definer functions to resolve Supabase security warnings
+REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM PUBLIC;
+REVOKE EXECUTE ON FUNCTION public.handle_new_user() FROM anon, authenticated;
+
+-- If rls_auto_enable function exists (often created by Supabase tooling), revoke its execution too
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_proc WHERE proname = 'rls_auto_enable') THEN
+    REVOKE EXECUTE ON FUNCTION public.rls_auto_enable() FROM PUBLIC;
+    REVOKE EXECUTE ON FUNCTION public.rls_auto_enable() FROM anon, authenticated;
+  END IF;
+END $$;

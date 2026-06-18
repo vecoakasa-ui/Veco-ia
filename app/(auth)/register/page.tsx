@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Lock, Mail, Phone, User, CheckCircle2 } from "lucide-react";
 import { db } from "@/lib/store";
+import { supabase } from "@/lib/supabase";
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -21,29 +22,44 @@ export default function RegisterPage({ searchParams }: PageProps) {
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"owner" | "tenant">("owner");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
-    // Simulate register delay
-    setTimeout(async () => {
-      try {
-        // Save profile with selected plan to local database or Supabase
-        const profile = await db.getProfile();
-        profile.full_name = fullName;
-        profile.email = email;
-        profile.phone = phone;
-        profile.subscription_plan = plan as "free" | "pro" | "business";
-        await db.updateProfile(profile);
-      } catch (err) {
-        console.error("Error during profile update:", err);
-      } finally {
-        setLoading(false);
-        // Route to dashboard
-        router.push("/dashboard");
-      }
-    }, 1000);
+    try {
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+            phone: phone,
+            role: role,
+          }
+        }
+      });
+
+      if (signUpError) throw signUpError;
+
+      // The database trigger will automatically create the profile.
+      // Now sign in automatically
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (signInError) throw signInError;
+      
+      localStorage.setItem("userRole", role);
+      router.push("/dashboard");
+    } catch (err: any) {
+      console.error("Registration error:", err);
+      setError(err.message || "Une erreur est survenue lors de l'inscription");
+      setLoading(false);
+    }
   };
 
   return (
@@ -76,6 +92,12 @@ export default function RegisterPage({ searchParams }: PageProps) {
             </div>
           )}
         </div>
+
+        {error && (
+          <div style={{ background: "var(--danger-lightest)", color: "var(--danger)", padding: "10px 12px", borderRadius: "8px", fontSize: "13px", marginBottom: "var(--space-4)" }}>
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
           {/* Role selector tab */}

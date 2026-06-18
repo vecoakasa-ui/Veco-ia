@@ -4,24 +4,39 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Lock, Mail } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("venance@venanceimo.com");
-  const [password, setPassword] = useState("password");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [role, setRole] = useState<"owner" | "tenant" | "admin">("owner");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
 
-    // Simulate login network delay
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInError) throw signInError;
+
+      // Update local storage explicitly to speed up dashboard rendering
+      localStorage.setItem("userRole", role);
+      
       // Route to dashboard
       router.push("/dashboard");
-    }, 800);
+    } catch (err: any) {
+      console.error("Login error:", err);
+      setError(err.message || "Email ou mot de passe incorrect");
+      setLoading(false);
+    }
   };
 
   return (
@@ -44,6 +59,12 @@ export default function LoginPage() {
           </div>
           <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-500)', margin: 0 }}>Connectez-vous à votre espace de gestion</p>
         </div>
+
+        {error && (
+          <div style={{ background: "var(--danger-lightest)", color: "var(--danger)", padding: "10px 12px", borderRadius: "8px", fontSize: "13px", marginBottom: "var(--space-4)" }}>
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
           {/* Role selector tab */}

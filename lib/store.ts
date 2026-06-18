@@ -416,6 +416,14 @@ export function setToStorage<T>(key: string, value: T): void {
   }
 }
 
+export const getOwnerId = async (): Promise<string> => {
+  if (isSupabaseConfigured()) {
+    const { data } = await supabase.auth.getUser();
+    if (data?.user) return data.user.id;
+  }
+  return "owner-1";
+};
+
 export const db = {
   // Clear all and reset
   reset: async (): Promise<void> => {
@@ -426,12 +434,13 @@ export const db = {
 
   // Profile
   getProfile: async (): Promise<Profile> => {
+    const ownerId = await getOwnerId();
     if (isSupabaseConfigured()) {
       try {
         const { data, error } = await supabase
           .from("profiles")
           .select("*")
-          .eq("id", "owner-1")
+          .eq("id", ownerId)
           .maybeSingle();
         if (error) throw error;
         if (data) return data as Profile;
@@ -472,10 +481,11 @@ export const db = {
     return getFromStorage("landlords", DEFAULT_LANDLORDS);
   },
   addLandlord: async (landlord: Omit<Landlord, "id" | "owner_id" | "created_at" | "property_count">): Promise<Landlord> => {
+    const ownerId = await getOwnerId();
     const newLandlord: Landlord = {
       ...landlord,
       id: "landlord-" + generateId(),
-      owner_id: "owner-1",
+      owner_id: ownerId,
       created_at: new Date().toISOString(),
       property_count: 0
     };
@@ -546,10 +556,11 @@ export const db = {
     return getFromStorage("properties", DEFAULT_PROPERTIES);
   },
   addProperty: async (property: Omit<Property, "id" | "owner_id" | "created_at" | "is_validated">): Promise<Property> => {
+    const ownerId = await getOwnerId();
     const newProperty: Property = {
       ...property,
       id: "prop-" + generateId(),
-      owner_id: "owner-1",
+      owner_id: ownerId,
       is_validated: true,
       created_at: new Date().toISOString(),
       tenant_count: 0,
@@ -653,13 +664,14 @@ export const db = {
     return getFromStorage("tenants", DEFAULT_TENANTS);
   },
   addTenant: async (tenant: Omit<Tenant, "id" | "owner_id" | "created_at">): Promise<Tenant> => {
+    const ownerId = await getOwnerId();
     const properties = await db.getProperties();
     const targetProp = properties.find(p => p.id === tenant.property_id);
     
     const newTenant: Tenant = {
       ...tenant,
       id: "tenant-" + generateId(),
-      owner_id: "owner-1",
+      owner_id: ownerId,
       created_at: new Date().toISOString(),
       property_name: targetProp ? targetProp.name : ""
     };
@@ -678,7 +690,7 @@ export const db = {
           id: newTenant.id,
           profile_id: tenant.profile_id,
           property_id: tenant.property_id,
-          owner_id: "owner-1",
+          owner_id: ownerId,
           lease_start: tenant.lease_start,
           lease_end: tenant.lease_end,
           lease_type: tenant.lease_type,
@@ -727,7 +739,7 @@ export const db = {
       id: "pay-" + generateId(),
       tenant_id: newTenant.id,
       property_id: newTenant.property_id,
-      owner_id: "owner-1",
+      owner_id: ownerId,
       amount: targetProp ? targetProp.monthly_rent : 100000,
       charges: 15000,
       total: (targetProp ? targetProp.monthly_rent : 100000) + 15000,
@@ -838,6 +850,7 @@ export const db = {
     return getFromStorage("payments", DEFAULT_PAYMENTS);
   },
   addPayment: async (payment: Omit<Payment, "id" | "owner_id" | "created_at" | "total" | "stripe_payment_id" | "payment_date" | "tenant_name" | "property_name">): Promise<Payment> => {
+    const ownerId = await getOwnerId();
     const tenants = await db.getTenants();
     const properties = await db.getProperties();
     const tenant = tenants.find(t => t.id === payment.tenant_id);
@@ -846,7 +859,7 @@ export const db = {
     const newPayment: Payment = {
       ...payment,
       id: "pay-" + generateId(),
-      owner_id: "owner-1",
+      owner_id: ownerId,
       total: payment.amount + payment.charges,
       stripe_payment_id: null,
       payment_date: payment.status === "paid" ? new Date().toISOString().split('T')[0] : null,
@@ -861,7 +874,7 @@ export const db = {
           id: newPayment.id,
           tenant_id: newPayment.tenant_id,
           property_id: newPayment.property_id,
-          owner_id: "owner-1",
+          owner_id: ownerId,
           amount: newPayment.amount,
           charges: newPayment.charges,
           total: newPayment.total,
@@ -929,10 +942,11 @@ export const db = {
     return getFromStorage("leases", DEFAULT_LEASES);
   },
   addLease: async (lease: Omit<Lease, "id" | "owner_id" | "created_at">): Promise<Lease> => {
+    const ownerId = await getOwnerId();
     const newLease: Lease = {
       ...lease,
       id: "lease-" + generateId(),
-      owner_id: "owner-1",
+      owner_id: ownerId,
       created_at: new Date().toISOString()
     };
 
@@ -1055,10 +1069,11 @@ export const db = {
   },
 
   addExpense: async (expense: Omit<Expense, "id" | "owner_id" | "created_at">): Promise<Expense> => {
+    const ownerId = await getOwnerId();
     const newExpense: Expense = {
       ...expense,
       id: "exp-" + generateId(),
-      owner_id: "owner-1",
+      owner_id: ownerId,
       created_at: new Date().toISOString(),
     };
 
