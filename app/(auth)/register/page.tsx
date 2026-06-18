@@ -4,7 +4,7 @@ import { useState, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Lock, Mail, Phone, User, CheckCircle2 } from "lucide-react";
-import { db } from "@/lib/store";
+// Removed unused db import
 import { supabase } from "@/lib/supabase";
 
 interface PageProps {
@@ -44,6 +44,13 @@ export default function RegisterPage({ searchParams }: PageProps) {
 
       if (signUpError) throw signUpError;
 
+      if (data.user && !data.session) {
+        // This means Supabase requires email confirmation
+        setError("Votre compte a été créé ! Un e-mail de confirmation vous a été envoyé. Veuillez cliquer sur le lien dans l'e-mail pour activer votre compte. (Ou désactivez 'Confirm Email' dans Supabase).");
+        setLoading(false);
+        return;
+      }
+
       // The database trigger will automatically create the profile.
       // Now sign in automatically
       const { error: signInError } = await supabase.auth.signInWithPassword({
@@ -55,9 +62,10 @@ export default function RegisterPage({ searchParams }: PageProps) {
       
       localStorage.setItem("userRole", role);
       router.push("/dashboard");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Registration error:", err);
-      setError(err.message || "Une erreur est survenue lors de l'inscription");
+      const errorObj = err as Error;
+      setError(errorObj.message || "Une erreur est survenue lors de l'inscription");
       setLoading(false);
     }
   };

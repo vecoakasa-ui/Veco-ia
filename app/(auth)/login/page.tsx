@@ -20,7 +20,7 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+      const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -32,9 +32,14 @@ export default function LoginPage() {
       
       // Route to dashboard
       router.push("/dashboard");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Login error:", err);
-      setError(err.message || "Email ou mot de passe incorrect");
+      const errorObj = err as Error;
+      let errorMsg = errorObj.message || "Email ou mot de passe incorrect";
+      if (errorMsg === "Invalid login credentials" || errorMsg.includes("Email not confirmed")) {
+        errorMsg = "Email ou mot de passe incorrect. Si vous venez de créer ce compte, assurez-vous d'avoir cliqué sur le lien de confirmation envoyé par e-mail, ou désactivez l'option 'Confirm Email' dans votre tableau de bord Supabase.";
+      }
+      setError(errorMsg);
       setLoading(false);
     }
   };
