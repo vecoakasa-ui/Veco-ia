@@ -216,9 +216,9 @@ export default function ProprietairesPage() {
       </div>
 
       {/* Landlords Table */}
-      <div className="card" style={{ padding: 0, overflow: "visible" }}>
-        <div className="table-container" style={{ minHeight: "250px", width: "100%", borderRadius: "var(--radius-xl)", border: "1px solid var(--gray-200)" }}>
-          <table className="table">
+      <div className="card" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+        <div className="table-container" style={{ minHeight: "250px", maxHeight: "65vh", overflow: "auto", width: "100%", borderRadius: "var(--radius-xl)", border: "1px solid var(--gray-200)", scrollbarWidth: "thin" }}>
+          <table className="table" style={{ minWidth: "800px" }}>
             <thead>
               <tr>
                 <th style={{ width: "60px", textAlign: "center" }}>Photo</th>

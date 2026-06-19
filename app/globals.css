@@ -401,12 +401,16 @@ h1, h2, h3, h4, h5, h6 {
 .table-container {
   width: 100%;
   overflow-x: auto;
+  overflow-y: auto;
+  max-height: 65vh;
   border-radius: var(--radius-xl);
   border: 1px solid var(--gray-200);
+  scrollbar-width: thin;
 }
 
 .table {
   width: 100%;
+  min-width: 800px;
   border-collapse: collapse;
 }
 
@@ -1973,3 +1977,47 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
+/* ============================================
+   Global Mobile Responsiveness Fixes
+   ============================================ */
+@media (max-width: 768px) {
+  /* Ensure all grid layouts collapse to 1 column on mobile */
+  .hero-grid, .about-grid, .stats-grid, .contact-grid, .grid-3, .grid-4 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Form elements and flex containers that should stack */
+  .form-row-2col {
+    flex-direction: column !important;
+  }
+  
+  .hero-metrics {
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+  
+  .hero-metric-item:not(:first-child) {
+    border-left: none;
+    padding-left: 0;
+  }
+  
+  /* Full width components */
+  .input-group, .hero-buttons {
+    width: 100%;
+  }
+  
+  .hero-buttons .btn {
+    width: 100%;
+  }
+  
+  /* Dashboard layout main content width fix */
+  .dashboard-content-wrapper {
+    margin-left: 0 !important;
+    width: 100%;
+  }
+  
+  /* Tables on mobile */
+  .table-container {
+    max-height: 50vh;
+  }
+}

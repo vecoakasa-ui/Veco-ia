@@ -3,13 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Lock, Mail } from "lucide-react";
+import { ArrowLeft, Lock, Mail, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [role, setRole] = useState<"owner" | "tenant" | "admin">("owner");
   const [loading, setLoading] = useState(false);
@@ -114,16 +115,37 @@ export default function LoginPage() {
                 Mot de passe oublié ?
               </a>
             </div>
-            <div className="input-with-icon">
+            <div className="input-with-icon" style={{ position: 'relative' }}>
               <Lock className="input-icon" size={16} />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 className="input"
+                style={{ paddingRight: '40px' }}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: 'absolute',
+                  right: 'var(--space-3)',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  color: 'var(--gray-500)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
             </div>
           </div>
 
