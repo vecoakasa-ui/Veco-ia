@@ -50,7 +50,7 @@ export default function DashboardPage() {
       <div className="page-header">
         <div>
           <h2 style={{ fontSize: "var(--text-2xl)", fontWeight: "800", color: "var(--gray-900)", margin: 0 }}>
-            Bonjour, Venance
+            Bienvenue chez VENANCE IMO CI
           </h2>
           <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", margin: "4px 0 0 0" }}>
             Voici un aperçu de vos activités de gestion immobilière pour aujourd&apos;hui.
