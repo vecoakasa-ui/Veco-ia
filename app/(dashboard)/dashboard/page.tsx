@@ -162,9 +162,9 @@ export default function DashboardPage() {
       {/* Main Grid Content */}
       <div className="dashboard-grid">
         {/* Left Column: Revenue Chart & Recent Payments */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)", minWidth: 0 }}>
           {/* Chart Wrapper */}
-          <div className="card">
+          <div className="card" style={{ overflowX: "auto" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-6)" }}>
               <div>
                 <h3 style={{ fontSize: "var(--text-base)", fontWeight: "700", color: "var(--gray-900)" }}>Évolution des Revenus Mensuels</h3>
@@ -174,7 +174,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Custom Responsive pure CSS Graph bar */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)", overflowX: "auto" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
               <div style={{ display: "flex", alignSelf: "stretch", justifyContent: "space-between", alignItems: "flex-end", height: "180px", borderBottom: "1px solid var(--gray-200)", paddingBottom: "8px", position: "relative", minWidth: "500px" }}>
                 {/* Horizontal guide lines */}
                 <div style={{ position: "absolute", left: 0, right: 0, top: "25%", borderBottom: "1.5px dashed var(--gray-100)" }}></div>
@@ -220,7 +220,7 @@ export default function DashboardPage() {
           </div>
 
           {/* Recent Payments Card */}
-          <div className="card">
+          <div className="card" style={{ overflowX: "auto" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-4)" }}>
               <div>
                 <h3 style={{ fontSize: "var(--text-base)", fontWeight: "700" }}>Paiements Récents Validés</h3>
@@ -271,7 +271,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Right Column: Occupancy Rate circular & Upcoming rents */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)", minWidth: 0 }}>
           {/* Occupancy circular gauge */}
           <div className="card" style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
             <h3 style={{ fontSize: "var(--text-base)", fontWeight: "700", alignSelf: "flex-start", marginBottom: "var(--space-4)" }}>Taux d&apos;occupation</h3>
