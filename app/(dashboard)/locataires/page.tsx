@@ -175,7 +175,7 @@ export default function LocatairesPage() {
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
       {/* Header section */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "var(--space-4)" }}>
+      <div className="page-header">
         <div>
           <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", margin: 0 }}>Suivi des baux et fiches de contact</p>
           <h2 style={{ fontSize: "var(--text-xl)", fontWeight: "800", color: "var(--gray-900)", margin: 0 }}>Gestion des Locataires</h2>
@@ -200,9 +200,9 @@ export default function LocatairesPage() {
       </div>
 
       {/* Tenants Table */}
-      <div className="card" style={{ padding: 0, overflow: "visible" }}>
-        <div className="table-container" style={{ minHeight: "250px", width: "100%", borderRadius: "var(--radius-xl)", border: "1px solid var(--gray-200)" }}>
-          <table className="table">
+      <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+        <div className="table-container" style={{ minHeight: "250px", overflowX: "auto", width: "100%", borderRadius: "var(--radius-xl)", border: "1px solid var(--gray-200)", scrollbarWidth: "thin" }}>
+          <table className="table" style={{ minWidth: "800px" }}>
             <thead>
               <tr>
                 <th style={{ width: "60px", textAlign: "center" }}>Photo</th>
@@ -322,7 +322,6 @@ export default function LocatairesPage() {
                                 flexDirection: "column",
                                 gap: "4px",
                                 boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
-                                background: "white",
                                 border: "1px solid var(--gray-200)"
                               }}
                             >

@@ -191,7 +191,7 @@ export default function ProprietairesPage() {
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
       {/* Header section */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "var(--space-4)" }}>
+      <div className="page-header">
         <div>
           <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", margin: 0 }}>Gestion des mandats et commissions</p>
           <h2 style={{ fontSize: "var(--text-xl)", fontWeight: "800", color: "var(--gray-900)", margin: 0 }}>Propriétaires Bailleurs</h2>
@@ -217,7 +217,7 @@ export default function ProprietairesPage() {
 
       {/* Landlords Table */}
       <div className="card" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}>
-        <div className="table-container" style={{ minHeight: "250px", maxHeight: "65vh", overflow: "auto", width: "100%", borderRadius: "var(--radius-xl)", border: "1px solid var(--gray-200)", scrollbarWidth: "thin" }}>
+        <div className="table-container" style={{ minHeight: "250px", overflowX: "auto", width: "100%", borderRadius: "var(--radius-xl)", border: "1px solid var(--gray-200)", scrollbarWidth: "thin" }}>
           <table className="table" style={{ minWidth: "800px" }}>
             <thead>
               <tr>
@@ -316,7 +316,6 @@ export default function ProprietairesPage() {
                                 right: 0,
                                 top: (index === filteredLandlords.length - 1 && filteredLandlords.length > 1) ? "auto" : "100%",
                                 bottom: (index === filteredLandlords.length - 1 && filteredLandlords.length > 1) ? "100%" : "auto",
-                                background: "white",
                                 padding: "var(--space-2)",
                                 minWidth: "160px",
                                 zIndex: 9999,

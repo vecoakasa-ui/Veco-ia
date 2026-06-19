@@ -23,6 +23,11 @@ interface DBTenantRow {
   properties: {
     name: string;
   } | null;
+  full_name?: string;
+  email?: string;
+  phone?: string;
+  property_name?: string;
+  avatar_url?: string;
 }
 
 interface DBPaymentRow {
