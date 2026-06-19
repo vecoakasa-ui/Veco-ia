@@ -201,7 +201,7 @@ export default function LocatairesPage() {
 
       {/* Tenants Table */}
       <div className="card" style={{ padding: 0, overflow: "visible" }}>
-        <div className="table-container">
+        <div style={{ width: "100%", borderRadius: "var(--radius-xl)", border: "1px solid var(--gray-200)" }}>
           <table className="table">
             <thead>
               <tr>
