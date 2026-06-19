@@ -18,6 +18,7 @@ interface DBTenantRow {
     full_name: string;
     email: string;
     phone: string;
+    avatar_url: string | null;
   } | null;
   properties: {
     name: string;
@@ -640,7 +641,8 @@ export const db = {
           `);
         if (error) throw error;
         if (data) {
-          const rows = data as unknown as DBTenantRow[];
+          const rows = data as unknown as (DBTenantRow & { avatar_url?: string })[];
+          const localAvatars = getFromStorage("local_avatars", {} as Record<string, string>);
           return rows.map((t) => ({
             id: t.id,
             profile_id: t.profile_id,
@@ -654,6 +656,7 @@ export const db = {
             full_name: t.profiles?.full_name || "",
             email: t.profiles?.email || "",
             phone: t.profiles?.phone || "",
+            avatar_url: t.avatar_url || t.profiles?.avatar_url || localAvatars[t.id] || "",
             property_name: t.properties?.name || ""
           }));
         }
@@ -759,6 +762,13 @@ export const db = {
     return newTenant;
   },
   updateTenant: async (tenant: Tenant): Promise<void> => {
+    // Force save avatar in local storage to bypass Supabase RLS block on profiles table
+    if (tenant.avatar_url) {
+      const localAvatars = getFromStorage("local_avatars", {} as Record<string, string>);
+      localAvatars[tenant.id] = tenant.avatar_url;
+      setToStorage("local_avatars", localAvatars);
+    }
+
     if (isSupabaseConfigured()) {
       try {
         const { error: profileError } = await supabase.from("profiles").update({
@@ -777,6 +787,15 @@ export const db = {
           status: tenant.status
         }).eq("id", tenant.id);
         if (error) throw error;
+        
+        // Attempt to save avatar directly to tenants table (Requires adding avatar_url column to tenants)
+        if (tenant.avatar_url) {
+          const { error: avatarError } = await supabase.from("tenants").update({
+            avatar_url: tenant.avatar_url
+          }).eq("id", tenant.id);
+          if (avatarError) console.warn("Could not save avatar to tenants table. Ensure column exists.", avatarError);
+        }
+        
         return;
       } catch (err) {
         console.error("Error updating tenant in Supabase:", err);

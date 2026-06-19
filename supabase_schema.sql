@@ -71,6 +71,7 @@ CREATE TABLE tenants (
   full_name TEXT,
   email TEXT,
   phone TEXT,
+  avatar_url TEXT,
   property_name TEXT,
   lease_start TEXT NOT NULL,
   lease_end TEXT NOT NULL,

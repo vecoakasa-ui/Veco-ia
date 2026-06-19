@@ -30,6 +30,7 @@ export default function BiensPage() {
   const [deleteProperty, setDeleteProperty] = useState<Property | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "grid" | "map">("grid");
   const [landlords, setLandlords] = useState<Landlord[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Form states
   const [name, setName] = useState("");
@@ -48,15 +49,24 @@ export default function BiensPage() {
   const [editMainImage, setEditMainImage] = useState("");
 
   const loadProperties = async () => {
-    // 1. Instant load from cache (SWR)
     const cached = localStorage.getItem("properties");
+    let hasCache = false;
     if (cached) {
-      try { setProperties(JSON.parse(cached)); } catch {}
+      try { 
+        setProperties(JSON.parse(cached)); 
+        hasCache = true;
+      } catch {}
     }
     
-    const props = await db.getProperties();
-    setProperties(props);
-    setLandlords(await db.getLandlords());
+    if (!hasCache) setIsLoading(true);
+    
+    try {
+      const props = await db.getProperties();
+      setProperties(props);
+      setLandlords(await db.getLandlords());
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -289,7 +299,20 @@ export default function BiensPage() {
       </div>
 
       {/* Properties List or Map */}
-      {viewMode === "map" ? (
+      {isLoading ? (
+        <div style={{ display: "grid", gridTemplateColumns: viewMode === "grid" ? "repeat(auto-fill, minmax(320px, 1fr))" : "1fr", gap: "var(--space-6)" }}>
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="card" style={{ padding: 0, height: viewMode === "grid" ? "400px" : "180px", display: "flex", flexDirection: viewMode === "grid" ? "column" : "row" }}>
+              <div className="skeleton skeleton-image" style={{ height: viewMode === "grid" ? "240px" : "100%", width: viewMode === "list" ? "280px" : "100%" }}></div>
+              <div style={{ padding: "var(--space-4)", display: "flex", flexDirection: "column", gap: "var(--space-2)", flexGrow: 1 }}>
+                 <div className="skeleton skeleton-text short"></div>
+                 <div className="skeleton skeleton-text long"></div>
+                 <div className="skeleton skeleton-text" style={{ marginTop: "auto" }}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : viewMode === "map" ? (
         <MapModuleWrapper properties={filteredProperties} />
       ) : filteredProperties.length === 0 ? (
         <div className="card" style={{ textAlign: "center", padding: "var(--space-16)" }}>
@@ -302,24 +325,27 @@ export default function BiensPage() {
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: viewMode === "grid" ? "repeat(auto-fill, minmax(320px, 1fr))" : "1fr", gap: "var(--space-6)" }}>
           {filteredProperties.map((p) => (
-            <div key={p.id} className="card" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: viewMode === "grid" ? "column" : "row", height: "100%" }}>
+            <div key={p.id} className="card card-interactive" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: viewMode === "grid" ? "column" : "row", height: "100%" }}>
               {/* Image Banner */}
-              <div style={{ 
+              <div className="card-image-container" style={{ 
                 height: viewMode === "grid" ? "240px" : "auto", 
                 width: viewMode === "list" ? "280px" : "auto",
                 minHeight: viewMode === "list" ? "100%" : "auto",
-                background: p.images && p.images.length > 0 ? `url(${p.images[0]}) center/cover` : "var(--gray-200)", 
                 position: "relative",
                 borderBottom: viewMode === "grid" ? "1px solid var(--gray-200)" : "none",
                 borderRight: viewMode === "list" ? "1px solid var(--gray-200)" : "none"
               }}>
+                <div className="card-image-zoom" style={{
+                  position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
+                  background: p.images && p.images.length > 0 ? `url(${p.images[0]}) center/cover` : "var(--gray-200)", 
+                }}></div>
                 {(!p.images || p.images.length === 0) && (
                   <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", color: "var(--gray-400)", display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
                     <ImageIcon size={32} />
                     {viewMode === "grid" && <span style={{ fontSize: "var(--text-xs)", fontWeight: 500 }}>Aucune image</span>}
                   </div>
                 )}
-                <span className={`badge ${getPropertyStatusClass(p.status)}`} style={{ position: "absolute", top: "12px", right: "12px", background: "rgba(255,255,255,0.9)", backdropFilter: "blur(4px)" }}>
+                <span className={`badge badge-glass ${getPropertyStatusClass(p.status)}`} style={{ position: "absolute", top: "12px", right: "12px" }}>
                   {getPropertyStatusLabel(p.status)}
                 </span>
               </div>

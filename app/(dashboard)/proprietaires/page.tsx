@@ -15,21 +15,24 @@ import {
   Trash2
 } from "lucide-react";
 import { db, getFromStorage } from "@/lib/store";
-import { Landlord } from "@/lib/types";
+import { Landlord, Property } from "@/lib/types";
 
 export default function ProprietairesPage() {
   const [landlords, setLandlords] = useState<Landlord[]>([]);
+  const [properties, setProperties] = useState<Property[]>([]);
   const [search, setSearch] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [viewLandlord, setViewLandlord] = useState<Landlord | null>(null);
   const [editLandlord, setEditLandlord] = useState<Landlord | null>(null);
   const [deleteLandlord, setDeleteLandlord] = useState<Landlord | null>(null);
-  const [photoMenuId, setPhotoMenuId] = useState<string | null>(null);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   // Photo Upload State
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [activePhotoId, setActivePhotoId] = useState<string | null>(null);
+  const activePhotoIdRef = useRef<string | null>(null);
+  const [uploadingId, setUploadingId] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
 
   // Form states
   const [fullName, setFullName] = useState("");
@@ -49,6 +52,9 @@ export default function ProprietairesPage() {
     // 2. Background fetch for fresh data
     const freshData = await db.getLandlords();
     setLandlords(freshData);
+    
+    const freshProps = await db.getProperties();
+    setProperties(freshProps);
   };
 
   useEffect(() => {
@@ -70,10 +76,10 @@ export default function ProprietairesPage() {
   };
 
   const handlePhotoClick = (id: string) => {
-    setPhotoMenuId(id);
+    activePhotoIdRef.current = id;
+    setActivePhotoId(id);
+    fileInputRef.current?.click();
   };
-
-  const activePhotoIdRef = useRef<string | null>(null);
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -84,11 +90,15 @@ export default function ProprietairesPage() {
 
     if (!file || !targetId) return;
 
+    setUploadingId(targetId);
+    setUploadProgress(10); // Start progress
+
     const reader = new FileReader();
     reader.onloadend = () => {
       const img = new Image();
       img.src = reader.result as string;
       img.onload = async () => {
+        setUploadProgress(30);
         const canvas = document.createElement("canvas");
         const MAX_SIZE = 200;
         let width = img.width;
@@ -111,14 +121,23 @@ export default function ProprietairesPage() {
         const ctx = canvas.getContext("2d");
         ctx?.drawImage(img, 0, 0, width, height);
         
+        setUploadProgress(60);
         // Compress to 80% JPEG (very light weight)
         const compressedBase64 = canvas.toDataURL("image/jpeg", 0.8);
         
         const landlord = landlords.find(l => l.id === targetId);
         if (landlord) {
+          setUploadProgress(80);
           await db.updateLandlord({ ...landlord, avatar_url: compressedBase64 });
           await loadData();
+          setUploadProgress(100);
+          setTimeout(() => {
+            setUploadingId(null);
+            setUploadProgress(0);
+          }, 400);
           window.dispatchEvent(new Event("storage"));
+        } else {
+          setUploadingId(null);
         }
       };
     };
@@ -221,14 +240,24 @@ export default function ProprietairesPage() {
               ) : (
                 filteredLandlords.map((l, index) => (
                   <tr key={l.id}>
-                    <td style={{ textAlign: "center" }}>
-                      {l.avatar_url ? (
-                        <img src={l.avatar_url} alt={l.full_name} className="avatar avatar-zoomable" style={{ objectFit: "cover", width: "40px", height: "40px", cursor: "pointer", border: "2px solid var(--gray-200)", margin: "0 auto" }} onClick={() => handlePhotoClick(l.id)} title="Modifier la photo" />
-                      ) : (
-                        <button className="btn btn-ghost btn-sm" style={{ padding: 0, borderRadius: "50%", background: "var(--gray-100)", width: "40px", height: "40px", display: "inline-flex", alignItems: "center", justifyContent: "center", margin: "0 auto" }} onClick={() => handlePhotoClick(l.id)} title="Ajouter une photo">
-                          <Plus size={18} style={{ color: "var(--gray-500)" }} />
-                        </button>
+                    <td style={{ textAlign: "center", position: "relative" }}>
+                      {uploadingId === l.id && (
+                        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", zIndex: 10, background: "rgba(255,255,255,0.9)", borderRadius: "50%", width: "40px", height: "40px", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}>
+                           <div style={{ width: "24px", height: "4px", background: "var(--gray-200)", borderRadius: "2px", overflow: "hidden" }}>
+                             <div style={{ width: `${uploadProgress}%`, height: "100%", background: "var(--primary)", transition: "width 0.2s ease-out" }} />
+                           </div>
+                           <span style={{ fontSize: "9px", fontWeight: "700", marginTop: "2px", color: "var(--primary)" }}>{uploadProgress}%</span>
+                        </div>
                       )}
+                      <div style={{ opacity: uploadingId === l.id ? 0.3 : 1, transition: "opacity 0.2s", display: "inline-block" }}>
+                        {l.avatar_url ? (
+                          <img src={l.avatar_url} alt={l.full_name} className="avatar avatar-zoomable" style={{ objectFit: "cover", width: "40px", height: "40px", cursor: "pointer", border: "2px solid var(--gray-200)", margin: "0 auto" }} onClick={() => handlePhotoClick(l.id)} title="Modifier la photo" />
+                        ) : (
+                          <button className="btn btn-ghost btn-sm" style={{ padding: 0, borderRadius: "50%", background: "var(--gray-100)", width: "40px", height: "40px", display: "inline-flex", alignItems: "center", justifyContent: "center", margin: "0 auto" }} onClick={() => handlePhotoClick(l.id)} title="Ajouter une photo">
+                            <Plus size={18} style={{ color: "var(--gray-500)" }} />
+                          </button>
+                        )}
+                      </div>
                     </td>
                     <td>
                       <div>
@@ -521,13 +550,41 @@ export default function ProprietairesPage() {
               </div>
               <div>
                 <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", marginBottom: "4px" }}>Biens Associés</p>
-                <p style={{ fontSize: "var(--text-md)", fontWeight: "600" }}>{viewLandlord.property_count || 0} bien(s)</p>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
+                  <span style={{ fontSize: "var(--text-md)", fontWeight: "800", color: "var(--primary)" }}>{properties.filter(p => p.landlord_id === viewLandlord.id).length}</span>
+                  <span style={{ fontSize: "var(--text-sm)", fontWeight: "600" }}>bien(s) géré(s)</span>
+                </div>
+                
+                {/* Detailed List of Properties */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "8px" }}>
+                  {properties.filter(p => p.landlord_id === viewLandlord.id).length > 0 ? (
+                    properties.filter(p => p.landlord_id === viewLandlord.id).map(prop => (
+                      <div key={prop.id} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px", borderRadius: "8px", border: "1px solid var(--gray-200)", background: "var(--gray-50)" }}>
+                        <div style={{ width: "40px", height: "40px", borderRadius: "8px", background: "var(--gray-200)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                          <Building size={20} style={{ color: "var(--gray-500)" }} />
+                        </div>
+                        <div style={{ flex: 1, overflow: "hidden" }}>
+                          <h4 style={{ margin: 0, fontSize: "var(--text-sm)", fontWeight: "700", whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden" }}>{prop.name}</h4>
+                          <p style={{ margin: 0, fontSize: "11px", color: "var(--gray-500)", whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden" }}>{prop.address}</p>
+                        </div>
+                        <div style={{ textAlign: "right" }}>
+                          <span style={{ fontSize: "var(--text-sm)", fontWeight: "700", color: "var(--gray-900)" }}>{prop.monthly_rent.toLocaleString()}</span>
+                          <span style={{ fontSize: "10px", color: "var(--gray-500)", display: "block" }}>FCFA / mois</span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div style={{ padding: "16px", textAlign: "center", border: "1px dashed var(--gray-300)", borderRadius: "8px", color: "var(--gray-500)", fontSize: "var(--text-sm)" }}>
+                      Aucun bien n'est actuellement associé à ce propriétaire.
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
             <div style={{ marginTop: "var(--space-6)" }}>
               <button type="button" className="btn btn-outline" style={{ width: "100%" }} onClick={() => setViewLandlord(null)}>
-                Fermer
+                Fermer les détails
               </button>
             </div>
           </div>
@@ -689,43 +746,7 @@ export default function ProprietairesPage() {
         </div>
       )}
 
-      {/* Modal Photo Menu */}
-      {photoMenuId && (
-        <div 
-          style={{
-            position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-            background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center",
-            zIndex: 100, padding: "var(--space-4)", backdropFilter: "blur(4px)"
-          }}
-          className="animate-fade-in"
-          onClick={() => setPhotoMenuId(null)}
-        >
-          <div 
-            className="card animate-scale-in"
-            style={{ width: "100%", maxWidth: "400px", background: "white", padding: "var(--space-6)", textAlign: "center" }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800", marginBottom: "var(--space-2)" }}>Modifier la photo</h3>
-            <p style={{ color: "var(--gray-500)", marginBottom: "var(--space-6)" }}>
-              Souhaitez-vous télécharger une nouvelle image depuis votre explorateur de fichiers ?
-            </p>
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
-              <button type="button" className="btn btn-primary" onClick={(e) => {
-                  e.stopPropagation();
-                  setActivePhotoId(photoMenuId);
-                  activePhotoIdRef.current = photoMenuId;
-                  document.getElementById('photo-upload')?.click();
-                  setPhotoMenuId(null);
-              }}>
-                 Télécharger l'image
-              </button>
-              <button type="button" className="btn btn-outline" onClick={() => setPhotoMenuId(null)}>
-                Annuler
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+
     </div>
   );
 }
