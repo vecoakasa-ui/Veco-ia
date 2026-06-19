@@ -551,7 +551,7 @@ export default function ProprietairesPage() {
               <div>
                 <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", marginBottom: "4px" }}>Biens Associés</p>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
-                  <span style={{ fontSize: "var(--text-md)", fontWeight: "800", color: "var(--primary)" }}>{properties.filter(p => p.landlord_id === viewLandlord.id).length}</span>
+                  <span style={{ fontSize: "var(--text-md)", fontWeight: "800", color: "var(--primary)" }}>{viewLandlord.property_count || 0}</span>
                   <span style={{ fontSize: "var(--text-sm)", fontWeight: "600" }}>bien(s) géré(s)</span>
                 </div>
                 
