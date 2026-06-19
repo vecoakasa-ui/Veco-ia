@@ -10,7 +10,8 @@ import {
   TrendingUp,
   Plus,
   ChevronRight,
-  ArrowRight
+  ArrowRight,
+  Banknote
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { formatCurrency, formatDate, getPaymentStatusClass, getPaymentStatusLabel } from "@/lib/utils";
@@ -133,7 +134,7 @@ export default function DashboardPage() {
               <h3 style={{ fontSize: "var(--text-2xl)", fontWeight: "800", color: "var(--success-dark)", margin: "6px 0 0 0" }}>{formatCurrency(stats.total_revenue)}</h3>
             </div>
             <div style={{ padding: "10px", background: "var(--primary-lighter)", color: "var(--primary)", borderRadius: "var(--radius-lg)" }}>
-              <DollarSign size={20} />
+              <Banknote size={20} />
             </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "var(--text-xs)", color: "var(--success-dark)", fontWeight: 600 }}>
@@ -173,8 +174,8 @@ export default function DashboardPage() {
             </div>
 
             {/* Custom Responsive pure CSS Graph bar */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
-              <div style={{ display: "flex", alignSelf: "stretch", justifyContent: "space-between", alignItems: "flex-end", height: "180px", borderBottom: "1px solid var(--gray-200)", paddingBottom: "8px", position: "relative" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)", overflowX: "auto" }}>
+              <div style={{ display: "flex", alignSelf: "stretch", justifyContent: "space-between", alignItems: "flex-end", height: "180px", borderBottom: "1px solid var(--gray-200)", paddingBottom: "8px", position: "relative", minWidth: "500px" }}>
                 {/* Horizontal guide lines */}
                 <div style={{ position: "absolute", left: 0, right: 0, top: "25%", borderBottom: "1.5px dashed var(--gray-100)" }}></div>
                 <div style={{ position: "absolute", left: 0, right: 0, top: "50%", borderBottom: "1.5px dashed var(--gray-100)" }}></div>
@@ -231,7 +232,7 @@ export default function DashboardPage() {
             </div>
 
             <div className="table-container">
-              <table className="table">
+              <table className="table" style={{ minWidth: "600px" }}>
                 <thead>
                   <tr>
                     <th>Locataire</th>
