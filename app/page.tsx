@@ -342,8 +342,8 @@ export default function Home({ searchParams }: HomeProps) {
             </p>
             
             <div className="hero-buttons" style={{ display: 'flex', gap: 'var(--space-4)', justifyContent: 'center', flexWrap: 'wrap', width: '100%', maxWidth: '440px', margin: '0 auto' }}>
-              <a href="#services" className="btn btn-orange" style={{ minWidth: '160px', padding: '10px 24px', fontSize: 'var(--text-sm)', fontWeight: '600' }}>
-                Découvrir nos services <ArrowRight size={16} style={{ marginLeft: '6px' }} />
+              <a href="/login" className="btn btn-orange" style={{ minWidth: '160px', padding: '10px 24px', fontSize: 'var(--text-sm)', fontWeight: '600' }}>
+                Connexion au tableau de bord <ArrowRight size={16} style={{ marginLeft: '6px' }} />
               </a>
               <a href="#contact" className="btn btn-contact" style={{ minWidth: '160px', padding: '10px 24px', fontSize: 'var(--text-sm)', fontWeight: '600', background: 'transparent', borderColor: 'white', color: 'white' }}>
                 Nous contacter
