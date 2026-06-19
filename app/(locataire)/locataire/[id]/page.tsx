@@ -11,7 +11,8 @@ import {
   CheckCircle2, 
   FileText,
   Clock,
-  X
+  X,
+  Loader2
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Tenant, Lease, Payment, Incident } from "@/lib/types";
@@ -21,6 +22,7 @@ export default function PortailLocatairePage() {
   const params = useParams();
   const tenantId = params.id as string;
 
+  const [loading, setLoading] = useState(true);
   const [tenant, setTenant] = useState<Tenant | null>(null);
   const [lease, setLease] = useState<Lease | null>(null);
   const [payments, setPayments] = useState<Payment[]>([]);
@@ -34,6 +36,7 @@ export default function PortailLocatairePage() {
 
   const loadData = async () => {
     if (!tenantId) return;
+    setLoading(true);
     
     const allTenants = await db.getTenants();
     const currentTenant = allTenants.find(t => t.id === tenantId) || null;
@@ -49,6 +52,8 @@ export default function PortailLocatairePage() {
       const allIncidents = await db.getIncidents();
       setIncidents(allIncidents.filter(i => i.tenant_id === tenantId));
     }
+    
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -84,9 +89,18 @@ export default function PortailLocatairePage() {
     alert("Votre incident a bien été signalé à l'agence.");
   };
 
+  if (loading) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "50vh", flexDirection: "column", gap: "16px" }} className="animate-fade-in">
+        <Loader2 size={48} className="animate-spin" style={{ color: "var(--primary)" }} />
+        <h3 style={{ color: "var(--gray-600)" }}>Patientez, chargement de votre espace...</h3>
+      </div>
+    );
+  }
+
   if (!tenant) {
     return (
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "50vh", flexDirection: "column", gap: "16px" }}>
+      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "50vh", flexDirection: "column", gap: "16px" }} className="animate-fade-in">
         <AlertTriangle size={48} style={{ color: "var(--warning)" }} />
         <h3>Locataire introuvable</h3>
       </div>
