@@ -653,11 +653,11 @@ export const db = {
             lease_type: t.lease_type,
             status: t.status,
             created_at: t.created_at,
-            full_name: t.profiles?.full_name || "",
-            email: t.profiles?.email || "",
-            phone: t.profiles?.phone || "",
+            full_name: t.full_name || t.profiles?.full_name || "",
+            email: t.email || t.profiles?.email || "",
+            phone: t.phone || t.profiles?.phone || "",
             avatar_url: t.avatar_url || t.profiles?.avatar_url || localAvatars[t.id] || "",
-            property_name: t.properties?.name || ""
+            property_name: t.property_name || t.properties?.name || ""
           }));
         }
       } catch (err) {
@@ -694,6 +694,10 @@ export const db = {
           profile_id: tenant.profile_id,
           property_id: tenant.property_id,
           owner_id: ownerId,
+          full_name: tenant.full_name,
+          email: tenant.email,
+          phone: tenant.phone,
+          property_name: newTenant.property_name,
           lease_start: tenant.lease_start,
           lease_end: tenant.lease_end,
           lease_type: tenant.lease_type,
@@ -720,8 +724,9 @@ export const db = {
         });
 
         return newTenant;
-      } catch (err) {
+      } catch (err: unknown) {
         console.error("Error adding tenant to Supabase:", err);
+        alert("Erreur Supabase (Ajout Locataire) : " + ((err as Error).message || JSON.stringify(err)));
       }
     }
 
