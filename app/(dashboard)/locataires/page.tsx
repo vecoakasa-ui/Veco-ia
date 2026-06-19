@@ -200,7 +200,7 @@ export default function LocatairesPage() {
       </div>
 
       {/* Tenants Table */}
-      <div className="card" style={{ padding: 0, overflow: "hidden" }}>
+      <div className="card" style={{ padding: 0, overflow: "visible" }}>
         <div className="table-container">
           <table className="table">
             <thead>
@@ -223,7 +223,7 @@ export default function LocatairesPage() {
                   </td>
                 </tr>
               ) : (
-                filteredTenants.map((t) => (
+                filteredTenants.map((t, index) => (
                   <tr key={t.id}>
                     <td style={{ textAlign: "center", position: "relative" }}>
                       {uploadingId === t.id && (
@@ -312,7 +312,8 @@ export default function LocatairesPage() {
                               style={{
                                 position: "absolute",
                                 right: "0",
-                                top: "100%",
+                                top: index >= filteredTenants.length - 2 && filteredTenants.length > 3 ? "auto" : "100%",
+                                bottom: index >= filteredTenants.length - 2 && filteredTenants.length > 3 ? "100%" : "auto",
                                 padding: "var(--space-2)",
                                 minWidth: "160px",
                                 zIndex: 9999,
