@@ -217,7 +217,7 @@ export default function ProprietairesPage() {
 
       {/* Landlords Table */}
       <div className="card" style={{ padding: 0, overflow: "visible" }}>
-        <div style={{ width: "100%", borderRadius: "var(--radius-xl)", border: "1px solid var(--gray-200)" }}>
+        <div className="table-container" style={{ minHeight: "250px", width: "100%", borderRadius: "var(--radius-xl)", border: "1px solid var(--gray-200)" }}>
           <table className="table">
             <thead>
               <tr>
@@ -313,9 +313,10 @@ export default function ProprietairesPage() {
                               className="card animate-scale-in"
                               style={{
                                 position: "absolute",
-                                right: "0",
-                                top: index >= filteredLandlords.length - 2 && filteredLandlords.length > 3 ? "auto" : "100%",
-                                bottom: index >= filteredLandlords.length - 2 && filteredLandlords.length > 3 ? "100%" : "auto",
+                                right: 0,
+                                top: (index === filteredLandlords.length - 1 && filteredLandlords.length > 1) ? "auto" : "100%",
+                                bottom: (index === filteredLandlords.length - 1 && filteredLandlords.length > 1) ? "100%" : "auto",
+                                background: "white",
                                 padding: "var(--space-2)",
                                 minWidth: "160px",
                                 zIndex: 9999,
