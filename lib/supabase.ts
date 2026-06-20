@@ -47,11 +47,6 @@ export const supabase = isSupabaseConfigured()
         autoRefreshToken: true,
         persistSession: true,
         detectSessionInUrl: true,
-      },
-      global: {
-        fetch: (url, options) => {
-          return fetch(url, { ...options, cache: 'no-store' });
-        }
       }
     })
   : (null as unknown as ReturnType<typeof createClient>);

@@ -3,12 +3,14 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Mail, KeyRound } from "lucide-react";
+import { ArrowLeft, Mail, KeyRound, Lock, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [otpCode, setOtpCode] = useState("");
   const [step, setStep] = useState<1 | 2>(1);
   const [error, setError] = useState("");
@@ -22,18 +24,31 @@ export default function LoginPage() {
     setSuccessMsg("");
 
     try {
-      const { error: signInError } = await supabase.auth.signInWithOtp({
+      // 1. Verify password first
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (signInError) throw new Error("Email ou mot de passe incorrect.");
+
+      // 2. Send OTP
+      const { error: otpError } = await supabase.auth.signInWithOtp({
         email,
       });
 
-      if (signInError) throw signInError;
+      if (otpError) throw otpError;
 
       setSuccessMsg("Un code de sécurité a été envoyé à votre adresse e-mail. Veuillez vérifier votre boîte de réception.");
       setStep(2);
     } catch (err: unknown) {
-      console.error("OTP send error:", err);
+      console.error("Login error:", err);
       const errorObj = err as Error;
-      setError(errorObj.message || "Erreur lors de l'envoi du code.");
+      let errorMsg = errorObj.message || "Erreur lors de la connexion.";
+      if (errorMsg === "Failed to fetch") {
+        errorMsg = "Erreur de réseau. Veuillez vérifier votre connexion ou désactiver votre bloqueur de publicités.";
+      }
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -119,8 +134,44 @@ export default function LoginPage() {
                   className="input"
                 />
               </div>
+            </div>
+
+            <div className="input-group">
+              <label className="input-label">Mot de passe</label>
+              <div className="input-with-icon" style={{ position: 'relative' }}>
+                <Lock className="input-icon" size={16} />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="input"
+                  style={{ paddingRight: '40px' }}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  style={{
+                    position: 'absolute',
+                    right: 'var(--space-3)',
+                    top: '50%',
+                    transform: 'translateY(-50%)',
+                    color: 'var(--gray-500)',
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: 0,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
               <p style={{ fontSize: '12px', color: 'var(--gray-500)', marginTop: '8px' }}>
-                Un code de sécurité à 6 chiffres vous sera envoyé par e-mail.
+                Une fois votre mot de passe validé, un code de sécurité à 6 chiffres vous sera envoyé par e-mail.
               </p>
             </div>
 
