@@ -30,7 +30,15 @@ export default function LoginPage() {
         password,
       });
 
-      if (signInError) throw new Error("Email ou mot de passe incorrect.");
+      if (signInError) {
+        if (signInError.message.includes("Email not confirmed")) {
+          throw new Error("Veuillez confirmer votre adresse e-mail en cliquant sur le lien que nous vous avons envoyé lors de l'inscription.");
+        } else if (signInError.message === "Invalid login credentials") {
+          throw new Error("Email ou mot de passe incorrect. Avez-vous bien créé un compte ?");
+        } else {
+          throw signInError;
+        }
+      }
 
       // 2. Send OTP
       const { error: otpError } = await supabase.auth.signInWithOtp({
