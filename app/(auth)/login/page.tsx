@@ -3,44 +3,68 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Lock, Mail, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Mail, KeyRound } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [step, setStep] = useState<1 | 2>(1);
   const [error, setError] = useState("");
-  const [role, setRole] = useState<"owner" | "tenant" | "admin">("owner");
   const [loading, setLoading] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSendOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    setSuccessMsg("");
+
+    try {
+      const { error: signInError } = await supabase.auth.signInWithOtp({
+        email,
+      });
+
+      if (signInError) throw signInError;
+
+      setSuccessMsg("Un code de sécurité a été envoyé à votre adresse e-mail. Veuillez vérifier votre boîte de réception.");
+      setStep(2);
+    } catch (err: unknown) {
+      console.error("OTP send error:", err);
+      const errorObj = err as Error;
+      setError(errorObj.message || "Erreur lors de l'envoi du code.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+      const { data, error: verifyError } = await supabase.auth.verifyOtp({
         email,
-        password,
+        token: otpCode,
+        type: 'email'
       });
 
-      if (signInError) throw signInError;
+      if (verifyError) throw verifyError;
+
+      const userRole = data.user?.user_metadata?.role || "owner";
 
       // Update local storage explicitly to speed up dashboard rendering
-      localStorage.setItem("userRole", role);
+      localStorage.setItem("userRole", userRole);
       
       // Route to dashboard
       router.push("/dashboard");
     } catch (err: unknown) {
-      console.error("Login error:", err);
+      console.error("OTP verify error:", err);
       const errorObj = err as Error;
-      let errorMsg = errorObj.message || "Email ou mot de passe incorrect";
-      if (errorMsg === "Invalid login credentials" || errorMsg.includes("Email not confirmed")) {
-        errorMsg = "Email ou mot de passe incorrect. Si vous venez de créer ce compte, assurez-vous d'avoir cliqué sur le lien de confirmation envoyé par e-mail, ou désactivez l'option 'Confirm Email' dans votre tableau de bord Supabase.";
-      }
-      setError(errorMsg);
+      setError(errorObj.message || "Code incorrect ou expiré.");
+    } finally {
       setLoading(false);
     }
   };
@@ -63,7 +87,9 @@ export default function LoginPage() {
             <div className="logo-icon" style={{ background: 'var(--orange)' }}>V</div>
             <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: '800', margin: 0 }}>VENANCE IMO</h2>
           </div>
-          <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-500)', margin: 0 }}>Connectez-vous à votre espace de gestion</p>
+          <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-500)', margin: 0 }}>
+            {step === 1 ? "Connectez-vous à votre espace de gestion de façon sécurisée" : "Vérification de sécurité"}
+          </p>
         </div>
 
         {error && (
@@ -72,106 +98,90 @@ export default function LoginPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-          {/* Role selector tab */}
-          <div style={{ display: 'flex', background: 'var(--gray-100)', padding: '4px', borderRadius: 'var(--radius-lg)' }}>
+        {successMsg && step === 2 && (
+          <div style={{ background: "var(--success-lightest)", color: "var(--success)", padding: "10px 12px", borderRadius: "8px", fontSize: "13px", marginBottom: "var(--space-4)" }}>
+            {successMsg}
+          </div>
+        )}
+
+        {step === 1 ? (
+          <form onSubmit={handleSendOtp} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+            <div className="input-group">
+              <label className="input-label">Adresse E-mail</label>
+              <div className="input-with-icon">
+                <Mail className="input-icon" size={16} />
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="nom@exemple.com"
+                  className="input"
+                />
+              </div>
+              <p style={{ fontSize: '12px', color: 'var(--gray-500)', marginTop: '8px' }}>
+                Un code de sécurité à 6 chiffres vous sera envoyé par e-mail.
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn btn-primary"
+              style={{ width: '100%', padding: 'var(--space-3)', display: 'flex', justifyContent: 'center' }}
+            >
+              {loading ? "Envoi du code..." : "Recevoir mon code de connexion"}
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleVerifyOtp} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+            <div className="input-group">
+              <label className="input-label">Code de sécurité (OTP)</label>
+              <div className="input-with-icon">
+                <KeyRound className="input-icon" size={16} />
+                <input
+                  type="text"
+                  required
+                  value={otpCode}
+                  onChange={(e) => setOtpCode(e.target.value)}
+                  placeholder="Collez le code à 6 chiffres ici"
+                  className="input"
+                  style={{ letterSpacing: '2px', fontSize: '16px', fontWeight: 'bold' }}
+                  maxLength={6}
+                />
+              </div>
+              <p style={{ fontSize: '12px', color: 'var(--gray-500)', marginTop: '8px' }}>
+                Consultez l'adresse {email}. Si vous ne voyez rien, vérifiez vos spams.
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading || otpCode.length < 6}
+              className="btn btn-primary"
+              style={{ width: '100%', padding: 'var(--space-3)', display: 'flex', justifyContent: 'center' }}
+            >
+              {loading ? "Vérification..." : "Se connecter"}
+            </button>
+
             <button
               type="button"
-              className={`btn btn-sm ${role === 'owner' ? 'btn-primary' : 'btn-ghost'}`}
-              onClick={() => setRole('owner')}
-              style={{ flex: 1, borderRadius: 'var(--radius-md)', padding: '6px' }}
+              onClick={() => setStep(1)}
+              style={{ background: 'none', border: 'none', color: 'var(--primary)', fontSize: '13px', cursor: 'pointer', marginTop: '8px', fontWeight: '500' }}
             >
-              Propriétaire
+              Je n'ai pas reçu de code (Réessayer)
             </button>
-            <button
-              type="button"
-              className={`btn btn-sm ${role === 'tenant' ? 'btn-orange' : 'btn-ghost'}`}
-              onClick={() => setRole('tenant')}
-              style={{ flex: 1, borderRadius: 'var(--radius-md)', padding: '6px' }}
-            >
-              Locataire
-            </button>
+          </form>
+        )}
+
+        {step === 1 && (
+          <div style={{ textAlign: 'center', marginTop: 'var(--space-6)', fontSize: 'var(--text-xs)', color: 'var(--gray-500)' }}>
+            Vous n&apos;avez pas encore de compte ?{" "}
+            <Link href="/register" style={{ color: 'var(--primary)', fontWeight: '600' }}>
+              Inscrivez-vous gratuitement
+            </Link>
           </div>
-
-          <div className="input-group">
-            <label className="input-label">Adresse E-mail</label>
-            <div className="input-with-icon">
-              <Mail className="input-icon" size={16} />
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="nom@exemple.com"
-                className="input"
-              />
-            </div>
-          </div>
-
-          <div className="input-group">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <label className="input-label">Mot de passe</label>
-              <a href="#" style={{ fontSize: 'var(--text-xs)', color: 'var(--primary)', fontWeight: '500' }}>
-                Mot de passe oublié ?
-              </a>
-            </div>
-            <div className="input-with-icon" style={{ position: 'relative' }}>
-              <Lock className="input-icon" size={16} />
-              <input
-                type={showPassword ? "text" : "password"}
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="input"
-                style={{ paddingRight: '40px' }}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                style={{
-                  position: 'absolute',
-                  right: 'var(--space-3)',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  color: 'var(--gray-500)',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              >
-                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-              </button>
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-            <input type="checkbox" id="remember" defaultChecked style={{ accentColor: 'var(--primary)' }} />
-            <label htmlFor="remember" style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-600)', cursor: 'pointer' }}>
-              Se souvenir de moi
-            </label>
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn btn-primary"
-            style={{ width: '100%', padding: 'var(--space-3)', display: 'flex', justifyContent: 'center' }}
-          >
-            {loading ? "Connexion en cours..." : "Se connecter"}
-          </button>
-        </form>
-
-        <div style={{ textAlign: 'center', marginTop: 'var(--space-6)', fontSize: 'var(--text-xs)', color: 'var(--gray-500)' }}>
-          Vous n&apos;avez pas encore de compte ?{" "}
-          <Link href="/register" style={{ color: 'var(--primary)', fontWeight: '600' }}>
-            Inscrivez-vous gratuitement
-          </Link>
-        </div>
+        )}
       </div>
     </div>
   );
