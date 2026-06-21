@@ -404,9 +404,8 @@ export default function DashboardLayout({
             {/* Profile Dropdown */}
             <div style={{ position: "relative" }}>
               <button 
-                style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", background: "transparent", border: "none", cursor: "pointer", padding: "4px 8px", borderRadius: "var(--radius-md)", transition: "background 0.2s" }}
+                style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", background: showProfileMenu ? "var(--gray-100)" : "transparent", border: "none", cursor: "pointer", padding: "4px 8px", borderRadius: "var(--radius-md)", transition: "background 0.2s" }}
                 className={showProfileMenu ? "hover-bg-gray-100" : ""}
-                style={showProfileMenu ? { background: "var(--gray-100)" } : {}}
                 onClick={() => { setShowProfileMenu(!showProfileMenu); setShowNotifications(false); }}
               >
                 <div className="avatar avatar-sm" style={{ background: "var(--primary-lightest)", color: "var(--primary-dark)", width: "32px", height: "32px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: "bold" }}>
