@@ -179,7 +179,7 @@ export default function LoginPage() {
                 </button>
               </div>
               <p style={{ fontSize: '12px', color: 'var(--gray-500)', marginTop: '8px' }}>
-                Une fois votre mot de passe validé, un code de sécurité à 6 chiffres vous sera envoyé par e-mail.
+                Une fois votre mot de passe validé, un code de sécurité à 8 chiffres vous sera envoyé par e-mail.
               </p>
             </div>
 
@@ -203,10 +203,10 @@ export default function LoginPage() {
                   required
                   value={otpCode}
                   onChange={(e) => setOtpCode(e.target.value)}
-                  placeholder="Collez le code à 6 chiffres ici"
+                  placeholder="Collez le code à 8 chiffres ici"
                   className="input"
                   style={{ letterSpacing: '2px', fontSize: '16px', fontWeight: 'bold' }}
-                  maxLength={6}
+                  maxLength={8}
                 />
               </div>
               <p style={{ fontSize: '12px', color: 'var(--gray-500)', marginTop: '8px' }}>
@@ -216,7 +216,7 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              disabled={loading || otpCode.length < 6}
+              disabled={loading || otpCode.length < 8}
               className="btn btn-primary"
               style={{ width: '100%', padding: 'var(--space-3)', display: 'flex', justifyContent: 'center' }}
             >
