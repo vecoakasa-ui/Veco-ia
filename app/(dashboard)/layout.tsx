@@ -33,6 +33,8 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
   
   const [profile, setProfile] = useState<Profile>({
     id: "owner-1",
@@ -148,8 +150,8 @@ export default function DashboardLayout({
         {/* User profile section */}
         <div style={{ padding: "var(--space-4)", borderTop: "1px solid var(--gray-800)", background: "rgba(0,0,0,0.2)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", marginBottom: "var(--space-4)" }}>
-            <div className="avatar avatar-sm" style={{ background: "var(--primary-lighter)", color: "var(--primary-dark)" }}>
-              VE
+            <div className="avatar avatar-sm" style={{ background: "var(--primary-lighter)", color: "var(--primary-dark)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}>
+              {profile.full_name ? profile.full_name.substring(0, 2).toUpperCase() : "VI"}
             </div>
             <div style={{ overflow: "hidden" }}>
               <h5 style={{ fontSize: "var(--text-sm)", fontWeight: "600", color: "var(--white)", margin: 0 }}>{profile.full_name}</h5>
@@ -269,8 +271,8 @@ export default function DashboardLayout({
             {/* User section */}
             <div style={{ padding: "var(--space-4)", borderTop: "1px solid var(--gray-800)", background: "rgba(0,0,0,0.2)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", marginBottom: "var(--space-4)" }}>
-                <div className="avatar avatar-sm" style={{ background: "var(--primary-lighter)", color: "var(--primary-dark)" }}>
-                  VE
+                <div className="avatar avatar-sm" style={{ background: "var(--primary-lighter)", color: "var(--primary-dark)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}>
+                  {profile.full_name ? profile.full_name.substring(0, 2).toUpperCase() : "VI"}
                 </div>
                 <div>
                   <h5 style={{ fontSize: "var(--text-sm)", fontWeight: "600", margin: 0 }}>{profile.full_name}</h5>
@@ -345,39 +347,112 @@ export default function DashboardLayout({
           </div>
 
           {/* Right: tools */}
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)" }}>
-            {/* Fake Notifications Bell */}
-            <button 
-              style={{ padding: "8px", position: "relative", color: "var(--gray-600)", borderRadius: "50%" }}
-              className="btn-ghost"
-              onClick={() => alert("Aucune notification pour le moment.")}
-            >
-              <Bell size={20} />
-              <span 
-                style={{
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)", position: "relative" }}>
+            {/* Notifications Dropdown */}
+            <div style={{ position: "relative" }}>
+              <button 
+                style={{ padding: "8px", position: "relative", color: "var(--gray-600)", borderRadius: "50%", background: showNotifications ? "var(--gray-100)" : "transparent", border: "none", cursor: "pointer" }}
+                onClick={() => { setShowNotifications(!showNotifications); setShowProfileMenu(false); }}
+              >
+                <Bell size={20} />
+                <span 
+                  style={{
+                    position: "absolute",
+                    top: "6px",
+                    right: "6px",
+                    width: "8px",
+                    height: "8px",
+                    background: "var(--danger)",
+                    borderRadius: "50%",
+                    border: "2px solid white"
+                  }}
+                ></span>
+              </button>
+              
+              {showNotifications && (
+                <div style={{
                   position: "absolute",
-                  top: "6px",
-                  right: "6px",
-                  width: "8px",
-                  height: "8px",
-                  background: "var(--danger)",
-                  borderRadius: "50%",
-                  border: "2px solid white"
-                }}
-              ></span>
-            </button>
+                  top: "calc(100% + 10px)",
+                  right: "-10px",
+                  width: "320px",
+                  background: "var(--white)",
+                  borderRadius: "var(--radius-lg)",
+                  boxShadow: "var(--shadow-lg)",
+                  border: "1px solid var(--gray-200)",
+                  zIndex: 50,
+                  overflow: "hidden",
+                  display: "flex",
+                  flexDirection: "column"
+                }} className="animate-fade-in">
+                  <div style={{ padding: "var(--space-3)", borderBottom: "1px solid var(--gray-200)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <h3 style={{ fontSize: "var(--text-sm)", fontWeight: "600", margin: 0, color: "var(--gray-900)" }}>Notifications</h3>
+                    <span style={{ fontSize: "11px", color: "var(--primary)", cursor: "pointer", fontWeight: "500" }}>Tout marquer comme lu</span>
+                  </div>
+                  <div style={{ maxHeight: "300px", overflowY: "auto", padding: "0" }}>
+                    <div style={{ padding: "var(--space-4)", textAlign: "center", color: "var(--gray-500)", fontSize: "var(--text-sm)" }}>
+                      <Bell size={24} style={{ margin: "0 auto var(--space-2)", color: "var(--gray-300)" }} />
+                      <p style={{ margin: 0 }}>Vous n'avez pas de nouvelles notifications.</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Divider */}
             <div style={{ width: "1px", height: "24px", background: "var(--gray-200)" }}></div>
 
-            {/* Profile Avatar Trigger */}
-            <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
-              <div className="avatar avatar-sm" style={{ background: "var(--primary-lightest)", color: "var(--primary-dark)" }}>
-                VE
-              </div>
-              <span className="hide-mobile" style={{ fontSize: "var(--text-sm)", fontWeight: "600", color: "var(--gray-700)" }}>
-                {profile.full_name}
-              </span>
+            {/* Profile Dropdown */}
+            <div style={{ position: "relative" }}>
+              <button 
+                style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", background: "transparent", border: "none", cursor: "pointer", padding: "4px 8px", borderRadius: "var(--radius-md)", transition: "background 0.2s" }}
+                className={showProfileMenu ? "hover-bg-gray-100" : ""}
+                style={showProfileMenu ? { background: "var(--gray-100)" } : {}}
+                onClick={() => { setShowProfileMenu(!showProfileMenu); setShowNotifications(false); }}
+              >
+                <div className="avatar avatar-sm" style={{ background: "var(--primary-lightest)", color: "var(--primary-dark)", width: "32px", height: "32px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: "bold" }}>
+                  {profile.full_name ? profile.full_name.substring(0, 2).toUpperCase() : "VI"}
+                </div>
+                <span className="hide-mobile" style={{ fontSize: "var(--text-sm)", fontWeight: "600", color: "var(--gray-700)" }}>
+                  {profile.full_name}
+                </span>
+              </button>
+
+              {showProfileMenu && (
+                <div style={{
+                  position: "absolute",
+                  top: "calc(100% + 10px)",
+                  right: "0",
+                  width: "240px",
+                  background: "var(--white)",
+                  borderRadius: "var(--radius-lg)",
+                  boxShadow: "var(--shadow-lg)",
+                  border: "1px solid var(--gray-200)",
+                  zIndex: 50,
+                  overflow: "hidden"
+                }} className="animate-fade-in">
+                  <div style={{ padding: "var(--space-3)", borderBottom: "1px solid var(--gray-200)", background: "var(--gray-50)" }}>
+                    <p style={{ fontSize: "var(--text-sm)", fontWeight: "600", color: "var(--gray-900)", margin: 0 }}>{profile.full_name}</p>
+                    <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", margin: "4px 0 0 0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{profile.email}</p>
+                  </div>
+                  <div style={{ padding: "var(--space-2)" }}>
+                    <Link 
+                      href="/settings" 
+                      onClick={() => setShowProfileMenu(false)}
+                      style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", padding: "var(--space-2) var(--space-3)", fontSize: "var(--text-sm)", color: "var(--gray-700)", textDecoration: "none", borderRadius: "var(--radius-sm)", transition: "background 0.2s" }}
+                      className="hover-bg-gray-100"
+                    >
+                      <Settings size={16} /> Mes Paramètres
+                    </Link>
+                    <button 
+                      onClick={handleLogout}
+                      style={{ width: "100%", display: "flex", alignItems: "center", gap: "var(--space-2)", padding: "var(--space-2) var(--space-3)", fontSize: "var(--text-sm)", color: "var(--danger)", background: "transparent", border: "none", cursor: "pointer", borderRadius: "var(--radius-sm)", transition: "background 0.2s", textAlign: "left" }}
+                      className="hover-bg-danger-lightest"
+                    >
+                      <LogOut size={16} /> Se déconnecter
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </header>
@@ -405,6 +480,12 @@ export default function DashboardLayout({
         .hover-sidebar-link:hover {
           background: rgba(255, 255, 255, 0.05) !important;
           color: var(--white) !important;
+        }
+        .hover-bg-gray-100:hover {
+          background: var(--gray-100) !important;
+        }
+        .hover-bg-danger-lightest:hover {
+          background: rgba(239, 68, 68, 0.1) !important;
         }
       `}</style>
     </div>

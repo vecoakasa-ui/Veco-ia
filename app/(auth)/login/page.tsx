@@ -40,14 +40,17 @@ export default function LoginPage() {
         }
       }
 
-      // 2. Send OTP
+      // 2. Send OTP (Magic Link)
       const { error: otpError } = await supabase.auth.signInWithOtp({
         email,
+        options: {
+          emailRedirectTo: `${window.location.origin}/dashboard`,
+        }
       });
 
       if (otpError) throw otpError;
 
-      setSuccessMsg("Un code de sécurité a été envoyé à votre adresse e-mail. Veuillez vérifier votre boîte de réception.");
+      setSuccessMsg("Un lien magique a été envoyé à votre adresse e-mail. Cliquez dessus pour vous connecter.");
       setStep(2);
     } catch (err: unknown) {
       console.error("Login error:", err);
@@ -62,35 +65,7 @@ export default function LoginPage() {
     }
   };
 
-  const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    try {
-      const { data, error: verifyError } = await supabase.auth.verifyOtp({
-        email,
-        token: otpCode,
-        type: 'email'
-      });
-
-      if (verifyError) throw verifyError;
-
-      const userRole = data.user?.user_metadata?.role || "owner";
-
-      // Update local storage explicitly to speed up dashboard rendering
-      localStorage.setItem("userRole", userRole);
-      
-      // Route to dashboard
-      router.push("/dashboard");
-    } catch (err: unknown) {
-      console.error("OTP verify error:", err);
-      const errorObj = err as Error;
-      setError(errorObj.message || "Code incorrect ou expiré.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Magic link callback is handled automatically by Supabase client when they click the email link
 
   return (
     <div style={{
@@ -179,7 +154,7 @@ export default function LoginPage() {
                 </button>
               </div>
               <p style={{ fontSize: '12px', color: 'var(--gray-500)', marginTop: '8px' }}>
-                Une fois votre mot de passe validé, un code de sécurité à 8 chiffres vous sera envoyé par e-mail.
+                Une fois votre mot de passe validé, un lien de connexion magique vous sera envoyé par e-mail.
               </p>
             </div>
 
@@ -189,48 +164,35 @@ export default function LoginPage() {
               className="btn btn-primary"
               style={{ width: '100%', padding: 'var(--space-3)', display: 'flex', justifyContent: 'center' }}
             >
-              {loading ? "Envoi du code..." : "Recevoir mon code de connexion"}
+              {loading ? "Envoi du lien..." : "Recevoir mon lien de connexion"}
             </button>
           </form>
         ) : (
-          <form onSubmit={handleVerifyOtp} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-            <div className="input-group">
-              <label className="input-label">Code de sécurité (OTP)</label>
-              <div className="input-with-icon">
-                <KeyRound className="input-icon" size={16} />
-                <input
-                  type="text"
-                  required
-                  value={otpCode}
-                  onChange={(e) => setOtpCode(e.target.value)}
-                  placeholder="Collez le code à 8 chiffres ici"
-                  className="input"
-                  style={{ letterSpacing: '2px', fontSize: '16px', fontWeight: 'bold' }}
-                  maxLength={8}
-                />
-              </div>
-              <p style={{ fontSize: '12px', color: 'var(--gray-500)', marginTop: '8px' }}>
-                Consultez l'adresse {email}. Si vous ne voyez rien, vérifiez vos spams.
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)', textAlign: 'center' }}>
+            <div style={{ background: "var(--primary-lightest)", padding: "var(--space-6)", borderRadius: "var(--radius-lg)", marginBottom: "var(--space-2)" }}>
+              <Mail size={40} style={{ color: "var(--primary)", margin: "0 auto var(--space-3)" }} />
+              <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "600", marginBottom: "var(--space-2)", color: "var(--gray-900)" }}>
+                Vérifiez vos e-mails
+              </h3>
+              <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-600)", margin: 0, lineHeight: "1.5" }}>
+                Nous avons envoyé un lien magique à <strong>{email}</strong>.
+                <br /><br />
+                Cliquez simplement sur le bouton dans cet e-mail pour accéder automatiquement à votre tableau de bord.
               </p>
             </div>
 
-            <button
-              type="submit"
-              disabled={loading || otpCode.length < 8}
-              className="btn btn-primary"
-              style={{ width: '100%', padding: 'var(--space-3)', display: 'flex', justifyContent: 'center' }}
-            >
-              {loading ? "Vérification..." : "Se connecter"}
-            </button>
+            <p style={{ fontSize: '12px', color: 'var(--gray-500)', margin: '0' }}>
+              Vous ne trouvez pas l'e-mail ? Vérifiez le dossier spam.
+            </p>
 
             <button
               type="button"
               onClick={() => setStep(1)}
               style={{ background: 'none', border: 'none', color: 'var(--primary)', fontSize: '13px', cursor: 'pointer', marginTop: '8px', fontWeight: '500' }}
             >
-              Je n'ai pas reçu de code (Réessayer)
+              Je n'ai pas reçu d'e-mail (Réessayer)
             </button>
-          </form>
+          </div>
         )}
 
         {step === 1 && (
