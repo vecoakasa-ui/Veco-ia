@@ -173,6 +173,11 @@ export default function LoginPage() {
                 <p style={{ fontSize: '12px', color: 'var(--gray-500)', marginTop: '8px' }}>
                   Une fois votre mot de passe validé, un lien de connexion magique vous sera envoyé par e-mail.
                 </p>
+                <div style={{ textAlign: 'right', marginTop: '4px' }}>
+                  <Link href="/forgot-password" style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: '500' }}>
+                    Mot de passe oublié ?
+                  </Link>
+                </div>
               </div>
 
               <button
