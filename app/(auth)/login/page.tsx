@@ -218,10 +218,12 @@ export default function LoginPage() {
         )}
 
         {step === 1 && (
-          <div style={{ textAlign: 'center', marginTop: 'var(--space-6)', fontSize: 'var(--text-xs)', color: 'var(--gray-500)' }}>
-            Vous n&apos;avez pas encore de compte ?{" "}
-            <Link href="/register" style={{ color: 'var(--primary)', fontWeight: '600' }}>
-              Inscrivez-vous gratuitement
+          <div style={{ marginTop: 'var(--space-6)', paddingTop: 'var(--space-4)', borderTop: '1px solid var(--gray-200)', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+            <p style={{ textAlign: 'center', fontSize: 'var(--text-xs)', color: 'var(--gray-500)', margin: 0 }}>
+              Vous n'avez pas encore de compte ?
+            </p>
+            <Link href="/register" className="btn btn-outline" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+              Créer un compte gratuitement
             </Link>
           </div>
         )}

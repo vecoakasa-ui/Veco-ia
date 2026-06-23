@@ -223,10 +223,10 @@ export default function Home({ searchParams }: HomeProps) {
           </nav>
 
           <div className="navbar-actions hide-mobile">
-            <Link href="/login" className="btn btn-orange" style={{ padding: '8px 16px', fontSize: 'var(--text-sm)' }}>
+            <Link href="/login" className="btn btn-outline" style={{ padding: '8px 16px', fontSize: 'var(--text-sm)' }}>
               Connexion
             </Link>
-            <Link href="/register" className="btn" style={{ background: 'var(--gray-100)', color: 'var(--gray-800)', padding: '8px 16px', fontSize: 'var(--text-sm)', fontWeight: '600' }}>
+            <Link href="/register" className="btn btn-orange" style={{ padding: '8px 16px', fontSize: 'var(--text-sm)', fontWeight: '600' }}>
               S'inscrire <ArrowRight size={14} style={{ marginLeft: '4px' }} />
             </Link>
           </div>
@@ -303,10 +303,10 @@ export default function Home({ searchParams }: HomeProps) {
             </a>
             <hr style={{ border: 'none', borderTop: '1px solid var(--gray-200)', margin: 'var(--space-2) 0' }} />
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
-              <Link href="/login" className="btn btn-orange" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+              <Link href="/login" className="btn btn-outline" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
                 Connexion
               </Link>
-              <Link href="/register" className="btn" style={{ background: 'var(--gray-100)', color: 'var(--gray-800)', width: '100%', display: 'flex', justifyContent: 'center' }} onClick={() => setMobileMenuOpen(false)}>
+              <Link href="/register" className="btn btn-orange" style={{ width: '100%', display: 'flex', justifyContent: 'center' }} onClick={() => setMobileMenuOpen(false)}>
                 S'inscrire
               </Link>
             </div>

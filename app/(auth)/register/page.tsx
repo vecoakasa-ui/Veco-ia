@@ -299,9 +299,11 @@ export default function RegisterPage({ searchParams }: PageProps) {
         )}
 
         {step === 1 && (
-          <div style={{ textAlign: 'center', marginTop: 'var(--space-6)', fontSize: 'var(--text-xs)', color: 'var(--gray-500)' }}>
-            Vous avez déjà un compte ?{" "}
-            <Link href="/login" style={{ color: 'var(--primary)', fontWeight: '600' }}>
+          <div style={{ marginTop: 'var(--space-6)', paddingTop: 'var(--space-4)', borderTop: '1px solid var(--gray-200)', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
+            <p style={{ textAlign: 'center', fontSize: 'var(--text-xs)', color: 'var(--gray-500)', margin: 0 }}>
+              Vous avez déjà un compte ?
+            </p>
+            <Link href="/login" className="btn btn-outline" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
               Se connecter
             </Link>
           </div>
