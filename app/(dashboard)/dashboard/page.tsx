@@ -28,6 +28,13 @@ export default function DashboardPage() {
   });
   const [recentPayments, setRecentPayments] = useState<Payment[]>([]);
   const [upcomingPayments, setUpcomingPayments] = useState<Payment[]>([]);
+  const [chartData, setChartData] = useState<{month: string, val: number, rawTotal: number}[]>([
+    { month: "Jan", val: 0, rawTotal: 0 }, { month: "Fév", val: 0, rawTotal: 0 }, { month: "Mar", val: 0, rawTotal: 0 },
+    { month: "Avr", val: 0, rawTotal: 0 }, { month: "Mai", val: 0, rawTotal: 0 }, { month: "Juin", val: 0, rawTotal: 0 },
+    { month: "Juil", val: 0, rawTotal: 0 }, { month: "Août", val: 0, rawTotal: 0 }, { month: "Sep", val: 0, rawTotal: 0 },
+    { month: "Oct", val: 0, rawTotal: 0 }, { month: "Nov", val: 0, rawTotal: 0 }, { month: "Déc", val: 0, rawTotal: 0 }
+  ]);
+  const [revenueGrowth, setRevenueGrowth] = useState(0);
 
   useEffect(() => {
     // Load dynamic data from localStorage or Supabase
@@ -37,6 +44,38 @@ export default function DashboardPage() {
       const allPayments = await db.getPayments();
       setRecentPayments(allPayments.filter(p => p.status === "paid").slice(0, 4));
       setUpcomingPayments(allPayments.filter(p => p.status === "upcoming" || p.status === "pending").slice(0, 3));
+
+      // Calcul du graphique des revenus
+      const currentYear = new Date().getFullYear();
+      const currentMonthIndex = new Date().getMonth();
+      const monthNames = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"];
+      
+      const newChartData = monthNames.map((m) => ({ month: m, val: 0, rawTotal: 0 }));
+      
+      const paidThisYear = allPayments.filter(p => p.status === "paid" && new Date(p.payment_date || p.created_at).getFullYear() === currentYear);
+      
+      paidThisYear.forEach(p => {
+        const pMonthIndex = new Date(p.payment_date || p.created_at).getMonth();
+        newChartData[pMonthIndex].rawTotal += p.total;
+      });
+
+      const maxRev = Math.max(...newChartData.map(d => d.rawTotal), 1);
+      const normalizedChartData = newChartData.map(d => ({
+        month: d.month,
+        val: Math.round((d.rawTotal / maxRev) * 100),
+        rawTotal: d.rawTotal
+      }));
+      setChartData(normalizedChartData);
+
+      // Calcul de la croissance par rapport au mois précédent
+      const thisMonthRev = newChartData[currentMonthIndex].rawTotal;
+      const lastMonthRev = currentMonthIndex > 0 ? newChartData[currentMonthIndex - 1].rawTotal : 0;
+      
+      if (lastMonthRev === 0) {
+        setRevenueGrowth(thisMonthRev > 0 ? 100 : 0);
+      } else {
+        setRevenueGrowth(Math.round(((thisMonthRev - lastMonthRev) / lastMonthRev) * 100));
+      }
     };
 
     runLoad();
@@ -137,8 +176,9 @@ export default function DashboardPage() {
               <Banknote size={20} />
             </div>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "var(--text-xs)", color: "var(--success-dark)", fontWeight: 600 }}>
-            <TrendingUp size={12} /> +12% ce mois-ci
+          <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "var(--text-xs)", color: revenueGrowth >= 0 ? "var(--success-dark)" : "var(--danger)", fontWeight: 600 }}>
+            {revenueGrowth >= 0 ? <TrendingUp size={12} /> : <AlertTriangle size={12} />} 
+            {revenueGrowth > 0 ? "+" : ""}{revenueGrowth}% ce mois-ci
           </div>
         </div>
 
@@ -168,7 +208,7 @@ export default function DashboardPage() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-6)" }}>
               <div>
                 <h3 style={{ fontSize: "var(--text-base)", fontWeight: "700", color: "var(--gray-900)" }}>Évolution des Revenus Mensuels</h3>
-                <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>Revenus de l&apos;année 2026</span>
+                <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>Revenus de l&apos;année {new Date().getFullYear()}</span>
               </div>
               <span className="badge badge-success" style={{ display: "flex", gap: "4px" }}><TrendingUp size={12} /> Global</span>
             </div>
@@ -182,27 +222,14 @@ export default function DashboardPage() {
                 <div style={{ position: "absolute", left: 0, right: 0, top: "75%", borderBottom: "1.5px dashed var(--gray-100)" }}></div>
                 
                 {/* Bars */}
-                {[
-                  { month: "Jan", val: 30 },
-                  { month: "Feb", val: 45 },
-                  { month: "Mar", val: 40 },
-                  { month: "Apr", val: 55 },
-                  { month: "May", val: 73 },
-                  { month: "Jun", val: 88 },
-                  { month: "Jul", val: 0 },
-                  { month: "Aug", val: 0 },
-                  { month: "Sep", val: 0 },
-                  { month: "Oct", val: 0 },
-                  { month: "Nov", val: 0 },
-                  { month: "Dec", val: 0 }
-                ].map((bar, idx) => (
+                {chartData.map((bar, idx) => (
                   <div key={idx} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", zIndex: 5 }}>
                     <div 
                       style={{ 
                         width: "60%", 
                         height: `${bar.val || 5}px`, 
                         minHeight: bar.val > 0 ? `${bar.val * 1.5}px` : "4px",
-                        background: idx === 5 
+                        background: idx === new Date().getMonth()
                           ? "var(--orange)" 
                           : idx % 2 === 0 
                             ? "var(--primary-lighter)" 
@@ -210,7 +237,7 @@ export default function DashboardPage() {
                         borderRadius: "4px 4px 0 0",
                         transition: "all 0.5s ease"
                       }}
-                      title={`${bar.month}: ${bar.val > 0 ? bar.val * 30000 : 0} FCFA`}
+                      title={`${bar.month}: ${bar.rawTotal > 0 ? formatCurrency(bar.rawTotal) : "0 FCFA"}`}
                     ></div>
                     <span style={{ fontSize: "10px", color: "var(--gray-500)", marginTop: "var(--space-2)" }}>{bar.month}</span>
                   </div>
