@@ -787,14 +787,17 @@ export const db = {
           phone: tenant.phone,
           avatar_url: tenant.avatar_url
         }).eq("id", tenant.profile_id);
-        if (profileError) throw profileError;
+        if (profileError) {
+          console.warn("Could not update profile (likely RLS), proceeding to update tenant record:", profileError);
+        }
 
         const { error } = await supabase.from("tenants").update({
           property_id: tenant.property_id,
           lease_start: tenant.lease_start,
           lease_end: tenant.lease_end,
           lease_type: tenant.lease_type,
-          status: tenant.status
+          status: tenant.status,
+          avatar_url: tenant.avatar_url
         }).eq("id", tenant.id);
         if (error) throw error;
         
@@ -819,17 +822,33 @@ export const db = {
     }
   },
   deleteTenant: async (id: string): Promise<void> => {
+    const tenants = getFromStorage("tenants", DEFAULT_TENANTS);
+    const tenantToDelete = tenants.find(t => t.id === id);
+
     if (isSupabaseConfigured()) {
       try {
         const { error } = await supabase.from("tenants").delete().eq("id", id);
-        if (error) throw error;
-        return;
+        if (error) {
+           console.error("Error deleting tenant in Supabase:", error);
+           alert("Erreur lors de la suppression du locataire : " + error.message);
+           return;
+        }
       } catch (err) {
         console.error("Error deleting tenant in Supabase:", err);
       }
     }
-    const tenants = getFromStorage("tenants", DEFAULT_TENANTS);
+    
     setToStorage("tenants", tenants.filter(t => t.id !== id));
+    
+    if (tenantToDelete && tenantToDelete.property_id) {
+       const properties = await db.getProperties();
+       const prop = properties.find(p => p.id === tenantToDelete.property_id);
+       if (prop) {
+         prop.tenant_count = Math.max(0, (prop.tenant_count || 1) - 1);
+         if (prop.tenant_count === 0) prop.status = "vacant";
+         await db.updateProperty(prop);
+       }
+    }
   },
 
   // Payments
