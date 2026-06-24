@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Lock, Mail, Phone, User, CheckCircle2, KeyRound } from "lucide-react";
+import { ArrowLeft, Lock, Mail, User, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 interface PageProps {
@@ -19,6 +19,7 @@ export default function RegisterPage({ searchParams }: PageProps) {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState<"owner" | "tenant">("owner");
   const [step, setStep] = useState<1 | 2>(1);
   const [otpCode, setOtpCode] = useState("");
@@ -59,7 +60,6 @@ export default function RegisterPage({ searchParams }: PageProps) {
         options: {
           data: {
             full_name: fullName,
-            phone: phone,
             role: role,
           }
         }
@@ -212,32 +212,38 @@ export default function RegisterPage({ searchParams }: PageProps) {
               </div>
 
               <div className="input-group">
-                <label className="input-label">Numéro de Téléphone</label>
-                <div className="input-with-icon">
-                  <Phone className="input-icon" size={16} />
-                  <input
-                    type="tel"
-                    required
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="Ex: +225 07 00 00 00"
-                    className="input"
-                  />
-                </div>
-              </div>
-
-              <div className="input-group">
                 <label className="input-label">Mot de passe</label>
-                <div className="input-with-icon">
+                <div className="input-with-icon" style={{ position: 'relative' }}>
                   <Lock className="input-icon" size={16} />
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Minimum 6 caractères"
                     className="input"
+                    style={{ paddingRight: '40px' }}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{
+                      position: 'absolute',
+                      right: 'var(--space-3)',
+                      top: '50%',
+                      transform: 'translateY(-50%)',
+                      color: 'var(--gray-500)',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: 0,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />} 
+                  </button>
                 </div>
               </div>
 
