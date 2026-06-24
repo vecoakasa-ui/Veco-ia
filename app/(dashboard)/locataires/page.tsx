@@ -38,6 +38,46 @@ export default function LocatairesPage() {
   const [leaseStart, setLeaseStart] = useState("");
   const [leaseEnd, setLeaseEnd] = useState("");
   const [leaseType, setLeaseType] = useState<"residential" | "commercial">("residential");
+  const [avatarUrl, setAvatarUrl] = useState("");
+  const addPhotoInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleAddPhotoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const img = new Image();
+      img.src = reader.result as string;
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX_SIZE = 200;
+        let width = img.width;
+        let height = img.height;
+        
+        if (width > height) {
+          if (width > MAX_SIZE) {
+            height *= MAX_SIZE / width;
+            width = MAX_SIZE;
+          }
+        } else {
+          if (height > MAX_SIZE) {
+            width *= MAX_SIZE / height;
+            height = MAX_SIZE;
+          }
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, width, height);
+        
+        const compressedBase64 = canvas.toDataURL("image/jpeg", 0.8);
+        setAvatarUrl(compressedBase64);
+      };
+    };
+    reader.readAsDataURL(file);
+  };
 
   const loadData = async () => {
     setTenants(await db.getTenants());
@@ -63,7 +103,8 @@ export default function LocatairesPage() {
       status: "active",
       full_name: fullName,
       email,
-      phone
+      phone,
+      avatar_url: avatarUrl
     });
 
     // Reset form
@@ -74,6 +115,7 @@ export default function LocatairesPage() {
     setLeaseStart("");
     setLeaseEnd("");
     setLeaseType("residential");
+    setAvatarUrl("");
     setShowAddModal(false);
 
     // Reload lists
@@ -409,6 +451,33 @@ export default function LocatairesPage() {
             </div>
 
             <form onSubmit={handleAddTenant} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+              <div style={{ textAlign: "center", marginBottom: "var(--space-2)" }}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={addPhotoInputRef}
+                  style={{ display: "none" }}
+                  onChange={handleAddPhotoSelect}
+                />
+                <div 
+                  onClick={() => addPhotoInputRef.current?.click()}
+                  style={{ 
+                    width: "80px", height: "80px", borderRadius: "50%", 
+                    background: "var(--gray-100)", border: "2px dashed var(--gray-300)", 
+                    margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center",
+                    cursor: "pointer", overflow: "hidden", position: "relative"
+                  }}
+                  title="Ajouter une photo"
+                >
+                  {avatarUrl ? (
+                    <img src={avatarUrl} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  ) : (
+                    <Plus size={24} style={{ color: "var(--gray-400)" }} />
+                  )}
+                </div>
+                <p style={{ fontSize: "11px", color: "var(--gray-500)", marginTop: "8px" }}>Photo de profil (Optionnel)</p>
+              </div>
+
               <div className="input-group">
                 <label className="input-label">Nom complet du locataire</label>
                 <input

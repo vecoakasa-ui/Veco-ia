@@ -686,13 +686,17 @@ export const db = {
 
     if (isSupabaseConfigured()) {
       try {
-        await supabase.from("profiles").upsert({
+        const { error: profileError } = await supabase.from("profiles").upsert({
           id: tenant.profile_id,
           full_name: tenant.full_name || "",
           email: tenant.email || "",
           phone: tenant.phone || "",
-          role: "tenant"
+          role: "tenant",
+          avatar_url: tenant.avatar_url || ""
         });
+        if (profileError) {
+          console.warn("Could not create profile (likely RLS), proceeding to create tenant record:", profileError);
+        }
 
         const { error } = await supabase.from("tenants").insert({
           id: newTenant.id,
@@ -706,7 +710,8 @@ export const db = {
           lease_start: tenant.lease_start,
           lease_end: tenant.lease_end,
           lease_type: tenant.lease_type,
-          status: tenant.status
+          status: tenant.status,
+          avatar_url: tenant.avatar_url
         });
         if (error) throw error;
 
