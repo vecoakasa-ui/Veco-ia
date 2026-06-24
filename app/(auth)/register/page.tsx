@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Lock, Mail, User, CheckCircle2, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Lock, Mail, User, CheckCircle2, Eye, EyeOff, KeyRound } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 interface PageProps {
