@@ -36,41 +36,27 @@ export default function LoginPage() {
     return () => subscription.unsubscribe();
   }, [router]);
 
-  const handleSendOtp = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-    setSuccessMsg("");
 
     try {
-      // 1. Verify password first
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
       if (signInError) {
-        if (signInError.message.includes("Email not confirmed")) {
-          throw new Error("Veuillez confirmer votre adresse e-mail en cliquant sur le lien que nous vous avons envoyé lors de l'inscription.");
-        } else if (signInError.message === "Invalid login credentials") {
+        if (signInError.message === "Invalid login credentials") {
           throw new Error("Email ou mot de passe incorrect. Avez-vous bien créé un compte ?");
         } else {
           throw signInError;
         }
       }
 
-      // 2. Send OTP (Magic Link)
-      const { error: otpError } = await supabase.auth.signInWithOtp({
-        email,
-        options: {
-          emailRedirectTo: `${window.location.origin}/dashboard`,
-        }
-      });
-
-      if (otpError) throw otpError;
-
-      setSuccessMsg("Un lien magique a été envoyé à votre adresse e-mail. Cliquez dessus pour vous connecter.");
-      setStep(2);
+      // Connexion réussie, redirection vers le tableau de bord
+      router.push("/dashboard");
     } catch (err: unknown) {
       console.error("Login error:", err);
       const errorObj = err as Error;
@@ -103,7 +89,7 @@ export default function LoginPage() {
             <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: '800', margin: 0 }}>VENANCE IMO</h2>
           </div>
           <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-500)', margin: 0 }}>
-            {step === 1 ? "Connectez-vous à votre espace de gestion de façon sécurisée" : "Vérification de sécurité"}
+            Connectez-vous à votre espace de gestion de façon sécurisée
           </p>
         </div>
 
@@ -113,14 +99,7 @@ export default function LoginPage() {
           </div>
         )}
 
-        {successMsg && step === 2 && (
-          <div style={{ background: "var(--success-lightest)", color: "var(--success)", padding: "10px 12px", borderRadius: "8px", fontSize: "13px", marginBottom: "var(--space-4)" }}>
-            {successMsg}
-          </div>
-        )}
-
-        {step === 1 ? (
-          <form onSubmit={handleSendOtp} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
             <div className="input-group">
               <label className="input-label">Adresse E-mail</label>
                 <div className="input-with-icon">
@@ -170,54 +149,22 @@ export default function LoginPage() {
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
-                <p style={{ fontSize: '12px', color: 'var(--gray-500)', marginTop: '8px' }}>
-                  Une fois votre mot de passe validé, un lien de connexion magique vous sera envoyé par e-mail.
-                </p>
-                <div style={{ textAlign: 'right', marginTop: '4px' }}>
-                  <Link href="/forgot-password" style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: '500' }}>
-                    Mot de passe oublié ?
-                  </Link>
-                </div>
-              </div>
-
               <button
                 type="submit"
                 disabled={loading}
                 className="btn btn-primary"
                 style={{ width: '100%', padding: 'var(--space-3)', display: 'flex', justifyContent: 'center' }}
               >
-                {loading ? "Envoi du lien..." : "Recevoir mon lien de connexion"}
+                {loading ? "Connexion..." : "Se connecter"}
               </button>
+
+              <div style={{ textAlign: 'center', marginTop: 'var(--space-2)' }}>
+                <Link href="/forgot-password" style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: '500' }}>
+                  Mot de passe oublié ?
+                </Link>
+              </div>
             </form>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)', textAlign: 'center' }}>
-            <div style={{ background: "var(--primary-lightest)", padding: "var(--space-6)", borderRadius: "var(--radius-lg)", marginBottom: "var(--space-2)" }}>
-              <Mail size={40} style={{ color: "var(--primary)", margin: "0 auto var(--space-3)" }} />
-              <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "600", marginBottom: "var(--space-2)", color: "var(--gray-900)" }}>
-                Vérifiez vos e-mails
-              </h3>
-              <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-600)", margin: 0, lineHeight: "1.5" }}>
-                Nous avons envoyé un lien magique à <strong>{email}</strong>.
-                <br /><br />
-                Cliquez simplement sur le bouton dans cet e-mail pour accéder automatiquement à votre tableau de bord.
-              </p>
-            </div>
 
-            <p style={{ fontSize: '12px', color: 'var(--gray-500)', margin: '0' }}>
-              Vous ne trouvez pas l'e-mail ? Vérifiez le dossier spam.
-            </p>
-
-            <button
-              type="button"
-              onClick={() => setStep(1)}
-              style={{ background: 'none', border: 'none', color: 'var(--primary)', fontSize: '13px', cursor: 'pointer', marginTop: '8px', fontWeight: '500' }}
-            >
-              Je n'ai pas reçu d'e-mail (Réessayer)
-            </button>
-          </div>
-        )}
-
-        {step === 1 && (
           <div style={{ marginTop: 'var(--space-6)', paddingTop: 'var(--space-4)', borderTop: '1px solid var(--gray-200)', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
             <p style={{ textAlign: 'center', fontSize: 'var(--text-xs)', color: 'var(--gray-500)', margin: 0 }}>
               Vous n'avez pas encore de compte ?
@@ -226,7 +173,6 @@ export default function LoginPage() {
               Créer un compte gratuitement
             </Link>
           </div>
-        )}
       </div>
     </div>
   );

@@ -21,11 +21,7 @@ export default function RegisterPage({ searchParams }: PageProps) {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState<"owner" | "tenant">("owner");
-  const [step, setStep] = useState<1 | 2>(1);
-  const [otpCode, setOtpCode] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [successMsg, setSuccessMsg] = useState("");
 
   // Redirection automatique si l'utilisateur est déjà connecté
   useEffect(() => {
@@ -67,46 +63,13 @@ export default function RegisterPage({ searchParams }: PageProps) {
 
       if (signUpError) throw signUpError;
 
-      if (data.user && !data.session) {
-        // This means Supabase requires email confirmation
-        setSuccessMsg("Votre compte a été créé ! Un code de sécurité a été envoyé à votre adresse e-mail.");
-        setStep(2);
-        setLoading(false);
-        return;
-      }
-
-      // If session is available immediately
+      // Inscription réussie
       localStorage.setItem("userRole", role);
       router.push("/dashboard");
     } catch (err: unknown) {
       console.error("Registration error:", err);
       const errorObj = err as Error;
       setError(errorObj.message || "Une erreur est survenue lors de l'inscription");
-      setLoading(false);
-    }
-  };
-
-  const handleVerifyOtp = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    try {
-      const { data, error: verifyError } = await supabase.auth.verifyOtp({
-        email,
-        token: otpCode,
-        type: 'signup'
-      });
-
-      if (verifyError) throw verifyError;
-
-      localStorage.setItem("userRole", role);
-      router.push("/dashboard");
-    } catch (err: unknown) {
-      console.error("OTP verify error:", err);
-      const errorObj = err as Error;
-      setError(errorObj.message || "Code incorrect ou expiré.");
-    } finally {
       setLoading(false);
     }
   };
@@ -130,11 +93,9 @@ export default function RegisterPage({ searchParams }: PageProps) {
             <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: '800', margin: 0 }}>VENANCE IMO</h2>
           </div>
           <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-500)', margin: 0 }}>
-            {step === 1 
-              ? (plan !== 'free' ? "Créez votre compte pour activer votre abonnement" : "Créez votre compte gratuit en moins de 2 minutes")
-              : "Vérification de votre adresse e-mail"}
+            {plan !== 'free' ? "Créez votre compte pour activer votre abonnement" : "Créez votre compte gratuit en moins de 2 minutes"}
           </p>
-          {(plan === 'pro' || plan === 'business') && step === 1 && (
+          {(plan === 'pro' || plan === 'business') && (
             <div style={{ background: "var(--primary-lightest)", padding: "10px 12px", borderRadius: "8px", border: "1px dashed var(--primary)", marginTop: "10px", display: "flex", alignItems: "center", gap: "6px" }}>
               <CheckCircle2 size={14} style={{ color: "var(--success)" }} />
               <span style={{ fontSize: "11px", color: "var(--primary-dark)", fontWeight: "600" }}>
@@ -150,14 +111,7 @@ export default function RegisterPage({ searchParams }: PageProps) {
           </div>
         )}
 
-        {successMsg && step === 2 && (
-          <div style={{ background: "var(--success-lightest)", color: "var(--success)", padding: "10px 12px", borderRadius: "8px", fontSize: "13px", marginBottom: "var(--space-4)" }}>
-            {successMsg}
-          </div>
-        )}
-
-        {step === 1 ? (
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
             {/* Role selector tab */}
             <div className="input-group">
                 <label className="input-label">Vous êtes un :</label>
@@ -263,48 +217,7 @@ export default function RegisterPage({ searchParams }: PageProps) {
                 {loading ? "Création en cours..." : "Créer mon compte par e-mail"}
               </button>
             </form>
-        ) : (
-          <form onSubmit={handleVerifyOtp} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
-            <div className="input-group">
-              <label className="input-label">Code de sécurité (OTP)</label>
-              <div className="input-with-icon">
-                <KeyRound className="input-icon" size={16} />
-                <input
-                  type="text"
-                  required
-                  value={otpCode}
-                  onChange={(e) => setOtpCode(e.target.value)}
-                  placeholder="Collez le code à 6 chiffres ici"
-                  className="input"
-                  style={{ letterSpacing: '2px', fontSize: '16px', fontWeight: 'bold' }}
-                  maxLength={6}
-                />
-              </div>
-              <p style={{ fontSize: '12px', color: 'var(--gray-500)', marginTop: '8px' }}>
-                Consultez l'adresse {email}. Si vous ne voyez rien, vérifiez vos spams.
-              </p>
-            </div>
 
-            <button
-              type="submit"
-              disabled={loading || otpCode.length < 6}
-              className="btn btn-primary"
-              style={{ width: '100%', padding: 'var(--space-3)', display: 'flex', justifyContent: 'center' }}
-            >
-              {loading ? "Vérification..." : "Valider mon inscription"}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setStep(1)}
-              style={{ background: 'none', border: 'none', color: 'var(--primary)', fontSize: '13px', cursor: 'pointer', marginTop: '8px', fontWeight: '500' }}
-            >
-              Retour
-            </button>
-          </form>
-        )}
-
-        {step === 1 && (
           <div style={{ marginTop: 'var(--space-6)', paddingTop: 'var(--space-4)', borderTop: '1px solid var(--gray-200)', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
             <p style={{ textAlign: 'center', fontSize: 'var(--text-xs)', color: 'var(--gray-500)', margin: 0 }}>
               Vous avez déjà un compte ?
@@ -313,7 +226,6 @@ export default function RegisterPage({ searchParams }: PageProps) {
               Se connecter
             </Link>
           </div>
-        )}
       </div>
     </div>
   );
