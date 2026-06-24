@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Mail } from "lucide-react";
 import { supabase } from "@/lib/supabase";

@@ -11,7 +11,6 @@ import {
   Building,
   MoreHorizontal,
   ExternalLink,
-  Edit3,
   Trash2
 } from "lucide-react";
 import { db } from "@/lib/store";

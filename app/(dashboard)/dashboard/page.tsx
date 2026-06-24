@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import {
   Building2,
   Users,
-  DollarSign,
   AlertTriangle,
   TrendingUp,
   Plus,

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Mail, KeyRound, Lock, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
@@ -11,10 +11,8 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [step, setStep] = useState<1 | 2>(1);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [successMsg, setSuccessMsg] = useState("");
 
   // Redirection automatique si l'utilisateur est déjà connecté
   useEffect(() => {
@@ -149,6 +147,8 @@ export default function LoginPage() {
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
+              </div>
+
               <button
                 type="submit"
                 disabled={loading}

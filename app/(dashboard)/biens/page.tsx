@@ -86,7 +86,7 @@ export default function BiensPage() {
             setLng(position.coords.longitude);
           }
         },
-        (error) => {
+        () => {
           alert("Impossible d'obtenir votre position. Veuillez vérifier les autorisations de votre navigateur.");
         }
       );

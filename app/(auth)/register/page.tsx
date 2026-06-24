@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Lock, Mail, User, CheckCircle2, Eye, EyeOff, KeyRound } from "lucide-react";
+import { ArrowLeft, Lock, Mail, User, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
 interface PageProps {
@@ -17,10 +17,10 @@ export default function RegisterPage({ searchParams }: PageProps) {
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState<"owner" | "tenant">("owner");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   // Redirection automatique si l'utilisateur est déjà connecté
@@ -47,10 +47,9 @@ export default function RegisterPage({ searchParams }: PageProps) {
     e.preventDefault();
     setLoading(true);
     setError("");
-    setSuccessMsg("");
 
     try {
-      const { data, error: signUpError } = await supabase.auth.signUp({
+      const { error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
