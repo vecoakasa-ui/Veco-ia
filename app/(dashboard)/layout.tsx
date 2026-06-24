@@ -115,7 +115,7 @@ export default function DashboardLayout({
         </div>
 
         {/* Menu links */}
-        <nav style={{ flex: 1, padding: "var(--space-6) var(--space-3)", display: "flex", flexDirection: "column", gap: "4px" }}>
+        <nav style={{ flex: 1, padding: "var(--space-6) var(--space-3)", display: "flex", flexDirection: "column", gap: "4px", overflowY: "auto" }}>
           {navigation.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
@@ -237,7 +237,7 @@ export default function DashboardLayout({
             </div>
 
             {/* Menu Links */}
-            <nav style={{ flex: 1, padding: "var(--space-6) var(--space-3)", display: "flex", flexDirection: "column", gap: "4px" }}>
+            <nav style={{ flex: 1, padding: "var(--space-6) var(--space-3)", display: "flex", flexDirection: "column", gap: "4px", overflowY: "auto" }}>
               {navigation.map((item) => {
                 const Icon = item.icon;
                 const isActive = pathname === item.href;
