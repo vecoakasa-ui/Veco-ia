@@ -20,7 +20,9 @@ import {
   Wallet,
   MessageSquare,
   ClipboardCheck,
-  Settings
+  Settings,
+  Mail,
+  Phone
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Profile } from "@/lib/types";
@@ -375,6 +377,7 @@ export default function DashboardLayout({
                   top: "calc(100% + 10px)",
                   right: "-10px",
                   width: "320px",
+                  maxWidth: "calc(100vw - 32px)",
                   background: "var(--white)",
                   borderRadius: "var(--radius-lg)",
                   boxShadow: "var(--shadow-lg)",
@@ -382,7 +385,8 @@ export default function DashboardLayout({
                   zIndex: 50,
                   overflow: "hidden",
                   display: "flex",
-                  flexDirection: "column"
+                  flexDirection: "column",
+                  transformOrigin: "top right"
                 }} className="animate-fade-in">
                   <div style={{ padding: "var(--space-3)", borderBottom: "1px solid var(--gray-200)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <h3 style={{ fontSize: "var(--text-sm)", fontWeight: "600", margin: 0, color: "var(--gray-900)" }}>Notifications</h3>
@@ -408,8 +412,12 @@ export default function DashboardLayout({
                 className={showProfileMenu ? "hover-bg-gray-100" : ""}
                 onClick={() => { setShowProfileMenu(!showProfileMenu); setShowNotifications(false); }}
               >
-                <div className="avatar avatar-sm" style={{ background: "var(--primary-lightest)", color: "var(--primary-dark)", width: "32px", height: "32px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: "bold" }}>
-                  {profile.full_name ? profile.full_name.substring(0, 2).toUpperCase() : "VI"}
+                <div className="avatar avatar-sm" style={{ background: "var(--primary-lightest)", color: "var(--primary-dark)", width: "32px", height: "32px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: "bold", overflow: "hidden" }}>
+                  {profile.avatar_url ? (
+                    <img src={profile.avatar_url} alt="Avatar" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  ) : (
+                    profile.full_name ? profile.full_name.substring(0, 2).toUpperCase() : "VI"
+                  )}
                 </div>
                 <span className="hide-mobile" style={{ fontSize: "var(--text-sm)", fontWeight: "600", color: "var(--gray-700)" }}>
                   {profile.full_name}
@@ -421,18 +429,52 @@ export default function DashboardLayout({
                   position: "absolute",
                   top: "calc(100% + 10px)",
                   right: "0",
-                  width: "240px",
+                  width: "280px",
+                  maxWidth: "calc(100vw - 32px)",
                   background: "var(--white)",
                   borderRadius: "var(--radius-lg)",
                   boxShadow: "var(--shadow-lg)",
                   border: "1px solid var(--gray-200)",
                   zIndex: 50,
-                  overflow: "hidden"
+                  overflow: "hidden",
+                  transformOrigin: "top right"
                 }} className="animate-fade-in">
-                  <div style={{ padding: "var(--space-3)", borderBottom: "1px solid var(--gray-200)", background: "var(--gray-50)" }}>
-                    <p style={{ fontSize: "var(--text-sm)", fontWeight: "600", color: "var(--gray-900)", margin: 0 }}>{profile.full_name}</p>
-                    <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", margin: "4px 0 0 0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{profile.email}</p>
+                  {/* Profil Header riche */}
+                  <div style={{ padding: "var(--space-4)", borderBottom: "1px solid var(--gray-200)", background: "var(--gray-50)", display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-3)" }}>
+                    <div style={{ position: "relative" }}>
+                      <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "var(--primary-lightest)", color: "var(--primary-dark)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "20px", fontWeight: "bold", overflow: "hidden", border: "2px solid white", boxShadow: "var(--shadow-sm)" }}>
+                        {profile.avatar_url ? (
+                          <img src={profile.avatar_url} alt="Avatar" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        ) : (
+                          profile.full_name ? profile.full_name.substring(0, 2).toUpperCase() : "VI"
+                        )}
+                      </div>
+                      <span style={{ position: "absolute", bottom: 0, right: 0, width: "14px", height: "14px", background: "var(--success)", border: "2px solid white", borderRadius: "50%" }}></span>
+                    </div>
+                    <div style={{ textAlign: "center" }}>
+                      <h4 style={{ fontSize: "var(--text-md)", fontWeight: "700", color: "var(--gray-900)", margin: 0 }}>{profile.full_name || "Utilisateur"}</h4>
+                      <p style={{ fontSize: "var(--text-xs)", color: "var(--primary)", fontWeight: "600", margin: "2px 0 0 0", textTransform: "uppercase" }}>
+                        {profile.role === "owner" ? "Propriétaire" : profile.role === "tenant" ? "Locataire" : "Administrateur"}
+                      </p>
+                    </div>
                   </div>
+                  
+                  {/* Informations détaillées */}
+                  <div style={{ padding: "var(--space-3)", borderBottom: "1px solid var(--gray-200)" }}>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", fontSize: "var(--text-sm)", color: "var(--gray-600)" }}>
+                        <Mail size={14} style={{ color: "var(--gray-400)" }} />
+                        <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{profile.email}</span>
+                      </div>
+                      {profile.phone && (
+                        <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", fontSize: "var(--text-sm)", color: "var(--gray-600)" }}>
+                          <Phone size={14} style={{ color: "var(--gray-400)" }} />
+                          <span>{profile.phone}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
                   <div style={{ padding: "var(--space-2)" }}>
                     <Link 
                       href="/settings" 
@@ -440,7 +482,7 @@ export default function DashboardLayout({
                       style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", padding: "var(--space-2) var(--space-3)", fontSize: "var(--text-sm)", color: "var(--gray-700)", textDecoration: "none", borderRadius: "var(--radius-sm)", transition: "background 0.2s" }}
                       className="hover-bg-gray-100"
                     >
-                      <Settings size={16} /> Mes Paramètres
+                      <Settings size={16} /> Mon Profil & Paramètres
                     </Link>
                     <button 
                       onClick={handleLogout}
