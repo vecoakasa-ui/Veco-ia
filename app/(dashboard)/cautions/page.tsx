@@ -402,7 +402,6 @@ export default function CautionsPage() {
                 <input
                   type="file"
                   accept="video/*"
-                  capture="environment"
                   onChange={(e) => {
                     if (e.target.files && e.target.files[0]) {
                       const file = e.target.files[0];
@@ -418,7 +417,7 @@ export default function CautionsPage() {
                   style={{ padding: "10px" }}
                 />
                 <p style={{ fontSize: '11px', color: 'var(--gray-500)', marginTop: '4px' }}>
-                  Conseil: Filmez lentement chaque pièce de la maison. Sur mobile, cela utilisera la caméra directement. (Max 50MB)
+                  Conseil: Sélectionnez un fichier vidéo depuis votre explorateur ou filmez directement. (Si la vidéo est lourde, compressez-la avant. Max: 50 Mo).
                 </p>
               </div>
               <div style={{ display: "flex", gap: "var(--space-3)", marginTop: "var(--space-2)" }}>
