@@ -680,6 +680,18 @@ export const db = {
         payment_method: "stripe",
         due_date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
       });
+
+      await db.addLease({
+        tenant_id: newTenant.id,
+        property_id: newTenant.property_id,
+        start_date: tenant.lease_start,
+        end_date: tenant.lease_end,
+        rent_amount: targetProp ? targetProp.monthly_rent : 0,
+        deposit_amount: targetProp ? targetProp.monthly_rent * 2 : 0, // Default 2 months
+        deposit_status: "held",
+        status: "active",
+        document_url: null
+      });
     }
 
     return newTenant;
@@ -843,10 +855,20 @@ export const db = {
       try {
         const { data, error } = await supabase
           .from("leases")
-          .select("*")
+          .select(`
+            *,
+            tenants:tenant_id ( full_name ),
+            properties:property_id ( name )
+          `)
           .order("created_at", { ascending: true });
         if (error) throw error;
-        if (data) return data as Lease[];
+        if (data) {
+          return data.map((d: any) => ({
+            ...d,
+            tenant_name: d.tenants?.full_name || "Inconnu",
+            property_name: d.properties?.name || "Inconnu"
+          })) as Lease[];
+        }
       } catch (err) {
         console.error("Error fetching leases from Supabase:", err);
       }
