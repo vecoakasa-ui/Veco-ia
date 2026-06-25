@@ -424,8 +424,12 @@ export function setToStorage<T>(key: string, value: T): void {
 
 export const getOwnerId = async (): Promise<string> => {
   if (isSupabaseConfigured()) {
-    const { data } = await supabase.auth.getUser();
-    if (data?.user) return data.user.id;
+    try {
+      const { data } = await supabase.auth.getUser();
+      if (data?.user) return data.user.id;
+    } catch (e) {
+      console.warn("Supabase auth error in getOwnerId:", e);
+    }
   }
   return "owner-1";
 };
@@ -479,7 +483,9 @@ export const db = {
           .select("*")
           .order("created_at", { ascending: true });
         if (error) throw error;
-        if (data) return data as Landlord[];
+        const local = getFromStorage("landlords", DEFAULT_LANDLORDS);
+        if (data && data.length > 0) return data as Landlord[];
+        if (local && local.length > 0) return local;
       } catch (err) {
         console.error("Error fetching landlords from Supabase:", err);
       }
@@ -504,7 +510,6 @@ export const db = {
         return newLandlord;
       } catch (err: unknown) {
         console.error("Error adding landlord to Supabase:", err);
-        alert("Erreur Supabase (Ajout Propriétaire) : " + ((err as Error).message || JSON.stringify(err)));
       }
     }
     const landlords = getFromStorage("landlords", DEFAULT_LANDLORDS);
@@ -551,9 +556,14 @@ export const db = {
           .from("properties")
           .select("*")
           .order("created_at", { ascending: true });
-        if (data) {
+        
+        const local = getFromStorage("properties", DEFAULT_PROPERTIES);
+        if (data && data.length > 0) {
           setToStorage("properties", data);
           return data as Property[];
+        }
+        if (local && local.length > 0) {
+          return local;
         }
       } catch (err) {
         console.error("Error fetching properties from Supabase:", err);
@@ -594,7 +604,6 @@ export const db = {
         return newProperty;
       } catch (err: unknown) {
         console.error("Error adding property to Supabase:", err);
-        alert("Erreur Supabase (Ajout Bien) : " + ((err as Error).message || JSON.stringify(err)));
       }
     }
     const properties = getFromStorage("properties", DEFAULT_PROPERTIES);
@@ -645,7 +654,9 @@ export const db = {
             properties:property_id (*)
           `);
         if (error) throw error;
-        if (data) {
+        
+        const local = getFromStorage("tenants", DEFAULT_TENANTS);
+        if (data && data.length > 0) {
           const rows = data as unknown as (DBTenantRow & { avatar_url?: string })[];
           const localAvatars = getFromStorage("local_avatars", {} as Record<string, string>);
           return rows.map((t) => ({
@@ -664,6 +675,9 @@ export const db = {
             avatar_url: t.avatar_url || t.profiles?.avatar_url || localAvatars[t.id] || "",
             property_name: t.property_name || t.properties?.name || ""
           }));
+        }
+        if (local && local.length > 0) {
+          return local;
         }
       } catch (err) {
         console.error("Error fetching tenants from Supabase:", err);
@@ -736,7 +750,6 @@ export const db = {
         return newTenant;
       } catch (err: unknown) {
         console.error("Error adding tenant to Supabase:", err);
-        alert("Erreur Supabase (Ajout Locataire) : " + ((err as Error).message || JSON.stringify(err)));
       }
     }
 
@@ -835,8 +848,6 @@ export const db = {
         const { error } = await supabase.from("tenants").delete().eq("id", id);
         if (error) {
            console.error("Error deleting tenant in Supabase:", error);
-           alert("Erreur lors de la suppression du locataire : " + error.message);
-           return;
         }
       } catch (err) {
         console.error("Error deleting tenant in Supabase:", err);
