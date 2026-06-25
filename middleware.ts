@@ -22,7 +22,7 @@ export async function middleware(req: NextRequest) {
     data: { session },
   } = await supabase.auth.getSession();
 
-  const isAuthRoute = req.nextUrl.pathname === '/login' || req.nextUrl.pathname === '/register' || req.nextUrl.pathname === '/forgot-password' || req.nextUrl.pathname === '/reset-password';
+  const isAuthRoute = req.nextUrl.pathname.startsWith('/login') || req.nextUrl.pathname.startsWith('/register') || req.nextUrl.pathname.startsWith('/forgot-password') || req.nextUrl.pathname.startsWith('/reset-password');
   const isPublicRoute = req.nextUrl.pathname === '/';
 
   // Si l'utilisateur n'est pas connecté et essaie d'accéder à une route protégée (tout sauf /, /login, /register, etc.)
