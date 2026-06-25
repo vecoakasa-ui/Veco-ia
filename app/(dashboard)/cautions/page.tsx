@@ -295,8 +295,8 @@ export default function CautionsPage() {
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                           {lease.inventory_in_video_url && (
-                            <a href={lease.inventory_in_video_url} target="_blank" rel="noreferrer" className="btn btn-ghost btn-sm" style={{ padding: "4px", color: "var(--primary)" }} title="Voir Vidéo">
-                              <Play size={16} />
+                            <a href={lease.inventory_in_video_url} target="_blank" rel="noreferrer" className="btn btn-ghost btn-sm" style={{ padding: "4px", color: "var(--primary)" }} title="Voir Média (Preuve)">
+                              <Camera size={16} />
                             </a>
                           )}
                           <button className="btn btn-ghost btn-sm" style={{ padding: "4px" }} onClick={() => setPreviewEDLLease({lease, type: "in"})} title="Voir EDL (PDF)">
@@ -321,8 +321,8 @@ export default function CautionsPage() {
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                           {lease.inventory_out_video_url && (
-                            <a href={lease.inventory_out_video_url} target="_blank" rel="noreferrer" className="btn btn-ghost btn-sm" style={{ padding: "4px", color: "var(--primary)" }} title="Voir Vidéo">
-                              <Play size={16} />
+                            <a href={lease.inventory_out_video_url} target="_blank" rel="noreferrer" className="btn btn-ghost btn-sm" style={{ padding: "4px", color: "var(--primary)" }} title="Voir Média (Preuve)">
+                              <Camera size={16} />
                             </a>
                           )}
                           <button className="btn btn-ghost btn-sm" style={{ padding: "4px" }} onClick={() => setPreviewEDLLease({lease, type: "out"})} title="Voir EDL (PDF)">
@@ -397,16 +397,16 @@ export default function CautionsPage() {
               </div>
               <div className="input-group">
                 <label className="input-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Video size={16} /> Preuve Vidéo de l'État des Lieux (Optionnel)
+                  <Camera size={16} /> Preuve (Vidéo ou Image) de l'État des Lieux (Optionnel)
                 </label>
                 <input
                   type="file"
-                  accept="video/*"
+                  accept="image/*,video/*"
                   onChange={(e) => {
                     if (e.target.files && e.target.files[0]) {
                       const file = e.target.files[0];
                       if (file.size > 50 * 1024 * 1024) {
-                        alert("La vidéo est trop volumineuse (max 50MB).");
+                        alert("Le fichier est trop volumineux (max 50 Mo).");
                         e.target.value = '';
                         return;
                       }
@@ -417,7 +417,7 @@ export default function CautionsPage() {
                   style={{ padding: "10px" }}
                 />
                 <p style={{ fontSize: '11px', color: 'var(--gray-500)', marginTop: '4px' }}>
-                  Conseil: Sélectionnez un fichier vidéo depuis votre explorateur ou filmez directement. (Si la vidéo est lourde, compressez-la avant. Max: 50 Mo).
+                  Conseil: Sélectionnez une image ou vidéo depuis votre appareil. (Si la vidéo est lourde, compressez-la avant. Max: 50 Mo).
                 </p>
               </div>
               <div style={{ display: "flex", gap: "var(--space-3)", marginTop: "var(--space-2)" }}>
