@@ -926,8 +926,10 @@ export const db = {
           deposit_deductions: lease.deposit_deductions,
           inventory_in_status: lease.inventory_in_status,
           inventory_in_date: lease.inventory_in_date,
+          inventory_in_video_url: lease.inventory_in_video_url,
           inventory_out_status: lease.inventory_out_status,
           inventory_out_date: lease.inventory_out_date,
+          inventory_out_video_url: lease.inventory_out_video_url,
           status: lease.status
         })
         .eq("id", lease.id);

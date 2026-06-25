@@ -97,8 +97,10 @@ CREATE TABLE leases (
   deposit_deductions NUMERIC,
   inventory_in_status TEXT DEFAULT 'pending',
   inventory_in_date TEXT,
+  inventory_in_video_url TEXT,
   inventory_out_status TEXT DEFAULT 'pending',
   inventory_out_date TEXT,
+  inventory_out_video_url TEXT,
   document_url TEXT,
   status TEXT NOT NULL DEFAULT 'active',
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()

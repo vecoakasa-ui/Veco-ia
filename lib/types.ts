@@ -111,8 +111,10 @@ export interface Lease {
   deposit_deductions?: number; // How much was deducted for repairs
   inventory_in_status?: InventoryStatus;
   inventory_in_date?: string;
+  inventory_in_video_url?: string;
   inventory_out_status?: InventoryStatus;
   inventory_out_date?: string;
+  inventory_out_video_url?: string;
   document_url: string | null;
   status: LeaseStatus;
   created_at: string;

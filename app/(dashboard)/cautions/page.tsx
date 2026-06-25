@@ -14,11 +14,15 @@ import {
   User,
   Eye,
   Download,
-  FileText
+  FileText,
+  Video,
+  Loader2,
+  Play
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Lease } from "@/lib/types";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 export default function CautionsPage() {
   const [leases, setLeases] = useState<Lease[]>([]);
@@ -36,6 +40,8 @@ export default function CautionsPage() {
   // Form states
   const [invType, setInvType] = useState<"in" | "out">("in");
   const [invDate, setInvDate] = useState(new Date().toISOString().split('T')[0]);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   
   const [depositAction, setDepositAction] = useState<"refund_full" | "refund_partial" | "hold_full">("refund_full");
   const [deductionAmount, setDeductionAmount] = useState("");
@@ -75,14 +81,41 @@ export default function CautionsPage() {
   const handleSaveInventory = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedLease) return;
+    
+    setIsUploading(true);
+    let videoUrl: string | undefined = undefined;
+    
+    if (videoFile && isSupabaseConfigured()) {
+      try {
+        const fileExt = videoFile.name.split('.').pop() || 'mp4';
+        const fileName = `inventory-${selectedLease.id}-${invType}-${Date.now()}.${fileExt}`;
+        
+        const { error } = await supabase.storage.from('inventory-videos').upload(fileName, videoFile, {
+          cacheControl: '3600',
+          upsert: false
+        });
+        
+        if (error) {
+          console.error("Upload error", error);
+          alert("Erreur d'upload de la vidéo. Avez-vous créé le bucket 'inventory-videos' dans Supabase ?");
+        } else {
+          const { data: pubData } = supabase.storage.from('inventory-videos').getPublicUrl(fileName);
+          videoUrl = pubData.publicUrl;
+        }
+      } catch (err) {
+        console.error("Erreur inattendue:", err);
+      }
+    }
 
     const updatedLease = { ...selectedLease };
     if (invType === "in") {
       updatedLease.inventory_in_status = "completed";
       updatedLease.inventory_in_date = invDate;
+      if (videoUrl) updatedLease.inventory_in_video_url = videoUrl;
     } else {
       updatedLease.inventory_out_status = "completed";
       updatedLease.inventory_out_date = invDate;
+      if (videoUrl) updatedLease.inventory_out_video_url = videoUrl;
       // Auto-update lease status to terminated if out-inventory is done
       if (updatedLease.status === "active") {
         updatedLease.status = "terminated";
@@ -90,7 +123,9 @@ export default function CautionsPage() {
     }
 
     await db.updateLease(updatedLease);
+    setIsUploading(false);
     setShowInventoryModal(false);
+    setVideoFile(null);
     await loadData();
     window.dispatchEvent(new Event("storage"));
   };
@@ -258,9 +293,16 @@ export default function CautionsPage() {
                         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                           <CheckCircle2 size={16} /> {formatDate(lease.inventory_in_date!)}
                         </div>
-                        <button className="btn btn-ghost btn-sm" style={{ padding: "4px" }} onClick={() => setPreviewEDLLease({lease, type: "in"})} title="Voir EDL">
-                          <Eye size={16} />
-                        </button>
+                        <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                          {lease.inventory_in_video_url && (
+                            <a href={lease.inventory_in_video_url} target="_blank" rel="noreferrer" className="btn btn-ghost btn-sm" style={{ padding: "4px", color: "var(--primary)" }} title="Voir Vidéo">
+                              <Play size={16} />
+                            </a>
+                          )}
+                          <button className="btn btn-ghost btn-sm" style={{ padding: "4px" }} onClick={() => setPreviewEDLLease({lease, type: "in"})} title="Voir EDL (PDF)">
+                            <Eye size={16} />
+                          </button>
+                        </div>
                       </div>
                     ) : (
                       <button className="btn btn-sm btn-outline" style={{ width: "100%", justifyContent: "center" }} onClick={() => openInventoryModal(lease, "in")}>
@@ -277,12 +319,19 @@ export default function CautionsPage() {
                         <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                           <CheckCircle2 size={16} /> {formatDate(lease.inventory_out_date!)}
                         </div>
-                        <button className="btn btn-ghost btn-sm" style={{ padding: "4px" }} onClick={() => setPreviewEDLLease({lease, type: "out"})} title="Voir EDL">
-                          <Eye size={16} />
-                        </button>
+                        <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                          {lease.inventory_out_video_url && (
+                            <a href={lease.inventory_out_video_url} target="_blank" rel="noreferrer" className="btn btn-ghost btn-sm" style={{ padding: "4px", color: "var(--primary)" }} title="Voir Vidéo">
+                              <Play size={16} />
+                            </a>
+                          )}
+                          <button className="btn btn-ghost btn-sm" style={{ padding: "4px" }} onClick={() => setPreviewEDLLease({lease, type: "out"})} title="Voir EDL (PDF)">
+                            <Eye size={16} />
+                          </button>
+                        </div>
                       </div>
                     ) : (
-                      <button className="btn btn-sm btn-ghost" style={{ width: "100%", justifyContent: "center", background: "white", border: "1px dashed var(--gray-300)" }} onClick={() => openInventoryModal(lease, "out")} disabled={!inDone}>
+                      <button className="btn btn-sm btn-ghost" style={{ width: "100%", justifyContent: "center", background: "white", border: "1px dashed var(--gray-300)" }} onClick={() => openInventoryModal(lease, "out")}>
                         <Camera size={14} style={{ marginRight: "6px" }} /> Faire l'EDL
                       </button>
                     )}
@@ -347,16 +396,36 @@ export default function CautionsPage() {
                 />
               </div>
               <div className="input-group">
-                <label className="input-label">Photos / Document (Optionnel)</label>
+                <label className="input-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Video size={16} /> Preuve Vidéo de l'État des Lieux (Optionnel)
+                </label>
                 <input
                   type="file"
+                  accept="video/*"
+                  capture="environment"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      const file = e.target.files[0];
+                      if (file.size > 50 * 1024 * 1024) {
+                        alert("La vidéo est trop volumineuse (max 50MB).");
+                        e.target.value = '';
+                        return;
+                      }
+                      setVideoFile(file);
+                    }
+                  }}
                   className="input"
                   style={{ padding: "10px" }}
                 />
+                <p style={{ fontSize: '11px', color: 'var(--gray-500)', marginTop: '4px' }}>
+                  Conseil: Filmez lentement chaque pièce de la maison. Sur mobile, cela utilisera la caméra directement. (Max 50MB)
+                </p>
               </div>
               <div style={{ display: "flex", gap: "var(--space-3)", marginTop: "var(--space-2)" }}>
-                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowInventoryModal(false)}>Annuler</button>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>Valider l'EDL</button>
+                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => {setShowInventoryModal(false); setVideoFile(null);}} disabled={isUploading}>Annuler</button>
+                <button type="submit" className="btn btn-primary" style={{ flex: 1 }} disabled={isUploading}>
+                  {isUploading ? <><Loader2 className="animate-spin" size={16} style={{marginRight: '8px'}} /> Envoi en cours...</> : "Valider l'EDL"}
+                </button>
               </div>
             </form>
           </div>
