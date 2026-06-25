@@ -589,7 +589,6 @@ export const db = {
           .from("tenants")
           .select(`
             *,
-            profiles:profile_id (*),
             properties:property_id (*)
           `);
         if (error) throw error;
@@ -606,10 +605,10 @@ export const db = {
             lease_type: t.lease_type,
             status: t.status,
             created_at: t.created_at,
-            full_name: t.full_name || t.profiles?.full_name || "",
-            email: t.email || t.profiles?.email || "",
-            phone: t.phone || t.profiles?.phone || "",
-            avatar_url: t.avatar_url || t.profiles?.avatar_url || "",
+            full_name: t.full_name || "",
+            email: t.email || "",
+            phone: t.phone || "",
+            avatar_url: t.avatar_url || "",
             property_name: t.property_name || t.properties?.name || ""
           }));
           return parsed;
@@ -736,9 +735,7 @@ export const db = {
           .from("payments")
           .select(`
             *,
-            tenants:tenant_id (
-              profiles:profile_id (*)
-            ),
+            tenants:tenant_id (*),
             properties:property_id (*)
           `)
           .order("created_at", { ascending: false });
@@ -746,7 +743,6 @@ export const db = {
         if (data) {
           const rows = data as unknown as DBPaymentRow[];
           return rows.map((p) => {
-            const tenantProfile = p.tenants?.profiles;
             return {
               id: p.id,
               tenant_id: p.tenant_id,
@@ -763,8 +759,8 @@ export const db = {
               payment_date: p.payment_date,
               due_date: p.due_date,
               created_at: p.created_at,
-              tenant_name: tenantProfile?.full_name || "Locataire inconnu",
-              property_name: p.properties?.name || "Propriété inconnue"
+              tenant_name: p.tenant_name || "Locataire inconnu",
+              property_name: p.property_name || p.properties?.name || "Propriété inconnue"
             } as Payment;
           });
         }
