@@ -507,7 +507,6 @@ export const db = {
           .from("landlords")
           .insert(newLandlord);
         if (error) throw error;
-        return newLandlord;
       } catch (err: unknown) {
         console.error("Error adding landlord to Supabase:", err);
       }
@@ -560,7 +559,10 @@ export const db = {
         const local = getFromStorage("properties", DEFAULT_PROPERTIES);
         if (data && data.length > 0) {
           setToStorage("properties", data);
-          return data as Property[];
+          const parsed = data as Property[];
+          const parsedIds = new Set(parsed.map(p => p.id));
+          const localOnly = local.filter(p => !parsedIds.has(p.id));
+          return [...parsed, ...localOnly];
         }
         if (local && local.length > 0) {
           return local;
@@ -601,7 +603,6 @@ export const db = {
           .from("properties")
           .insert(newProperty);
         if (error) throw error;
-        return newProperty;
       } catch (err: unknown) {
         console.error("Error adding property to Supabase:", err);
       }
@@ -659,7 +660,7 @@ export const db = {
         if (data && data.length > 0) {
           const rows = data as unknown as (DBTenantRow & { avatar_url?: string })[];
           const localAvatars = getFromStorage("local_avatars", {} as Record<string, string>);
-          return rows.map((t) => ({
+          const parsed = rows.map((t) => ({
             id: t.id,
             profile_id: t.profile_id,
             property_id: t.property_id,
@@ -675,6 +676,9 @@ export const db = {
             avatar_url: t.avatar_url || t.profiles?.avatar_url || localAvatars[t.id] || "",
             property_name: t.property_name || t.properties?.name || ""
           }));
+          const parsedIds = new Set(parsed.map(t => t.id));
+          const localOnly = local.filter(t => !parsedIds.has(t.id));
+          return [...parsed, ...localOnly];
         }
         if (local && local.length > 0) {
           return local;
@@ -746,8 +750,6 @@ export const db = {
           payment_method: "stripe",
           due_date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
         });
-
-        return newTenant;
       } catch (err: unknown) {
         console.error("Error adding tenant to Supabase:", err);
       }
@@ -951,7 +953,6 @@ export const db = {
           due_date: newPayment.due_date
         });
         if (error) throw error;
-        return newPayment;
       } catch (err) {
         console.error("Error adding payment to Supabase:", err);
       }
