@@ -684,6 +684,8 @@ export const db = {
       await db.addLease({
         tenant_id: newTenant.id,
         property_id: newTenant.property_id,
+        tenant_name: newTenant.full_name,
+        property_name: newTenant.property_name,
         start_date: tenant.lease_start,
         end_date: tenant.lease_end,
         rent_amount: targetProp ? targetProp.monthly_rent : 0,
@@ -855,20 +857,10 @@ export const db = {
       try {
         const { data, error } = await supabase
           .from("leases")
-          .select(`
-            *,
-            tenants:tenant_id ( full_name ),
-            properties:property_id ( name )
-          `)
+          .select("*")
           .order("created_at", { ascending: true });
         if (error) throw error;
-        if (data) {
-          return data.map((d: any) => ({
-            ...d,
-            tenant_name: d.tenants?.full_name || "Inconnu",
-            property_name: d.properties?.name || "Inconnu"
-          })) as Lease[];
-        }
+        if (data) return data as Lease[];
       } catch (err) {
         console.error("Error fetching leases from Supabase:", err);
       }
