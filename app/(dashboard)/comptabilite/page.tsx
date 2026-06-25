@@ -189,13 +189,13 @@ export default function ComptabilitePage() {
           </div>
         </div>
 
-        <div className="card" style={{ display: "flex", alignItems: "center", gap: "var(--space-4)", padding: "var(--space-5)", background: "var(--primary)", color: "white" }}>
-          <div style={{ background: "rgba(255,255,255,0.2)", color: "white", padding: "12px", borderRadius: "var(--radius-md)" }}>
+        <div className="card" style={{ display: "flex", alignItems: "center", gap: "var(--space-4)", padding: "var(--space-5)", background: "white" }}>
+          <div style={{ background: "var(--warning-light)", color: "var(--warning-dark)", padding: "12px", borderRadius: "var(--radius-md)" }}>
             <Wallet size={24} />
           </div>
           <div>
-            <p style={{ fontSize: "var(--text-sm)", color: "rgba(255,255,255,0.8)", margin: 0 }}>Solde Net</p>
-            <h3 style={{ fontSize: "var(--text-2xl)", fontWeight: "800", margin: 0 }}>{formatCurrency(netBalance)}</h3>
+            <p style={{ fontSize: "var(--text-sm)", color: "var(--warning-dark)", margin: 0, fontWeight: "600" }}>Solde Net</p>
+            <h3 style={{ fontSize: "var(--text-2xl)", fontWeight: "800", margin: 0, color: "var(--gray-900)" }}>{formatCurrency(netBalance)}</h3>
           </div>
         </div>
       </div>
