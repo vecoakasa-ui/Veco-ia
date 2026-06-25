@@ -47,7 +47,9 @@ export default function LoginPage() {
 
       if (signInError) {
         if (signInError.message === "Invalid login credentials") {
-          throw new Error("Email ou mot de passe incorrect. Avez-vous bien créé un compte ?");
+          throw new Error("Email ou mot de passe incorrect. Vérifiez vos identifiants ou assurez-vous d'avoir confirmé votre e-mail si Supabase l'exige.");
+        } else if (signInError.message === "Email not confirmed") {
+          throw new Error("Votre adresse e-mail n'a pas encore été confirmée. Veuillez vérifier votre boîte de réception.");
         } else {
           throw signInError;
         }
