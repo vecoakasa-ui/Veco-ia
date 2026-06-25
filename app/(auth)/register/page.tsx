@@ -22,12 +22,14 @@ export default function RegisterPage({ searchParams }: PageProps) {
   const [role, setRole] = useState<"owner" | "tenant">("owner");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setSuccessMsg("");
 
     try {
       const { data, error: signUpError } = await supabase.auth.signUp({
@@ -54,12 +56,18 @@ export default function RegisterPage({ searchParams }: PageProps) {
         });
       }
 
-      // Inscription réussie
-      router.push("/dashboard");
+      if (data?.session) {
+        // Inscription réussie avec connexion immédiate
+        router.push("/dashboard");
+      } else {
+        // Inscription réussie mais nécessite une confirmation d'email
+        setSuccessMsg("Votre compte a été créé avec succès ! Veuillez vérifier votre boîte e-mail pour confirmer votre adresse avant de vous connecter.");
+      }
     } catch (err: unknown) {
       console.error("Registration error:", err);
       const errorObj = err as Error;
       setError(errorObj.message || "Une erreur est survenue lors de l'inscription");
+    } finally {
       setLoading(false);
     }
   };
@@ -101,7 +109,14 @@ export default function RegisterPage({ searchParams }: PageProps) {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+        {successMsg && (
+          <div style={{ background: "var(--success-lightest)", color: "var(--success)", padding: "15px", borderRadius: "8px", fontSize: "14px", marginBottom: "var(--space-4)", border: "1px solid var(--success)", textAlign: "center" }}>
+            {successMsg}
+          </div>
+        )}
+
+        {!successMsg && (
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
             {/* Role selector tab */}
             <div className="input-group">
                 <label className="input-label">Vous êtes un :</label>
@@ -207,6 +222,7 @@ export default function RegisterPage({ searchParams }: PageProps) {
                 {loading ? "Création en cours..." : "Créer mon compte par e-mail"}
               </button>
             </form>
+        )}
 
           <div style={{ marginTop: 'var(--space-6)', paddingTop: 'var(--space-4)', borderTop: '1px solid var(--gray-200)', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' }}>
             <p style={{ textAlign: 'center', fontSize: 'var(--text-xs)', color: 'var(--gray-500)', margin: 0 }}>
