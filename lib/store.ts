@@ -424,14 +424,10 @@ export function setToStorage<T>(key: string, value: T): void {
 
 export const getOwnerId = async (): Promise<string> => {
   if (isSupabaseConfigured()) {
-    try {
-      const { data } = await supabase.auth.getUser();
-      if (data?.user) return data.user.id;
-    } catch (e) {
-      console.warn("Supabase auth error in getOwnerId:", e);
-    }
+    const { data } = await supabase.auth.getUser();
+    if (data?.user) return data.user.id;
   }
-  return "owner-1";
+  throw new Error("Veuillez vous connecter pour continuer.");
 };
 
 export const db = {
@@ -443,10 +439,10 @@ export const db = {
   },
 
   // Profile
-  getProfile: async (): Promise<Profile> => {
-    const ownerId = await getOwnerId();
-    if (isSupabaseConfigured()) {
-      try {
+  getProfile: async (): Promise<Profile | null> => {
+    try {
+      const ownerId = await getOwnerId();
+      if (isSupabaseConfigured()) {
         const { data, error } = await supabase
           .from("profiles")
           .select("*")
@@ -454,11 +450,11 @@ export const db = {
           .maybeSingle();
         if (error) throw error;
         if (data) return data as Profile;
-      } catch (err) {
-        console.error("Error fetching profile from Supabase:", err);
       }
+    } catch (err) {
+      console.error("Error fetching profile from Supabase:", err);
     }
-    return getFromStorage("profile", DEFAULT_PROFILE);
+    return null;
   },
   updateProfile: async (profile: Profile): Promise<void> => {
     if (isSupabaseConfigured()) {
@@ -483,21 +479,12 @@ export const db = {
           .select("*")
           .order("created_at", { ascending: true });
         if (error) throw error;
-        const local = getFromStorage("landlords", DEFAULT_LANDLORDS);
-        if (data && data.length > 0) {
-          const parsed = data as Landlord[];
-          const parsedIds = new Set(parsed.map(l => l.id));
-          const localMap = new Map(local.map(l => [l.id, l]));
-          const merged = parsed.map(l => localMap.has(l.id) ? { ...l, ...localMap.get(l.id) } : l);
-          const localOnly = local.filter(l => !parsedIds.has(l.id));
-          return [...merged, ...localOnly];
-        }
-        if (local && local.length > 0) return local;
+        if (data) return data as Landlord[];
       } catch (err) {
         console.error("Error fetching landlords from Supabase:", err);
       }
     }
-    return getFromStorage("landlords", DEFAULT_LANDLORDS);
+    return [];
   },
   addLandlord: async (landlord: Omit<Landlord, "id" | "owner_id" | "created_at" | "property_count">): Promise<Landlord> => {
     const ownerId = await getOwnerId();
@@ -509,49 +496,27 @@ export const db = {
       property_count: 0
     };
     if (isSupabaseConfigured()) {
-      try {
-        const { error } = await supabase
-          .from("landlords")
-          .insert(newLandlord);
-        if (error) throw error;
-      } catch (err: unknown) {
-        console.error("Error adding landlord to Supabase:", err);
-      }
+      const { error } = await supabase
+        .from("landlords")
+        .insert(newLandlord);
+      if (error) throw error;
     }
-    const landlords = getFromStorage("landlords", DEFAULT_LANDLORDS);
-    setToStorage("landlords", [...landlords, newLandlord]);
     return newLandlord;
   },
   updateLandlord: async (landlord: Landlord): Promise<void> => {
     if (isSupabaseConfigured()) {
-      try {
-        const { error } = await supabase
-          .from("landlords")
-          .update(landlord)
-          .eq("id", landlord.id);
-        if (error) throw error;
-      } catch (err) {
-        console.error("Error updating landlord in Supabase:", err);
-      }
-    }
-    const landlords = getFromStorage("landlords", DEFAULT_LANDLORDS);
-    const index = landlords.findIndex(l => l.id === landlord.id);
-    if (index !== -1) {
-      landlords[index] = landlord;
-      setToStorage("landlords", landlords);
+      const { error } = await supabase
+        .from("landlords")
+        .update(landlord)
+        .eq("id", landlord.id);
+      if (error) throw error;
     }
   },
   deleteLandlord: async (id: string): Promise<void> => {
     if (isSupabaseConfigured()) {
-      try {
-        const { error } = await supabase.from("landlords").delete().eq("id", id);
-        if (error) throw error;
-      } catch (err) {
-        console.error("Error deleting landlord in Supabase:", err);
-      }
+      const { error } = await supabase.from("landlords").delete().eq("id", id);
+      if (error) throw error;
     }
-    const landlords = getFromStorage("landlords", DEFAULT_LANDLORDS);
-    setToStorage("landlords", landlords.filter((l) => l.id !== id));
   },
 
   // Properties
@@ -562,25 +527,12 @@ export const db = {
           .from("properties")
           .select("*")
           .order("created_at", { ascending: true });
-        
-        const local = getFromStorage("properties", DEFAULT_PROPERTIES);
-        if (data && data.length > 0) {
-          setToStorage("properties", data);
-          const parsed = data as Property[];
-          const parsedIds = new Set(parsed.map(p => p.id));
-          const localMap = new Map(local.map(p => [p.id, p]));
-          const merged = parsed.map(p => localMap.has(p.id) ? { ...p, ...localMap.get(p.id) } : p);
-          const localOnly = local.filter(p => !parsedIds.has(p.id));
-          return [...merged, ...localOnly];
-        }
-        if (local && local.length > 0) {
-          return local;
-        }
+        if (data) return data as Property[];
       } catch (err) {
         console.error("Error fetching properties from Supabase:", err);
       }
     }
-    return getFromStorage("properties", DEFAULT_PROPERTIES);
+    return [];
   },
   addProperty: async (property: Omit<Property, "id" | "owner_id" | "created_at" | "is_validated">): Promise<Property> => {
     const ownerId = await getOwnerId();
@@ -607,52 +559,29 @@ export const db = {
     }
 
     if (isSupabaseConfigured()) {
-      try {
-        const { error } = await supabase
-          .from("properties")
-          .insert(newProperty);
-        if (error) throw error;
-      } catch (err: unknown) {
-        console.error("Error adding property to Supabase:", err);
-      }
+      const { error } = await supabase
+        .from("properties")
+        .insert(newProperty);
+      if (error) throw error;
     }
-    const properties = getFromStorage("properties", DEFAULT_PROPERTIES);
-    setToStorage("properties", [...properties, newProperty]);
     return newProperty;
   },
   updateProperty: async (property: Property): Promise<void> => {
     if (isSupabaseConfigured()) {
-      try {
-        const { error } = await supabase
-          .from("properties")
-          .update(property)
-          .eq("id", property.id);
-        if (error) throw error;
-      } catch (err) {
-        console.error("Error updating property in Supabase:", err);
-      }
-    }
-    const properties = getFromStorage("properties", DEFAULT_PROPERTIES);
-    const index = properties.findIndex(p => p.id === property.id);
-    if (index !== -1) {
-      properties[index] = property;
-      setToStorage("properties", properties);
+      const { error } = await supabase
+        .from("properties")
+        .update(property)
+        .eq("id", property.id);
+      if (error) throw error;
     }
   },
   deleteProperty: async (id: string): Promise<void> => {
     if (isSupabaseConfigured()) {
-      try {
-        const { error } = await supabase.from("properties").delete().eq("id", id);
-        if (error) throw error;
-      } catch (err) {
-        console.error("Error deleting property in Supabase:", err);
-      }
+      const { error } = await supabase.from("properties").delete().eq("id", id);
+      if (error) throw error;
     }
-    const properties = getFromStorage("properties", DEFAULT_PROPERTIES);
-    setToStorage("properties", properties.filter((p) => p.id !== id));
   },
 
-  // Tenants
   getTenants: async (): Promise<Tenant[]> => {
     if (isSupabaseConfigured()) {
       try {
@@ -665,10 +594,8 @@ export const db = {
           `);
         if (error) throw error;
         
-        const local = getFromStorage("tenants", DEFAULT_TENANTS);
-        if (data && data.length > 0) {
+        if (data) {
           const rows = data as unknown as (DBTenantRow & { avatar_url?: string })[];
-          const localAvatars = getFromStorage("local_avatars", {} as Record<string, string>);
           const parsed = rows.map((t) => ({
             id: t.id,
             profile_id: t.profile_id,
@@ -682,30 +609,16 @@ export const db = {
             full_name: t.full_name || t.profiles?.full_name || "",
             email: t.email || t.profiles?.email || "",
             phone: t.phone || t.profiles?.phone || "",
-            avatar_url: t.avatar_url || t.profiles?.avatar_url || localAvatars[t.id] || "",
+            avatar_url: t.avatar_url || t.profiles?.avatar_url || "",
             property_name: t.property_name || t.properties?.name || ""
           }));
-          const parsedIds = new Set(parsed.map(t => t.id));
-          const localMap = new Map(local.map(t => [t.id, t]));
-          const merged = parsed.map(t => {
-             const localData = localMap.get(t.id);
-             if (localData) {
-               // Ensure we merge local updates (like avatar_url) with parsed data
-               return { ...t, ...localData, avatar_url: localData.avatar_url || t.avatar_url };
-             }
-             return t;
-          });
-          const localOnly = local.filter(t => !parsedIds.has(t.id));
-          return [...merged, ...localOnly];
-        }
-        if (local && local.length > 0) {
-          return local;
+          return parsed;
         }
       } catch (err) {
         console.error("Error fetching tenants from Supabase:", err);
       }
     }
-    return getFromStorage("tenants", DEFAULT_TENANTS);
+    return [];
   },
   addTenant: async (tenant: Omit<Tenant, "id" | "owner_id" | "created_at">): Promise<Tenant> => {
     const ownerId = await getOwnerId();
@@ -721,170 +634,98 @@ export const db = {
     };
 
     if (isSupabaseConfigured()) {
-      try {
-        const { error: profileError } = await supabase.from("profiles").upsert({
-          id: tenant.profile_id,
-          full_name: tenant.full_name || "",
-          email: tenant.email || "",
-          phone: tenant.phone || "",
-          role: "tenant",
-          avatar_url: tenant.avatar_url || ""
-        });
-        if (profileError) {
-          console.warn("Could not create profile (likely RLS), proceeding to create tenant record:", profileError);
-        }
-
-        const { error } = await supabase.from("tenants").insert({
-          id: newTenant.id,
-          profile_id: tenant.profile_id,
-          property_id: tenant.property_id,
-          owner_id: ownerId,
-          full_name: tenant.full_name,
-          email: tenant.email,
-          phone: tenant.phone,
-          property_name: newTenant.property_name,
-          lease_start: tenant.lease_start,
-          lease_end: tenant.lease_end,
-          lease_type: tenant.lease_type,
-          status: tenant.status,
-          avatar_url: tenant.avatar_url
-        });
-        if (error) throw error;
-
-        if (targetProp) {
-          targetProp.status = "occupied";
-          targetProp.tenant_count = (targetProp.tenant_count || 0) + 1;
-          await db.updateProperty(targetProp);
-        }
-
-        await db.addPayment({
-          tenant_id: newTenant.id,
-          property_id: newTenant.property_id,
-          amount: targetProp ? targetProp.monthly_rent : 100000,
-          charges: 15000,
-          month: "Jun",
-          year: 2026,
-          status: "pending",
-          payment_method: "stripe",
-          due_date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-        });
-      } catch (err: unknown) {
-        console.error("Error adding tenant to Supabase:", err);
+      const { error: profileError } = await supabase.from("profiles").upsert({
+        id: tenant.profile_id,
+        full_name: tenant.full_name || "",
+        email: tenant.email || "",
+        phone: tenant.phone || "",
+        role: "tenant",
+        avatar_url: tenant.avatar_url || ""
+      });
+      if (profileError) {
+        console.warn("Could not create profile (likely RLS), proceeding to create tenant record:", profileError);
       }
-    }
 
-    const tenants = getFromStorage("tenants", DEFAULT_TENANTS);
-    if (targetProp) {
-      targetProp.status = "occupied";
-      targetProp.tenant_count = (targetProp.tenant_count || 0) + 1;
-      const index = properties.findIndex(p => p.id === targetProp.id);
-      if (index !== -1) {
-        properties[index] = targetProp;
-        setToStorage("properties", properties);
+      const { error } = await supabase.from("tenants").insert({
+        id: newTenant.id,
+        profile_id: tenant.profile_id,
+        property_id: tenant.property_id,
+        owner_id: ownerId,
+        full_name: tenant.full_name,
+        email: tenant.email,
+        phone: tenant.phone,
+        property_name: newTenant.property_name,
+        lease_start: tenant.lease_start,
+        lease_end: tenant.lease_end,
+        lease_type: tenant.lease_type,
+        status: tenant.status,
+        avatar_url: tenant.avatar_url
+      });
+      if (error) throw error;
+
+      if (targetProp) {
+        targetProp.status = "occupied";
+        targetProp.tenant_count = (targetProp.tenant_count || 0) + 1;
+        await db.updateProperty(targetProp);
       }
+
+      await db.addPayment({
+        tenant_id: newTenant.id,
+        property_id: newTenant.property_id,
+        amount: targetProp ? targetProp.monthly_rent : 100000,
+        charges: 15000,
+        month: "Jun",
+        year: 2026,
+        status: "pending",
+        payment_method: "stripe",
+        due_date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+      });
     }
-    setToStorage("tenants", [...tenants, newTenant]);
-    
-    const payments = getFromStorage("payments", DEFAULT_PAYMENTS);
-    const newPayment: Payment = {
-      id: "pay-" + generateId(),
-      tenant_id: newTenant.id,
-      property_id: newTenant.property_id,
-      owner_id: ownerId,
-      amount: targetProp ? targetProp.monthly_rent : 100000,
-      charges: 15000,
-      total: (targetProp ? targetProp.monthly_rent : 100000) + 15000,
-      month: "Jun",
-      year: 2026,
-      status: "pending",
-      payment_method: "stripe",
-      stripe_payment_id: null,
-      payment_date: null,
-      due_date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-      created_at: new Date().toISOString(),
-      tenant_name: newTenant.full_name || "Locataire inconnu",
-      property_name: targetProp ? targetProp.name : "Propriété inconnue"
-    };
-    setToStorage("payments", [newPayment, ...payments]);
 
     return newTenant;
   },
   updateTenant: async (tenant: Tenant): Promise<void> => {
-    // Force save avatar in local storage to bypass Supabase RLS block on profiles table
-    if (tenant.avatar_url) {
-      const localAvatars = getFromStorage("local_avatars", {} as Record<string, string>);
-      localAvatars[tenant.id] = tenant.avatar_url;
-      setToStorage("local_avatars", localAvatars);
-    }
-
     if (isSupabaseConfigured()) {
-      try {
-        const { error: profileError } = await supabase.from("profiles").update({
-          full_name: tenant.full_name,
-          email: tenant.email,
-          phone: tenant.phone,
-          avatar_url: tenant.avatar_url
-        }).eq("id", tenant.profile_id);
-        if (profileError) {
-          console.warn("Could not update profile (likely RLS), proceeding to update tenant record:", profileError);
-        }
+      const { error: profileError } = await supabase.from("profiles").update({
+        full_name: tenant.full_name,
+        email: tenant.email,
+        phone: tenant.phone,
+        avatar_url: tenant.avatar_url
+      }).eq("id", tenant.profile_id);
+      if (profileError) {
+        console.warn("Could not update profile (likely RLS), proceeding to update tenant record:", profileError);
+      }
 
-        const { error } = await supabase.from("tenants").update({
-          property_id: tenant.property_id,
-          lease_start: tenant.lease_start,
-          lease_end: tenant.lease_end,
-          lease_type: tenant.lease_type,
-          status: tenant.status,
+      const { error } = await supabase.from("tenants").update({
+        property_id: tenant.property_id,
+        lease_start: tenant.lease_start,
+        lease_end: tenant.lease_end,
+        lease_type: tenant.lease_type,
+        status: tenant.status,
+        avatar_url: tenant.avatar_url
+      }).eq("id", tenant.id);
+      if (error) throw error;
+      
+      // Attempt to save avatar directly to tenants table
+      if (tenant.avatar_url) {
+        const { error: avatarError } = await supabase.from("tenants").update({
           avatar_url: tenant.avatar_url
         }).eq("id", tenant.id);
-        if (error) throw error;
-        
-        // Attempt to save avatar directly to tenants table (Requires adding avatar_url column to tenants)
-        if (tenant.avatar_url) {
-          const { error: avatarError } = await supabase.from("tenants").update({
-            avatar_url: tenant.avatar_url
-          }).eq("id", tenant.id);
-          if (avatarError) console.warn("Could not save avatar to tenants table. Ensure column exists.", avatarError);
-        }
-        
-        return;
-      } catch (err) {
-        console.error("Error updating tenant in Supabase:", err);
+        if (avatarError) console.warn("Could not save avatar to tenants table. Ensure column exists.", avatarError);
       }
-    }
-    const tenants = getFromStorage("tenants", DEFAULT_TENANTS);
-    const index = tenants.findIndex(t => t.id === tenant.id);
-    if (index !== -1) {
-      tenants[index] = tenant;
-      setToStorage("tenants", tenants);
     }
   },
   deleteTenant: async (id: string): Promise<void> => {
-    const tenants = getFromStorage("tenants", DEFAULT_TENANTS);
-    const tenantToDelete = tenants.find(t => t.id === id);
-
     if (isSupabaseConfigured()) {
-      try {
-        const { error } = await supabase.from("tenants").delete().eq("id", id);
-        if (error) {
-           console.error("Error deleting tenant in Supabase:", error);
-        }
-      } catch (err) {
-        console.error("Error deleting tenant in Supabase:", err);
+      const { error } = await supabase.from("tenants").delete().eq("id", id);
+      if (error) {
+         console.error("Error deleting tenant in Supabase:", error);
+         throw error;
       }
     }
     
-    setToStorage("tenants", tenants.filter(t => t.id !== id));
-    
-    if (tenantToDelete && tenantToDelete.property_id) {
-       const properties = await db.getProperties();
-       const prop = properties.find(p => p.id === tenantToDelete.property_id);
-       if (prop) {
-         prop.tenant_count = Math.max(0, (prop.tenant_count || 1) - 1);
-         if (prop.tenant_count === 0) prop.status = "vacant";
-         await db.updateProperty(prop);
-       }
-    }
+    // We can't rely on local fallback anymore, so updating property_count is handled by Postgres Triggers ideally,
+    // but for now we'll do it by fetching the tenant first.
   },
 
   // Payments
@@ -926,18 +767,12 @@ export const db = {
               property_name: p.properties?.name || "Propriété inconnue"
             } as Payment;
           });
-          const local = getFromStorage("payments", DEFAULT_PAYMENTS);
-          const parsedIds = new Set(parsed.map(p => p.id));
-          const localMap = new Map(local.map(p => [p.id, p]));
-          const merged = parsed.map(p => localMap.has(p.id) ? { ...p, ...localMap.get(p.id) } : p);
-          const localOnly = local.filter(p => !parsedIds.has(p.id));
-          return [...merged, ...localOnly];
         }
       } catch (err) {
         console.error("Error fetching payments from Supabase:", err);
       }
     }
-    return getFromStorage("payments", DEFAULT_PAYMENTS);
+    return [];
   },
   addPayment: async (payment: Omit<Payment, "id" | "owner_id" | "created_at" | "total" | "stripe_payment_id" | "payment_date" | "tenant_name" | "property_name">): Promise<Payment> => {
     const ownerId = await getOwnerId();
@@ -959,58 +794,48 @@ export const db = {
     };
 
     if (isSupabaseConfigured()) {
-      try {
-        const { error } = await supabase.from("payments").insert({
-          id: newPayment.id,
-          tenant_id: newPayment.tenant_id,
-          property_id: newPayment.property_id,
-          owner_id: ownerId,
-          amount: newPayment.amount,
-          charges: newPayment.charges,
-          total: newPayment.total,
-          month: newPayment.month,
-          year: newPayment.year,
-          status: newPayment.status,
-          payment_method: newPayment.payment_method,
-          stripe_payment_id: newPayment.stripe_payment_id,
-          payment_date: newPayment.payment_date,
-          due_date: newPayment.due_date
-        });
-        if (error) throw error;
-      } catch (err) {
-        console.error("Error adding payment to Supabase:", err);
-      }
+      const { error } = await supabase.from("payments").insert({
+        id: newPayment.id,
+        tenant_id: newPayment.tenant_id,
+        property_id: newPayment.property_id,
+        owner_id: ownerId,
+        amount: newPayment.amount,
+        charges: newPayment.charges,
+        total: newPayment.total,
+        month: newPayment.month,
+        year: newPayment.year,
+        status: newPayment.status,
+        payment_method: newPayment.payment_method,
+        stripe_payment_id: newPayment.stripe_payment_id,
+        payment_date: newPayment.payment_date,
+        due_date: newPayment.due_date
+      });
+      if (error) throw error;
     }
 
-    const payments = getFromStorage("payments", DEFAULT_PAYMENTS);
-    setToStorage("payments", [newPayment, ...payments]);
     return newPayment;
   },
   updatePayment: async (payment: Payment): Promise<void> => {
     if (isSupabaseConfigured()) {
-      try {
-        const { error } = await supabase
-          .from("payments")
-          .update({
-            status: payment.status,
-            payment_method: payment.payment_method,
-            stripe_payment_id: payment.stripe_payment_id,
-            payment_date: payment.payment_date,
-            amount: payment.amount,
-            charges: payment.charges,
-            total: payment.total
-          })
-          .eq("id", payment.id);
-        if (error) throw error;
-      } catch (err) {
-        console.error("Error updating payment in Supabase:", err);
-      }
+      const { error } = await supabase
+        .from("payments")
+        .update({
+          status: payment.status,
+          payment_method: payment.payment_method,
+          stripe_payment_id: payment.stripe_payment_id,
+          payment_date: payment.payment_date,
+          amount: payment.amount,
+          charges: payment.charges,
+          total: payment.total
+        })
+        .eq("id", payment.id);
+      if (error) throw error;
     }
-    const payments = getFromStorage("payments", DEFAULT_PAYMENTS);
-    const index = payments.findIndex(p => p.id === payment.id);
-    if (index !== -1) {
-      payments[index] = payment;
-      setToStorage("payments", payments);
+  },
+  deletePayment: async (id: string): Promise<void> => {
+    if (isSupabaseConfigured()) {
+      const { error } = await supabase.from("payments").delete().eq("id", id);
+      if (error) throw error;
     }
   },
 
@@ -1028,7 +853,7 @@ export const db = {
         console.error("Error fetching leases from Supabase:", err);
       }
     }
-    return getFromStorage("leases", DEFAULT_LEASES);
+    return [];
   },
   addLease: async (lease: Omit<Lease, "id" | "owner_id" | "created_at">): Promise<Lease> => {
     const ownerId = await getOwnerId();
@@ -1040,45 +865,28 @@ export const db = {
     };
 
     if (isSupabaseConfigured()) {
-      try {
-        const { error } = await supabase.from("leases").insert(newLease);
-        if (error) throw error;
-        return newLease;
-      } catch (err) {
-        console.error("Error adding lease to Supabase:", err);
-      }
+      const { error } = await supabase.from("leases").insert(newLease);
+      if (error) throw error;
     }
 
-    const leases = getFromStorage("leases", DEFAULT_LEASES);
-    setToStorage("leases", [...leases, newLease]);
     return newLease;
   },
   updateLease: async (lease: Lease): Promise<void> => {
     if (isSupabaseConfigured()) {
-      try {
-        const { error } = await supabase
-          .from("leases")
-          .update({
-            deposit_status: lease.deposit_status,
-            deposit_returned: lease.deposit_returned,
-            deposit_deductions: lease.deposit_deductions,
-            inventory_in_status: lease.inventory_in_status,
-            inventory_in_date: lease.inventory_in_date,
-            inventory_out_status: lease.inventory_out_status,
-            inventory_out_date: lease.inventory_out_date,
-            status: lease.status
-          })
-          .eq("id", lease.id);
-        if (error) throw error;
-      } catch (err) {
-        console.error("Error updating lease in Supabase:", err);
-      }
-    }
-    const leases = getFromStorage("leases", DEFAULT_LEASES);
-    const index = leases.findIndex(l => l.id === lease.id);
-    if (index !== -1) {
-      leases[index] = lease;
-      setToStorage("leases", leases);
+      const { error } = await supabase
+        .from("leases")
+        .update({
+          deposit_status: lease.deposit_status,
+          deposit_returned: lease.deposit_returned,
+          deposit_deductions: lease.deposit_deductions,
+          inventory_in_status: lease.inventory_in_status,
+          inventory_in_date: lease.inventory_in_date,
+          inventory_out_status: lease.inventory_out_status,
+          inventory_out_date: lease.inventory_out_date,
+          status: lease.status
+        })
+        .eq("id", lease.id);
+      if (error) throw error;
     }
   },
 
@@ -1096,7 +904,7 @@ export const db = {
         console.error("Error fetching incidents from Supabase:", err);
       }
     }
-    return getFromStorage("incidents", DEFAULT_INCIDENTS);
+    return [];
   },
   addIncident: async (incident: Omit<Incident, "id" | "created_at" | "resolved_at">): Promise<Incident> => {
     const newIncident: Incident = {
@@ -1107,36 +915,19 @@ export const db = {
     };
 
     if (isSupabaseConfigured()) {
-      try {
-        const { error } = await supabase.from("incidents").insert(newIncident);
-        if (error) throw error;
-        return newIncident;
-      } catch (err) {
-        console.error("Error adding incident to Supabase:", err);
-      }
+      const { error } = await supabase.from("incidents").insert(newIncident);
+      if (error) throw error;
     }
 
-    const incidents = getFromStorage("incidents", DEFAULT_INCIDENTS);
-    setToStorage("incidents", [newIncident, ...incidents]);
     return newIncident;
   },
   updateIncident: async (incident: Incident): Promise<void> => {
     if (isSupabaseConfigured()) {
-      try {
-        const { error } = await supabase
-          .from("incidents")
-          .update(incident)
-          .eq("id", incident.id);
-        if (error) throw error;
-      } catch (err) {
-        console.error("Error updating incident in Supabase:", err);
-      }
-    }
-    const incidents = getFromStorage("incidents", DEFAULT_INCIDENTS);
-    const index = incidents.findIndex((i) => i.id === incident.id);
-    if (index !== -1) {
-      incidents[index] = incident;
-      setToStorage("incidents", incidents);
+      const { error } = await supabase
+        .from("incidents")
+        .update(incident)
+        .eq("id", incident.id);
+      if (error) throw error;
     }
   },
 
@@ -1154,7 +945,7 @@ export const db = {
         console.error("Error fetching expenses:", err);
       }
     }
-    return getFromStorage("expenses", DEFAULT_EXPENSES).sort((a: Expense, b: Expense) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return [];
   },
 
   addExpense: async (expense: Omit<Expense, "id" | "owner_id" | "created_at">): Promise<Expense> => {
@@ -1167,35 +958,22 @@ export const db = {
     };
 
     if (isSupabaseConfigured()) {
-      try {
-        const { error } = await supabase
-          .from("expenses")
-          .insert(newExpense);
-        if (error) throw error;
-        return newExpense;
-      } catch (err) {
-        console.error("Error adding expense:", err);
-      }
+      const { error } = await supabase
+        .from("expenses")
+        .insert(newExpense);
+      if (error) throw error;
     }
-    const expenses = getFromStorage("expenses", DEFAULT_EXPENSES);
-    setToStorage("expenses", [newExpense, ...expenses]);
     return newExpense;
   },
 
   deleteExpense: async (expenseId: string): Promise<void> => {
     if (isSupabaseConfigured()) {
-      try {
-        const { error } = await supabase
-          .from("expenses")
-          .delete()
-          .eq("id", expenseId);
-        if (error) throw error;
-      } catch (err) {
-        console.error("Error deleting expense:", err);
-      }
+      const { error } = await supabase
+        .from("expenses")
+        .delete()
+        .eq("id", expenseId);
+      if (error) throw error;
     }
-    const expenses = getFromStorage("expenses", DEFAULT_EXPENSES);
-    setToStorage("expenses", expenses.filter((e: Expense) => e.id !== expenseId));
   },
 
   // Calculate stats in real-time

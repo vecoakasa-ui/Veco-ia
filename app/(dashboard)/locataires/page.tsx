@@ -29,7 +29,7 @@ export default function LocatairesPage() {
   const [uploadingId, setUploadingId] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
   const [deleteTenantId, setDeleteTenantId] = useState<string | null>(null);
-
+  const [isLoading, setIsLoading] = useState(true);
   // Form states
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
@@ -80,8 +80,13 @@ export default function LocatairesPage() {
   };
 
   const loadData = async () => {
-    setTenants(await db.getTenants());
-    setProperties(await db.getProperties());
+    setIsLoading(true);
+    try {
+      setTenants(await db.getTenants());
+      setProperties(await db.getProperties());
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -257,7 +262,14 @@ export default function LocatairesPage() {
               </tr>
             </thead>
             <tbody>
-              {filteredTenants.length === 0 ? (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={8} style={{ textAlign: "center", padding: "var(--space-16)" }}>
+                    <div className="skeleton skeleton-text" style={{ margin: "0 auto", width: "50%" }}></div>
+                    <div className="skeleton skeleton-text" style={{ margin: "var(--space-2) auto 0 auto", width: "30%" }}></div>
+                  </td>
+                </tr>
+              ) : filteredTenants.length === 0 ? (
                 <tr>
                   <td colSpan={8} style={{ textAlign: "center", padding: "var(--space-16)", color: "var(--gray-400)" }}>
                     Aucun locataire enregistré.

@@ -49,7 +49,7 @@ export default function RegisterPage({ searchParams }: PageProps) {
     setError("");
 
     try {
-      const { error: signUpError } = await supabase.auth.signUp({
+      const { data, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -62,8 +62,18 @@ export default function RegisterPage({ searchParams }: PageProps) {
 
       if (signUpError) throw signUpError;
 
+      if (data?.user) {
+        // Force the creation of a profile in the profiles table
+        await supabase.from("profiles").upsert({
+          id: data.user.id,
+          full_name: fullName,
+          email: email,
+          role: role,
+          phone: ""
+        });
+      }
+
       // Inscription réussie
-      localStorage.setItem("userRole", role);
       router.push("/dashboard");
     } catch (err: unknown) {
       console.error("Registration error:", err);

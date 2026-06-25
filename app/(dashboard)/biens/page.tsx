@@ -49,17 +49,7 @@ export default function BiensPage() {
   const [editMainImage, setEditMainImage] = useState("");
 
   const loadProperties = async () => {
-    const cached = localStorage.getItem("properties");
-    let hasCache = false;
-    if (cached) {
-      try { 
-        setProperties(JSON.parse(cached)); 
-        hasCache = true;
-      } catch {}
-    }
-    
-    if (!hasCache) setIsLoading(true);
-    
+    setIsLoading(true);
     try {
       const props = await db.getProperties();
       setProperties(props);

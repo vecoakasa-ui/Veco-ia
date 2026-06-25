@@ -42,7 +42,7 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
 
   const loadProfile = async () => {
     const p = await db.getProfile();
-    setProfile(p);
+    if (p) setProfile(p);
   };
 
   useEffect(() => {

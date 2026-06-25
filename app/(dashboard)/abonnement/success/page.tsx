@@ -20,8 +20,10 @@ export default function SubscriptionSuccessPage({ searchParams }: PageProps) {
     // Update profile plan in localStorage or Supabase
     const updatePlan = async () => {
       const profile = await db.getProfile();
-      profile.subscription_plan = plan as "free" | "pro" | "business";
-      await db.updateProfile(profile);
+      if (profile) {
+        profile.subscription_plan = plan as "free" | "pro" | "business";
+        await db.updateProfile(profile);
+      }
 
       // Dispatch custom event to notify layout (sidebar) to reload profile
       window.dispatchEvent(new Event("storage"));

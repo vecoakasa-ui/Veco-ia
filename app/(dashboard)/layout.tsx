@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Profile } from "@/lib/types";
+import { supabase } from "@/lib/supabase";
 
 export default function DashboardLayout({
   children,
@@ -52,7 +53,7 @@ export default function DashboardLayout({
   useEffect(() => {
     const loadProfile = async () => {
       const p = await db.getProfile();
-      setProfile(p);
+      if (p) setProfile(p);
     };
     loadProfile();
 
@@ -79,8 +80,9 @@ export default function DashboardLayout({
     { name: "Mon Abonnement", href: "/abonnement", icon: Sparkles },
   ];
 
-  const handleLogout = () => {
-    router.push("/");
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push("/login");
   };
 
   return (
