@@ -33,7 +33,56 @@ export default function ContratsPage() {
     const tName = t?.full_name || "";
     const pName = p?.name || "";
     return tName.toLowerCase().includes(search.toLowerCase()) || pName.toLowerCase().includes(search.toLowerCase());
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [newLease, setNewLease] = useState<Partial<Lease>>({
+    start_date: new Date().toISOString().split('T')[0],
+    end_date: new Date(Date.now() + 365*24*60*60*1000).toISOString().split('T')[0],
+    rent_amount: 0,
+    deposit_amount: 0,
+    status: 'active'
   });
+
+  const handleAddLease = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newLease.tenant_id || !newLease.property_id) return alert("Veuillez sélectionner un locataire et un bien");
+    setIsSubmitting(true);
+    
+    try {
+      const t = tenants[newLease.tenant_id];
+      const p = properties[newLease.property_id];
+      await db.addLease({
+        tenant_id: newLease.tenant_id,
+        property_id: newLease.property_id,
+        tenant_name: t.full_name,
+        property_name: p.name,
+        start_date: newLease.start_date!,
+        end_date: newLease.end_date!,
+        rent_amount: Number(newLease.rent_amount),
+        deposit_amount: Number(newLease.deposit_amount),
+        deposit_status: "held",
+        status: newLease.status as any,
+        document_url: null,
+        inventory_in_status: "pending",
+        inventory_out_status: "pending"
+      });
+      setShowAddModal(false);
+      const leasesList = await db.getLeases();
+      setLeases(leasesList);
+      setNewLease({
+        start_date: new Date().toISOString().split('T')[0],
+        end_date: new Date(Date.now() + 365*24*60*60*1000).toISOString().split('T')[0],
+        rent_amount: 0,
+        deposit_amount: 0,
+        status: 'active'
+      });
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de la création du contrat");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
@@ -42,7 +91,7 @@ export default function ContratsPage() {
           <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", margin: 0 }}>Gérez vos contrats de bail</p>
           <h2 style={{ fontSize: "var(--text-xl)", fontWeight: "800", color: "var(--gray-900)", margin: 0 }}>Contrats de bail</h2>
         </div>
-        <button className="btn btn-primary" onClick={() => alert("L'ajout de contrat sera bientôt disponible")} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+        <button className="btn btn-primary" onClick={() => setShowAddModal(true)} style={{ display: "flex", alignItems: "center", gap: "6px" }}>
           <Plus size={16} /> Nouveau Contrat
         </button>
       </div>
@@ -173,6 +222,98 @@ export default function ContratsPage() {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal for adding a new lease */}
+      {showAddModal && (
+        <div 
+          style={{
+            position: "fixed",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 100,
+            padding: "var(--space-4)",
+            backdropFilter: "blur(4px)"
+          }}
+          className="animate-fade-in"
+        >
+          <div className="card animate-scale-in" style={{ width: "100%", maxWidth: "500px", background: "white", padding: "var(--space-6)", maxHeight: "90vh", overflowY: "auto" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-6)" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
+                <Plus size={24} style={{ color: "var(--primary)" }} />
+                <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800", margin: 0 }}>Nouveau Contrat de Bail</h3>
+              </div>
+              <button className="btn btn-ghost btn-sm" onClick={() => setShowAddModal(false)} style={{ padding: "4px" }}>
+                <X size={20} />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddLease} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+              <div className="input-group">
+                <label className="input-label">Locataire</label>
+                <select className="input" required value={newLease.tenant_id || ""} onChange={(e) => setNewLease({...newLease, tenant_id: e.target.value})}>
+                  <option value="">-- Sélectionner un locataire --</option>
+                  {Object.values(tenants).map(t => (
+                    <option key={t.id} value={t.id}>{t.full_name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Bien immobilier</label>
+                <select className="input" required value={newLease.property_id || ""} onChange={(e) => setNewLease({...newLease, property_id: e.target.value})}>
+                  <option value="">-- Sélectionner un bien --</option>
+                  {Object.values(properties).map(p => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-4)" }}>
+                <div className="input-group">
+                  <label className="input-label">Date de début</label>
+                  <input type="date" className="input" required value={newLease.start_date || ""} onChange={(e) => setNewLease({...newLease, start_date: e.target.value})} />
+                </div>
+                <div className="input-group">
+                  <label className="input-label">Date de fin</label>
+                  <input type="date" className="input" required value={newLease.end_date || ""} onChange={(e) => setNewLease({...newLease, end_date: e.target.value})} />
+                </div>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-4)" }}>
+                <div className="input-group">
+                  <label className="input-label">Loyer (FCFA)</label>
+                  <input type="number" className="input" required value={newLease.rent_amount || ""} onChange={(e) => setNewLease({...newLease, rent_amount: Number(e.target.value)})} />
+                </div>
+                <div className="input-group">
+                  <label className="input-label">Caution (FCFA)</label>
+                  <input type="number" className="input" required value={newLease.deposit_amount || ""} onChange={(e) => setNewLease({...newLease, deposit_amount: Number(e.target.value)})} />
+                </div>
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Statut</label>
+                <select className="input" value={newLease.status || "active"} onChange={(e) => setNewLease({...newLease, status: e.target.value as any})}>
+                  <option value="active">En cours</option>
+                  <option value="terminated">Terminé</option>
+                </select>
+              </div>
+
+              <div style={{ display: "flex", gap: "var(--space-3)", marginTop: "var(--space-2)" }}>
+                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowAddModal(false)} disabled={isSubmitting}>Annuler</button>
+                <button type="submit" className="btn btn-primary" style={{ flex: 1 }} disabled={isSubmitting}>
+                  {isSubmitting ? "Création..." : "Créer le contrat"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
