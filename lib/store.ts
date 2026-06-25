@@ -484,7 +484,14 @@ export const db = {
           .order("created_at", { ascending: true });
         if (error) throw error;
         const local = getFromStorage("landlords", DEFAULT_LANDLORDS);
-        if (data && data.length > 0) return data as Landlord[];
+        if (data && data.length > 0) {
+          const parsed = data as Landlord[];
+          const parsedIds = new Set(parsed.map(l => l.id));
+          const localMap = new Map(local.map(l => [l.id, l]));
+          const merged = parsed.map(l => localMap.has(l.id) ? { ...l, ...localMap.get(l.id) } : l);
+          const localOnly = local.filter(l => !parsedIds.has(l.id));
+          return [...merged, ...localOnly];
+        }
         if (local && local.length > 0) return local;
       } catch (err) {
         console.error("Error fetching landlords from Supabase:", err);
@@ -561,8 +568,10 @@ export const db = {
           setToStorage("properties", data);
           const parsed = data as Property[];
           const parsedIds = new Set(parsed.map(p => p.id));
+          const localMap = new Map(local.map(p => [p.id, p]));
+          const merged = parsed.map(p => localMap.has(p.id) ? { ...p, ...localMap.get(p.id) } : p);
           const localOnly = local.filter(p => !parsedIds.has(p.id));
-          return [...parsed, ...localOnly];
+          return [...merged, ...localOnly];
         }
         if (local && local.length > 0) {
           return local;
@@ -677,8 +686,17 @@ export const db = {
             property_name: t.property_name || t.properties?.name || ""
           }));
           const parsedIds = new Set(parsed.map(t => t.id));
+          const localMap = new Map(local.map(t => [t.id, t]));
+          const merged = parsed.map(t => {
+             const localData = localMap.get(t.id);
+             if (localData) {
+               // Ensure we merge local updates (like avatar_url) with parsed data
+               return { ...t, ...localData, avatar_url: localData.avatar_url || t.avatar_url };
+             }
+             return t;
+          });
           const localOnly = local.filter(t => !parsedIds.has(t.id));
-          return [...parsed, ...localOnly];
+          return [...merged, ...localOnly];
         }
         if (local && local.length > 0) {
           return local;
@@ -908,6 +926,12 @@ export const db = {
               property_name: p.properties?.name || "Propriété inconnue"
             } as Payment;
           });
+          const local = getFromStorage("payments", DEFAULT_PAYMENTS);
+          const parsedIds = new Set(parsed.map(p => p.id));
+          const localMap = new Map(local.map(p => [p.id, p]));
+          const merged = parsed.map(p => localMap.has(p.id) ? { ...p, ...localMap.get(p.id) } : p);
+          const localOnly = local.filter(p => !parsedIds.has(p.id));
+          return [...merged, ...localOnly];
         }
       } catch (err) {
         console.error("Error fetching payments from Supabase:", err);
