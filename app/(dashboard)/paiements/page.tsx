@@ -10,7 +10,8 @@ import {
   CreditCard,
   Copy,
   ExternalLink,
-  MessageSquare
+  MessageSquare,
+  MoreHorizontal
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Payment, PaymentMethod } from "@/lib/types";
@@ -21,6 +22,7 @@ export default function PaiementsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showPayModal, setShowPayModal] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   // Form states
   const [selectedPaymentId, setSelectedPaymentId] = useState("");
@@ -155,6 +157,7 @@ export default function PaiementsPage() {
           <table className="table">
             <thead>
               <tr>
+                <th style={{ width: "50px", textAlign: "center" }}>Photo</th>
                 <th>Locataire</th>
                 <th>Bien Immobilier</th>
                 <th>Mois de loyer</th>
@@ -163,7 +166,7 @@ export default function PaiementsPage() {
                 <th>Date règlement</th>
                 <th>Méthode</th>
                 <th>Statut</th>
-                <th>Actions</th>
+                <th style={{ width: "60px", textAlign: "center" }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -174,8 +177,17 @@ export default function PaiementsPage() {
                   </td>
                 </tr>
               ) : (
-                filteredPayments.map((p) => (
+                filteredPayments.map((p, index) => (
                   <tr key={p.id}>
+                    <td style={{ textAlign: "center" }}>
+                      {p.tenant_avatar ? (
+                        <img src={p.tenant_avatar} alt={p.tenant_name} style={{ width: "32px", height: "32px", borderRadius: "50%", objectFit: "cover", border: "1px solid var(--gray-200)" }} />
+                      ) : (
+                        <div style={{ width: "32px", height: "32px", borderRadius: "50%", background: "var(--gray-100)", border: "1px dashed var(--gray-300)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto", fontSize: "12px", color: "var(--gray-500)", fontWeight: "600" }}>
+                          {p.tenant_name?.charAt(0).toUpperCase() || "?"}
+                        </div>
+                      )}
+                    </td>
                     <td style={{ fontWeight: 600 }}>{p.tenant_name}</td>
                     <td>{p.property_name}</td>
                     <td style={{ textTransform: "capitalize", fontWeight: 500 }}>
@@ -206,42 +218,94 @@ export default function PaiementsPage() {
                         {getPaymentStatusLabel(p.status)}
                       </span>
                     </td>
-                    <td>
-                      {p.status !== "paid" ? (
-                        <div style={{ display: "flex", gap: "6px" }}>
-                          <button 
-                            type="button"
-                            className="btn btn-ghost btn-sm" 
-                            style={{ padding: "4px 8px", fontSize: "11px", display: "flex", alignItems: "center", gap: "4px" }}
-                            onClick={() => copyPaymentLink(p.id)}
-                            title="Copier le lien de paiement"
-                          >
-                            <Copy size={12} /> Lien
-                          </button>
-                          <a 
-                            href={`/pay/${p.id}`} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="btn btn-ghost btn-sm text-primary" 
-                            style={{ padding: "4px 8px", fontSize: "11px", display: "flex", alignItems: "center", gap: "4px", color: "var(--primary)" }}
-                            title="Ouvrir la page de paiement"
-                          >
-                            <ExternalLink size={12} /> Payer
-                          </a>
-                          <a 
-                            href="/relances" 
-                            className="btn btn-outline btn-sm" 
-                            style={{ padding: "4px 8px", fontSize: "11px", display: "flex", alignItems: "center", gap: "4px", borderColor: "var(--warning)", color: "var(--warning-dark)" }}
-                            title="Relancer le locataire"
-                          >
-                            <MessageSquare size={12} /> Relancer
-                          </a>
-                        </div>
-                      ) : (
-                        <span style={{ color: "var(--success)", fontSize: "11px", fontWeight: 600, display: "flex", alignItems: "center", gap: "4px" }}>
-                          <CheckCircle size={12} /> Réglé
-                        </span>
-                      )}
+                    <td style={{ textAlign: "center" }}>
+                      <div style={{ position: "relative", display: "inline-block" }}>
+                        <button 
+                          className="btn btn-ghost btn-sm" 
+                          style={{ padding: "8px" }} 
+                          title="Options"
+                          onClick={() => {
+                            setActiveDropdown(activeDropdown === p.id ? null : p.id);
+                          }}
+                        >
+                          <MoreHorizontal size={18} />
+                        </button>
+
+                        {activeDropdown === p.id && (
+                          <>
+                            <div 
+                              style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, zIndex: 9998 }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setActiveDropdown(null);
+                              }}
+                            />
+                            <div 
+                              className="card animate-scale-in"
+                              style={{
+                                position: "absolute",
+                                right: 0,
+                                top: (index === filteredPayments.length - 1 && filteredPayments.length > 1) ? "auto" : "100%",
+                                bottom: (index === filteredPayments.length - 1 && filteredPayments.length > 1) ? "100%" : "auto",
+                                background: "white",
+                                padding: "var(--space-2)",
+                                minWidth: "160px",
+                                zIndex: 9999,
+                                display: "flex",
+                                flexDirection: "column",
+                                gap: "4px",
+                                boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+                                border: "1px solid var(--gray-200)"
+                              }}
+                            >
+                              {p.status !== "paid" && (
+                                <>
+                                  <button 
+                                    className="btn btn-ghost btn-sm" 
+                                    style={{ width: "100%", justifyContent: "flex-start", color: "var(--gray-700)", fontWeight: "500" }}
+                                    onClick={() => {
+                                      setActiveDropdown(null);
+                                      copyPaymentLink(p.id);
+                                    }}
+                                  >
+                                    <Copy size={14} style={{ marginRight: "8px", color: "var(--gray-400)" }} /> 
+                                    Copier le lien
+                                  </button>
+                                  <a 
+                                    href={`/pay/${p.id}`} 
+                                    target="_blank" 
+                                    rel="noopener noreferrer"
+                                    className="btn btn-ghost btn-sm text-primary" 
+                                    style={{ width: "100%", justifyContent: "flex-start", fontWeight: "500", color: "var(--primary)" }}
+                                    onClick={() => setActiveDropdown(null)}
+                                  >
+                                    <ExternalLink size={14} style={{ marginRight: "8px" }} /> 
+                                    Ouvrir paiement
+                                  </a>
+                                  <a 
+                                    href="/relances" 
+                                    className="btn btn-ghost btn-sm" 
+                                    style={{ width: "100%", justifyContent: "flex-start", color: "var(--warning-dark)", fontWeight: "500" }}
+                                    onClick={() => setActiveDropdown(null)}
+                                  >
+                                    <MessageSquare size={14} style={{ marginRight: "8px", color: "var(--warning)" }} /> 
+                                    Relancer
+                                  </a>
+                                </>
+                              )}
+                              {p.status === "paid" && (
+                                <button 
+                                  className="btn btn-ghost btn-sm" 
+                                  style={{ width: "100%", justifyContent: "flex-start", color: "var(--gray-500)", fontWeight: "500", cursor: "default" }}
+                                >
+                                  <CheckCircle size={14} style={{ marginRight: "8px", color: "var(--success)" }} /> 
+                                  Déjà réglé
+                                </button>
+                              )}
+                            </div>
+                          </>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))

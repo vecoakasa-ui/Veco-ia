@@ -72,6 +72,7 @@ export interface Payment {
   due_date: string;
   created_at: string;
   tenant_name?: string;
+  tenant_avatar?: string;
   property_name?: string;
 }
 

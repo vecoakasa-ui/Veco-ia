@@ -50,6 +50,7 @@ interface DBPaymentRow {
   property_name?: string;
   tenants: {
     full_name?: string;
+    avatar_url?: string;
   } | null;
   properties: {
     name: string;
@@ -759,7 +760,8 @@ export const db = {
               payment_date: p.payment_date,
               due_date: p.due_date,
               created_at: p.created_at,
-              tenant_name: p.tenant_name || "Locataire inconnu",
+              tenant_name: p.tenant_name || p.tenants?.full_name || "Locataire inconnu",
+              tenant_avatar: p.tenants?.avatar_url || "",
               property_name: p.property_name || p.properties?.name || "Propriété inconnue"
             } as Payment;
           });
