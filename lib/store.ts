@@ -855,12 +855,45 @@ export const db = {
   getLeases: async (): Promise<Lease[]> => {
     if (isSupabaseConfigured()) {
       try {
-        const { data, error } = await supabase
+        const { data: leasesData, error } = await supabase
           .from("leases")
           .select("*")
           .order("created_at", { ascending: true });
         if (error) throw error;
-        if (data) return data as Lease[];
+        
+        let leases = (leasesData || []) as Lease[];
+        
+        // Auto-fix: generate missing leases for existing tenants
+        const { data: tenantsData } = await supabase.from("tenants").select("*");
+        if (tenantsData) {
+          const ownerId = await getOwnerId();
+          const missingLeases = tenantsData.filter((t: any) => !leases.some(l => l.tenant_id === t.id));
+          
+          if (missingLeases.length > 0) {
+            console.log("Auto-generating", missingLeases.length, "missing leases");
+            const newLeasesToInsert = missingLeases.map((t: any) => ({
+              id: "lease-" + generateId(),
+              tenant_id: t.id,
+              property_id: t.property_id,
+              owner_id: ownerId,
+              tenant_name: t.full_name,
+              property_name: t.property_name,
+              start_date: t.lease_start || new Date().toISOString().split('T')[0],
+              end_date: t.lease_end || new Date(Date.now() + 365*24*60*60*1000).toISOString().split('T')[0],
+              rent_amount: 100000,
+              deposit_amount: 200000,
+              deposit_status: "held",
+              status: "active",
+              document_url: null,
+              created_at: new Date().toISOString()
+            }));
+            
+            await supabase.from("leases").insert(newLeasesToInsert);
+            leases = [...leases, ...newLeasesToInsert] as Lease[];
+          }
+        }
+        
+        return leases;
       } catch (err) {
         console.error("Error fetching leases from Supabase:", err);
       }
