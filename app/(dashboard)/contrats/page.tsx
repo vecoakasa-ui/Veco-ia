@@ -33,6 +33,8 @@ export default function ContratsPage() {
     const tName = t?.full_name || "";
     const pName = p?.name || "";
     return tName.toLowerCase().includes(search.toLowerCase()) || pName.toLowerCase().includes(search.toLowerCase());
+  });
+
   const [showAddModal, setShowAddModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newLease, setNewLease] = useState<Partial<Lease>>({
