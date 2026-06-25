@@ -138,6 +138,8 @@ export interface Incident {
   resolved_at: string | null;
 }
 
+
+
 export interface Receipt {
   id: string;
   payment_id: string;
