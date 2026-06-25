@@ -11,7 +11,10 @@ import {
   Camera,
   Banknote,
   Building,
-  User
+  User,
+  Eye,
+  Download,
+  FileText
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Lease } from "@/lib/types";
@@ -25,6 +28,10 @@ export default function CautionsPage() {
   const [showInventoryModal, setShowInventoryModal] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [selectedLease, setSelectedLease] = useState<Lease | null>(null);
+
+  // PDF Preview states
+  const [previewEDLLease, setPreviewEDLLease] = useState<{lease: Lease, type: "in" | "out"} | null>(null);
+  const [previewDepositLease, setPreviewDepositLease] = useState<Lease | null>(null);
 
   // Form states
   const [invType, setInvType] = useState<"in" | "out">("in");
@@ -129,6 +136,38 @@ export default function CautionsPage() {
     setShowDepositModal(true);
   };
 
+  const generateEDLPDF = async (lease: Lease, type: "in" | "out") => {
+    const element = document.getElementById(`edl-content-${lease.id}-${type}`);
+    if (!element) return;
+    
+    const opt = {
+      margin:       10,
+      filename:     `Etat_des_Lieux_${type === "in" ? "Entree" : "Sortie"}_${lease.tenant_name?.replace(/\s+/g, '_')}.pdf`,
+      image:        { type: 'jpeg' as const, quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true },
+      jsPDF:        { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const }
+    };
+    
+    const html2pdf = (await import("html2pdf.js")).default;
+    html2pdf().set(opt).from(element).save();
+  };
+
+  const generateDepositPDF = async (lease: Lease) => {
+    const element = document.getElementById(`deposit-content-${lease.id}`);
+    if (!element) return;
+    
+    const opt = {
+      margin:       10,
+      filename:     `Recu_Caution_${lease.tenant_name?.replace(/\s+/g, '_')}.pdf`,
+      image:        { type: 'jpeg' as const, quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true },
+      jsPDF:        { unit: 'mm' as const, format: 'a4' as const, orientation: 'portrait' as const }
+    };
+    
+    const html2pdf = (await import("html2pdf.js")).default;
+    html2pdf().set(opt).from(element).save();
+  };
+
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
       {/* Header section */}
@@ -215,8 +254,13 @@ export default function CautionsPage() {
                   <div>
                     <p style={{ fontSize: "var(--text-xs)", fontWeight: 600, color: "var(--gray-500)", marginBottom: "8px", textTransform: "uppercase" }}>État des lieux (Entrée)</p>
                     {inDone ? (
-                      <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--success-dark)" }}>
-                        <CheckCircle2 size={16} /> Fait le {formatDate(lease.inventory_in_date!)}
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", color: "var(--success-dark)" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                          <CheckCircle2 size={16} /> {formatDate(lease.inventory_in_date!)}
+                        </div>
+                        <button className="btn btn-ghost btn-sm" style={{ padding: "4px" }} onClick={() => setPreviewEDLLease({lease, type: "in"})} title="Voir EDL">
+                          <Eye size={16} />
+                        </button>
                       </div>
                     ) : (
                       <button className="btn btn-sm btn-outline" style={{ width: "100%", justifyContent: "center" }} onClick={() => openInventoryModal(lease, "in")}>
@@ -229,8 +273,13 @@ export default function CautionsPage() {
                   <div>
                     <p style={{ fontSize: "var(--text-xs)", fontWeight: 600, color: "var(--gray-500)", marginBottom: "8px", textTransform: "uppercase" }}>État des lieux (Sortie)</p>
                     {outDone ? (
-                      <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--gray-700)" }}>
-                        <CheckCircle2 size={16} /> Fait le {formatDate(lease.inventory_out_date!)}
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", color: "var(--gray-700)" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                          <CheckCircle2 size={16} /> {formatDate(lease.inventory_out_date!)}
+                        </div>
+                        <button className="btn btn-ghost btn-sm" style={{ padding: "4px" }} onClick={() => setPreviewEDLLease({lease, type: "out"})} title="Voir EDL">
+                          <Eye size={16} />
+                        </button>
                       </div>
                     ) : (
                       <button className="btn btn-sm btn-ghost" style={{ width: "100%", justifyContent: "center", background: "white", border: "1px dashed var(--gray-300)" }} onClick={() => openInventoryModal(lease, "out")} disabled={!inDone}>
@@ -249,11 +298,15 @@ export default function CautionsPage() {
                           <Banknote size={12} style={{ marginRight: "4px" }} /> Gérer
                         </button>
                       )}
-                      {depositStatus === "refunded" && (
-                        <span style={{ fontSize: "11px", color: "var(--success)", fontWeight: 600 }}>Restituée</span>
-                      )}
-                      {depositStatus === "partially_refunded" && (
-                        <span style={{ fontSize: "11px", color: "var(--warning-dark)", fontWeight: 600 }}>Partielle</span>
+                      {(depositStatus === "refunded" || depositStatus === "partially_refunded") && (
+                        <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                          <span style={{ fontSize: "11px", color: depositStatus === "refunded" ? "var(--success)" : "var(--warning-dark)", fontWeight: 600 }}>
+                            {depositStatus === "refunded" ? "Restituée" : "Partielle"}
+                          </span>
+                          <button className="btn btn-ghost btn-sm" style={{ padding: "4px" }} onClick={() => setPreviewDepositLease(lease)} title="Reçu de Caution">
+                            <Eye size={16} />
+                          </button>
+                        </div>
                       )}
                     </div>
                   </div>
@@ -372,6 +425,193 @@ export default function CautionsPage() {
                 <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>Valider l'opération</button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================
+         Preview EDL PDF Modal
+         ============================================ */}
+      {previewEDLLease && (
+        <div 
+          style={{ position: "fixed", top: 0, bottom: 0, left: 0, right: 0, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: "var(--space-4)", backdropFilter: "blur(4px)" }}
+          className="animate-fade-in"
+          onClick={() => setPreviewEDLLease(null)}
+        >
+          <div className="animate-scale-in" style={{ width: "100%", maxWidth: "800px", height: "90vh", display: "flex", flexDirection: "column", background: "transparent", gap: "16px" }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
+              <button className="btn btn-primary" onClick={() => generateEDLPDF(previewEDLLease.lease, previewEDLLease.type)} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <Download size={16} /> Télécharger l'EDL PDF
+              </button>
+              <button className="btn btn-outline" onClick={() => setPreviewEDLLease(null)} style={{ background: "white" }}>
+                <X size={16} /> Fermer
+              </button>
+            </div>
+
+            <div style={{ flex: 1, overflowY: "auto", background: "var(--gray-100)", borderRadius: "8px", display: "flex", justifyContent: "center", padding: "32px 16px" }}>
+              
+              <div id={`edl-content-${previewEDLLease.lease.id}-${previewEDLLease.type}`} style={{ background: "white", width: "210mm", minHeight: "297mm", padding: "40px", boxShadow: "0 10px 30px rgba(0,0,0,0.1)", color: "#000", fontFamily: "Arial, sans-serif" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "2px solid #f0f0f0", paddingBottom: "20px", marginBottom: "30px" }}>
+                  <div>
+                    <h1 style={{ fontSize: "24px", fontWeight: "800", color: "#1a1a1a", margin: "0 0 8px 0" }}>
+                      ÉTAT DES LIEUX DE {previewEDLLease.type === "in" ? "L'ENTRÉE" : "SORTIE"}
+                    </h1>
+                    <p style={{ margin: 0, color: "#666", fontSize: "14px" }}>
+                      Fait le {new Date(previewEDLLease.type === "in" ? previewEDLLease.lease.inventory_in_date! : previewEDLLease.lease.inventory_out_date!).toLocaleDateString('fr-FR')}
+                    </p>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <div style={{ width: "40px", height: "40px", background: "var(--primary)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}><FileText size={24} color="white" /></div>
+                    <span style={{ fontSize: "20px", fontWeight: "800", color: "var(--primary)" }}>Veco Immo</span>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "40px" }}>
+                  <div style={{ flex: 1 }}>
+                    <h3 style={{ fontSize: "12px", textTransform: "uppercase", color: "#888", letterSpacing: "1px", marginBottom: "8px" }}>Propriétaire / Bailleur</h3>
+                    <p style={{ margin: "0 0 4px 0", fontWeight: "bold", fontSize: "16px" }}>Agence Veco Immo</p>
+                  </div>
+                  <div style={{ flex: 1, textAlign: "right" }}>
+                    <h3 style={{ fontSize: "12px", textTransform: "uppercase", color: "#888", letterSpacing: "1px", marginBottom: "8px" }}>Locataire</h3>
+                    <p style={{ margin: "0 0 4px 0", fontWeight: "bold", fontSize: "16px" }}>{previewEDLLease.lease.tenant_name}</p>
+                    <p style={{ margin: 0, color: "#444", fontSize: "14px" }}>{previewEDLLease.lease.property_name}</p>
+                  </div>
+                </div>
+
+                <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "40px" }}>
+                  <thead>
+                    <tr style={{ background: "#f8f9fa" }}>
+                      <th style={{ padding: "12px", textAlign: "left", borderBottom: "2px solid #ddd", color: "#555" }}>Pièce / Élément</th>
+                      <th style={{ padding: "12px", textAlign: "center", borderBottom: "2px solid #ddd", color: "#555" }}>Très Bon</th>
+                      <th style={{ padding: "12px", textAlign: "center", borderBottom: "2px solid #ddd", color: "#555" }}>Bon</th>
+                      <th style={{ padding: "12px", textAlign: "center", borderBottom: "2px solid #ddd", color: "#555" }}>Moyen</th>
+                      <th style={{ padding: "12px", textAlign: "center", borderBottom: "2px solid #ddd", color: "#555" }}>Mauvais</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {['Salon - Murs & Plafonds', 'Salon - Sols', 'Salon - Fenêtres', 'Cuisine - Éviers & Robinetterie', 'Cuisine - Électroménager', 'Chambre 1 - Murs & Sols', 'SDB - Douche/Baignoire', 'SDB - Toilettes', 'SDB - Carrelage'].map((item, idx) => (
+                      <tr key={idx}>
+                        <td style={{ padding: "12px", borderBottom: "1px solid #eee", color: "#333", fontSize: "14px" }}>{item}</td>
+                        <td style={{ padding: "12px", borderBottom: "1px solid #eee", textAlign: "center" }}><div style={{ width: "16px", height: "16px", border: "1px solid #999", borderRadius: "2px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center" }}>{idx % 3 === 0 ? "✓" : ""}</div></td>
+                        <td style={{ padding: "12px", borderBottom: "1px solid #eee", textAlign: "center" }}><div style={{ width: "16px", height: "16px", border: "1px solid #999", borderRadius: "2px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center" }}>{idx % 3 === 1 ? "✓" : ""}</div></td>
+                        <td style={{ padding: "12px", borderBottom: "1px solid #eee", textAlign: "center" }}><div style={{ width: "16px", height: "16px", border: "1px solid #999", borderRadius: "2px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center" }}>{idx % 3 === 2 ? "✓" : ""}</div></td>
+                        <td style={{ padding: "12px", borderBottom: "1px solid #eee", textAlign: "center" }}><div style={{ width: "16px", height: "16px", border: "1px solid #999", borderRadius: "2px", margin: "0 auto" }}></div></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                <div style={{ marginBottom: "40px" }}>
+                  <p style={{ fontWeight: "bold", fontSize: "14px", marginBottom: "8px" }}>Observations générales :</p>
+                  <div style={{ border: "1px solid #eee", borderRadius: "4px", minHeight: "100px", padding: "12px", fontSize: "14px", color: "#555" }}>
+                    R.A.S. - Le logement est conforme aux attentes. {previewEDLLease.type === "in" ? "Remise de 2 jeux de clés." : "Restitution de 2 jeux de clés."}
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "80px" }}>
+                  <div style={{ textAlign: "center" }}>
+                    <p style={{ margin: "0 0 16px 0", fontSize: "14px", color: "#333", fontWeight: "bold" }}>Le Bailleur</p>
+                    <div style={{ width: "160px", height: "60px", borderBottom: "1px dashed #ccc", margin: "0 auto", display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: "8px" }}>
+                      <span style={{ fontFamily: "cursive", fontSize: "24px", color: "var(--primary)" }}>Veco</span>
+                    </div>
+                  </div>
+                  <div style={{ textAlign: "center" }}>
+                    <p style={{ margin: "0 0 16px 0", fontSize: "14px", color: "#333", fontWeight: "bold" }}>Le Locataire</p>
+                    <div style={{ width: "160px", height: "60px", borderBottom: "1px dashed #ccc", margin: "0 auto", display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: "8px" }}>
+                      <span style={{ fontFamily: "cursive", fontSize: "20px", color: "#333" }}>Lu et Approuvé</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================
+         Preview Deposit Receipt PDF Modal
+         ============================================ */}
+      {previewDepositLease && (
+        <div 
+          style={{ position: "fixed", top: 0, bottom: 0, left: 0, right: 0, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: "var(--space-4)", backdropFilter: "blur(4px)" }}
+          className="animate-fade-in"
+          onClick={() => setPreviewDepositLease(null)}
+        >
+          <div className="animate-scale-in" style={{ width: "100%", maxWidth: "800px", height: "90vh", display: "flex", flexDirection: "column", background: "transparent", gap: "16px" }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px" }}>
+              <button className="btn btn-primary" onClick={() => generateDepositPDF(previewDepositLease)} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <Download size={16} /> Télécharger le Reçu PDF
+              </button>
+              <button className="btn btn-outline" onClick={() => setPreviewDepositLease(null)} style={{ background: "white" }}>
+                <X size={16} /> Fermer
+              </button>
+            </div>
+
+            <div style={{ flex: 1, overflowY: "auto", background: "var(--gray-100)", borderRadius: "8px", display: "flex", justifyContent: "center", padding: "32px 16px" }}>
+              
+              <div id={`deposit-content-${previewDepositLease.id}`} style={{ background: "white", width: "210mm", minHeight: "297mm", padding: "40px", boxShadow: "0 10px 30px rgba(0,0,0,0.1)", color: "#000", fontFamily: "Arial, sans-serif" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "2px solid #f0f0f0", paddingBottom: "20px", marginBottom: "30px" }}>
+                  <div>
+                    <h1 style={{ fontSize: "24px", fontWeight: "800", color: "#1a1a1a", margin: "0 0 8px 0" }}>
+                      REÇU DE RESTITUTION DE CAUTION
+                    </h1>
+                    <p style={{ margin: 0, color: "#666", fontSize: "14px" }}>
+                      Généré le {new Date().toLocaleDateString('fr-FR')}
+                    </p>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                    <div style={{ width: "40px", height: "40px", background: "var(--primary)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}><FileText size={24} color="white" /></div>
+                    <span style={{ fontSize: "20px", fontWeight: "800", color: "var(--primary)" }}>Veco Immo</span>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "40px" }}>
+                  <div style={{ flex: 1 }}>
+                    <h3 style={{ fontSize: "12px", textTransform: "uppercase", color: "#888", letterSpacing: "1px", marginBottom: "8px" }}>Propriétaire / Bailleur</h3>
+                    <p style={{ margin: "0 0 4px 0", fontWeight: "bold", fontSize: "16px" }}>Agence Veco Immo</p>
+                  </div>
+                  <div style={{ flex: 1, textAlign: "right" }}>
+                    <h3 style={{ fontSize: "12px", textTransform: "uppercase", color: "#888", letterSpacing: "1px", marginBottom: "8px" }}>Locataire</h3>
+                    <p style={{ margin: "0 0 4px 0", fontWeight: "bold", fontSize: "16px" }}>{previewDepositLease.tenant_name}</p>
+                    <p style={{ margin: 0, color: "#444", fontSize: "14px" }}>{previewDepositLease.property_name}</p>
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: "40px", background: "#f8f9fa", padding: "20px", borderRadius: "8px" }}>
+                  <p style={{ fontSize: "15px", lineHeight: "1.6", color: "#333", margin: 0 }}>
+                    Par la présente, nous confirmons la clôture du bail de <strong>{previewDepositLease.tenant_name}</strong> pour le bien situé à <strong>{previewDepositLease.property_name}</strong>, et procédons à la restitution de la caution locative selon le détail ci-dessous.
+                  </p>
+                </div>
+
+                <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "40px" }}>
+                  <tbody>
+                    <tr>
+                      <td style={{ padding: "16px", borderBottom: "1px solid #eee", color: "#333", fontSize: "15px" }}>Dépôt de garantie initial</td>
+                      <td style={{ padding: "16px", borderBottom: "1px solid #eee", textAlign: "right", color: "#333", fontWeight: "bold" }}>{formatCurrency(previewDepositLease.deposit_amount)}</td>
+                    </tr>
+                    {(previewDepositLease.deposit_deductions || 0) > 0 && (
+                      <tr>
+                        <td style={{ padding: "16px", borderBottom: "1px solid #eee", color: "var(--warning-dark)", fontSize: "15px" }}>Retenues appliquées (Réparations / Dégradations constatées)</td>
+                        <td style={{ padding: "16px", borderBottom: "1px solid #eee", textAlign: "right", color: "var(--warning-dark)", fontWeight: "bold" }}>- {formatCurrency(previewDepositLease.deposit_deductions!)}</td>
+                      </tr>
+                    )}
+                    <tr>
+                      <td style={{ padding: "20px 16px", fontWeight: "bold", fontSize: "16px", color: "#111", background: "#f0fdf4", borderTop: "2px solid #ccc" }}>MONTANT NET RESTITUÉ</td>
+                      <td style={{ padding: "20px 16px", textAlign: "right", fontWeight: "900", fontSize: "20px", color: "var(--success-dark)", background: "#f0fdf4", borderTop: "2px solid #ccc" }}>{formatCurrency(previewDepositLease.deposit_returned || 0)}</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <div style={{ display: "flex", justifyContent: "space-between", marginTop: "80px" }}>
+                  <div style={{ textAlign: "center" }}>
+                    <p style={{ margin: "0 0 16px 0", fontSize: "14px", color: "#333", fontWeight: "bold" }}>Le Bailleur</p>
+                    <div style={{ width: "160px", height: "60px", borderBottom: "1px dashed #ccc", margin: "0 auto", display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: "8px" }}>
+                      <span style={{ fontFamily: "cursive", fontSize: "24px", color: "var(--primary)" }}>Veco</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       )}
