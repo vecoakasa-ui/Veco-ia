@@ -46,10 +46,10 @@ interface DBPaymentRow {
   payment_date: string | null;
   due_date: string;
   created_at: string;
+  tenant_name?: string;
+  property_name?: string;
   tenants: {
-    profiles: {
-      full_name: string;
-    } | null;
+    full_name?: string;
   } | null;
   properties: {
     name: string;
