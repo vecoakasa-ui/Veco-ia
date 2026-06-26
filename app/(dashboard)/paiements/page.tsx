@@ -152,8 +152,8 @@ export default function PaiementsPage() {
       </div>
 
       {/* Payments Table */}
-      <div className="card" style={{ padding: 0, overflow: "hidden" }}>
-        <div className="table-container">
+      <div className="card" style={{ padding: 0, overflow: "visible" }}>
+        <div className="table-container" style={{ minHeight: "300px", overflowX: "auto" }}>
           <table className="table">
             <thead>
               <tr>
