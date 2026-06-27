@@ -451,8 +451,10 @@ export const db = {
           .maybeSingle();
         if (error) throw error;
         if (data) {
-          // Temporairement : Accorder les droits d'administration à TOUT LE MONDE pour les tests
-          data.role = 'admin';
+          // Rendre ce compte UNIQUE Super Administrateur (Insensible à la casse)
+          if (data.email && data.email.toLowerCase() === 'vecoakasa@gmail.com') {
+            data.role = 'admin';
+          }
           return data as Profile;
         }
       }
