@@ -264,7 +264,7 @@ export default function IncidentsPage() {
               </div>
               <div className="input-group">
                 <label className="input-label">Niveau d'urgence</label>
-                <select className="input" value={newIncident.priority || "medium"} onChange={e => setNewIncident({...newIncident, priority: e.target.value as any})}>
+                <select className="input" value={newIncident.priority || "medium"} onChange={e => setNewIncident({...newIncident, priority: e.target.value as "low" | "medium" | "high" | "urgent"})}>
                   <option value="low">Faible</option>
                   <option value="medium">Normal</option>
                   <option value="high">Urgent</option>

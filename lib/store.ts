@@ -867,11 +867,11 @@ export const db = {
         const { data: tenantsData } = await supabase.from("tenants").select("*");
         if (tenantsData) {
           const ownerId = await getOwnerId();
-          const missingLeases = tenantsData.filter((t: any) => !leases.some(l => l.tenant_id === t.id));
+          const missingLeases = tenantsData.filter((t: Tenant) => !leases.some(l => l.tenant_id === t.id));
           
           if (missingLeases.length > 0) {
             console.log("Auto-generating", missingLeases.length, "missing leases");
-            const newLeasesToInsert = missingLeases.map((t: any) => ({
+            const newLeasesToInsert = missingLeases.map((t: Tenant) => ({
               id: "lease-" + generateId(),
               tenant_id: t.id,
               property_id: t.property_id,
@@ -1088,11 +1088,11 @@ export const db = {
         return {
           total_properties,
           total_tenants: ten.data?.length || 0,
-          total_revenue: payments.filter(p => p.status === "paid").reduce((sum, p) => sum + p.total, 0),
-          late_payments: payments.filter(p => p.status === "late").length,
-          occupancy_rate: total_properties > 0 ? Math.round((properties.filter(p => p.status === "occupied").length / total_properties) * 100) : 0,
+          total_revenue: payments.filter((p: any) => p.status === "paid").reduce((sum: number, p: any) => sum + p.total, 0),
+          late_payments: payments.filter((p: any) => p.status === "late").length,
+          occupancy_rate: total_properties > 0 ? Math.round((properties.filter((p: any) => p.status === "occupied").length / total_properties) * 100) : 0,
           total_landlords: lands.data?.length || 0,
-          active_admins: profs.data?.filter(p => p.role === "admin").length || 0
+          active_admins: profs.data?.filter((p: any) => p.role === "admin").length || 0
         };
       } catch (err) {
          console.error("Error fetching global stats:", err);

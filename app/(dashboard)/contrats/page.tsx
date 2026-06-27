@@ -37,12 +37,16 @@ export default function ContratsPage() {
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [newLease, setNewLease] = useState<Partial<Lease>>({
-    start_date: new Date().toISOString().split('T')[0],
-    end_date: new Date(Date.now() + 365*24*60*60*1000).toISOString().split('T')[0],
-    rent_amount: 0,
-    deposit_amount: 0,
-    status: 'active'
+  const [newLease, setNewLease] = useState<Partial<Lease>>(() => {
+    const nextYear = new Date();
+    nextYear.setFullYear(nextYear.getFullYear() + 1);
+    return {
+      start_date: new Date().toISOString().split('T')[0],
+      end_date: nextYear.toISOString().split('T')[0],
+      rent_amount: 0,
+      deposit_amount: 0,
+      status: 'active'
+    };
   });
 
   const handleAddLease = async (e: React.FormEvent) => {
@@ -63,7 +67,7 @@ export default function ContratsPage() {
         rent_amount: Number(newLease.rent_amount),
         deposit_amount: Number(newLease.deposit_amount),
         deposit_status: "held",
-        status: newLease.status as any,
+        status: newLease.status as "active" | "terminated" | "expired",
         document_url: null,
         inventory_in_status: "pending",
         inventory_out_status: "pending"
@@ -71,9 +75,11 @@ export default function ContratsPage() {
       setShowAddModal(false);
       const leasesList = await db.getLeases();
       setLeases(leasesList);
+      const nextYear = new Date();
+      nextYear.setFullYear(nextYear.getFullYear() + 1);
       setNewLease({
         start_date: new Date().toISOString().split('T')[0],
-        end_date: new Date(Date.now() + 365*24*60*60*1000).toISOString().split('T')[0],
+        end_date: nextYear.toISOString().split('T')[0],
         rent_amount: 0,
         deposit_amount: 0,
         status: 'active'
@@ -303,7 +309,7 @@ export default function ContratsPage() {
 
               <div className="input-group">
                 <label className="input-label">Statut</label>
-                <select className="input" value={newLease.status || "active"} onChange={(e) => setNewLease({...newLease, status: e.target.value as any})}>
+                <select className="input" value={newLease.status || "active"} onChange={(e) => setNewLease({...newLease, status: e.target.value as "active" | "terminated" | "expired"})}>
                   <option value="active">En cours</option>
                   <option value="terminated">Terminé</option>
                 </select>
