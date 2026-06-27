@@ -1048,5 +1048,77 @@ export const db = {
       late_payments,
       occupancy_rate
     };
+  },
+
+  // ============================================
+  // ADMIN METHODS (SUPERVISION)
+  // ============================================
+
+  getAllProfiles: async (): Promise<Profile[]> => {
+    if (isSupabaseConfigured()) {
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("*")
+          .order("created_at", { ascending: false });
+        if (error) throw error;
+        if (data) return data as Profile[];
+      } catch (err) {
+        console.error("Error fetching all profiles:", err);
+      }
+    }
+    return [getFromStorage("profile", DEFAULT_PROFILE)];
+  },
+  
+  getGlobalStats: async (): Promise<DashboardStats & { total_landlords: number, active_admins: number }> => {
+    if (isSupabaseConfigured()) {
+      try {
+        const [props, ten, pays, lands, profs] = await Promise.all([
+          supabase.from("properties").select("id, status"),
+          supabase.from("tenants").select("id"),
+          supabase.from("payments").select("total, status"),
+          supabase.from("landlords").select("id"),
+          supabase.from("profiles").select("id, role")
+        ]);
+        
+        const properties = props.data || [];
+        const payments = pays.data || [];
+        const total_properties = properties.length;
+        
+        return {
+          total_properties,
+          total_tenants: ten.data?.length || 0,
+          total_revenue: payments.filter(p => p.status === "paid").reduce((sum, p) => sum + p.total, 0),
+          late_payments: payments.filter(p => p.status === "late").length,
+          occupancy_rate: total_properties > 0 ? Math.round((properties.filter(p => p.status === "occupied").length / total_properties) * 100) : 0,
+          total_landlords: lands.data?.length || 0,
+          active_admins: profs.data?.filter(p => p.role === "admin").length || 0
+        };
+      } catch (err) {
+         console.error("Error fetching global stats:", err);
+      }
+    }
+    const localStats = await db.getStats();
+    return { 
+      ...localStats, 
+      total_landlords: (await db.getLandlords()).length,
+      active_admins: 1 // Default fallback
+    };
+  },
+
+  getAllSystemIncidents: async (): Promise<Incident[]> => {
+    if (isSupabaseConfigured()) {
+      try {
+        const { data, error } = await supabase
+          .from("incidents")
+          .select("*")
+          .order("created_at", { ascending: false });
+        if (error) throw error;
+        if (data) return data as Incident[];
+      } catch (err) {
+        console.error("Error fetching system incidents:", err);
+      }
+    }
+    return await db.getIncidents();
   }
 };
