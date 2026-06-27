@@ -187,9 +187,11 @@ export default function BiensPage() {
   };
 
   const filteredProperties = properties.filter((p) => {
+    const safeName = p.name || "";
+    const safeAddress = p.address || "";
     const matchesSearch = 
-      p.name.toLowerCase().includes(search.toLowerCase()) || 
-      p.address.toLowerCase().includes(search.toLowerCase());
+      safeName.toLowerCase().includes(search.toLowerCase()) || 
+      safeAddress.toLowerCase().includes(search.toLowerCase());
     const matchesType = typeFilter === "all" || p.type === typeFilter;
     const matchesStatus = statusFilter === "all" || p.status === statusFilter;
     
