@@ -16,7 +16,8 @@ import {
   Trash2
 } from "lucide-react";
 import { db } from "@/lib/store";
-import MapModuleWrapper from "@/components/MapModuleWrapper";
+import dynamic from "next/dynamic";
+const MapModuleWrapper = dynamic(() => import("@/components/MapModuleWrapper"), { ssr: false });
 import { Property, PropertyType, Landlord } from "@/lib/types";
 import { formatCurrency, getPropertyStatusClass, getPropertyStatusLabel, getPropertyTypeLabel } from "@/lib/utils";
 
@@ -60,9 +61,7 @@ export default function BiensPage() {
   };
 
   useEffect(() => {
-    Promise.resolve().then(() => {
-      loadProperties();
-    });
+    loadProperties();
   }, []);
 
   const handleGetLocation = (isEdit: boolean) => {
