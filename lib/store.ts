@@ -450,7 +450,13 @@ export const db = {
           .eq("id", ownerId)
           .maybeSingle();
         if (error) throw error;
-        if (data) return data as Profile;
+        if (data) {
+          // Accorder les droits d'administration à l'email principal
+          if (data.email === 'vecoakasa@gmail.com') {
+            data.role = 'admin';
+          }
+          return data as Profile;
+        }
       }
     } catch (err) {
       console.error("Error fetching profile from Supabase:", err);
