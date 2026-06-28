@@ -59,7 +59,7 @@ export default function AdminLayout({
   }
 
   return (
-    <div className={`app-layout ${inter.className}`}>
+    <div className={`app-layout ${inter.className}`} style={{ display: "flex", minHeight: "100vh" }}>
       {/* Sidebar Épurée (Thème Côte d'Ivoire) */}
       <aside className="sidebar" style={{ 
         background: "#FFFFFF", 
@@ -67,7 +67,13 @@ export default function AdminLayout({
         padding: "32px 20px",
         display: "flex",
         flexDirection: "column",
-        width: "300px"
+        width: "300px",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        bottom: 0,
+        height: "100vh",
+        zIndex: 50
       }}>
         <div className="sidebar-logo" style={{ marginBottom: "40px", padding: "0 12px", display: "flex", alignItems: "center", gap: "16px" }}>
           <div className="logo-icon" style={{ 
@@ -111,14 +117,21 @@ export default function AdminLayout({
       </aside>
 
       {/* Main Content */}
-      <main className="main-content" style={{ background: "#f8fafc" }}>
-        <header className="header" style={{ borderBottom: "1px solid #e2e8f0", background: "#FFFFFF" }}>
+      <main className="main-content" style={{ background: "#f8fafc", flex: 1, marginLeft: "300px", minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+        <header className="header" style={{ 
+          borderBottom: "1px solid #e2e8f0", 
+          background: "#FFFFFF",
+          padding: "24px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
+        }}>
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <span style={{ fontWeight: 800, color: "#1e293b", fontSize: "20px" }}>Espace Super Administrateur</span>
-            <span className="badge" style={{ background: "rgba(255, 130, 0, 0.1)", color: "#FF8200", border: "1px solid rgba(255, 130, 0, 0.2)" }}>ADMINISTRATEUR</span>
+            <span style={{ fontWeight: 800, color: "#1e293b", fontSize: "22px" }}>Espace Super Administrateur</span>
+            <span className="badge" style={{ background: "rgba(255, 130, 0, 0.1)", color: "#FF8200", border: "1px solid rgba(255, 130, 0, 0.2)", padding: "4px 10px", borderRadius: "100px", fontSize: "12px", fontWeight: "bold" }}>ADMINISTRATEUR</span>
           </div>
         </header>
-        <div className="content-area">
+        <div className="content-area" style={{ flex: 1, padding: "32px" }}>
           {children}
         </div>
       </main>
