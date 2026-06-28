@@ -4,7 +4,7 @@ import { Inter } from "next/font/google";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { LayoutDashboard, Users, Activity, LogOut, Settings, ShieldAlert } from "lucide-react";
+import { LayoutDashboard, Users, Activity, LogOut, Settings, ShieldAlert, Building, FileText, CreditCard, AlertTriangle } from "lucide-react";
 import { db } from "@/lib/store";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -12,6 +12,10 @@ const inter = Inter({ subsets: ["latin"] });
 const adminNavItems = [
   { label: "Vue Globale", href: "/admin/dashboard", icon: LayoutDashboard },
   { label: "Utilisateurs", href: "/admin/utilisateurs", icon: Users },
+  { label: "Gestion des Biens", href: "/admin/biens", icon: Building },
+  { label: "Gestion des Contrats", href: "/admin/contrats", icon: FileText },
+  { label: "Gestion Financière", href: "/admin/finances", icon: CreditCard },
+  { label: "Support & Incidents", href: "/admin/incidents", icon: AlertTriangle },
   { label: "Système & Anomalies", href: "/admin/systeme", icon: Activity },
   { label: "Paramètres", href: "/admin/parametres", icon: Settings },
 ];
