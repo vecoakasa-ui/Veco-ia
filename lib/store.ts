@@ -557,6 +557,35 @@ export const db = {
   },
   addProperty: async (property: Omit<Property, "id" | "owner_id" | "created_at" | "is_validated">): Promise<Property> => {
     const ownerId = await getOwnerId();
+    
+    // Détection automatique des coordonnées via Nominatim (OpenStreetMap) si non fournies
+    let lat = property.lat;
+    let lng = property.lng;
+    
+    if (!lat || !lng) {
+      try {
+        const query = encodeURIComponent(`${property.address}, ${property.city}, ${property.country}`);
+        const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1`);
+        const data = await res.json();
+        
+        if (data && data.length > 0) {
+          lat = parseFloat(data[0].lat);
+          lng = parseFloat(data[0].lon);
+        } else {
+          // Si l'adresse complète échoue, on tente juste avec la ville
+          const cityQuery = encodeURIComponent(`${property.city}, ${property.country}`);
+          const resCity = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${cityQuery}&limit=1`);
+          const dataCity = await resCity.json();
+          if (dataCity && dataCity.length > 0) {
+            lat = parseFloat(dataCity[0].lat);
+            lng = parseFloat(dataCity[0].lon);
+          }
+        }
+      } catch (e) {
+        console.error("Erreur de géolocalisation automatique :", e);
+      }
+    }
+
     const newProperty: Property = {
       ...property,
       id: "prop-" + generateId(),
@@ -564,8 +593,8 @@ export const db = {
       is_validated: true,
       created_at: new Date().toISOString(),
       tenant_count: 0,
-      lat: 5.28 + Math.random() * 0.12,
-      lng: -4.05 + Math.random() * 0.12
+      lat: lat || 5.30966, // Fallback par défaut
+      lng: lng || -4.01266
     };
 
     // If property has a landlord, update landlord count
@@ -588,11 +617,16 @@ export const db = {
     return newProperty;
   },
   updateProperty: async (property: Property): Promise<void> => {
+    // Si l'adresse a changé et qu'on n'a pas mis à jour manuellement les coordonnées
+    let updatedProperty = { ...property };
+    
+    // On pourrait détecter si l'adresse a changé, mais pour faire simple
+    // si lat et lng ne sont pas corrects ou ont besoin d'être actualisés :
     if (isSupabaseConfigured()) {
       const { error } = await supabase
         .from("properties")
-        .update(property)
-        .eq("id", property.id);
+        .update(updatedProperty)
+        .eq("id", updatedProperty.id);
       if (error) throw error;
     }
   },
