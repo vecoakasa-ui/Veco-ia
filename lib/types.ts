@@ -13,6 +13,7 @@ export interface Profile {
   role: UserRole;
   avatar_url: string | null;
   subscription_plan: SubscriptionPlan;
+  is_suspended?: boolean;
   created_at: string;
 }
 

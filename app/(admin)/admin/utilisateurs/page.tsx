@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { db } from "@/lib/store";
-import { Profile } from "@/lib/types";
+import { Profile, UserRole } from "@/lib/types";
 import { 
   Search, 
   Edit, 
@@ -10,15 +10,27 @@ import {
   Key, 
   BarChart2, 
   Ban, 
+  X,
   CheckCircle,
-  MoreVertical 
+  AlertTriangle
 } from "lucide-react";
+
+type ModalType = "Modifier" | "Changer Rôle" | "Réinitialiser MDP" | "Voir Stats" | "Suspendre" | null;
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<Profile[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<Profile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+
+  // Modal State
+  const [modalType, setModalType] = useState<ModalType>(null);
+  const [selectedUser, setSelectedUser] = useState<Profile | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Form State
+  const [editFormData, setEditFormData] = useState({ full_name: "", phone: "" });
+  const [selectedRole, setSelectedRole] = useState<UserRole>("tenant");
 
   useEffect(() => {
     async function fetchUsers() {
@@ -51,15 +63,68 @@ export default function AdminUsersPage() {
     setFilteredUsers(filtered);
   }, [searchTerm, users]);
 
-  // Temporary action handlers for Phase 1
-  const handleAction = (actionName: string, userName: string) => {
-    alert(`Action: ${actionName} pour l'utilisateur ${userName}\n(Cette fonctionnalité sera branchée à la base de données dans la Phase 2)`);
+  const openModal = (type: ModalType, user: Profile) => {
+    setSelectedUser(user);
+    setModalType(type);
+    if (type === "Modifier") {
+      setEditFormData({ full_name: user.full_name || "", phone: user.phone || "" });
+    } else if (type === "Changer Rôle") {
+      setSelectedRole(user.role);
+    }
+  };
+
+  const closeModal = () => {
+    setModalType(null);
+    setSelectedUser(null);
+    setIsSubmitting(false);
+  };
+
+  const handleModalSubmit = async () => {
+    if (!selectedUser) return;
+    setIsSubmitting(true);
+
+    try {
+      let updatedUser = { ...selectedUser };
+
+      if (modalType === "Modifier") {
+        updatedUser.full_name = editFormData.full_name;
+        updatedUser.phone = editFormData.phone;
+        await db.updateProfile(updatedUser);
+      } 
+      else if (modalType === "Changer Rôle") {
+        updatedUser.role = selectedRole;
+        await db.updateProfile(updatedUser);
+      }
+      else if (modalType === "Suspendre") {
+        updatedUser.is_suspended = !updatedUser.is_suspended;
+        await db.updateProfile(updatedUser);
+      }
+      else if (modalType === "Réinitialiser MDP") {
+        // En réalité, on appellerait l'API Supabase Admin : supabase.auth.admin.resetPasswordForEmail
+        // On simule avec un délai
+        await new Promise(res => setTimeout(res, 1000));
+        alert(`Un email de réinitialisation a été envoyé à ${updatedUser.email}`);
+      }
+
+      // Mettre à jour l'état local si l'action n'était pas juste un envoi d'email/stats
+      if (modalType !== "Réinitialiser MDP" && modalType !== "Voir Stats") {
+        const updatedUsers = users.map(u => u.id === updatedUser.id ? updatedUser : u);
+        setUsers(updatedUsers);
+      }
+      
+      closeModal();
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour :", error);
+      alert("Une erreur est survenue.");
+      setIsSubmitting(false);
+    }
   };
 
   const getRoleBadge = (role: string) => {
     switch(role?.toLowerCase()) {
       case 'admin':
         return <span className="badge" style={{ background: "rgba(239, 68, 68, 0.1)", color: "#ef4444" }}>Admin</span>;
+      case 'owner':
       case 'landlord':
         return <span className="badge" style={{ background: "rgba(16, 185, 129, 0.1)", color: "#10b981" }}>Propriétaire</span>;
       case 'tenant':
@@ -108,6 +173,7 @@ export default function AdminUsersPage() {
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
+                <th style={thStyle}>Photo</th>
                 <th style={thStyle}>Nom Complet</th>
                 <th style={thStyle}>Email</th>
                 <th style={thStyle}>Téléphone</th>
@@ -119,13 +185,13 @@ export default function AdminUsersPage() {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={6} style={{ padding: "40px", textAlign: "center", color: "var(--gray-500)" }}>
+                  <td colSpan={7} style={{ padding: "40px", textAlign: "center", color: "var(--gray-500)" }}>
                     Chargement des utilisateurs...
                   </td>
                 </tr>
               ) : filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ padding: "40px", textAlign: "center", color: "var(--gray-500)" }}>
+                  <td colSpan={7} style={{ padding: "40px", textAlign: "center", color: "var(--gray-500)" }}>
                     Aucun utilisateur trouvé.
                   </td>
                 </tr>
@@ -133,38 +199,49 @@ export default function AdminUsersPage() {
                 filteredUsers.map((user, idx) => (
                   <tr key={user.id || idx} className="table-row">
                     <td style={tdStyle}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                        <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "var(--gray-100)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", color: "var(--gray-600)" }}>
-                          {user.full_name ? user.full_name.charAt(0).toUpperCase() : "?"}
-                        </div>
-                        <span style={{ fontWeight: 600, color: "var(--gray-900)" }}>{user.full_name || "Sans nom"}</span>
+                      <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "var(--gray-100)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", color: "var(--gray-600)", overflow: "hidden" }}>
+                        {user.avatar_url ? (
+                          <img src={user.avatar_url} alt={user.full_name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        ) : (
+                          user.full_name ? user.full_name.charAt(0).toUpperCase() : "?"
+                        )}
                       </div>
+                    </td>
+                    <td style={tdStyle}>
+                      <span style={{ fontWeight: 600, color: "var(--gray-900)" }}>{user.full_name || "Sans nom"}</span>
                     </td>
                     <td style={tdStyle}>{user.email || "-"}</td>
                     <td style={tdStyle}>{user.phone || "-"}</td>
                     <td style={tdStyle}>{getRoleBadge(user.role)}</td>
                     <td style={tdStyle}>
-                      <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                        <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#10b981" }}></div>
-                        <span style={{ fontSize: "13px", fontWeight: "500" }}>Actif</span>
-                      </div>
+                      {user.is_suspended ? (
+                         <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#ef4444" }}>
+                          <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#ef4444" }}></div>
+                          <span style={{ fontSize: "13px", fontWeight: "500" }}>Suspendu</span>
+                        </div>
+                      ) : (
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#10b981" }}>
+                          <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#10b981" }}></div>
+                          <span style={{ fontSize: "13px", fontWeight: "500" }}>Actif</span>
+                        </div>
+                      )}
                     </td>
                     <td style={{ ...tdStyle, textAlign: "right" }}>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "8px" }}>
-                        <button className="action-btn" title="Modifier" onClick={() => handleAction("Modifier", user.full_name || "")}>
+                        <button className="action-btn" title="Modifier" onClick={() => openModal("Modifier", user)}>
                           <Edit size={16} />
                         </button>
-                        <button className="action-btn" title="Changer Rôle" onClick={() => handleAction("Changer Rôle", user.full_name || "")}>
+                        <button className="action-btn" title="Changer Rôle" onClick={() => openModal("Changer Rôle", user)}>
                           <Shield size={16} />
                         </button>
-                        <button className="action-btn" title="Réinitialiser Mot de passe" onClick={() => handleAction("Réinitialiser MDP", user.full_name || "")}>
+                        <button className="action-btn" title="Réinitialiser Mot de passe" onClick={() => openModal("Réinitialiser MDP", user)}>
                           <Key size={16} />
                         </button>
-                        <button className="action-btn" title="Statistiques" onClick={() => handleAction("Voir Stats", user.full_name || "")}>
+                        <button className="action-btn" title="Statistiques" onClick={() => openModal("Voir Stats", user)}>
                           <BarChart2 size={16} />
                         </button>
-                        <button className="action-btn action-btn-danger" title="Suspendre/Bannir" onClick={() => handleAction("Suspendre", user.full_name || "")}>
-                          <Ban size={16} />
+                        <button className={`action-btn ${user.is_suspended ? 'action-btn-success' : 'action-btn-danger'}`} title={user.is_suspended ? "Réactiver" : "Suspendre/Bannir"} onClick={() => openModal("Suspendre", user)}>
+                          {user.is_suspended ? <CheckCircle size={16} /> : <Ban size={16} />}
                         </button>
                       </div>
                     </td>
@@ -175,6 +252,121 @@ export default function AdminUsersPage() {
           </table>
         </div>
       </div>
+
+      {/* Modal / Popup pour les actions */}
+      {modalType && selectedUser && (
+        <div className="modal-overlay">
+          <div className="modal-content animate-fade-in">
+            <button className="modal-close" onClick={closeModal}><X size={20} /></button>
+            
+            <h3 style={{ margin: "0 0 20px 0", color: "#0f172a", fontSize: "18px" }}>
+              {modalType} - {selectedUser.full_name}
+            </h3>
+
+            {modalType === "Modifier" && (
+              <div className="form-group">
+                <label>Nom complet</label>
+                <input 
+                  type="text" 
+                  value={editFormData.full_name} 
+                  onChange={e => setEditFormData({...editFormData, full_name: e.target.value})}
+                  className="input-field"
+                />
+                <label style={{ marginTop: "12px" }}>Téléphone</label>
+                <input 
+                  type="text" 
+                  value={editFormData.phone} 
+                  onChange={e => setEditFormData({...editFormData, phone: e.target.value})}
+                  className="input-field"
+                />
+              </div>
+            )}
+
+            {modalType === "Changer Rôle" && (
+              <div className="form-group">
+                <label>Nouveau Rôle</label>
+                <select 
+                  value={selectedRole} 
+                  onChange={e => setSelectedRole(e.target.value as UserRole)}
+                  className="input-field"
+                >
+                  <option value="tenant">Locataire</option>
+                  <option value="owner">Propriétaire</option>
+                  <option value="admin">Administrateur</option>
+                </select>
+                <p style={{ fontSize: "13px", color: "var(--gray-500)", marginTop: "12px" }}>
+                  Attention : Modifier le rôle changera les accès et fonctionnalités disponibles pour cet utilisateur.
+                </p>
+              </div>
+            )}
+
+            {modalType === "Réinitialiser MDP" && (
+              <div style={{ textAlign: "center", padding: "20px 0" }}>
+                <Key size={48} color="#3b82f6" style={{ marginBottom: "16px" }} />
+                <p style={{ margin: 0, color: "#334155" }}>
+                  Êtes-vous sûr de vouloir envoyer un email de réinitialisation de mot de passe à <strong>{selectedUser.email}</strong> ?
+                </p>
+              </div>
+            )}
+
+            {modalType === "Suspendre" && (
+              <div style={{ textAlign: "center", padding: "20px 0" }}>
+                {selectedUser.is_suspended ? (
+                  <>
+                    <CheckCircle size={48} color="#10b981" style={{ marginBottom: "16px" }} />
+                    <p style={{ margin: 0, color: "#334155" }}>
+                      Voulez-vous réactiver le compte de <strong>{selectedUser.full_name}</strong> ? Il pourra à nouveau se connecter.
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <AlertTriangle size={48} color="#ef4444" style={{ marginBottom: "16px" }} />
+                    <p style={{ margin: 0, color: "#334155" }}>
+                      Voulez-vous vraiment suspendre le compte de <strong>{selectedUser.full_name}</strong> ? L'utilisateur ne pourra plus accéder à la plateforme.
+                    </p>
+                  </>
+                )}
+              </div>
+            )}
+
+            {modalType === "Voir Stats" && (
+              <div className="stats-grid">
+                <div className="stat-box">
+                  <span>Inscrit le</span>
+                  <strong>{new Date(selectedUser.created_at).toLocaleDateString()}</strong>
+                </div>
+                <div className="stat-box">
+                  <span>Rôle actuel</span>
+                  <strong>{selectedUser.role.toUpperCase()}</strong>
+                </div>
+                <div className="stat-box">
+                  <span>Statut</span>
+                  <strong>{selectedUser.is_suspended ? 'Suspendu' : 'Actif'}</strong>
+                </div>
+                <div className="stat-box">
+                  <span>Plan</span>
+                  <strong>{selectedUser.subscription_plan || 'Aucun'}</strong>
+                </div>
+              </div>
+            )}
+
+            <div style={{ display: "flex", gap: "12px", marginTop: "24px", justifyContent: "flex-end" }}>
+              <button className="btn-secondary" onClick={closeModal} disabled={isSubmitting}>
+                Fermer
+              </button>
+              {modalType !== "Voir Stats" && (
+                <button 
+                  className={`btn-primary ${modalType === 'Suspendre' && !selectedUser.is_suspended ? 'btn-danger' : ''}`} 
+                  onClick={handleModalSubmit}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "En cours..." : "Confirmer"}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <style jsx global>{`
         .table-row {
@@ -208,6 +400,115 @@ export default function AdminUsersPage() {
           background: #fee2e2;
           color: #ef4444;
           border-color: #fca5a5;
+        }
+
+        .action-btn-success:hover {
+          background: #d1fae5;
+          color: #10b981;
+          border-color: #6ee7b7;
+        }
+
+        .modal-overlay {
+          position: fixed;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0,0,0,0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1000;
+          padding: 20px;
+        }
+
+        .modal-content {
+          background: #fff;
+          border-radius: 12px;
+          width: 100%;
+          max-width: 500px;
+          padding: 24px;
+          position: relative;
+          box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+        }
+
+        .modal-close {
+          position: absolute;
+          top: 16px; right: 16px;
+          background: transparent; border: none;
+          color: #94a3b8; cursor: pointer;
+          transition: 0.2s;
+        }
+        .modal-close:hover { color: #0f172a; }
+
+        .form-group label {
+          display: block;
+          font-size: 13px;
+          font-weight: 600;
+          color: #475569;
+          margin-bottom: 6px;
+        }
+
+        .input-field {
+          width: 100%;
+          padding: 10px 14px;
+          border-radius: 8px;
+          border: 1px solid #cbd5e1;
+          font-size: 14px;
+          outline: none;
+          transition: border 0.2s;
+        }
+        .input-field:focus {
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn-secondary {
+          padding: 10px 16px;
+          border-radius: 8px;
+          background: #f1f5f9;
+          color: #475569;
+          border: none;
+          font-weight: 600;
+          cursor: pointer;
+        }
+        .btn-secondary:hover { background: #e2e8f0; }
+
+        .btn-primary {
+          padding: 10px 16px;
+          border-radius: 8px;
+          background: #10b981;
+          color: #fff;
+          border: none;
+          font-weight: 600;
+          cursor: pointer;
+        }
+        .btn-primary:hover { background: #059669; }
+
+        .btn-danger {
+          background: #ef4444;
+        }
+        .btn-danger:hover { background: #dc2626; }
+
+        .stats-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+        }
+        .stat-box {
+          background: #f8fafc;
+          padding: 16px;
+          border-radius: 8px;
+          border: 1px solid #e2e8f0;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .stat-box span {
+          font-size: 12px;
+          color: #64748b;
+          text-transform: uppercase;
+        }
+        .stat-box strong {
+          font-size: 16px;
+          color: #0f172a;
         }
       `}</style>
     </div>
