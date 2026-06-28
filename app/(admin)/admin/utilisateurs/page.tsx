@@ -333,11 +333,16 @@ export default function AdminUsersPage() {
               <div className="stats-grid">
                 <div className="stat-box">
                   <span>Inscrit le</span>
-                  <strong>{new Date(selectedUser.created_at).toLocaleDateString()}</strong>
+                  <strong>{new Date(selectedUser.created_at).toLocaleDateString("fr-FR")}</strong>
                 </div>
                 <div className="stat-box">
                   <span>Rôle actuel</span>
-                  <strong>{selectedUser.role.toUpperCase()}</strong>
+                  <strong>
+                    {selectedUser.role === 'owner' ? 'Propriétaire' : 
+                     selectedUser.role === 'tenant' ? 'Locataire' : 
+                     selectedUser.role === 'admin' ? 'Administrateur' : 
+                     selectedUser.role}
+                  </strong>
                 </div>
                 <div className="stat-box">
                   <span>Statut</span>
@@ -345,7 +350,12 @@ export default function AdminUsersPage() {
                 </div>
                 <div className="stat-box">
                   <span>Plan</span>
-                  <strong>{selectedUser.subscription_plan || 'Aucun'}</strong>
+                  <strong>
+                    {selectedUser.subscription_plan === 'free' ? 'Gratuit' : 
+                     selectedUser.subscription_plan === 'premium' ? 'Premium' : 
+                     selectedUser.subscription_plan === 'enterprise' ? 'Entreprise' : 
+                     (selectedUser.subscription_plan || 'Aucun')}
+                  </strong>
                 </div>
               </div>
             )}
