@@ -291,10 +291,10 @@ export default function BiensPage() {
 
       {/* Properties List or Map */}
       {isLoading ? (
-        <div style={{ display: "grid", gridTemplateColumns: viewMode === "grid" ? "repeat(auto-fill, minmax(320px, 1fr))" : "1fr", gap: "var(--space-6)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: viewMode === "grid" ? "repeat(auto-fill, minmax(250px, 1fr))" : "1fr", gap: "var(--space-6)" }}>
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="card" style={{ padding: 0, height: viewMode === "grid" ? "400px" : "180px", display: "flex", flexDirection: viewMode === "grid" ? "column" : "row" }}>
-              <div className="skeleton skeleton-image" style={{ height: viewMode === "grid" ? "240px" : "100%", width: viewMode === "list" ? "280px" : "100%" }}></div>
+            <div key={i} className="card" style={{ padding: 0, height: viewMode === "grid" ? "360px" : "180px", display: "flex", flexDirection: viewMode === "grid" ? "column" : "row" }}>
+              <div className="skeleton skeleton-image" style={{ height: viewMode === "grid" ? "200px" : "100%", width: viewMode === "list" ? "280px" : "100%" }}></div>
               <div style={{ padding: "var(--space-4)", display: "flex", flexDirection: "column", gap: "var(--space-2)", flexGrow: 1 }}>
                  <div className="skeleton skeleton-text short"></div>
                  <div className="skeleton skeleton-text long"></div>
@@ -314,12 +314,12 @@ export default function BiensPage() {
           </p>
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: viewMode === "grid" ? "repeat(auto-fill, minmax(320px, 1fr))" : "1fr", gap: "var(--space-6)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: viewMode === "grid" ? "repeat(auto-fill, minmax(250px, 1fr))" : "1fr", gap: "var(--space-6)" }}>
           {filteredProperties.map((p) => (
             <div key={p.id} className="card card-interactive" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: viewMode === "grid" ? "column" : "row", height: "100%" }}>
               {/* Image Banner */}
               <div className="card-image-container" style={{ 
-                height: viewMode === "grid" ? "240px" : "auto", 
+                height: viewMode === "grid" ? "200px" : "auto", 
                 width: viewMode === "list" ? "280px" : "auto",
                 minHeight: viewMode === "list" ? "100%" : "auto",
                 position: "relative",
