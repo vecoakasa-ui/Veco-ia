@@ -352,8 +352,8 @@ export default function AdminUsersPage() {
                   <span>Plan</span>
                   <strong>
                     {selectedUser.subscription_plan === 'free' ? 'Gratuit' : 
-                     selectedUser.subscription_plan === 'premium' ? 'Premium' : 
-                     selectedUser.subscription_plan === 'enterprise' ? 'Entreprise' : 
+                     selectedUser.subscription_plan === 'pro' ? 'Pro' : 
+                     selectedUser.subscription_plan === 'business' ? 'Business' : 
                      (selectedUser.subscription_plan || 'Aucun')}
                   </strong>
                 </div>
