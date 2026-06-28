@@ -434,7 +434,7 @@ export default function DashboardLayout({
             </button>
             
             <h1 style={{ fontSize: "var(--text-lg)", fontWeight: "700", margin: 0, color: "var(--gray-900)" }}>
-              {navigation.find(nav => nav.href === pathname)?.name || "Tableau de bord"}
+              {navigationGroups.flatMap(g => g.items).find(nav => nav.href === pathname)?.name || "Tableau de bord"}
             </h1>
           </div>
 
