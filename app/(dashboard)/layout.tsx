@@ -65,20 +65,35 @@ export default function DashboardLayout({
     return () => window.removeEventListener("storage", handleStorage);
   }, []);
 
-  const navigation = [
-    { name: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Propriétaires", href: "/proprietaires", icon: Briefcase },
-    { name: "Biens immobiliers", href: "/biens", icon: Building2 },
-    { name: "Locataires", href: "/locataires", icon: Users },
-    { name: "Loyers & Paiements", href: "/paiements", icon: Banknote },
-    { name: "Relances", href: "/relances", icon: MessageSquare },
-    { name: "Comptabilité", href: "/comptabilite", icon: Wallet },
-    { name: "Quittances", href: "/quittances", icon: FileText },
-    { name: "Cautions & États des lieux", href: "/cautions", icon: ClipboardCheck },
-    { name: "Paramètres (Base de données)", href: "/settings", icon: Settings },
-    { name: "Contrats de bail", href: "/contrats", icon: FolderLock },
-    { name: "Incidents", href: "/incidents", icon: AlertTriangle },
-    { name: "Mon Abonnement", href: "/abonnement", icon: Sparkles },
+  const navigationGroups = [
+    {
+      groupName: "Gestion",
+      items: [
+        { name: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard },
+        { name: "Propriétaires", href: "/proprietaires", icon: Briefcase },
+        { name: "Biens immobiliers", href: "/biens", icon: Building2 },
+        { name: "Locataires", href: "/locataires", icon: Users },
+        { name: "Contrats de bail", href: "/contrats", icon: FolderLock },
+        { name: "Incidents", href: "/incidents", icon: AlertTriangle },
+      ]
+    },
+    {
+      groupName: "Finances",
+      items: [
+        { name: "Loyers & Paiements", href: "/paiements", icon: Banknote },
+        { name: "Quittances", href: "/quittances", icon: FileText },
+        { name: "Comptabilité", href: "/comptabilite", icon: Wallet },
+        { name: "Relances", href: "/relances", icon: MessageSquare },
+        { name: "Cautions & États", href: "/cautions", icon: ClipboardCheck },
+      ]
+    },
+    {
+      groupName: "Système",
+      items: [
+        { name: "Paramètres (Base)", href: "/settings", icon: Settings },
+        { name: "Mon Abonnement", href: "/abonnement", icon: Sparkles },
+      ]
+    }
   ];
 
   const handleLogout = async () => {
@@ -120,36 +135,45 @@ export default function DashboardLayout({
         </div>
 
         {/* Menu links */}
-        <nav style={{ flex: 1, padding: "var(--space-6) var(--space-3)", display: "flex", flexDirection: "column", gap: "4px", overflowY: "auto" }}>
-          {navigation.map((item) => {
-            const Icon = item.icon;
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "var(--space-3)",
-                  padding: "var(--space-3) var(--space-4)",
-                  borderRadius: "var(--radius-lg)",
-                  fontSize: "var(--text-sm)",
-                  fontWeight: isActive ? 600 : 500,
-                  color: isActive ? "var(--white)" : "var(--gray-400)",
-                  background: isActive ? "var(--primary)" : "transparent",
-                  borderLeft: isActive ? "4px solid var(--orange)" : "4px solid transparent",
-                  paddingLeft: isActive ? "calc(var(--space-4) - 4px)" : "var(--space-4)",
-                  transition: "all var(--transition-fast)",
-                  textDecoration: "none"
-                }}
-                className={isActive ? "" : "hover-sidebar-link"}
-              >
-                {Icon ? <Icon size={18} /> : <div style={{ width: 18, height: 18 }} />}
-                <span>{item.name}</span>
-              </Link>
-            );
-          })}
+        <nav style={{ flex: 1, padding: "var(--space-6) var(--space-3)", display: "flex", flexDirection: "column", gap: "var(--space-4)", overflowY: "auto" }}>
+          {navigationGroups.map((group, groupIdx) => (
+            <div key={groupIdx}>
+              <div style={{ padding: "0 var(--space-4)", marginBottom: "8px", fontSize: "11px", fontWeight: 700, color: "var(--gray-500)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                {group.groupName}
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                {group.items.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = pathname === item.href;
+                  return (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "var(--space-3)",
+                        padding: "var(--space-3) var(--space-4)",
+                        borderRadius: "var(--radius-lg)",
+                        fontSize: "var(--text-sm)",
+                        fontWeight: isActive ? 600 : 500,
+                        color: isActive ? "var(--white)" : "var(--gray-400)",
+                        background: isActive ? "var(--primary)" : "transparent",
+                        borderLeft: isActive ? "4px solid var(--orange)" : "4px solid transparent",
+                        paddingLeft: isActive ? "calc(var(--space-4) - 4px)" : "var(--space-4)",
+                        transition: "all var(--transition-fast)",
+                        textDecoration: "none"
+                      }}
+                      className={isActive ? "" : "hover-sidebar-link"}
+                    >
+                      {Icon ? <Icon size={18} /> : <div style={{ width: 18, height: 18 }} />}
+                      <span>{item.name}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
 
         {/* User profile section */}
@@ -270,35 +294,44 @@ export default function DashboardLayout({
             </div>
 
             {/* Menu Links */}
-            <nav style={{ flex: 1, padding: "var(--space-6) var(--space-3)", display: "flex", flexDirection: "column", gap: "4px", overflowY: "auto" }}>
-              {navigation.map((item) => {
-                const Icon = item.icon;
-                const isActive = pathname === item.href;
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    onClick={() => setMobileOpen(false)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "var(--space-3)",
-                      padding: "var(--space-3) var(--space-4)",
-                      borderRadius: "var(--radius-lg)",
-                      fontSize: "var(--text-sm)",
-                      fontWeight: isActive ? 600 : 500,
-                      color: isActive ? "var(--white)" : "var(--gray-400)",
-                      background: isActive ? "var(--primary)" : "transparent",
-                      borderLeft: isActive ? "4px solid var(--orange)" : "4px solid transparent",
-                      paddingLeft: isActive ? "calc(var(--space-4) - 4px)" : "var(--space-4)",
-                      textDecoration: "none"
-                    }}
-                  >
-                    {Icon ? <Icon size={18} /> : <div style={{ width: 18, height: 18 }} />}
-                    <span>{item.name}</span>
-                  </Link>
-                );
-              })}
+            <nav style={{ flex: 1, padding: "var(--space-6) var(--space-3)", display: "flex", flexDirection: "column", gap: "var(--space-4)", overflowY: "auto" }}>
+              {navigationGroups.map((group, groupIdx) => (
+                <div key={groupIdx}>
+                  <div style={{ padding: "0 var(--space-4)", marginBottom: "8px", fontSize: "11px", fontWeight: 700, color: "var(--gray-500)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                    {group.groupName}
+                  </div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                    {group.items.map((item) => {
+                      const Icon = item.icon;
+                      const isActive = pathname === item.href;
+                      return (
+                        <Link
+                          key={item.name}
+                          href={item.href}
+                          onClick={() => setMobileOpen(false)}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "var(--space-3)",
+                            padding: "var(--space-3) var(--space-4)",
+                            borderRadius: "var(--radius-lg)",
+                            fontSize: "var(--text-sm)",
+                            fontWeight: isActive ? 600 : 500,
+                            color: isActive ? "var(--white)" : "var(--gray-400)",
+                            background: isActive ? "var(--primary)" : "transparent",
+                            borderLeft: isActive ? "4px solid var(--orange)" : "4px solid transparent",
+                            paddingLeft: isActive ? "calc(var(--space-4) - 4px)" : "var(--space-4)",
+                            textDecoration: "none"
+                          }}
+                        >
+                          {Icon ? <Icon size={18} /> : <div style={{ width: 18, height: 18 }} />}
+                          <span>{item.name}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
             </nav>
 
             {/* User section */}

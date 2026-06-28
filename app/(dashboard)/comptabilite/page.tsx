@@ -174,7 +174,7 @@ export default function ComptabilitePage() {
             <ArrowUpRight size={24} />
           </div>
           <div>
-            <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", margin: 0 }}>Total Entrées (Loyers)</p>
+            <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", margin: 0 }}>Loyer Brut (Entrées)</p>
             <h3 style={{ fontSize: "var(--text-2xl)", fontWeight: "800", margin: 0, color: "var(--gray-900)" }}>{formatCurrency(totalIncome)}</h3>
           </div>
         </div>
@@ -184,7 +184,7 @@ export default function ComptabilitePage() {
             <ArrowDownRight size={24} />
           </div>
           <div>
-            <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", margin: 0 }}>Total Sorties (Dépenses)</p>
+            <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", margin: 0 }}>Commissions & Dépenses</p>
             <h3 style={{ fontSize: "var(--text-2xl)", fontWeight: "800", margin: 0, color: "var(--gray-900)" }}>{formatCurrency(totalExpenses)}</h3>
           </div>
         </div>
@@ -194,7 +194,7 @@ export default function ComptabilitePage() {
             <Wallet size={24} />
           </div>
           <div>
-            <p style={{ fontSize: "var(--text-sm)", color: "var(--warning-dark)", margin: 0, fontWeight: "600" }}>Solde Net</p>
+            <p style={{ fontSize: "var(--text-sm)", color: "var(--warning-dark)", margin: 0, fontWeight: "600" }}>Solde Net (À Reverser)</p>
             <h3 style={{ fontSize: "var(--text-2xl)", fontWeight: "800", margin: 0, color: "var(--gray-900)" }}>{formatCurrency(netBalance)}</h3>
           </div>
         </div>
