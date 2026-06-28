@@ -24,6 +24,16 @@ export default function RegisterPage({ searchParams }: PageProps) {
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        router.push("/dashboard");
+      }
+    };
+    checkAuth();
+  }, [router]);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

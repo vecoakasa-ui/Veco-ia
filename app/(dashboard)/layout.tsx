@@ -52,6 +52,15 @@ export default function DashboardLayout({
   });
 
   useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.push("/login");
+        return;
+      }
+    };
+    checkAuth();
+
     const loadProfile = async () => {
       const p = await db.getProfile();
       if (p) setProfile(p);
@@ -63,7 +72,7 @@ export default function DashboardLayout({
     };
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
-  }, []);
+  }, [router]);
 
   const navigationGroups = [
     {
