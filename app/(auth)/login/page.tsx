@@ -14,6 +14,7 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  console.log("Login page rendered - check Google button");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
