@@ -431,6 +431,17 @@ export const getOwnerId = async (): Promise<string> => {
   throw new Error("Veuillez vous connecter pour continuer.");
 };
 
+
+const checkAuthError = (err: any) => {
+  if (err && (err.code === 'PGRST303' || (err.message && err.message.includes('JWT expired')))) {
+    console.error('Session expirée, déconnexion forcée...');
+    if (typeof window !== 'undefined') {
+      localStorage.clear();
+      window.location.href = '/login';
+    }
+  }
+};
+
 export const db = {
   // Clear all and reset
   reset: async (): Promise<void> => {
@@ -460,6 +471,7 @@ export const db = {
       }
     } catch (err) {
       console.error("Error fetching profile from Supabase:", err);
+        checkAuthError(err);
     }
     return null;
   },
@@ -489,6 +501,7 @@ export const db = {
         if (data) return data as Landlord[];
       } catch (err) {
         console.error("Error fetching landlords from Supabase:", err);
+        checkAuthError(err);
       }
     }
     return [];
@@ -537,6 +550,7 @@ export const db = {
         if (data) return data as Property[];
       } catch (err) {
         console.error("Error fetching properties from Supabase:", err);
+        checkAuthError(err);
       }
     }
     return [];
@@ -622,6 +636,7 @@ export const db = {
         }
       } catch (err) {
         console.error("Error fetching tenants from Supabase:", err);
+        checkAuthError(err);
       }
     }
     return [];
@@ -788,6 +803,7 @@ export const db = {
         }
       } catch (err) {
         console.error("Error fetching payments from Supabase:", err);
+        checkAuthError(err);
       }
     }
     return [];
@@ -902,6 +918,7 @@ export const db = {
         return leases;
       } catch (err) {
         console.error("Error fetching leases from Supabase:", err);
+        checkAuthError(err);
       }
     }
     return [];
@@ -955,6 +972,7 @@ export const db = {
         if (data) return data as Incident[];
       } catch (err) {
         console.error("Error fetching incidents from Supabase:", err);
+        checkAuthError(err);
       }
     }
     return [];
@@ -996,6 +1014,7 @@ export const db = {
         if (data) return data as Expense[];
       } catch (err) {
         console.error("Error fetching expenses:", err);
+        checkAuthError(err);
       }
     }
     return [];
@@ -1071,6 +1090,7 @@ export const db = {
         if (data) return data as Profile[];
       } catch (err) {
         console.error("Error fetching all profiles:", err);
+        checkAuthError(err);
       }
     }
     return [getFromStorage("profile", DEFAULT_PROFILE)];
@@ -1102,6 +1122,7 @@ export const db = {
         };
       } catch (err) {
          console.error("Error fetching global stats:", err);
+        checkAuthError(err);
       }
     }
     const localStats = await db.getStats();
@@ -1123,6 +1144,7 @@ export const db = {
         if (data) return data as Incident[];
       } catch (err) {
         console.error("Error fetching system incidents:", err);
+        checkAuthError(err);
       }
     }
     return await db.getIncidents();
