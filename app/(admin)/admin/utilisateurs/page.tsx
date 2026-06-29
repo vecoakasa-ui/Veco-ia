@@ -199,7 +199,7 @@ export default function AdminUsersPage() {
               ) : (
                 filteredUsers.map((user, idx) => (
                   <tr key={user.id || idx} className="table-row">
-                    <td style={tdStyle}>
+                    <td style={tdStyle} data-label="Photo">
                       <div style={{ width: "36px", height: "36px", borderRadius: "50%", background: "var(--gray-100)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold", color: "var(--gray-600)", overflow: "hidden" }}>
                         {user.avatar_url ? (
                           <img src={user.avatar_url} alt={user.full_name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -208,13 +208,13 @@ export default function AdminUsersPage() {
                         )}
                       </div>
                     </td>
-                    <td style={tdStyle}>
+                    <td style={tdStyle} data-label="Nom Complet">
                       <span style={{ fontWeight: 600, color: "var(--gray-900)" }}>{user.full_name || "Sans nom"}</span>
                     </td>
-                    <td style={tdStyle}>{user.email || "-"}</td>
-                    <td style={tdStyle}>{user.phone || "-"}</td>
-                    <td style={tdStyle}>{getRoleBadge(user.role)}</td>
-                    <td style={tdStyle}>
+                    <td style={tdStyle} data-label="Email">{user.email || "-"}</td>
+                    <td style={tdStyle} data-label="Téléphone">{user.phone || "-"}</td>
+                    <td style={tdStyle} data-label="Rôle">{getRoleBadge(user.role)}</td>
+                    <td style={tdStyle} data-label="Statut">
                       {user.is_suspended ? (
                          <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#ef4444" }}>
                           <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#ef4444" }}></div>
@@ -227,8 +227,8 @@ export default function AdminUsersPage() {
                         </div>
                       )}
                     </td>
-                    <td style={{ ...tdStyle, textAlign: "right" }}>
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "8px" }}>
+                    <td style={{ ...tdStyle, textAlign: "right" }} data-label="Actions">
+                      <div className="mobile-actions" style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "8px" }}>
                         <button className="action-btn" title="Modifier" onClick={() => openModal("Modifier", user)}>
                           <Edit size={16} />
                         </button>
@@ -381,6 +381,70 @@ export default function AdminUsersPage() {
       )}
 
       <style jsx global>{`
+        /* Mobile Responsive Table and Modal */
+        @media (max-width: 768px) {
+          table thead {
+            display: none;
+          }
+          table, table tbody, table tr, table td {
+            display: block;
+            width: 100%;
+          }
+          table tr {
+            margin-bottom: 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px;
+            background: #fff;
+          }
+          table td {
+            padding: 10px 0 !important;
+            border-bottom: 1px solid #f1f5f9 !important;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: right !important;
+          }
+          table td:last-child {
+            border-bottom: none !important;
+            flex-direction: column;
+            align-items: flex-end;
+          }
+          table td::before {
+            content: attr(data-label);
+            font-weight: 600;
+            color: #64748b;
+            font-size: 13px;
+            text-transform: uppercase;
+            margin-right: auto;
+          }
+          .mobile-actions {
+            width: 100%;
+            justify-content: center !important;
+            flex-wrap: wrap;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed #e2e8f0;
+          }
+          .action-btn {
+            width: 44px !important;
+            height: 44px !important;
+          }
+          
+          /* Modal Responsive */
+          .modal-overlay {
+            padding: 12px !important;
+          }
+          .modal-content {
+            padding: 16px !important;
+            max-height: 90vh;
+            overflow-y: auto;
+          }
+          .stats-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+
         .table-row {
           transition: background 0.2s;
         }
@@ -460,10 +524,10 @@ export default function AdminUsersPage() {
 
         .input-field {
           width: 100%;
-          padding: 10px 14px;
+          padding: 12px 14px;
           border-radius: 8px;
           border: 1px solid #cbd5e1;
-          font-size: 14px;
+          font-size: 16px; /* 16px is required on mobile to prevent auto-zoom */
           outline: none;
           transition: border 0.2s;
         }

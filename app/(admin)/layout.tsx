@@ -188,6 +188,49 @@ export default function AdminLayout({
         .admin-nav-item.logout:hover .admin-nav-icon {
           color: #ef4444;
         }
+        
+        /* Mobile Responsive Admin Layout */
+        @media (max-width: 768px) {
+          .app-layout {
+            flex-direction: column !important;
+          }
+          .sidebar {
+            position: static !important;
+            width: 100% !important;
+            height: auto !important;
+            padding: 16px !important;
+            border-right: none !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+            z-index: 10 !important;
+          }
+          .sidebar-logo {
+            margin-bottom: 16px !important;
+          }
+          .sidebar-nav {
+            flex-direction: row !important;
+            flex-wrap: wrap !important;
+            gap: 8px !important;
+          }
+          .admin-nav-item {
+            padding: 10px !important;
+          }
+          .admin-nav-item span {
+            display: none !important;
+          }
+          .main-content {
+            margin-left: 0 !important;
+            width: 100% !important;
+          }
+          .content-area {
+            padding: 16px !important;
+          }
+          .header {
+            padding: 16px !important;
+          }
+          .header span:first-child {
+            font-size: 18px !important;
+          }
+        }
       `}</style>
     </div>
   );
