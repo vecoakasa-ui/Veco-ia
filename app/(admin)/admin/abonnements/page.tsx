@@ -9,6 +9,7 @@ export default function AbonnementsPage() {
   const [subscriptions, setSubscriptions] = useState<SubscriptionRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<'active' | 'late' | 'suspended' | 'all'>('all');
 
   // Modals state
   const [actionModal, setActionModal] = useState<{ isOpen: boolean; type: 'warn' | 'suspend' | null; sub: SubscriptionRecord | null }>({
@@ -49,10 +50,12 @@ export default function AbonnementsPage() {
     setActionModal({ isOpen: false, type: null, sub: null });
   };
 
-  const filteredSubs = subscriptions.filter(sub => 
-    sub.profile?.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    sub.profile?.email.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredSubs = subscriptions.filter(sub => {
+    const matchesSearch = sub.profile?.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          sub.profile?.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === 'all' ? true : sub.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   const totalMRR = subscriptions.filter(s => s.status !== 'suspended').reduce((acc, sub) => acc + sub.amount, 0);
   const activeCount = subscriptions.filter(s => s.status === 'active').length;
@@ -75,7 +78,7 @@ export default function AbonnementsPage() {
 
       {/* KPI Cards */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "var(--space-4)" }}>
-        <div className="kpi-card" style={{ background: "linear-gradient(135deg, #10b981 0%, #059669 100%)", color: "white" }}>
+        <div className="kpi-card" onClick={() => setStatusFilter(statusFilter === 'active' ? 'all' : 'active')} style={{ cursor: "pointer", background: "linear-gradient(135deg, #10b981 0%, #059669 100%)", color: "white", outline: statusFilter === 'active' ? '3px solid #10b981' : 'none', outlineOffset: '2px' }}>
           <div className="kpi-icon"><Activity size={20} /></div>
           <div>
             <p className="kpi-label">Abonnements Actifs</p>
@@ -83,7 +86,7 @@ export default function AbonnementsPage() {
           </div>
         </div>
         
-        <div className="kpi-card" style={{ background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)", color: "white" }}>
+        <div className="kpi-card" onClick={() => setStatusFilter('all')} style={{ cursor: "pointer", background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)", color: "white", outline: statusFilter === 'all' ? '3px solid #3b82f6' : 'none', outlineOffset: '2px' }}>
           <div className="kpi-icon"><CreditCard size={20} /></div>
           <div>
             <p className="kpi-label">Revenu Mensuel (MRR)</p>
@@ -91,7 +94,7 @@ export default function AbonnementsPage() {
           </div>
         </div>
 
-        <div className="kpi-card" style={{ background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)", color: "white" }}>
+        <div className="kpi-card" onClick={() => setStatusFilter(statusFilter === 'late' ? 'all' : 'late')} style={{ cursor: "pointer", background: "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)", color: "white", outline: statusFilter === 'late' ? '3px solid #f59e0b' : 'none', outlineOffset: '2px' }}>
           <div className="kpi-icon"><AlertTriangle size={20} /></div>
           <div>
             <p className="kpi-label">Paiements en Retard</p>
@@ -99,7 +102,7 @@ export default function AbonnementsPage() {
           </div>
         </div>
 
-        <div className="kpi-card" style={{ background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)", color: "white" }}>
+        <div className="kpi-card" onClick={() => setStatusFilter(statusFilter === 'suspended' ? 'all' : 'suspended')} style={{ cursor: "pointer", background: "linear-gradient(135deg, #ef4444 0%, #dc2626 100%)", color: "white", outline: statusFilter === 'suspended' ? '3px solid #ef4444' : 'none', outlineOffset: '2px' }}>
           <div className="kpi-icon"><Ban size={20} /></div>
           <div>
             <p className="kpi-label">Comptes Suspendus</p>
