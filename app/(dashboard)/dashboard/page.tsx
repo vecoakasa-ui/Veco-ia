@@ -113,22 +113,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Empty State Banner if no properties exist yet */}
-      {stats.total_properties === 0 && (
-        <div style={{ padding: "var(--space-6)", backgroundColor: "rgba(255, 144, 0, 0.1)", border: "1px dashed var(--orange)", borderRadius: "var(--radius-lg)", textAlign: "center" }}>
-          <h3 style={{ fontSize: "var(--text-lg)", color: "var(--gray-900)", marginBottom: "var(--space-2)" }}>Bienvenue sur votre Tableau de Bord ! 🎉</h3>
-          <p style={{ color: "var(--gray-600)", fontSize: "var(--text-sm)", marginBottom: "var(--space-4)" }}>
-            Votre base de données est connectée avec succès mais elle est actuellement vide. 
-            Commencez par ajouter votre premier bien immobilier pour voir vos statistiques s'animer !
-          </p>
-          <button 
-            className="btn btn-primary" 
-            onClick={() => router.push("/biens")}
-          >
-            Créer mon premier bien
-          </button>
-        </div>
-      )}
+
 
       {/* Stats Cards Grid */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "var(--space-6)" }}>
