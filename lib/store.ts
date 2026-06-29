@@ -425,8 +425,8 @@ export function setToStorage<T>(key: string, value: T): void {
 
 export const getOwnerId = async (): Promise<string> => {
   if (isSupabaseConfigured()) {
-    const { data } = await supabase.auth.getUser();
-    if (data?.user) return data.user.id;
+    const { data } = await supabase.auth.getSession();
+    if (data?.session?.user) return data.session.user.id;
   }
   throw new Error("Veuillez vous connecter pour continuer.");
 };
@@ -1142,12 +1142,12 @@ export const db = {
   getGlobalStats: async (): Promise<DashboardStats & { total_landlords: number, active_admins: number }> => {
     if (isSupabaseConfigured()) {
       try {
-        const [props, ten, pays, lands, profs] = await Promise.all([
+        const [props, ten, pays, lands, adminsCount] = await Promise.all([
           supabase.from("properties").select("id, status"),
-          supabase.from("tenants").select("id"),
+          supabase.from("tenants").select("id", { count: "exact", head: true }),
           supabase.from("payments").select("total, status"),
-          supabase.from("landlords").select("id"),
-          supabase.from("profiles").select("id, role")
+          supabase.from("landlords").select("id", { count: "exact", head: true }),
+          supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", "admin")
         ]);
         
         const properties = props.data || [];
@@ -1156,16 +1156,16 @@ export const db = {
         
         return {
           total_properties,
-          total_tenants: ten.data?.length || 0,
+          total_tenants: ten.count || 0,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           total_revenue: payments.filter((p: any) => p.status === "paid").reduce((sum: number, p: any) => sum + p.total, 0),
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           late_payments: payments.filter((p: any) => p.status === "late").length,
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           occupancy_rate: total_properties > 0 ? Math.round((properties.filter((p: any) => p.status === "occupied").length / total_properties) * 100) : 0,
-          total_landlords: lands.data?.length || 0,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          active_admins: profs.data?.filter((p: any) => p.role === "admin").length || 0
+          total_landlords: lands.count || 0,
+          total_leases: 0,
+          active_admins: adminsCount.count || 0
         };
       } catch (err) {
          console.error("Error fetching global stats:", err);
