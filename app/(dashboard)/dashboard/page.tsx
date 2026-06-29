@@ -10,7 +10,9 @@ import {
   Plus,
   ChevronRight,
   ArrowRight,
-  Banknote
+  Banknote,
+  Briefcase,
+  FileText
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { formatCurrency, formatDate, getPaymentStatusClass, getPaymentStatusLabel } from "@/lib/utils";
@@ -146,6 +148,38 @@ export default function DashboardPage() {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>
             Voir les fiches de bail et dossiers <ArrowRight size={12} />
+          </div>
+        </div>
+
+        {/* Card 3: Propriétaires */}
+        <div className="card" onClick={() => router.push("/proprietaires")} style={{ cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "space-between", borderLeft: "4px solid var(--primary)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-4)" }}>
+            <div>
+              <span style={{ fontSize: "var(--text-xs)", fontWeight: "600", color: "var(--gray-500)", textTransform: "uppercase" }}>Propriétaires</span>
+              <h3 style={{ fontSize: "var(--text-3xl)", fontWeight: "800", color: "var(--gray-900)", margin: "4px 0 0 0" }}>{stats.total_landlords || 0}</h3>
+            </div>
+            <div style={{ padding: "10px", background: "rgba(16, 185, 129, 0.1)", color: "var(--success)", borderRadius: "var(--radius-lg)" }}>
+              <Briefcase size={20} />
+            </div>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>
+            Gérer les mandats <ArrowRight size={12} />
+          </div>
+        </div>
+
+        {/* Card 4: Contrats de Bail */}
+        <div className="card" onClick={() => router.push("/contrats")} style={{ cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "space-between", borderLeft: "4px solid var(--primary)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-4)" }}>
+            <div>
+              <span style={{ fontSize: "var(--text-xs)", fontWeight: "600", color: "var(--gray-500)", textTransform: "uppercase" }}>Contrats de Bail</span>
+              <h3 style={{ fontSize: "var(--text-3xl)", fontWeight: "800", color: "var(--gray-900)", margin: "4px 0 0 0" }}>{stats.total_leases || 0}</h3>
+            </div>
+            <div style={{ padding: "10px", background: "rgba(99, 102, 241, 0.1)", color: "#6366f1", borderRadius: "var(--radius-lg)" }}>
+              <FileText size={20} />
+            </div>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>
+            Voir les baux en cours <ArrowRight size={12} />
           </div>
         </div>
 

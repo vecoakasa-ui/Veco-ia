@@ -193,6 +193,8 @@ export interface DashboardStats {
   total_revenue: number;
   late_payments: number;
   occupancy_rate: number;
+  total_landlords?: number;
+  total_leases?: number;
 }
 
 export interface PricingPlan {

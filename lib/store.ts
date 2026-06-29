@@ -1088,9 +1088,13 @@ export const db = {
     const properties = await db.getProperties();
     const tenants = await db.getTenants();
     const payments = await db.getPayments();
+    const landlords = await db.getLandlords();
+    const leases = await db.getLeases();
 
     const total_properties = properties.length;
     const total_tenants = tenants.length;
+    const total_landlords = landlords.length;
+    const total_leases = leases.length;
 
     const total_revenue = payments
       .filter(p => p.status === "paid")
@@ -1106,7 +1110,9 @@ export const db = {
       total_tenants,
       total_revenue,
       late_payments,
-      occupancy_rate
+      occupancy_rate,
+      total_landlords,
+      total_leases
     };
   },
 

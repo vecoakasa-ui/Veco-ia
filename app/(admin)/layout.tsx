@@ -128,13 +128,17 @@ export default function AdminLayout({
           background: "#FFFFFF",
           padding: "24px",
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "space-between",
           alignItems: "center"
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <span style={{ fontWeight: 800, color: "#1e293b", fontSize: "22px" }}>Espace Super Administrateur</span>
+            <span className="hide-mobile" style={{ fontWeight: 800, color: "#1e293b", fontSize: "22px" }}>Espace Super Administrateur</span>
             <span className="badge" style={{ background: "rgba(255, 130, 0, 0.1)", color: "#FF8200", border: "1px solid rgba(255, 130, 0, 0.2)", padding: "4px 10px", borderRadius: "100px", fontSize: "12px", fontWeight: "bold" }}>ADMINISTRATEUR</span>
           </div>
+          <Link href="/dashboard" className="hide-mobile" style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px 16px", background: "rgba(255, 130, 0, 0.1)", color: "#FF8200", borderRadius: "8px", textDecoration: "none", fontWeight: 600, fontSize: "14px", transition: "all 0.2s" }} onMouseOver={(e) => { e.currentTarget.style.background = "rgba(255, 130, 0, 0.2)"; }} onMouseOut={(e) => { e.currentTarget.style.background = "rgba(255, 130, 0, 0.1)"; }}>
+             <LogOut size={16} />
+             Retour Utilisateur
+          </Link>
         </header>
         <div className="content-area" style={{ flex: 1, padding: "32px" }}>
           {children}
