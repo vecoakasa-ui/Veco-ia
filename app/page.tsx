@@ -209,7 +209,7 @@ export default function Home({ searchParams }: HomeProps) {
               <Building2 size={20} className="text-orange" />
             </div>
             <span style={{ fontSize: 'var(--text-lg)', fontWeight: '900', color: 'var(--primary)', letterSpacing: '-0.02em' }}>
-              VENANCE IMO<span className="text-orange">.CI</span>
+              Veco<span className="text-orange"> IA</span>
             </span>
           </Link>
 
@@ -334,19 +334,19 @@ export default function Home({ searchParams }: HomeProps) {
             </div>
             
             <h1 className="hero-title" style={{ color: 'white', fontSize: 'var(--text-5xl)', fontWeight: '900', lineHeight: 1.15, marginBottom: 'var(--space-6)', textAlign: 'center' }}>
-              La gestion de vos biens immobiliers, en toute <span className="underline-white" style={{ color: 'var(--orange)', background: 'none', WebkitBackgroundClip: 'unset', backgroundClip: 'unset', WebkitTextFillColor: 'var(--orange)' }}>sérénité.</span>
+              Gérez vos biens <span className="underline-white" style={{ color: 'var(--orange)', background: 'none', WebkitBackgroundClip: 'unset', backgroundClip: 'unset', WebkitTextFillColor: 'var(--orange)' }}>10x plus vite,</span> sans papier ni impayés.
             </h1>
             
             <p style={{ fontSize: 'var(--text-base)', color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.65, maxWidth: '640px', marginBottom: 'var(--space-8)', textAlign: 'center', marginInline: 'auto' }}>
-              VENANCE IMO.CI est spécialisée dans la gestion immobilière. Nous vous accompagnons pour valoriser, protéger et rentabiliser vos biens en toute confiance.
+              Veco IA est la 1ère plateforme 100% digitale en Afrique qui encaisse vos loyers (Mobile Money), génère vos quittances et gère vos locataires automatiquement.
             </p>
             
             <div className="hero-buttons" style={{ display: 'flex', gap: 'var(--space-4)', justifyContent: 'center', flexWrap: 'wrap', width: '100%', maxWidth: '440px', margin: '0 auto' }}>
-              <a href="/login" className="btn btn-orange" style={{ minWidth: '160px', padding: '10px 24px', fontSize: 'var(--text-sm)', fontWeight: '600' }}>
-                Connexion au tableau de bord <ArrowRight size={16} style={{ marginLeft: '6px' }} />
+              <a href="/register" className="btn btn-orange" style={{ minWidth: '160px', padding: '10px 24px', fontSize: 'var(--text-sm)', fontWeight: '600' }}>
+                Commencer l'essai gratuit <ArrowRight size={16} style={{ marginLeft: '6px' }} />
               </a>
-              <a href="#contact" className="btn btn-contact" style={{ minWidth: '160px', padding: '10px 24px', fontSize: 'var(--text-sm)', fontWeight: '600', background: 'transparent', borderColor: 'white', color: 'white' }}>
-                Nous contacter
+              <a href="#features" className="btn btn-contact" style={{ minWidth: '160px', padding: '10px 24px', fontSize: 'var(--text-sm)', fontWeight: '600', background: 'transparent', borderColor: 'white', color: 'white' }}>
+                Voir le fonctionnement
               </a>
             </div>
           </div>
@@ -361,11 +361,11 @@ export default function Home({ searchParams }: HomeProps) {
             <div className="marquee-group">
               <div className="value-item">
                 <div className="value-icon-wrapper">
-                  <Building2 size={18} />
+                  <Smartphone size={18} />
                 </div>
                 <div>
-                  <div className="value-title">Gestion complète</div>
-                  <div className="value-desc">Nous nous occupons de tout, de A à Z.</div>
+                  <div className="value-title">Paiements Mobile</div>
+                  <div className="value-desc">Intégration PayDunya & Mobile Money.</div>
                 </div>
               </div>
               <div className="value-item">
@@ -373,17 +373,17 @@ export default function Home({ searchParams }: HomeProps) {
                   <FileText size={18} />
                 </div>
                 <div>
-                  <div className="value-title">Transparence</div>
-                  <div className="value-desc">Suivi clair et régulier de vos biens.</div>
+                  <div className="value-title">Quittances Auto</div>
+                  <div className="value-desc">Reçus générés et envoyés instantanément.</div>
                 </div>
               </div>
               <div className="value-item">
                 <div className="value-icon-wrapper">
-                  <TrendingUp size={18} />
+                  <BarChart3 size={18} />
                 </div>
                 <div>
-                  <div className="value-title">Performance</div>
-                  <div className="value-desc">Nous optimisons la rentabilité.</div>
+                  <div className="value-title">Temps Réel</div>
+                  <div className="value-desc">Tableau de bord financier en direct.</div>
                 </div>
               </div>
               <div className="value-item">
@@ -391,8 +391,8 @@ export default function Home({ searchParams }: HomeProps) {
                   <MapPin size={18} />
                 </div>
                 <div>
-                  <div className="value-title">Proximité en CI</div>
-                  <div className="value-desc">Une expertise locale à votre service.</div>
+                  <div className="value-title">100% Adapté CI</div>
+                  <div className="value-desc">Conçu pour l'immobilier ivoirien.</div>
                 </div>
               </div>
             </div>
@@ -401,11 +401,11 @@ export default function Home({ searchParams }: HomeProps) {
             <div className="marquee-group">
               <div className="value-item">
                 <div className="value-icon-wrapper">
-                  <Building2 size={18} />
+                  <Smartphone size={18} />
                 </div>
                 <div>
-                  <div className="value-title">Gestion complète</div>
-                  <div className="value-desc">Nous nous occupons de tout, de A à Z.</div>
+                  <div className="value-title">Paiements Mobile</div>
+                  <div className="value-desc">Intégration PayDunya & Mobile Money.</div>
                 </div>
               </div>
               <div className="value-item">
@@ -413,17 +413,17 @@ export default function Home({ searchParams }: HomeProps) {
                   <FileText size={18} />
                 </div>
                 <div>
-                  <div className="value-title">Transparence</div>
-                  <div className="value-desc">Suivi clair et régulier de vos biens.</div>
+                  <div className="value-title">Quittances Auto</div>
+                  <div className="value-desc">Reçus générés et envoyés instantanément.</div>
                 </div>
               </div>
               <div className="value-item">
                 <div className="value-icon-wrapper">
-                  <TrendingUp size={18} />
+                  <BarChart3 size={18} />
                 </div>
                 <div>
-                  <div className="value-title">Performance</div>
-                  <div className="value-desc">Nous optimisons la rentabilité.</div>
+                  <div className="value-title">Temps Réel</div>
+                  <div className="value-desc">Tableau de bord financier en direct.</div>
                 </div>
               </div>
               <div className="value-item">
@@ -431,8 +431,8 @@ export default function Home({ searchParams }: HomeProps) {
                   <MapPin size={18} />
                 </div>
                 <div>
-                  <div className="value-title">Proximité en CI</div>
-                  <div className="value-desc">Une expertise locale à votre service.</div>
+                  <div className="value-title">100% Adapté CI</div>
+                  <div className="value-desc">Conçu pour l'immobilier ivoirien.</div>
                 </div>
               </div>
             </div>
@@ -447,16 +447,16 @@ export default function Home({ searchParams }: HomeProps) {
         <div className="container about-grid">
           <div className="animate-slide-in-left">
             <span className="section-label" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
-              <Sparkles size={14} className="text-orange" /> À PROPOS DE VENANCE IMO.CI
+              <Sparkles size={14} className="text-orange" /> FINI LES IMPAYÉS ET LE PAPIER
             </span>
             <h2 style={{ fontSize: 'var(--text-4xl)', fontWeight: '800', margin: 'var(--space-3) 0 var(--space-6) 0', color: 'var(--gray-900)' }}>
-              Votre partenaire immobilier de <span style={{ color: 'var(--orange)' }}>confiance</span>{" "}en Côte d&apos;Ivoire
+              La fin du stress pour les <span style={{ color: 'var(--orange)' }}>gestionnaires</span>{" "}immobiliers
             </h2>
             <p style={{ color: 'var(--gray-600)', marginBottom: 'var(--space-4)', fontSize: 'var(--text-base)', lineHeight: 1.65 }}>
-              VENANCE IMO.CI accompagne les propriétaires, investisseurs et entreprises dans la gestion efficace de leurs biens immobiliers.
+              <strong>Avant Veco IA :</strong> Vous courriez après les locataires pour les loyers, vous perdiez du temps à écrire des reçus papier, et les erreurs de comptabilité plombaient votre rentabilité (jusqu'à 20% de pertes !).
             </p>
             <p style={{ color: 'var(--gray-600)', marginBottom: 'var(--space-8)', fontSize: 'var(--text-base)', lineHeight: 1.65 }}>
-              Notre mission : vous offrir des solutions sur-mesure, basées sur l&apos;expertise locale, la rigueur et l&apos;innovation, pour vous permettre de tirer le meilleur de votre patrimoine immobilier.
+              <strong>Avec Veco IA :</strong> Vos loyers sont payés via Mobile Money, vos quittances sont générées automatiquement, vos incidents sont centralisés, et vous suivez la rentabilité de vos biens en temps réel depuis votre téléphone.
             </p>
             <a href="#contact" className="btn btn-green-to-white" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
               En savoir plus sur nous <ArrowRight size={16} />
@@ -487,11 +487,11 @@ export default function Home({ searchParams }: HomeProps) {
       {/* ============================================
          Services Section
          ============================================ */}
-      <section id="services" className="section" style={{ background: 'var(--gray-50)' }}>
+      <section id="features" className="section" style={{ background: 'var(--gray-50)' }}>
         <div className="container" style={{ textAlign: 'center', marginBottom: 'var(--space-16)' }}>
-          <span className="section-label">Nos Services</span>
+          <span className="section-label">Fonctionnalités Clés</span>
           <h2 className="section-title">
-            Une gestion immobilière complète adaptée à <span className="text-orange underline-green">vos besoins</span>
+            Tout ce dont vous avez besoin, dans un seul <span className="text-orange underline-green">logiciel</span>
           </h2>
         </div>
 
@@ -499,28 +499,28 @@ export default function Home({ searchParams }: HomeProps) {
           {/* Card 1 */}
           <div className="service-card">
             <div className="service-icon-wrapper">
-              <Building2 size={24} />
+              <BarChart3 size={24} />
             </div>
-            <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: '700', marginBottom: 'var(--space-2)' }}>Gestion locative</h3>
+            <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: '700', marginBottom: 'var(--space-2)' }}>Tableau de bord financier</h3>
             <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', lineHeight: 1.5, marginBottom: 'var(--space-4)' }}>
-              Recherche de locataires, rédaction de baux, encaissement des loyers et suivi.
+              Suivi des revenus, relances automatiques et taux d'occupation de votre parc immobilier en temps réel.
             </p>
-            <a href="#contact" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: 'var(--text-xs)', fontWeight: '700', color: 'var(--orange)', marginTop: 'auto' }}>
-              En savoir plus <ArrowRight size={12} />
+            <a href="#pricing" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: 'var(--text-xs)', fontWeight: '700', color: 'var(--orange)', marginTop: 'auto' }}>
+              Découvrir les plans <ArrowRight size={12} />
             </a>
           </div>
 
           {/* Card 2 */}
           <div className="service-card">
             <div className="service-icon-wrapper">
-              <Sparkles size={24} />
+              <Smartphone size={24} />
             </div>
-            <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: '700', marginBottom: 'var(--space-2)' }}>Gestion technique</h3>
+            <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: '700', marginBottom: 'var(--space-2)' }}>Paiement Mobile Money</h3>
             <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', lineHeight: 1.5, marginBottom: 'var(--space-4)' }}>
-              Entretien, réparations et suivi des travaux pour préserver vos biens.
+              Intégration native PayDunya. Vos locataires paient avec Orange, MTN, Wave sans se déplacer.
             </p>
-            <a href="#contact" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: 'var(--text-xs)', fontWeight: '700', color: 'var(--orange)', marginTop: 'auto' }}>
-              En savoir plus <ArrowRight size={12} />
+            <a href="#pricing" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: 'var(--text-xs)', fontWeight: '700', color: 'var(--orange)', marginTop: 'auto' }}>
+              Découvrir les plans <ArrowRight size={12} />
             </a>
           </div>
 
@@ -529,9 +529,9 @@ export default function Home({ searchParams }: HomeProps) {
             <div className="service-icon-wrapper">
               <FileText size={24} />
             </div>
-            <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: '700', marginBottom: 'var(--space-2)' }}>Gestion administrative</h3>
+            <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: '700', marginBottom: 'var(--space-2)' }}>Quittances automatiques</h3>
             <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', lineHeight: 1.5, marginBottom: 'var(--space-4)' }}>
-              Gestion des contrats, documents légaux et relations avec les administrations.
+              Fini les carnets à souche. À chaque paiement, une quittance dématérialisée est générée et envoyée.
             </p>
             <a href="#contact" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: 'var(--text-xs)', fontWeight: '700', color: 'var(--orange)', marginTop: 'auto' }}>
               En savoir plus <ArrowRight size={12} />
@@ -541,25 +541,25 @@ export default function Home({ searchParams }: HomeProps) {
           {/* Card 4 */}
           <div className="service-card">
             <div className="service-icon-wrapper">
-              <BarChart3 size={24} />
+              <Sparkles size={24} />
             </div>
-            <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: '700', marginBottom: 'var(--space-2)' }}>Gestion financière</h3>
+            <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: '700', marginBottom: 'var(--space-2)' }}>Tickets d'incidents</h3>
             <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', lineHeight: 1.5, marginBottom: 'var(--space-4)' }}>
-              Suivi des revenus et dépenses, reportings réguliers et transparents.
+              Les locataires peuvent signaler une fuite ou une panne directement depuis l'application avec photos.
             </p>
-            <a href="#contact" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: 'var(--text-xs)', fontWeight: '700', color: 'var(--orange)', marginTop: 'auto' }}>
-              En savoir plus <ArrowRight size={12} />
+            <a href="#pricing" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: 'var(--text-xs)', fontWeight: '700', color: 'var(--orange)', marginTop: 'auto' }}>
+              Découvrir les plans <ArrowRight size={12} />
             </a>
           </div>
 
           {/* Card 5 */}
           <div className="service-card">
             <div className="service-icon-wrapper">
-              <TrendingUp size={24} />
+              <Users size={24} />
             </div>
-            <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: '700', marginBottom: 'var(--space-2)' }}>Conseil & valorisation</h3>
+            <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: '700', marginBottom: 'var(--space-2)' }}>Portail Locataire & Propriétaire</h3>
             <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-600)', lineHeight: 1.5, marginBottom: 'var(--space-4)' }}>
-              Stratégies pour améliorer la valeur et la rentabilité de votre patrimoine.
+              Chaque acteur a son espace personnalisé pour une transparence et une confiance maximales.
             </p>
             <a href="#contact" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: 'var(--text-xs)', fontWeight: '700', color: 'var(--orange)', marginTop: 'auto' }}>
               En savoir plus <ArrowRight size={12} />
