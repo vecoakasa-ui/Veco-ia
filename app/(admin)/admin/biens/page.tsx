@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { db } from "@/lib/store";
 import { Property, PropertyStatus } from "@/lib/types";
 import { 
@@ -26,41 +26,6 @@ export default function AdminBiensPage() {
   const [modalType, setModalType] = useState<ModalType>(null);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Sync scroll for top scrollbar
-  const topScrollRef = useRef<HTMLDivElement>(null);
-  const bottomScrollRef = useRef<HTMLDivElement>(null);
-  const [tableWidth, setTableWidth] = useState(0);
-
-  useEffect(() => {
-    if (bottomScrollRef.current) {
-      const table = bottomScrollRef.current.querySelector('table');
-      if (table) {
-        setTableWidth(table.offsetWidth);
-        if (typeof ResizeObserver !== 'undefined') {
-          const ro = new ResizeObserver(entries => {
-            for (let entry of entries) {
-              setTableWidth((entry.target as HTMLElement).offsetWidth);
-            }
-          });
-          ro.observe(table);
-          return () => ro.disconnect();
-        }
-      }
-    }
-  }, [filteredProperties, isLoading]);
-
-  const handleTopScroll = () => {
-    if (bottomScrollRef.current && topScrollRef.current) {
-      bottomScrollRef.current.scrollLeft = topScrollRef.current.scrollLeft;
-    }
-  };
-
-  const handleBottomScroll = () => {
-    if (topScrollRef.current && bottomScrollRef.current) {
-      topScrollRef.current.scrollLeft = bottomScrollRef.current.scrollLeft;
-    }
-  };
 
   useEffect(() => {
     async function fetchProperties() {
@@ -183,17 +148,7 @@ export default function AdminBiensPage() {
       {/* Tableau des biens */}
       <div className="card" style={{ overflow: "hidden", background: "#FFFFFF", borderRadius: "12px", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05)", padding: 0 }}>
         
-        {/* Barre de défilement supérieure */}
-        <div 
-          ref={topScrollRef} 
-          onScroll={handleTopScroll}
-          style={{ overflowX: "auto", overflowY: "hidden", height: "12px", background: "#f8fafc", borderBottom: "1px solid #e2e8f0" }}
-          className="top-scrollbar"
-        >
-          <div style={{ width: tableWidth, height: "1px" }}></div>
-        </div>
-
-        <div ref={bottomScrollRef} onScroll={handleBottomScroll} style={{ overflowX: "auto" }}>
+        <div style={{ overflowX: "auto", overflowY: "auto", maxHeight: "calc(100vh - 250px)" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: "900px" }}>
             <thead>
               <tr>
@@ -355,20 +310,6 @@ export default function AdminBiensPage() {
       )}
 
       <style jsx global>{`
-        .top-scrollbar::-webkit-scrollbar {
-          height: 8px;
-        }
-        .top-scrollbar::-webkit-scrollbar-track {
-          background: #f8fafc;
-        }
-        .top-scrollbar::-webkit-scrollbar-thumb {
-          background: #cbd5e1;
-          border-radius: 4px;
-        }
-        .top-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: #94a3b8;
-        }
-
         .table-row {
           transition: background 0.2s;
         }
@@ -504,6 +445,9 @@ const thStyle = {
   textTransform: "uppercase" as const,
   letterSpacing: "0.5px",
   borderBottom: "1px solid #e2e8f0",
+  position: "sticky" as const,
+  top: 0,
+  zIndex: 10,
 };
 
 const tdStyle = {

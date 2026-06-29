@@ -247,6 +247,9 @@ export default function AdminDashboardPage() {
           font-size: 13px;
           text-transform: uppercase;
           border-bottom: 1px solid #e2e8f0;
+          position: sticky;
+          top: 0;
+          z-index: 10;
         }
         
         .detail-table td {
@@ -273,7 +276,7 @@ export default function AdminDashboardPage() {
               ) : modalData.length === 0 ? (
                 <div style={{ padding: "40px", textAlign: "center", color: "#64748b" }}>Aucune donnée disponible.</div>
               ) : (
-                <div style={{ overflowX: "auto" }}>
+                <div style={{ overflowX: "auto", overflowY: "auto", maxHeight: "calc(100vh - 250px)" }}>
                   <table className="detail-table">
                     <thead>
                       <tr>

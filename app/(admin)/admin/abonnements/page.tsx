@@ -130,7 +130,7 @@ export default function AbonnementsPage() {
         {isLoading ? (
           <div style={{ padding: "40px", textAlign: "center", color: "var(--gray-500)" }}>Chargement des données...</div>
         ) : (
-          <div style={{ overflowX: "auto" }}>
+          <div style={{ overflowX: "auto", overflowY: "auto", maxHeight: "calc(100vh - 250px)" }}>
             <table className="admin-table">
               <thead>
                 <tr>
@@ -320,6 +320,9 @@ export default function AbonnementsPage() {
           letter-spacing: 0.5px;
           border-bottom: 1px solid #e2e8f0;
           background: #ffffff;
+          position: sticky;
+          top: 0;
+          z-index: 10;
         }
         .admin-table td {
           padding: 16px 24px;

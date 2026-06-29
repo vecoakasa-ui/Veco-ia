@@ -170,7 +170,7 @@ export default function AdminUsersPage() {
 
       {/* Tableau des utilisateurs */}
       <div className="card" style={{ overflow: "hidden", background: "#FFFFFF", borderRadius: "12px", boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.05)" }}>
-        <div style={{ overflowX: "auto" }}>
+        <div style={{ overflowX: "auto", overflowY: "auto", maxHeight: "calc(100vh - 250px)" }}>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
@@ -602,6 +602,9 @@ const thStyle = {
   textTransform: "uppercase" as const,
   letterSpacing: "0.5px",
   borderBottom: "1px solid #e2e8f0",
+  position: "sticky" as const,
+  top: 0,
+  zIndex: 10,
 };
 
 const tdStyle = {
