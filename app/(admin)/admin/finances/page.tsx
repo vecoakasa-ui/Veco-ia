@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 
 type TabType = "payments" | "expenses";
-type ModalType = "Détails" | "Changer Statut" | null;
+type ModalType = "Détails" | "Changer Statut" | "Annuler Paiement" | null;
 
 export default function AdminFinancesPage() {
   const [activeTab, setActiveTab] = useState<TabType>("payments");
@@ -101,8 +101,8 @@ export default function AdminFinancesPage() {
     setIsSubmitting(true);
 
     try {
-      if (modalType === "Changer Statut") {
-        const newStatus = selectedPayment.status === "pending" ? "paid" : "pending";
+      if (modalType === "Changer Statut" || modalType === "Annuler Paiement") {
+        const newStatus = modalType === "Changer Statut" ? "paid" : "pending";
         const updatedPayment = { ...selectedPayment, status: newStatus as any };
         await db.updatePayment(updatedPayment);
 
@@ -317,6 +317,11 @@ export default function AdminFinancesPage() {
                               <CheckCircle size={16} />
                             </button>
                           )}
+                          {payment.status === 'paid' && (
+                            <button className="action-btn" title="Annuler la confirmation" onClick={() => openPaymentModal("Annuler Paiement", payment)}>
+                              <X size={16} />
+                            </button>
+                          )}
                         </div>
                       </td>
                     </tr>
@@ -371,7 +376,7 @@ export default function AdminFinancesPage() {
             <button className="modal-close" onClick={closeModal}><X size={20} /></button>
             
             <h3 style={{ margin: "0 0 20px 0", color: "#0f172a", fontSize: "18px" }}>
-              {modalType === "Détails" ? (selectedPayment ? "Détails du Paiement" : "Détails de la Dépense") : "Confirmation de Statut"}
+              {modalType === "Détails" ? (selectedPayment ? "Détails du Paiement" : "Détails de la Dépense") : modalType === "Changer Statut" ? "Confirmation de Statut" : "Annulation de Paiement"}
             </h3>
 
             {modalType === "Détails" && selectedPayment && (
@@ -445,17 +450,26 @@ export default function AdminFinancesPage() {
               </div>
             )}
 
+            {modalType === "Annuler Paiement" && selectedPayment && (
+              <div style={{ textAlign: "center", padding: "20px 0" }}>
+                <X size={48} color="#ef4444" style={{ marginBottom: "16px" }} />
+                <p style={{ margin: 0, color: "#334155" }}>
+                  Voulez-vous vraiment retirer ou annuler la confirmation de ce paiement de <strong>{formatMoney(selectedPayment.total)}</strong> ? Il repassera en attente.
+                </p>
+              </div>
+            )}
+
             <div style={{ display: "flex", gap: "12px", marginTop: "24px", justifyContent: "flex-end" }}>
               <button className="btn-secondary" onClick={closeModal} disabled={isSubmitting}>
                 Fermer
               </button>
-              {modalType === "Changer Statut" && (
+              {(modalType === "Changer Statut" || modalType === "Annuler Paiement") && (
                 <button 
-                  className="btn-primary" 
+                  className={`btn-primary ${modalType === "Annuler Paiement" ? "btn-danger" : ""}`} 
                   onClick={handleModalSubmit}
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "En cours..." : "Confirmer le paiement"}
+                  {isSubmitting ? "En cours..." : modalType === "Changer Statut" ? "Confirmer le paiement" : "Retirer le paiement"}
                 </button>
               )}
             </div>
