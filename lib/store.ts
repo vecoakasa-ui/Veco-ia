@@ -1,6 +1,6 @@
 "use client";
 
-import { Property, Tenant, Payment, Lease, Incident, Profile, DashboardStats, PaymentStatus, PaymentMethod, Landlord, Expense } from "./types";
+import { Property, Tenant, Payment, Lease, Incident, Profile, DashboardStats, PaymentStatus, PaymentMethod, Landlord, Expense, SubscriptionRecord } from "./types";
 import { generateId } from "./utils";
 import { supabase, isSupabaseConfigured } from "./supabase";
 
@@ -1187,5 +1187,68 @@ export const db = {
       }
     }
     return await db.getIncidents();
+  },
+
+  // Mock function for subscriptions
+  getAllSubscriptions: async (): Promise<SubscriptionRecord[]> => {
+    // In a real app, this would fetch from a `subscriptions` table.
+    // Here we generate mock data based on landlords and profiles for demonstration.
+    return [
+      {
+        id: "sub-1",
+        profile_id: "owner-1",
+        plan: "pro",
+        status: "active",
+        amount: 15000,
+        next_billing_date: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000).toISOString(),
+        last_payment_date: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+        profile: {
+          full_name: "Jean-Paul Bédié",
+          email: "jpbedie@mail.com",
+          avatar_url: null,
+        }
+      },
+      {
+        id: "sub-2",
+        profile_id: "owner-2",
+        plan: "business",
+        status: "late",
+        amount: 30000,
+        next_billing_date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+        last_payment_date: new Date(Date.now() - 35 * 24 * 60 * 60 * 1000).toISOString(),
+        profile: {
+          full_name: "Marie Koné",
+          email: "mariek@mail.com",
+          avatar_url: null,
+        }
+      },
+      {
+        id: "sub-3",
+        profile_id: "owner-3",
+        plan: "free",
+        status: "active",
+        amount: 0,
+        next_billing_date: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+        profile: {
+          full_name: "Koffi Kouassi",
+          email: "koffi.kouassi@mail.com",
+          avatar_url: null,
+        }
+      },
+      {
+        id: "sub-4",
+        profile_id: "owner-4",
+        plan: "pro",
+        status: "suspended",
+        amount: 15000,
+        next_billing_date: new Date(Date.now() - 40 * 24 * 60 * 60 * 1000).toISOString(),
+        last_payment_date: new Date(Date.now() - 70 * 24 * 60 * 60 * 1000).toISOString(),
+        profile: {
+          full_name: "Awa Diop",
+          email: "awa.diop@mail.com",
+          avatar_url: null,
+        }
+      }
+    ];
   }
 };

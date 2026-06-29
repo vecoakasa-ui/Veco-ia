@@ -15,6 +15,24 @@ export interface Profile {
   subscription_plan: SubscriptionPlan;
   is_suspended?: boolean;
   created_at: string;
+  next_billing_date?: string; // Added for SaaS subscriptions
+}
+
+export type SubStatus = 'active' | 'late' | 'suspended';
+
+export interface SubscriptionRecord {
+  id: string;
+  profile_id: string;
+  plan: SubscriptionPlan;
+  status: SubStatus;
+  amount: number;
+  next_billing_date: string;
+  last_payment_date?: string;
+  profile?: {
+    full_name: string;
+    email: string;
+    avatar_url: string | null;
+  };
 }
 
 export interface Landlord {
