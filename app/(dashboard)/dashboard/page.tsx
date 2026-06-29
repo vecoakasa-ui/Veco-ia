@@ -20,12 +20,14 @@ import { Payment } from "@/lib/types";
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<import("@/lib/types").DashboardStats>({
     total_properties: 0,
     total_tenants: 0,
     total_revenue: 0,
     late_payments: 0,
-    occupancy_rate: 0
+    occupancy_rate: 0,
+    total_landlords: 0,
+    total_leases: 0
   });
   const [recentPayments, setRecentPayments] = useState<Payment[]>([]);
   const [upcomingPayments, setUpcomingPayments] = useState<Payment[]>([]);
