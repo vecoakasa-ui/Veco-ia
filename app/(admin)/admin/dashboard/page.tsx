@@ -121,7 +121,7 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "var(--space-6)", marginTop: "var(--space-4)" }}>
+      <div className="dashboard-bottom-grid" style={{ gap: "var(--space-6)", marginTop: "var(--space-4)" }}>
         {/* Placeholder for a chart */}
         <div className="card" style={{ minHeight: "300px" }}>
           <h3 style={{ fontSize: "var(--text-md)", fontWeight: "700", marginBottom: "var(--space-4)", display: "flex", alignItems: "center", gap: "8px" }}>
@@ -160,6 +160,18 @@ export default function AdminDashboardPage() {
         .stat-card:hover {
           transform: translateY(-4px);
           box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dashboard-bottom-grid {
+          display: flex;
+          flex-direction: column;
+        }
+        
+        @media (min-width: 992px) {
+          .dashboard-bottom-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+          }
         }
         
         .modal-overlay {
