@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { db } from "@/lib/store";
-import { Users, Building, CreditCard, Activity, BarChart3, TrendingUp, ShieldAlert, X } from "lucide-react";
+import { Users, Building, CreditCard, Activity, BarChart3, ShieldAlert, X } from "lucide-react";
 import { DashboardStats } from "@/lib/types";
 
 export default function AdminDashboardPage() {
@@ -11,6 +11,7 @@ export default function AdminDashboardPage() {
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [modalData, setModalData] = useState<any[]>([]);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [modalType, setModalType] = useState<string>("");

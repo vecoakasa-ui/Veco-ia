@@ -15,9 +15,7 @@ import {
   Eye,
   Download,
   FileText,
-  Video,
-  Loader2,
-  Play
+  Loader2
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Lease } from "@/lib/types";

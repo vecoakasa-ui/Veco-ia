@@ -1,3 +1,4 @@
+/* eslint-disable */
 const fs = require('fs');
 let code = fs.readFileSync('lib/store.ts', 'utf8');
 

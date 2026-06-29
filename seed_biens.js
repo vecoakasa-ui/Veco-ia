@@ -51,6 +51,7 @@ async function seed() {
   }
 
   console.log('Inserting 10 biens...');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data, error } = await supabase
     .from('properties')
     .insert(dummyBiens);

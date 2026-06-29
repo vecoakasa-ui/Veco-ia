@@ -26,14 +26,14 @@ export async function proxy(req: NextRequest) {
           return req.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => req.cookies.set(name, value));
+          cookiesToSet.forEach(({ name, value }) => req.cookies.set(name, value));
           res = NextResponse.next({
             request: {
               headers: req.headers,
             },
           });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            res.cookies.set(name, value, options)
+          cookiesToSet.forEach(({ name, value, options: cookieOptions }) =>
+            res.cookies.set(name, value, cookieOptions)
           );
         },
       },

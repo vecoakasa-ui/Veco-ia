@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { Download, Search, X, Eye, FileText } from "lucide-react";
 import { db } from "@/lib/store";
 import { Payment } from "@/lib/types";
@@ -10,7 +10,6 @@ export default function QuittancesPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [search, setSearch] = useState("");
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
-  const receiptRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Only get paid payments to generate quittances
@@ -27,8 +26,6 @@ export default function QuittancesPage() {
   );
 
   const handleDownloadPDF = async (payment: Payment) => {
-    // Dynamic import to avoid Next.js SSR issues with html2pdf
-    const html2pdf = (await import("html2pdf.js")).default;
     
     // We need to render the receipt HTML temporarily if not in preview modal,
     // but the easiest way is to use the receiptRef if it's already open.

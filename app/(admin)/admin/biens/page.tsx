@@ -74,7 +74,7 @@ export default function AdminBiensPage() {
     setIsSubmitting(true);
 
     try {
-      let updatedProperty = { ...selectedProperty };
+      const updatedProperty = { ...selectedProperty };
 
       if (modalType === "Suspendre") {
         // En vrai, on changerait le status ou un flag 'is_suspended'
@@ -112,7 +112,8 @@ export default function AdminBiensPage() {
   };
 
   return (
-    <div className="animate-fade-in" style={{ padding: "var(--space-6)" }}>
+    <>
+      <div className="animate-fade-in" style={{ padding: "var(--space-6)" }}>
       <div className="page-header" style={{ marginBottom: "var(--space-6)" }}>
         <div>
           <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", margin: 0 }}>Parc Immobilier Global</p>
@@ -223,6 +224,7 @@ export default function AdminBiensPage() {
           </table>
         </div>
       </div>
+    </div>
 
       {/* Modal / Popup pour les actions */}
       {modalType && selectedProperty && (
@@ -427,7 +429,7 @@ export default function AdminBiensPage() {
           color: #0f172a;
         }
       `}</style>
-    </div>
+    </>
   );
 }
 

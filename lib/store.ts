@@ -61,7 +61,7 @@ interface DBPaymentRow {
 // INITIAL MOCK DATA
 // ============================================
 
-const DEFAULT_EXPENSES: Expense[] = [
+export const DEFAULT_EXPENSES: Expense[] = [
   {
     id: "exp-1",
     owner_id: "owner-1",
@@ -86,7 +86,7 @@ const DEFAULT_EXPENSES: Expense[] = [
   }
 ];
 
-const DEFAULT_PROFILE: Profile = {
+export const DEFAULT_PROFILE: Profile = {
   id: "owner-1",
   full_name: "Venance",
   email: "venance@venanceimo.com",
@@ -97,7 +97,7 @@ const DEFAULT_PROFILE: Profile = {
   created_at: new Date().toISOString(),
 };
 
-const DEFAULT_LANDLORDS: Landlord[] = [
+export const DEFAULT_LANDLORDS: Landlord[] = [
   {
     id: "landlord-1",
     owner_id: "owner-1",
@@ -120,7 +120,7 @@ const DEFAULT_LANDLORDS: Landlord[] = [
   }
 ];
 
-const DEFAULT_PROPERTIES: Property[] = [
+export const DEFAULT_PROPERTIES: Property[] = [
   {
     id: "prop-1",
     owner_id: "owner-1",
@@ -203,7 +203,7 @@ const DEFAULT_PROPERTIES: Property[] = [
   }
 ];
 
-const DEFAULT_TENANTS: Tenant[] = [
+export const DEFAULT_TENANTS: Tenant[] = [
   {
     id: "tenant-1",
     profile_id: "tp-1",
@@ -236,7 +236,7 @@ const DEFAULT_TENANTS: Tenant[] = [
   }
 ];
 
-const DEFAULT_PAYMENTS: Payment[] = [
+export const DEFAULT_PAYMENTS: Payment[] = [
   {
     id: "pay-1",
     tenant_id: "tenant-1",
@@ -334,7 +334,7 @@ const DEFAULT_PAYMENTS: Payment[] = [
   }
 ];
 
-const DEFAULT_LEASES: Lease[] = [
+export const DEFAULT_LEASES: Lease[] = [
   {
     id: "lease-1",
     tenant_id: "tenant-1",
@@ -372,7 +372,7 @@ const DEFAULT_LEASES: Lease[] = [
   }
 ];
 
-const DEFAULT_INCIDENTS: Incident[] = [
+export const DEFAULT_INCIDENTS: Incident[] = [
   {
     id: "inc-1",
     tenant_id: "tenant-1",
@@ -432,6 +432,7 @@ export const getOwnerId = async (): Promise<string> => {
 };
 
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const checkAuthError = (err: any) => {
   if (err && (err.code === 'PGRST303' || (err.message && err.message.includes('JWT expired')))) {
     console.error('Session expirée, déconnexion forcée...');
@@ -618,7 +619,7 @@ export const db = {
   },
   updateProperty: async (property: Property): Promise<void> => {
     // Si l'adresse a changé et qu'on n'a pas mis à jour manuellement les coordonnées
-    let updatedProperty = { ...property };
+    const updatedProperty = { ...property };
     
     // On pourrait détecter si l'adresse a changé, mais pour faire simple
     // si lat et lng ne sont pas corrects ou ont besoin d'être actualisés :
@@ -1148,10 +1149,14 @@ export const db = {
         return {
           total_properties,
           total_tenants: ten.data?.length || 0,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           total_revenue: payments.filter((p: any) => p.status === "paid").reduce((sum: number, p: any) => sum + p.total, 0),
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           late_payments: payments.filter((p: any) => p.status === "late").length,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           occupancy_rate: total_properties > 0 ? Math.round((properties.filter((p: any) => p.status === "occupied").length / total_properties) * 100) : 0,
           total_landlords: lands.data?.length || 0,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           active_admins: profs.data?.filter((p: any) => p.role === "admin").length || 0
         };
       } catch (err) {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AlertTriangle, Plus, Search, CheckCircle, X, Camera, Loader2, Image as ImageIcon } from "lucide-react";
+import { AlertTriangle, Plus, Search, CheckCircle, X, Loader2, Image as ImageIcon } from "lucide-react";
 import { db } from "@/lib/store";
 import { Incident, Property, Tenant, IncidentPriority, IncidentStatus } from "@/lib/types";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
@@ -108,7 +108,6 @@ export default function IncidentsPage() {
       const cost = Number(repairCost);
       if (cost > 0) {
         const p = properties[showResolveModal.property_id];
-        const t = tenants[showResolveModal.tenant_id];
         await db.addExpense({
           property_id: showResolveModal.property_id,
           landlord_id: p?.landlord_id || undefined,

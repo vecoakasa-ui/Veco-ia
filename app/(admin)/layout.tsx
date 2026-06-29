@@ -40,7 +40,7 @@ export default function AdminLayout({
           setIsAuthorized(false);
           router.push("/dashboard"); // Redirection des intrus
         }
-      } catch (err) {
+      } catch {
         setIsAuthorized(false);
         router.push("/login");
       }

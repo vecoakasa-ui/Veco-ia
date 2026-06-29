@@ -84,7 +84,7 @@ export default function AdminUsersPage() {
     setIsSubmitting(true);
 
     try {
-      let updatedUser = { ...selectedUser };
+      const updatedUser = { ...selectedUser };
 
       if (modalType === "Modifier") {
         updatedUser.full_name = editFormData.full_name;
@@ -135,7 +135,8 @@ export default function AdminUsersPage() {
   };
 
   return (
-    <div className="animate-fade-in" style={{ padding: "var(--space-6)" }}>
+    <>
+      <div className="animate-fade-in" style={{ padding: "var(--space-6)" }}>
       <div className="page-header" style={{ marginBottom: "var(--space-6)" }}>
         <div>
           <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", margin: 0 }}>Gestion des Accès</p>
@@ -252,6 +253,7 @@ export default function AdminUsersPage() {
           </table>
         </div>
       </div>
+    </div>
 
       {/* Modal / Popup pour les actions */}
       {modalType && selectedUser && (
@@ -521,7 +523,7 @@ export default function AdminUsersPage() {
           color: #0f172a;
         }
       `}</style>
-    </div>
+    </>
   );
 }
 

@@ -27,7 +27,7 @@ fetch(url, {
   console.log('SQL Response:', data);
   
   // Now create the storage bucket
-  /* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable */
 const { createClient } = require('@supabase/supabase-js');
   const sbUrlMatch = env.match(/NEXT_PUBLIC_SUPABASE_URL=(.*)/);
   const sbKeyMatch = env.match(/SUPABASE_SERVICE_ROLE_KEY=(.*)/);
