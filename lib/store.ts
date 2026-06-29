@@ -1085,11 +1085,13 @@ export const db = {
 
   // Calculate stats in real-time
   getStats: async (): Promise<DashboardStats> => {
-    const properties = await db.getProperties();
-    const tenants = await db.getTenants();
-    const payments = await db.getPayments();
-    const landlords = await db.getLandlords();
-    const leases = await db.getLeases();
+    const [properties, tenants, payments, landlords, leases] = await Promise.all([
+      db.getProperties(),
+      db.getTenants(),
+      db.getPayments(),
+      db.getLandlords(),
+      db.getLeases()
+    ]);
 
     const total_properties = properties.length;
     const total_tenants = tenants.length;

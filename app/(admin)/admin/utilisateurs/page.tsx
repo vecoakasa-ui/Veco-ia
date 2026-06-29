@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { db } from "@/lib/store";
 import { Profile, UserRole } from "@/lib/types";
+import { supabase } from "@/lib/supabase";
 import { 
   Search, 
   Edit, 
@@ -31,6 +32,9 @@ export default function AdminUsersPage() {
   // Form State
   const [editFormData, setEditFormData] = useState({ full_name: "", phone: "" });
   const [selectedRole, setSelectedRole] = useState<UserRole>("tenant");
+
+  const [userStats, setUserStats] = useState({ properties: 0, tenants: 0, landlords: 0, leases: 0 });
+  const [loadingUserStats, setLoadingUserStats] = useState(false);
 
   useEffect(() => {
     async function fetchUsers() {
@@ -63,13 +67,27 @@ export default function AdminUsersPage() {
     setFilteredUsers(filtered);
   }, [searchTerm, users]);
 
-  const openModal = (type: ModalType, user: Profile) => {
+  const openModal = async (type: ModalType, user: Profile) => {
     setSelectedUser(user);
     setModalType(type);
     if (type === "Modifier") {
       setEditFormData({ full_name: user.full_name || "", phone: user.phone || "" });
     } else if (type === "Changer Rôle") {
       setSelectedRole(user.role);
+    } else if (type === "Voir Stats") {
+      setLoadingUserStats(true);
+      const { data: p } = await supabase.from('properties').select('id').eq('owner_id', user.id);
+      const { data: t } = await supabase.from('tenants').select('id').eq('owner_id', user.id);
+      const { data: l } = await supabase.from('landlords').select('id').eq('owner_id', user.id);
+      const { data: le } = await supabase.from('leases').select('id').eq('owner_id', user.id);
+      
+      setUserStats({
+        properties: p ? p.length : 0,
+        tenants: t ? t.length : 0,
+        landlords: l ? l.length : 0,
+        leases: le ? le.length : 0,
+      });
+      setLoadingUserStats(false);
     }
   };
 
@@ -332,6 +350,7 @@ export default function AdminUsersPage() {
             )}
 
             {modalType === "Voir Stats" && (
+              <>
               <div className="stats-grid">
                 <div className="stat-box">
                   <span>Inscrit le</span>
@@ -360,6 +379,33 @@ export default function AdminUsersPage() {
                   </strong>
                 </div>
               </div>
+
+              <h4 style={{ margin: "24px 0 12px 0", color: "#0f172a", fontSize: "16px" }}>Ressources gérées</h4>
+              {loadingUserStats ? (
+                <div style={{ textAlign: "center", padding: "20px", color: "var(--gray-500)", fontSize: "14px" }}>
+                  Chargement des statistiques de l'utilisateur...
+                </div>
+              ) : (
+                <div className="stats-grid">
+                  <div className="stat-box">
+                    <span>Biens Immobiliers</span>
+                    <strong style={{ fontSize: "20px", color: "var(--orange)" }}>{userStats.properties}</strong>
+                  </div>
+                  <div className="stat-box">
+                    <span>Locataires Actifs</span>
+                    <strong style={{ fontSize: "20px", color: "var(--primary)" }}>{userStats.tenants}</strong>
+                  </div>
+                  <div className="stat-box">
+                    <span>Propriétaires (Mandats)</span>
+                    <strong style={{ fontSize: "20px", color: "var(--success)" }}>{userStats.landlords}</strong>
+                  </div>
+                  <div className="stat-box">
+                    <span>Contrats de Bail</span>
+                    <strong style={{ fontSize: "20px", color: "#6366f1" }}>{userStats.leases}</strong>
+                  </div>
+                </div>
+              )}
+              </>
             )}
 
             <div style={{ display: "flex", gap: "12px", marginTop: "24px", justifyContent: "flex-end" }}>
