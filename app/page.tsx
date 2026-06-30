@@ -217,7 +217,7 @@ export default function Home({ searchParams }: HomeProps) {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--primary)', color: 'white', padding: '6px', borderRadius: '8px', fontWeight: 'bold' }}>
               <Building2 size={20} className="text-orange" />
             </div>
-            <span style={{ fontSize: 'var(--text-lg)', fontWeight: '900', color: 'var(--primary)', letterSpacing: '-0.02em' }}>
+            <span style={{ fontSize: 'var(--text-lg)', fontWeight: '900', letterSpacing: '-0.02em' }}>
               Vision Immo<span className="text-orange"> 2.0</span>
             </span>
           </Link>
