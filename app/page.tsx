@@ -22,7 +22,8 @@ import {
   X,
   Loader2,
   Smartphone,
-  ArrowUp
+  ArrowUp,
+  Calendar
 } from "lucide-react";
 
 interface HomeProps {
