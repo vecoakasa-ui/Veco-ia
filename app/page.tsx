@@ -335,6 +335,14 @@ export default function Home({ searchParams }: HomeProps) {
             {/* Dotted pattern behind "Solution N°1" */}
             <div style={{ position: 'absolute', top: '-30px', left: '-20px', width: '120px', height: '120px', backgroundImage: 'radial-gradient(var(--gray-400) 2px, transparent 2px)', backgroundSize: '16px 16px', opacity: 0.3, zIndex: -1, borderRadius: '50%' }}></div>
 
+            {/* Faint Phone Mockup Background */}
+            <div style={{ position: 'absolute', top: '-40px', left: '50%', transform: 'translateX(-50%)', opacity: 0.04, zIndex: -1, pointerEvents: 'none', display: 'flex', justifyContent: 'center' }}>
+              <Smartphone size={320} strokeWidth={0.75} color="var(--gray-900)" />
+              <MapPin size={36} style={{ position: 'absolute', top: '25%', left: '35%', color: 'var(--gray-900)' }} />
+              <MapPin size={24} style={{ position: 'absolute', top: '45%', right: '35%', color: 'var(--gray-900)' }} />
+              <MapPin size={48} style={{ position: 'absolute', top: '65%', left: '25%', color: 'var(--gray-900)' }} />
+            </div>
+
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.8)', padding: '6px 14px', borderRadius: 'var(--radius-full)', color: 'var(--gray-900)', fontSize: 'var(--text-xs)', fontWeight: '700', marginBottom: 'var(--space-6)', border: '1px solid rgba(0,0,0,0.05)', boxShadow: 'var(--shadow-sm)' }}>
               <span style={{ display: 'inline-flex', width: '16px', height: '12px', background: 'linear-gradient(to right, #E25822 33.3%, white 33.3%, white 66.6%, #0A3D2A 66.6%)', borderRadius: '1px' }}></span>
               Solution N°1 en Afrique
@@ -349,7 +357,7 @@ export default function Home({ searchParams }: HomeProps) {
             </p>
             
             <div className="hero-buttons" style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
-              <a href="/register" className="btn btn-orange" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', boxShadow: '0 10px 25px -5px rgba(249, 115, 22, 0.4)', transition: 'transform 0.2s, box-shadow 0.2s', display: 'flex', alignItems: 'center', gap: '8px', background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)' }}>
+              <a href="/register" className="btn btn-orange pulse-btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', transition: 'transform 0.2s, box-shadow 0.2s', display: 'flex', alignItems: 'center', gap: '8px', background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', borderRadius: 'var(--radius-lg)' }}>
                 <Calendar size={18} /> Demander une démo
               </a>
               <a href="#features" className="btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', background: 'white', color: 'var(--gray-900)', border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-sm)', transition: 'transform 0.2s, box-shadow 0.2s' }}>
@@ -359,14 +367,14 @@ export default function Home({ searchParams }: HomeProps) {
           </div>
 
           {/* Right Column : Image with animations */}
-          <div className="hero-image-wrapper hide-mobile" style={{ position: 'relative', display: 'flex', justifyContent: 'center', animation: 'float 6s ease-in-out infinite' }}>
+          <div className="hero-image-wrapper" style={{ position: 'relative', display: 'flex', justifyContent: 'center', animation: 'float 6s ease-in-out infinite' }}>
             <img 
               src="/hero-immo-mockup.png" 
               alt="Vision Immo 2.0 Mockup" 
-              style={{ width: '100%', maxWidth: '380px', height: 'auto', filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.25))', borderRadius: '24px' }} 
+              style={{ width: '100%', maxWidth: '380px', height: 'auto', filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.25))', borderRadius: '24px', zIndex: 2, position: 'relative' }} 
             />
             {/* Floating badges for extra animation */}
-            <div style={{ position: 'absolute', top: '10%', left: '-15%', background: 'white', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 5s ease-in-out infinite reverse' }}>
+            <div className="floating-badge badge-left" style={{ position: 'absolute', top: '10%', left: '-15%', background: 'white', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 5s ease-in-out infinite reverse', zIndex: 3 }}>
               <div style={{ background: '#dcfce7', color: '#16a34a', padding: '8px', borderRadius: '50%' }}><Check size={20} /></div>
               <div>
                 <p style={{ margin: 0, fontSize: '12px', color: 'var(--gray-500)', fontWeight: 600 }}>Paiement reçu</p>
@@ -374,7 +382,7 @@ export default function Home({ searchParams }: HomeProps) {
               </div>
             </div>
             
-            <div style={{ position: 'absolute', bottom: '15%', right: '-15%', background: 'white', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 7s ease-in-out infinite' }}>
+            <div className="floating-badge badge-right" style={{ position: 'absolute', bottom: '15%', right: '-15%', background: 'white', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 7s ease-in-out infinite', zIndex: 3 }}>
               <div style={{ background: '#fef3c7', color: '#d97706', padding: '8px', borderRadius: '50%' }}><Sparkles size={20} /></div>
               <div>
                 <p style={{ margin: 0, fontSize: '12px', color: 'var(--gray-500)', fontWeight: 600 }}>Locataire satisfait</p>
@@ -383,25 +391,34 @@ export default function Home({ searchParams }: HomeProps) {
             </div>
 
             {/* Location pins */}
-            <div style={{ position: 'absolute', top: '30%', right: '10%', background: '#16a34a', color: 'white', padding: '6px', borderRadius: '50%', boxShadow: '0 4px 10px rgba(22, 163, 74, 0.4)', animation: 'float 4s ease-in-out infinite', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="floating-pin" style={{ position: 'absolute', top: '30%', right: '5%', background: '#16a34a', color: 'white', padding: '6px', borderRadius: '50%', boxShadow: '0 4px 10px rgba(22, 163, 74, 0.4)', animation: 'float 4s ease-in-out infinite', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 4 }}>
               <MapPin size={16} fill="white" />
             </div>
-            <div style={{ position: 'absolute', bottom: '40%', left: '5%', background: '#f97316', color: 'white', padding: '6px', borderRadius: '50%', boxShadow: '0 4px 10px rgba(249, 115, 22, 0.4)', animation: 'float 5s ease-in-out infinite reverse', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div className="floating-pin" style={{ position: 'absolute', bottom: '35%', left: '0%', background: '#f97316', color: 'white', padding: '6px', borderRadius: '50%', boxShadow: '0 4px 10px rgba(249, 115, 22, 0.4)', animation: 'float 5s ease-in-out infinite reverse', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 4 }}>
               <MapPin size={16} fill="white" />
             </div>
           </div>
         </div>
         
-        {/* CSS for float animation */}
+        {/* CSS for float and mobile responsiveness */}
         <style dangerouslySetInnerHTML={{__html: `
           @keyframes float {
             0% { transform: translateY(0px); }
             50% { transform: translateY(-15px); }
             100% { transform: translateY(0px); }
           }
+          @keyframes pulse-btn-anim {
+            0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.6); }
+            70% { box-shadow: 0 0 0 15px rgba(249, 115, 22, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+          }
+          .pulse-btn {
+            animation: pulse-btn-anim 2s infinite;
+          }
           @media (max-width: 992px) {
             .hero-section .container {
               grid-template-columns: 1fr !important;
+              gap: var(--space-8) !important;
             }
             .hero-content {
               align-items: center !important;
@@ -413,8 +430,38 @@ export default function Home({ searchParams }: HomeProps) {
             .hero-buttons {
               justify-content: center !important;
             }
-            .hide-mobile {
-              display: none !important;
+            .hero-image-wrapper {
+              margin-top: 1rem;
+              padding: 0 1rem;
+            }
+            .hero-image-wrapper img {
+              max-width: 90% !important;
+            }
+            /* Adjust badges so they don't overflow screen horizontally */
+            .badge-left {
+              left: -5% !important;
+              transform: scale(0.85);
+              transform-origin: left center;
+            }
+            .badge-right {
+              right: -5% !important;
+              transform: scale(0.85);
+              transform-origin: right center;
+            }
+            .floating-pin {
+              transform: scale(0.9);
+            }
+          }
+          @media (max-width: 480px) {
+            .badge-left {
+              top: 5% !important;
+              left: 5% !important;
+              transform: scale(0.75);
+            }
+            .badge-right {
+              bottom: 10% !important;
+              right: 5% !important;
+              transform: scale(0.75);
             }
           }
         `}} />
