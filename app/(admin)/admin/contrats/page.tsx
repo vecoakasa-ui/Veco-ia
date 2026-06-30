@@ -6,10 +6,8 @@ import { Lease, Property, Tenant } from "@/lib/types";
 import { 
   Search, 
   Eye,
-  Edit, 
   Ban, 
   CheckCircle,
-  FileText,
   User,
   X
 } from "lucide-react";

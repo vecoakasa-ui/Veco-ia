@@ -95,7 +95,7 @@ export default function AdminIncidentsPage() {
 
         const updatedIncident = { 
           ...selectedIncident, 
-          status: newStatus as any,
+          status: newStatus as "open" | "in_progress" | "resolved" | "closed",
           resolved_at: newStatus === "resolved" ? new Date().toISOString() : selectedIncident.resolved_at
         };
         await db.updateIncident(updatedIncident);

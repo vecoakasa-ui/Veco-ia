@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Save, Shield, CheckCircle2, Moon, Sun, Monitor, User, Camera } from "lucide-react";
+import { Moon, Sun, Monitor, User, Camera } from "lucide-react";
 import { useTheme } from "../../../components/ThemeProvider";
 import { DEFAULT_PROFILE } from "../../../lib/store";
 

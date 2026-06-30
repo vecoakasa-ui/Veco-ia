@@ -8,7 +8,6 @@ import {
   Eye,
   CheckCircle,
   X,
-  CreditCard,
   TrendingDown,
   TrendingUp,
   User,
@@ -103,7 +102,7 @@ export default function AdminFinancesPage() {
     try {
       if (modalType === "Changer Statut" || modalType === "Annuler Paiement") {
         const newStatus = modalType === "Changer Statut" ? "paid" : "pending";
-        const updatedPayment = { ...selectedPayment, status: newStatus as any };
+        const updatedPayment = { ...selectedPayment, status: newStatus as "paid" | "pending" | "late" };
         await db.updatePayment(updatedPayment);
 
         const updatedList = payments.map(p => p.id === updatedPayment.id ? updatedPayment : p);

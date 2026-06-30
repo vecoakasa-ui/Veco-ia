@@ -2,7 +2,7 @@
 
  
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
@@ -13,7 +13,6 @@ import {
   BarChart3,
   Check,
   ArrowRight,
-  TrendingUp,
   Clock,
   Sparkles,
   Phone,
@@ -30,9 +29,7 @@ import {
   Star
 } from "lucide-react";
 
-interface HomeProps {
-  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
-}
+
 
 function HomeContent() {
   const router = useRouter();
