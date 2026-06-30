@@ -93,6 +93,13 @@ export default function DashboardLayout({
     };
   }, [router]);
 
+  // Fermer les menus lors du changement de page
+  useEffect(() => {
+    setShowProfileMenu(false);
+    setShowNotifications(false);
+    setMobileOpen(false);
+  }, [pathname]);
+
   const navigationGroups = [
     {
       groupName: "Gestion",
@@ -505,7 +512,7 @@ export default function DashboardLayout({
                   display: "flex",
                   flexDirection: "column",
                   transformOrigin: "top right"
-                }} className="animate-fade-in">
+                }} className="animate-fade-in dropdown-mobile-fix">
                   <div style={{ padding: "var(--space-3)", borderBottom: "1px solid var(--gray-200)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <h3 style={{ fontSize: "var(--text-sm)", fontWeight: "600", margin: 0, color: "var(--gray-900)" }}>Notifications</h3>
                     <span style={{ fontSize: "11px", color: "var(--primary)", cursor: "pointer", fontWeight: "500" }}>Tout marquer comme lu</span>
@@ -556,7 +563,7 @@ export default function DashboardLayout({
                   zIndex: 50,
                   overflow: "hidden",
                   transformOrigin: "top right"
-                }} className="animate-fade-in">
+                }} className="animate-fade-in dropdown-mobile-fix">
                   {/* Profil Header riche */}
                   <div style={{ padding: "var(--space-4)", borderBottom: "1px solid var(--gray-200)", background: "var(--gray-50)", display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-3)" }}>
                     <div style={{ position: "relative" }}>
@@ -646,6 +653,16 @@ export default function DashboardLayout({
         }
         .hover-bg-danger-lightest:hover {
           background: rgba(239, 68, 68, 0.1) !important;
+        }
+        @media (max-width: 768px) {
+          .dropdown-mobile-fix {
+            position: fixed !important;
+            top: 70px !important;
+            right: 16px !important;
+            left: 16px !important;
+            width: auto !important;
+            max-width: none !important;
+          }
         }
       `}</style>
     </div>
