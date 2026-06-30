@@ -120,7 +120,7 @@ export default function DashboardLayout({
         style={{
           width: "var(--sidebar-width)",
           background: "var(--gray-900)",
-          color: "var(--white)",
+          color: "var(--fixed-white)",
           display: "flex",
           flexDirection: "column",
           position: "fixed",
@@ -137,7 +137,7 @@ export default function DashboardLayout({
             <div className="logo-icon" style={{ background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Building2 size={16} className="text-orange" />
             </div>
-            <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--white)" }}>
+            <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--fixed-white)" }}>
               Vision Immo 2.0
             </span>
           </Link>
@@ -192,7 +192,7 @@ export default function DashboardLayout({
               {profile.full_name ? profile.full_name.substring(0, 2).toUpperCase() : "VI"}
             </div>
             <div style={{ overflow: "hidden" }}>
-              <h5 style={{ fontSize: "var(--text-sm)", fontWeight: "600", color: "var(--white)", margin: 0 }}>{profile.full_name}</h5>
+              <h5 style={{ fontSize: "var(--text-sm)", fontWeight: "600", color: "var(--fixed-white)", margin: 0 }}>{profile.full_name}</h5>
               <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", display: "flex", alignItems: "center", gap: "2px", textTransform: "uppercase" }}>
                 <Sparkles size={10} style={{ color: "var(--warning)" }} /> Plan {profile.subscription_plan}
               </span>
@@ -275,7 +275,7 @@ export default function DashboardLayout({
             style={{
               width: "var(--sidebar-width)",
               background: "var(--gray-900)",
-              color: "var(--white)",
+              color: "var(--fixed-white)",
               height: "100%",
               display: "flex",
               flexDirection: "column",
@@ -293,11 +293,11 @@ export default function DashboardLayout({
                 <div className="logo-icon" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "var(--primary)" }}>
                   <Building2 size={16} className="text-orange" />
                 </div>
-                <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--white)" }}>
+                <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--fixed-white)" }}>
                   Vision Immo 2.0
                 </span>
               </Link>
-              <button onClick={() => setMobileOpen(false)} style={{ color: "var(--white)" }}>
+              <button onClick={() => setMobileOpen(false)} style={{ color: "var(--fixed-white)" }}>
                 <X size={20} />
               </button>
             </div>
@@ -560,6 +560,7 @@ export default function DashboardLayout({
                   
                   {/* Informations détaillées */}
                   <div style={{ padding: "var(--space-3)", borderBottom: "1px solid var(--gray-200)" }}>
+                    <p style={{ fontSize: "11px", fontWeight: "700", color: "var(--gray-400)", textTransform: "uppercase", marginBottom: "var(--space-2)", letterSpacing: "0.05em", marginTop: 0 }}>Informations de connexion</p>
                     <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", fontSize: "var(--text-sm)", color: "var(--gray-600)" }}>
                         <Mail size={14} style={{ color: "var(--gray-400)" }} />
