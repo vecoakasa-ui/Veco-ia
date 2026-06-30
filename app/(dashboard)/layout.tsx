@@ -145,7 +145,7 @@ export default function DashboardLayout({
         className="hide-mobile"
         style={{
           width: "var(--sidebar-width)",
-          background: "var(--gray-900)",
+          background: '#111827',
           color: "var(--fixed-white)",
           display: "flex",
           flexDirection: "column",
@@ -154,11 +154,11 @@ export default function DashboardLayout({
           bottom: 0,
           left: 0,
           zIndex: 40,
-          borderRight: "1px solid var(--gray-800)"
+          borderRight: '1px solid rgba(255,255,255,0.05)'
         }}
       >
         {/* Logo */}
-        <div style={{ height: "var(--topbar-height)", display: "flex", alignItems: "center", padding: "0 var(--space-6)", borderBottom: "1px solid var(--gray-800)" }}>
+        <div style={{ height: "var(--topbar-height)", display: "flex", alignItems: "center", padding: "0 var(--space-6)", borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
           <Link href="/" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", textDecoration: "none" }}>
             <div className="logo-icon" style={{ background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Building2 size={16} className="text-orange" />
@@ -212,7 +212,7 @@ export default function DashboardLayout({
         </nav>
 
         {/* User profile section */}
-        <div style={{ padding: "var(--space-4)", borderTop: "1px solid var(--gray-800)", background: "rgba(0,0,0,0.2)" }}>
+        <div style={{ padding: "var(--space-4)", borderTop: '1px solid rgba(255,255,255,0.05)', background: "rgba(0,0,0,0.2)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", marginBottom: "var(--space-4)" }}>
             <div className="avatar avatar-sm" style={{ background: "var(--primary-lighter)", color: "var(--primary-dark)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}>
               {profile.full_name ? profile.full_name.substring(0, 2).toUpperCase() : "VI"}
@@ -300,7 +300,7 @@ export default function DashboardLayout({
           <aside 
             style={{
               width: "var(--sidebar-width)",
-              background: "var(--gray-900)",
+              background: '#111827',
               color: "var(--fixed-white)",
               height: "100%",
               display: "flex",
@@ -314,7 +314,7 @@ export default function DashboardLayout({
             onClick={(e) => e.stopPropagation()}
           >
             {/* Logo and close */}
-            <div style={{ height: "var(--topbar-height)", display: "flex", alignItems: "center", padding: "0 var(--space-6)", borderBottom: "1px solid var(--gray-800)", justifyContent: 'space-between' }}>
+            <div style={{ height: "var(--topbar-height)", display: "flex", alignItems: "center", padding: "0 var(--space-6)", borderBottom: '1px solid rgba(255,255,255,0.05)', justifyContent: 'space-between' }}>
               <Link href="/" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", textDecoration: "none" }}>
                 <div className="logo-icon" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "var(--primary)" }}>
                   <Building2 size={16} className="text-orange" />
@@ -370,7 +370,7 @@ export default function DashboardLayout({
             </nav>
 
             {/* User section */}
-            <div style={{ padding: "var(--space-4)", borderTop: "1px solid var(--gray-800)", background: "rgba(0,0,0,0.2)" }}>
+            <div style={{ padding: "var(--space-4)", borderTop: '1px solid rgba(255,255,255,0.05)', background: "rgba(0,0,0,0.2)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", marginBottom: "var(--space-4)" }}>
                 <div className="avatar avatar-sm" style={{ background: "var(--primary-lighter)", color: "var(--primary-dark)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}>
                   {profile.full_name ? profile.full_name.substring(0, 2).toUpperCase() : "VI"}

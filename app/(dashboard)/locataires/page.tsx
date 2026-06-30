@@ -367,7 +367,7 @@ export default function LocatairesPage() {
                                 right: 0,
                                 top: (index === filteredTenants.length - 1 && filteredTenants.length > 1) ? "auto" : "100%",
                                 bottom: (index === filteredTenants.length - 1 && filteredTenants.length > 1) ? "100%" : "auto",
-                                background: "white",
+                                background: 'var(--white)',
                                 padding: "var(--space-2)",
                                 minWidth: "160px",
                                 zIndex: 9999,
@@ -449,7 +449,7 @@ export default function LocatairesPage() {
             style={{
               width: "100%",
               maxWidth: "500px",
-              background: "white",
+              background: 'var(--white)',
               padding: "var(--space-6)",
               maxHeight: "90vh",
               overflowY: "auto"
@@ -598,7 +598,7 @@ export default function LocatairesPage() {
         <div 
           style={{ position: "fixed", top: 0, bottom: 0, left: 0, right: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: "var(--space-4)", backdropFilter: "blur(4px)" }}
         >
-          <div className="card" style={{ width: "100%", maxWidth: "400px", background: "white", padding: "var(--space-6)" }}>
+          <div className="card" style={{ width: "100%", maxWidth: "400px", background: 'var(--white)', padding: "var(--space-6)" }}>
             <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--danger)", margin: "0 0 var(--space-2) 0" }}>Confirmer la suppression</h3>
             <p style={{ color: "var(--gray-600)", margin: "0 0 var(--space-6) 0" }}>
               Êtes-vous sûr de vouloir supprimer définitivement ce locataire ? Cette action est irréversible.

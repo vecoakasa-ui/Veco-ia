@@ -329,7 +329,7 @@ export default function CautionsPage() {
                         </div>
                       </div>
                     ) : (
-                      <button className="btn btn-sm btn-ghost" style={{ width: "100%", justifyContent: "center", background: "white", border: "1px dashed var(--gray-300)" }} onClick={() => openInventoryModal(lease, "out")}>
+                      <button className="btn btn-sm btn-ghost" style={{ width: "100%", justifyContent: "center", background: 'var(--white)', border: "1px dashed var(--gray-300)" }} onClick={() => openInventoryModal(lease, "out")}>
                         <Camera size={14} style={{ marginRight: "6px" }} /> Faire l'EDL
                       </button>
                     )}
@@ -509,14 +509,14 @@ export default function CautionsPage() {
               <button className="btn btn-primary" onClick={() => generateEDLPDF(previewEDLLease.lease, previewEDLLease.type)} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <Download size={16} /> Télécharger l'EDL PDF
               </button>
-              <button className="btn btn-outline" onClick={() => setPreviewEDLLease(null)} style={{ background: "white" }}>
+              <button className="btn btn-outline" onClick={() => setPreviewEDLLease(null)} style={{ background: 'var(--white)' }}>
                 <X size={16} /> Fermer
               </button>
             </div>
 
             <div style={{ flex: 1, overflowY: "auto", background: "var(--gray-100)", borderRadius: "8px", display: "flex", justifyContent: "center", padding: "32px 16px" }}>
               
-              <div id={`edl-content-${previewEDLLease.lease.id}-${previewEDLLease.type}`} style={{ background: "white", width: "210mm", minHeight: "297mm", padding: "40px", boxShadow: "0 10px 30px rgba(0,0,0,0.1)", color: "#000", fontFamily: "Arial, sans-serif" }}>
+              <div id={`edl-content-${previewEDLLease.lease.id}-${previewEDLLease.type}`} style={{ background: 'var(--white)', width: "210mm", minHeight: "297mm", padding: "40px", boxShadow: "0 10px 30px rgba(0,0,0,0.1)", color: "#000", fontFamily: "Arial, sans-serif" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "2px solid #f0f0f0", paddingBottom: "20px", marginBottom: "30px" }}>
                   <div>
                     <h1 style={{ fontSize: "24px", fontWeight: "800", color: "#1a1a1a", margin: "0 0 8px 0" }}>
@@ -608,14 +608,14 @@ export default function CautionsPage() {
               <button className="btn btn-primary" onClick={() => generateDepositPDF(previewDepositLease)} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <Download size={16} /> Télécharger le Reçu PDF
               </button>
-              <button className="btn btn-outline" onClick={() => setPreviewDepositLease(null)} style={{ background: "white" }}>
+              <button className="btn btn-outline" onClick={() => setPreviewDepositLease(null)} style={{ background: 'var(--white)' }}>
                 <X size={16} /> Fermer
               </button>
             </div>
 
             <div style={{ flex: 1, overflowY: "auto", background: "var(--gray-100)", borderRadius: "8px", display: "flex", justifyContent: "center", padding: "32px 16px" }}>
               
-              <div id={`deposit-content-${previewDepositLease.id}`} style={{ background: "white", width: "210mm", minHeight: "297mm", padding: "40px", boxShadow: "0 10px 30px rgba(0,0,0,0.1)", color: "#000", fontFamily: "Arial, sans-serif" }}>
+              <div id={`deposit-content-${previewDepositLease.id}`} style={{ background: 'var(--white)', width: "210mm", minHeight: "297mm", padding: "40px", boxShadow: "0 10px 30px rgba(0,0,0,0.1)", color: "#000", fontFamily: "Arial, sans-serif" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "2px solid #f0f0f0", paddingBottom: "20px", marginBottom: "30px" }}>
                   <div>
                     <h1 style={{ fontSize: "24px", fontWeight: "800", color: "#1a1a1a", margin: "0 0 8px 0" }}>

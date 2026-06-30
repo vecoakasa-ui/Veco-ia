@@ -436,7 +436,7 @@ export default function BiensPage() {
             style={{
               width: "100%",
               maxWidth: "500px",
-              background: "white",
+              background: 'var(--white)',
               padding: "var(--space-6)",
               maxHeight: "90vh",
               overflowY: "auto"
@@ -639,7 +639,7 @@ export default function BiensPage() {
             style={{
               width: "100%",
               maxWidth: "500px",
-              background: "white",
+              background: 'var(--white)',
               padding: "var(--space-6)",
               maxHeight: "90vh",
               overflowY: "auto"
@@ -824,7 +824,7 @@ export default function BiensPage() {
         >
           <div 
             className="card animate-scale-in"
-            style={{ width: "100%", maxWidth: "400px", background: "white", padding: "var(--space-6)", textAlign: "center" }}
+            style={{ width: "100%", maxWidth: "400px", background: 'var(--white)', padding: "var(--space-6)", textAlign: "center" }}
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: "flex", justifyContent: "center", marginBottom: "var(--space-4)" }}>

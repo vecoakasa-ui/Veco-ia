@@ -176,7 +176,7 @@ export default function ContratsPage() {
             style={{
               width: "100%",
               maxWidth: "600px",
-              background: "white",
+              background: 'var(--white)',
               padding: "var(--space-6)",
               maxHeight: "90vh",
               overflowY: "auto"
@@ -253,7 +253,7 @@ export default function ContratsPage() {
           }}
           className="animate-fade-in"
         >
-          <div className="card animate-scale-in" style={{ width: "100%", maxWidth: "500px", background: "white", padding: "var(--space-6)", maxHeight: "90vh", overflowY: "auto" }}>
+          <div className="card animate-scale-in" style={{ width: "100%", maxWidth: "500px", background: 'var(--white)', padding: "var(--space-6)", maxHeight: "90vh", overflowY: "auto" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-6)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
                 <Plus size={24} style={{ color: "var(--primary)" }} />

@@ -31,7 +31,7 @@ export default function LocataireLayout({
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", background: "var(--gray-50)" }}>
       {/* Top Navbar */}
       <header style={{ 
-        background: "white", 
+        background: 'var(--white)', 
         borderBottom: "1px solid var(--gray-200)", 
         padding: "var(--space-4) var(--space-6)",
         position: "sticky",
@@ -62,7 +62,7 @@ export default function LocataireLayout({
         bottom: 0, 
         left: 0, 
         right: 0, 
-        background: "white", 
+        background: 'var(--white)', 
         borderTop: "1px solid var(--gray-200)",
         display: "flex",
         justifyContent: "space-around",

@@ -179,7 +179,7 @@ export default function TenantPaymentPage({ params }: PageProps) {
   return (
     <div style={{ minHeight: "100vh", background: "var(--gray-50)", display: "flex", flexDirection: "column" }}>
       {/* Top Navbar */}
-      <header style={{ height: "64px", background: "white", borderBottom: "1px solid var(--gray-200)", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 var(--space-6)" }}>
+      <header style={{ height: "64px", background: 'var(--white)', borderBottom: "1px solid var(--gray-200)", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 var(--space-6)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
           <div className="logo-icon" style={{ background: "var(--primary)" }}>V</div>
           <span style={{ fontSize: "var(--text-md)", fontWeight: "800", color: "var(--gray-900)" }}>Vision Immo 2.0</span>
@@ -409,7 +409,7 @@ export default function TenantPaymentPage({ params }: PageProps) {
               {/* QR Code Option */}
               <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-3)", background: "var(--gray-50)", padding: "var(--space-4)", borderRadius: "var(--radius-lg)", border: "1px dashed var(--gray-300)", marginBottom: "var(--space-4)" }}>
                 <span style={{ fontSize: "var(--text-xs)", fontWeight: "700", color: "var(--primary-dark)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Option 1 : Paiement Sécurisé par Code QR</span>
-                <div style={{ padding: "8px", background: "white", borderRadius: "8px", boxShadow: "var(--shadow-sm)" }}>
+                <div style={{ padding: "8px", background: 'var(--white)', borderRadius: "8px", boxShadow: "var(--shadow-sm)" }}>
                   { }
                   <img 
                     src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&color=111827&data=paydunya_${selectedOperator}_${payment.id}_${payment.total}`} 
@@ -423,7 +423,7 @@ export default function TenantPaymentPage({ params }: PageProps) {
                 <button 
                   type="button" 
                   className="btn btn-outline btn-sm" 
-                  style={{ width: "100%", background: "white", borderColor: "var(--success)", color: "var(--success-dark)" }}
+                  style={{ width: "100%", background: 'var(--white)', borderColor: "var(--success)", color: "var(--success-dark)" }}
                   onClick={() => setSimStep('otp_verification')}
                 >
                   <Check size={12} /> J&apos;ai scanné et validé sur mon mobile
@@ -522,7 +522,7 @@ export default function TenantPaymentPage({ params }: PageProps) {
       </main>
 
       {/* Footer */}
-      <footer style={{ padding: "var(--space-6) 0", borderTop: "1px solid var(--gray-200)", background: "white", textAlign: "center", fontSize: "var(--text-xs)", color: "var(--gray-400)" }}>
+      <footer style={{ padding: "var(--space-6) 0", borderTop: "1px solid var(--gray-200)", background: 'var(--white)', textAlign: "center", fontSize: "var(--text-xs)", color: "var(--gray-400)" }}>
         <p>© 2026 Vision Immo 2.0. Tous droits réservés.</p>
         <p style={{ marginTop: "4px" }}>Plateforme d&apos;encaissement de loyers sécurisée.</p>
       </footer>

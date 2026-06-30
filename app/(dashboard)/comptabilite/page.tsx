@@ -189,7 +189,7 @@ export default function ComptabilitePage() {
           </div>
         </div>
 
-        <div className="card" style={{ display: "flex", alignItems: "center", gap: "var(--space-4)", padding: "var(--space-5)", background: "white" }}>
+        <div className="card" style={{ display: "flex", alignItems: "center", gap: "var(--space-4)", padding: "var(--space-5)", background: 'var(--white)' }}>
           <div style={{ background: "var(--warning-light)", color: "var(--warning-dark)", padding: "12px", borderRadius: "var(--radius-md)" }}>
             <Wallet size={24} />
           </div>
@@ -310,7 +310,7 @@ export default function ComptabilitePage() {
             style={{
               width: "100%",
               maxWidth: "500px",
-              background: "white",
+              background: 'var(--white)',
               padding: "var(--space-6)",
               maxHeight: "90vh",
               overflowY: "auto"

@@ -167,7 +167,7 @@ export default function QuittancesPage() {
               <button className="btn btn-primary" onClick={() => generatePDF(selectedPayment)} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 <Download size={16} /> Télécharger le PDF
               </button>
-              <button className="btn btn-outline" onClick={() => setSelectedPayment(null)} style={{ background: "white" }}>
+              <button className="btn btn-outline" onClick={() => setSelectedPayment(null)} style={{ background: 'var(--white)' }}>
                 <X size={16} /> Fermer
               </button>
             </div>
@@ -179,7 +179,7 @@ export default function QuittancesPage() {
               <div 
                 id={`receipt-content-${selectedPayment.id}`}
                 style={{
-                  background: "white",
+                  background: 'var(--white)',
                   width: "210mm",
                   minHeight: "297mm",
                   padding: "40px",

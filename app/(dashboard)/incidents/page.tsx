@@ -232,7 +232,7 @@ export default function IncidentsPage() {
       {/* Add Incident Modal */}
       {showAddModal && (
         <div style={{ position: "fixed", top: 0, bottom: 0, left: 0, right: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: "var(--space-4)", backdropFilter: "blur(4px)" }} className="animate-fade-in">
-          <div className="card animate-scale-in" style={{ width: "100%", maxWidth: "500px", background: "white", padding: "var(--space-6)", maxHeight: "90vh", overflowY: "auto" }}>
+          <div className="card animate-scale-in" style={{ width: "100%", maxWidth: "500px", background: 'var(--white)', padding: "var(--space-6)", maxHeight: "90vh", overflowY: "auto" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-6)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
                 <AlertTriangle size={24} style={{ color: "var(--primary)" }} />
@@ -301,7 +301,7 @@ export default function IncidentsPage() {
       {/* Resolve Incident Modal */}
       {showResolveModal && (
         <div style={{ position: "fixed", top: 0, bottom: 0, left: 0, right: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: "var(--space-4)", backdropFilter: "blur(4px)" }} className="animate-fade-in">
-          <div className="card animate-scale-in" style={{ width: "100%", maxWidth: "400px", background: "white", padding: "var(--space-6)" }}>
+          <div className="card animate-scale-in" style={{ width: "100%", maxWidth: "400px", background: 'var(--white)', padding: "var(--space-6)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-4)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
                 <CheckCircle size={24} style={{ color: "var(--primary)" }} />

@@ -323,7 +323,7 @@ export default function ProprietairesPage() {
                                 flexDirection: "column",
                                 gap: "4px",
                                 boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
-                                background: "white",
+                                background: 'var(--white)',
                                 border: "1px solid var(--gray-200)"
                               }}
                             >
@@ -406,7 +406,7 @@ export default function ProprietairesPage() {
             style={{
               width: "100%",
               maxWidth: "500px",
-              background: "white",
+              background: 'var(--white)',
               padding: "var(--space-6)",
               maxHeight: "90vh",
               overflowY: "auto"
@@ -512,7 +512,7 @@ export default function ProprietairesPage() {
             style={{
               width: "100%",
               maxWidth: "500px",
-              background: "white",
+              background: 'var(--white)',
               padding: "var(--space-6)",
               maxHeight: "90vh",
               overflowY: "auto"
@@ -616,7 +616,7 @@ export default function ProprietairesPage() {
             style={{
               width: "100%",
               maxWidth: "500px",
-              background: "white",
+              background: 'var(--white)',
               padding: "var(--space-6)",
               maxHeight: "90vh",
               overflowY: "auto"
@@ -717,7 +717,7 @@ export default function ProprietairesPage() {
             style={{
               width: "100%",
               maxWidth: "400px",
-              background: "white",
+              background: 'var(--white)',
               padding: "var(--space-6)",
               textAlign: "center"
             }}

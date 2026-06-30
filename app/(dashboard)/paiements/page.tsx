@@ -247,7 +247,7 @@ export default function PaiementsPage() {
                                 right: 0,
                                 top: (index === filteredPayments.length - 1 && filteredPayments.length > 1) ? "auto" : "100%",
                                 bottom: (index === filteredPayments.length - 1 && filteredPayments.length > 1) ? "100%" : "auto",
-                                background: "white",
+                                background: 'var(--white)',
                                 padding: "var(--space-2)",
                                 minWidth: "160px",
                                 zIndex: 9999,
@@ -341,7 +341,7 @@ export default function PaiementsPage() {
             style={{
               width: "100%",
               maxWidth: "460px",
-              background: "white",
+              background: 'var(--white)',
               padding: "var(--space-6)"
             }}
           >

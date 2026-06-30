@@ -69,7 +69,7 @@ export default function ResetPasswordPage() {
       background: 'linear-gradient(135deg, var(--primary-lightest) 0%, var(--gray-100) 100%)',
       padding: 'var(--space-4)'
     }} className="animate-fade-in">
-      <div className="card" style={{ width: '100%', maxWidth: '440px', background: 'white', padding: 'var(--space-8)' }}>
+      <div className="card" style={{ width: '100%', maxWidth: '440px', background: 'var(--white)', padding: 'var(--space-8)' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', marginBottom: 'var(--space-6)', position: 'relative' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
             <div className="logo-icon" style={{ background: 'var(--orange)' }}>V</div>

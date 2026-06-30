@@ -223,7 +223,7 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
           onClick={() => setIsYearly(!isYearly)}
           style={{ width: "50px", height: "26px", borderRadius: "100px", background: isYearly ? "var(--primary)" : "var(--gray-300)", padding: "3px", transition: "all 0.2s ease", display: "flex", alignItems: "center", justifyContent: isYearly ? "flex-end" : "flex-start" }}
         >
-          <div style={{ width: "20px", height: "20px", borderRadius: "50%", background: "white", boxShadow: "var(--shadow-sm)" }}></div>
+          <div style={{ width: "20px", height: "20px", borderRadius: "50%", background: 'var(--white)', boxShadow: "var(--shadow-sm)" }}></div>
         </button>
         <span style={{ fontSize: "var(--text-sm)", fontWeight: isYearly ? 700 : 500, color: isYearly ? "var(--gray-800)" : "var(--gray-400)", display: "flex", alignItems: "center", gap: "4px" }}>
           Annuel <span className="badge badge-success" style={{ fontSize: "9px", padding: "2px 6px" }}>-20%</span>
@@ -325,7 +325,7 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
             style={{
               width: "100%",
               maxWidth: "460px",
-              background: "white",
+              background: 'var(--white)',
               padding: "var(--space-6)",
               borderTop: "6px solid var(--primary)"
             }}
@@ -388,7 +388,7 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
                 {/* QR Code Option */}
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-3)", background: "var(--gray-50)", padding: "var(--space-4)", borderRadius: "var(--radius-lg)", border: "1px dashed var(--gray-300)" }}>
                   <span style={{ fontSize: "var(--text-xs)", fontWeight: "700", color: "var(--primary-dark)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Option 1 : Paiement Sécurisé par Code QR</span>
-                  <div style={{ padding: "8px", background: "white", borderRadius: "8px", boxShadow: "var(--shadow-sm)" }}>
+                  <div style={{ padding: "8px", background: 'var(--white)', borderRadius: "8px", boxShadow: "var(--shadow-sm)" }}>
                     { }
                     <img 
                       src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&color=111827&data=paydunya_${selectedOperator}_sub_${queryPlan || 'pro'}_${queryPrice || '15000'}`} 
@@ -402,7 +402,7 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
                   <button 
                     type="button" 
                     className="btn btn-outline btn-sm" 
-                    style={{ width: "100%", background: "white", borderColor: "var(--success)", color: "var(--success-dark)" }}
+                    style={{ width: "100%", background: 'var(--white)', borderColor: "var(--success)", color: "var(--success-dark)" }}
                     onClick={() => setSimStep('otp_verification')}
                   >
                     <Check size={12} /> J&apos;ai scanné et validé sur mon mobile
