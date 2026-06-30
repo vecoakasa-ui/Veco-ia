@@ -356,7 +356,7 @@ export default function Home({ searchParams }: HomeProps) {
               La plateforme SaaS premium pour automatiser la gestion immobilière. Multipliez vos revenus, éliminez les impayés et sécurisez vos investissements grâce aux paiements Mobile Money et à notre intelligence artificielle.
             </p>
             
-            <div className="hero-buttons" style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
+            <div className="hero-buttons hide-mobile" style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
               <a href="/register" className="btn btn-orange pulse-btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', transition: 'transform 0.2s, box-shadow 0.2s', display: 'flex', alignItems: 'center', gap: '8px', background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', borderRadius: 'var(--radius-lg)' }}>
                 <Calendar size={18} /> Demander une démo
               </a>
@@ -398,6 +398,17 @@ export default function Home({ searchParams }: HomeProps) {
               <MapPin size={16} fill="white" />
             </div>
           </div>
+
+          {/* Mobile Buttons : Shown only on mobile below the image */}
+          <div className="hero-buttons hide-desktop" style={{ display: 'none', gap: 'var(--space-4)', flexWrap: 'wrap', justifyContent: 'center', marginTop: 'var(--space-4)' }}>
+            <a href="/register" className="btn btn-orange pulse-btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', transition: 'transform 0.2s, box-shadow 0.2s', display: 'flex', alignItems: 'center', gap: '8px', background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', borderRadius: 'var(--radius-lg)' }}>
+              <Calendar size={18} /> Demander une démo
+            </a>
+            <a href="#features" className="btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', background: 'white', color: 'var(--gray-900)', border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-sm)', transition: 'transform 0.2s, box-shadow 0.2s' }}>
+              Commencer gratuitement
+            </a>
+          </div>
+
         </div>
         
         {/* CSS for float and mobile responsiveness */}
@@ -419,6 +430,12 @@ export default function Home({ searchParams }: HomeProps) {
             .hero-section .container {
               grid-template-columns: 1fr !important;
               gap: var(--space-8) !important;
+            }
+            .hide-mobile {
+              display: none !important;
+            }
+            .hide-desktop {
+              display: flex !important;
             }
             .hero-content {
               align-items: center !important;
