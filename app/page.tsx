@@ -1218,7 +1218,7 @@ export default function Home({ searchParams }: HomeProps) {
       <footer className="gestimmo-footer">
         <div className="container footer-grid">
           <div>
-            <div className="gestimmo-footer-logo-title">VENANCE IMO<span className="text-orange">.CI</span></div>
+            <div className="gestimmo-footer-logo-title">Vision Immo 2.0</div>
             <p className="footer-desc">
               SAS spécialisée dans la gestion immobilière en Côte d&apos;Ivoire. Notre mission est de vous offrir des solutions fiables et performantes pour la gestion de vos biens.
             </p>
@@ -1273,7 +1273,7 @@ export default function Home({ searchParams }: HomeProps) {
         </div>
 
         <div className="container footer-bottom" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
-          <p>© {new Date().getFullYear()} VENANCE IMO.CI. Tous droits réservés.</p>
+          <p>© {new Date().getFullYear()} Vision Immo 2.0. Tous droits réservés.</p>
           <p style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-500)' }}>
             Abidjan • Yamoussoukro • Bouaké • San-Pédro • Korhogo
           </p>

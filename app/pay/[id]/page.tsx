@@ -182,7 +182,7 @@ export default function TenantPaymentPage({ params }: PageProps) {
       <header style={{ height: "64px", background: "white", borderBottom: "1px solid var(--gray-200)", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 var(--space-6)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
           <div className="logo-icon" style={{ background: "var(--primary)" }}>V</div>
-          <span style={{ fontSize: "var(--text-md)", fontWeight: "800", color: "var(--gray-900)" }}>VENANCE IMO</span>
+          <span style={{ fontSize: "var(--text-md)", fontWeight: "800", color: "var(--gray-900)" }}>Vision Immo 2.0</span>
         </div>
         <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", display: "flex", alignItems: "center", gap: "4px" }}>
           <Lock size={12} /> Paiement 100% Sécurisé
@@ -523,7 +523,7 @@ export default function TenantPaymentPage({ params }: PageProps) {
 
       {/* Footer */}
       <footer style={{ padding: "var(--space-6) 0", borderTop: "1px solid var(--gray-200)", background: "white", textAlign: "center", fontSize: "var(--text-xs)", color: "var(--gray-400)" }}>
-        <p>© 2026 Venance Imo. Tous droits réservés.</p>
+        <p>© 2026 Vision Immo 2.0. Tous droits réservés.</p>
         <p style={{ marginTop: "4px" }}>Plateforme d&apos;encaissement de loyers sécurisée.</p>
       </footer>
     </div>

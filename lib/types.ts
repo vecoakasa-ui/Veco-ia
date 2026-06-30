@@ -1,5 +1,5 @@
 // ============================================
-// VENANCE IMO — TypeScript Type Definitions
+// Vision Immo 2.0 — TypeScript Type Definitions
 // ============================================
 
 export type UserRole = 'owner' | 'tenant' | 'admin';

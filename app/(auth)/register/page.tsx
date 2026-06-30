@@ -98,7 +98,7 @@ export default function RegisterPage({ searchParams }: PageProps) {
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
             <div className="logo-icon" style={{ background: 'var(--orange)' }}>V</div>
-            <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: '800', margin: 0 }}>VENANCE IMO</h2>
+            <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: '800', margin: 0 }}>Vision Immo 2.0</h2>
           </div>
           <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-500)', margin: 0 }}>
             {plan !== 'free' ? "Créez votre compte pour activer votre abonnement" : "Créez votre compte gratuit en moins de 2 minutes"}

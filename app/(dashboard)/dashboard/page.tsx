@@ -93,7 +93,7 @@ export default function DashboardPage() {
       <div className="page-header">
         <div>
           <h2 style={{ fontSize: "var(--text-2xl)", fontWeight: "800", color: "var(--gray-900)", margin: 0 }}>
-            Bienvenue chez VENANCE IMO CI
+            Bienvenue chez Vision Immo 2.0
           </h2>
           <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", margin: "4px 0 0 0" }}>
             Voici un aperçu de vos activités de gestion immobilière pour aujourd&apos;hui.

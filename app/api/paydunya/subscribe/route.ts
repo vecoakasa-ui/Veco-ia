@@ -39,17 +39,17 @@ export async function POST(request: NextRequest) {
       invoice: {
         items: {
           item_0: {
-            name: `Abonnement Venance Imo - Plan ${planName.toUpperCase()} (${isYearly ? 'Annuel' : 'Mensuel'})`,
+            name: `Abonnement Vision Immo 2.0 - Plan ${planName.toUpperCase()} (${isYearly ? 'Annuel' : 'Mensuel'})`,
             quantity: 1,
             unit_price: price,
             total_price: price
           }
         },
         total_amount: price,
-        description: `Souscription au Plan ${planName.toUpperCase()} de la plateforme Venance Imo`
+        description: `Souscription au Plan ${planName.toUpperCase()} de la plateforme Vision Immo 2.0`
       },
       store: {
-        name: "Venance Imo"
+        name: "Vision Immo 2.0"
       },
       actions: {
         cancel_url: cancelUrl,

@@ -89,7 +89,7 @@ export const DEFAULT_EXPENSES: Expense[] = [
 export const DEFAULT_PROFILE: Profile = {
   id: "owner-1",
   full_name: "Venance",
-  email: "venance@venanceimo.com",
+  email: "contact@visionimmo.com",
   phone: "+225 07 00 00 00 00",
   role: "owner",
   avatar_url: null,

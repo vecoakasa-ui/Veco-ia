@@ -1,5 +1,5 @@
 // ============================================
-// VENANCE IMO — PayDunya Integration Utility
+// Vision Immo 2.0 — PayDunya Integration Utility
 // ============================================
 
 export interface PayDunyaInvoiceInput {
@@ -79,7 +79,7 @@ export async function createPayDunyaInvoice(input: PayDunyaInvoiceInput): Promis
         description: `Règlement de loyer pour ${input.tenantName} (${input.propertyName})`
       },
       store: {
-        name: "Venance Imo"
+        name: "Vision Immo 2.0"
       },
       actions: {
         cancel_url: input.cancelUrl,

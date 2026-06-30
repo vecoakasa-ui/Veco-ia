@@ -1,5 +1,5 @@
 // ============================================
-// VENANCE IMO — Utility Functions
+// Vision Immo 2.0 — Utility Functions
 // ============================================
 
 /**

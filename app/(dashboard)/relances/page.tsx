@@ -77,9 +77,9 @@ export default function RelancesPage() {
     const year = item.year;
     
     if (isLate) {
-      return `Bonjour ${item.tenant_name}, sauf erreur de notre part, nous sommes toujours en attente du règlement de votre loyer de ${amount} pour le mois de ${month} ${year}. Merci de régulariser la situation dans les plus brefs délais. Cordialement, l'agence VENANCE IMO.`;
+      return `Bonjour ${item.tenant_name}, sauf erreur de notre part, nous sommes toujours en attente du règlement de votre loyer de ${amount} pour le mois de ${month} ${year}. Merci de régulariser la situation dans les plus brefs délais. Cordialement, l'agence Vision Immo 2.0.`;
     } else {
-      return `Bonjour ${item.tenant_name}, ceci est un rappel amical pour votre loyer de ${amount} concernant le mois de ${month} ${year}, qui arrive à échéance le ${formatDate(item.due_date)}. Merci d'avance. Cordialement, l'agence VENANCE IMO.`;
+      return `Bonjour ${item.tenant_name}, ceci est un rappel amical pour votre loyer de ${amount} concernant le mois de ${month} ${year}, qui arrive à échéance le ${formatDate(item.due_date)}. Merci d'avance. Cordialement, l'agence Vision Immo 2.0.`;
     }
   };
 

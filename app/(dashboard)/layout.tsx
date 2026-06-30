@@ -43,7 +43,7 @@ export default function DashboardLayout({
   const [profile, setProfile] = useState<Profile>({
     id: "owner-1",
     full_name: "Venance",
-    email: "venance@venanceimo.com",
+    email: "contact@visionimmo.com",
     phone: "+225 07 00 00 00 00",
     role: "owner",
     avatar_url: null,
@@ -138,7 +138,7 @@ export default function DashboardLayout({
               <Building2 size={16} className="text-orange" />
             </div>
             <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--white)" }}>
-              VENANCE IMO<span className="text-orange">.CI</span>
+              Vision Immo 2.0
             </span>
           </Link>
         </div>
@@ -294,7 +294,7 @@ export default function DashboardLayout({
                   <Building2 size={16} className="text-orange" />
                 </div>
                 <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--white)" }}>
-                  VENANCE IMO<span className="text-orange">.CI</span>
+                  Vision Immo 2.0
                 </span>
               </Link>
               <button onClick={() => setMobileOpen(false)} style={{ color: "var(--white)" }}>

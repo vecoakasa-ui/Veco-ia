@@ -1,5 +1,5 @@
 -- ============================================
--- VENANCE IMO — Supabase Database Schema DDL
+-- Vision Immo 2.0 — Supabase Database Schema DDL
 -- ============================================
 
 -- Nettoyer la base pour repartir à zéro (les données de test seront effacées)

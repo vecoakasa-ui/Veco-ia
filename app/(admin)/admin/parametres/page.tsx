@@ -37,7 +37,7 @@ export default function AdminParametresPage() {
         <form onSubmit={handleSave} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
           <div>
             <label className="label">Nom de la plateforme</label>
-            <input type="text" className="input" defaultValue="VENANCE IMO.CI" />
+            <input type="text" className="input" defaultValue="Vision Immo 2.0" />
           </div>
 
           <div>
