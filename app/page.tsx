@@ -862,16 +862,51 @@ export default function Home({ searchParams }: HomeProps) {
          CTA Banner Section
          ============================================ */}
       <section className="container section">
-        <div className="cta-gestimmo animate-fade-in-up">
-          <div className="cta-gestimmo-content">
-            <h2 className="cta-gestimmo-title">Vous avez un bien immobilier ?</h2>
-            <p className="cta-gestimmo-desc">
-              Confiez-le à des professionnels pour valoriser, sécuriser et rentabiliser votre patrimoine. Nous nous occupons du reste.
-            </p>
+        <div className="cta-animated-wrapper animate-fade-in-up" style={{ 
+          position: 'relative', 
+          overflow: 'hidden', 
+          borderRadius: '32px', 
+          padding: 'var(--space-12) var(--space-6)', 
+          background: 'linear-gradient(135deg, var(--primary) 0%, #064e3b 100%)',
+          color: 'white',
+          textAlign: 'center',
+          boxShadow: '0 25px 50px -12px rgba(10, 61, 42, 0.4)'
+        }}>
+          {/* Animated Background Elements */}
+          <div style={{ position: 'absolute', top: '-50%', left: '-20%', width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(249,115,22,0.3) 0%, transparent 70%)', borderRadius: '50%', animation: 'float 8s ease-in-out infinite' }}></div>
+          <div style={{ position: 'absolute', bottom: '-50%', right: '-10%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(22,163,74,0.3) 0%, transparent 70%)', borderRadius: '50%', animation: 'float 10s ease-in-out infinite reverse' }}></div>
+          
+          {/* Floating Map Pins */}
+          <div style={{ position: 'absolute', top: '20%', left: '15%', animation: 'float 6s ease-in-out infinite' }}>
+            <MapPin size={32} color="rgba(255,255,255,0.4)" strokeWidth={1.5} />
           </div>
-          <div className="cta-gestimmo-actions">
-            <Link href="/register" className="btn btn-white-green btn-lg" style={{ fontWeight: '700', borderRadius: 'var(--radius-lg)' }}>
-              S'inscrire gratuitement <ArrowRight size={18} style={{ marginLeft: '6px', display: 'inline-block', verticalAlign: 'middle' }} />
+          <div style={{ position: 'absolute', bottom: '25%', left: '8%', animation: 'float 4s ease-in-out infinite reverse' }}>
+            <MapPin size={48} color="rgba(249,115,22,0.6)" strokeWidth={1.5} />
+          </div>
+          <div style={{ position: 'absolute', top: '15%', right: '10%', animation: 'float 7s ease-in-out infinite' }}>
+            <MapPin size={40} color="rgba(22,163,74,0.6)" strokeWidth={1.5} />
+          </div>
+          <div style={{ position: 'absolute', bottom: '20%', right: '18%', animation: 'float 5s ease-in-out infinite reverse' }}>
+            <MapPin size={24} color="rgba(255,255,255,0.3)" strokeWidth={2} />
+          </div>
+
+          <div style={{ position: 'relative', zIndex: 1, maxWidth: '600px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--space-6)' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.1)', padding: '6px 16px', borderRadius: 'var(--radius-full)', border: '1px solid rgba(255,255,255,0.2)' }}>
+              <span style={{ fontSize: '20px' }}>🏡</span>
+              <span style={{ fontSize: 'var(--text-sm)', fontWeight: '700', letterSpacing: '0.5px' }}>Propriétaires & Bailleurs</span>
+            </div>
+            
+            <h2 style={{ fontSize: 'calc(var(--text-3xl) + 0.5vw)', fontWeight: '900', lineHeight: 1.2, margin: 0 }}>
+              Vous avez un bien immobilier ? <br/>
+              <span style={{ color: 'var(--orange)' }}>Gérez-le facilement.</span>
+            </h2>
+            
+            <p style={{ fontSize: 'var(--text-lg)', color: 'rgba(255,255,255,0.8)', lineHeight: 1.6, margin: 0 }}>
+              Rejoignez des centaines de propriétaires qui ont automatisé leur gestion locative avec Vision Immo 2.0. Fini les retards, fini le stress.
+            </p>
+
+            <Link href="/register" className="btn btn-orange pulse-btn" style={{ padding: '16px 36px', fontSize: 'var(--text-lg)', fontWeight: '800', marginTop: 'var(--space-4)', borderRadius: 'var(--radius-full)', display: 'inline-flex', alignItems: 'center', gap: '12px', boxShadow: '0 10px 25px -5px rgba(249, 115, 22, 0.5)' }}>
+              Commencer gratuitement <ArrowRight size={20} />
             </Link>
           </div>
         </div>
