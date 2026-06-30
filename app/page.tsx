@@ -330,7 +330,10 @@ export default function Home({ searchParams }: HomeProps) {
         <div className="container" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-12)', alignItems: 'center' }}>
           
           {/* Left Column : Text */}
-          <div className="hero-content animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left' }}>
+          <div className="hero-content animate-fade-in-up" style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left' }}>
+            {/* Dotted pattern behind "Solution N°1" */}
+            <div style={{ position: 'absolute', top: '-30px', left: '-20px', width: '120px', height: '120px', backgroundImage: 'radial-gradient(var(--gray-400) 2px, transparent 2px)', backgroundSize: '16px 16px', opacity: 0.3, zIndex: -1, borderRadius: '50%' }}></div>
+
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.8)', padding: '6px 14px', borderRadius: 'var(--radius-full)', color: 'var(--gray-900)', fontSize: 'var(--text-xs)', fontWeight: '700', marginBottom: 'var(--space-6)', border: '1px solid rgba(0,0,0,0.05)', boxShadow: 'var(--shadow-sm)' }}>
               <span style={{ display: 'inline-flex', width: '16px', height: '12px', background: 'linear-gradient(to right, #E25822 33.3%, white 33.3%, white 66.6%, #0A3D2A 66.6%)', borderRadius: '1px' }}></span>
               Solution N°1 en Afrique
@@ -345,8 +348,8 @@ export default function Home({ searchParams }: HomeProps) {
             </p>
             
             <div className="hero-buttons" style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
-              <a href="/register" className="btn btn-orange" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', boxShadow: '0 10px 25px -5px rgba(249, 115, 22, 0.4)', transition: 'transform 0.2s, box-shadow 0.2s' }}>
-                Demander une démo <ArrowRight size={18} style={{ marginLeft: '8px' }} />
+              <a href="/register" className="btn btn-orange" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', boxShadow: '0 10px 25px -5px rgba(249, 115, 22, 0.4)', transition: 'transform 0.2s, box-shadow 0.2s', display: 'flex', alignItems: 'center', gap: '8px', background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)' }}>
+                <Calendar size={18} /> Demander une démo
               </a>
               <a href="#features" className="btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', background: 'white', color: 'var(--gray-900)', border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-sm)', transition: 'transform 0.2s, box-shadow 0.2s' }}>
                 Commencer gratuitement
@@ -359,10 +362,10 @@ export default function Home({ searchParams }: HomeProps) {
             <img 
               src="/hero-immo-mockup.png" 
               alt="Vision Immo 2.0 Mockup" 
-              style={{ width: '100%', maxWidth: '500px', height: 'auto', filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.25))', borderRadius: '24px' }} 
+              style={{ width: '100%', maxWidth: '380px', height: 'auto', filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.25))', borderRadius: '24px' }} 
             />
             {/* Floating badges for extra animation */}
-            <div style={{ position: 'absolute', top: '10%', left: '-10%', background: 'white', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 5s ease-in-out infinite reverse' }}>
+            <div style={{ position: 'absolute', top: '10%', left: '-15%', background: 'white', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 5s ease-in-out infinite reverse' }}>
               <div style={{ background: '#dcfce7', color: '#16a34a', padding: '8px', borderRadius: '50%' }}><Check size={20} /></div>
               <div>
                 <p style={{ margin: 0, fontSize: '12px', color: 'var(--gray-500)', fontWeight: 600 }}>Paiement reçu</p>
@@ -370,12 +373,20 @@ export default function Home({ searchParams }: HomeProps) {
               </div>
             </div>
             
-            <div style={{ position: 'absolute', bottom: '15%', right: '-5%', background: 'white', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 7s ease-in-out infinite' }}>
+            <div style={{ position: 'absolute', bottom: '15%', right: '-15%', background: 'white', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 7s ease-in-out infinite' }}>
               <div style={{ background: '#fef3c7', color: '#d97706', padding: '8px', borderRadius: '50%' }}><Sparkles size={20} /></div>
               <div>
                 <p style={{ margin: 0, fontSize: '12px', color: 'var(--gray-500)', fontWeight: 600 }}>Locataire satisfait</p>
                 <p style={{ margin: 0, fontSize: '14px', color: 'var(--gray-900)', fontWeight: 800 }}>Quittance envoyée</p>
               </div>
+            </div>
+
+            {/* Location pins */}
+            <div style={{ position: 'absolute', top: '30%', right: '10%', background: '#16a34a', color: 'white', padding: '6px', borderRadius: '50%', boxShadow: '0 4px 10px rgba(22, 163, 74, 0.4)', animation: 'float 4s ease-in-out infinite', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <MapPin size={16} fill="white" />
+            </div>
+            <div style={{ position: 'absolute', bottom: '40%', left: '5%', background: '#f97316', color: 'white', padding: '6px', borderRadius: '50%', boxShadow: '0 4px 10px rgba(249, 115, 22, 0.4)', animation: 'float 5s ease-in-out infinite reverse', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <MapPin size={16} fill="white" />
             </div>
           </div>
         </div>
