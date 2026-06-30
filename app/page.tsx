@@ -4,7 +4,8 @@
 
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import {
   Building2,
   Users,
@@ -33,12 +34,12 @@ interface HomeProps {
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-export default function Home({ searchParams }: HomeProps) {
+function HomeContent() {
   const router = useRouter();
-  const resolvedSearchParams = searchParams ? use(searchParams) : {};
-  const mockToken = resolvedSearchParams.mock_token as string || "";
-  const queryPlan = resolvedSearchParams.plan as string || "";
-  const queryPrice = resolvedSearchParams.price as string || "0";
+  const searchParams = useSearchParams();
+  const mockToken = searchParams?.get("mock_token") || "";
+  const queryPlan = searchParams?.get("plan") || "";
+  const queryPrice = searchParams?.get("price") || "0";
 
   const [isYearly, setIsYearly] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -1470,5 +1471,13 @@ export default function Home({ searchParams }: HomeProps) {
         </div>
       )}
     </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={<div style={{ display: "flex", height: "100vh", width: "100%", alignItems: "center", justifyContent: "center" }}><Loader2 className="animate-spin text-primary" size={32} /></div>}>
+      <HomeContent />
+    </Suspense>
   );
 }
