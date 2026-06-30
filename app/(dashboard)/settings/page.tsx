@@ -1,37 +1,40 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Save, Database, Shield, CheckCircle2, Moon, Sun, Monitor, User } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Save, Shield, CheckCircle2, Moon, Sun, Monitor, User, Camera } from "lucide-react";
 import { useTheme } from "../../../components/ThemeProvider";
 import { DEFAULT_PROFILE } from "../../../lib/store";
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
   
-  const [url, setUrl] = useState("");
-  const [key, setKey] = useState("");
-  const [saved, setSaved] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(DEFAULT_PROFILE.avatar_url);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          const newAvatar = event.target.result as string;
+          setAvatarUrl(newAvatar);
+          localStorage.setItem("V_CUSTOM_AVATAR", newAvatar);
+          window.dispatchEvent(new Event("avatarUpdate"));
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   useEffect(() => {
-    // Charger les clés depuis le localStorage si elles existent
-    const storedUrl = localStorage.getItem("V_SUPABASE_URL");
-    const storedKey = localStorage.getItem("V_SUPABASE_KEY");
-     
-    if (storedUrl) setUrl(storedUrl);
-     
-    if (storedKey) setKey(storedKey);
+    const customAvatar = localStorage.getItem("V_CUSTOM_AVATAR");
+    if (customAvatar) {
+      setAvatarUrl(customAvatar);
+    }
   }, []);
 
-  const handleSave = () => {
-    localStorage.setItem("V_SUPABASE_URL", url.trim());
-    localStorage.setItem("V_SUPABASE_KEY", key.trim());
-    setSaved(true);
-    
-    // Forcer le rechargement de la page pour initialiser Supabase avec les nouvelles clés
-    setTimeout(() => {
-      window.location.href = "/dashboard";
-    }, 1500);
-  };
+
 
   return (
     <div className="container animate-fade-in" style={{ maxWidth: "800px", padding: "var(--space-6) 0" }}>
@@ -54,14 +57,33 @@ export default function SettingsPage() {
           </div>
           
           <div style={{ display: "flex", alignItems: "center", gap: "var(--space-6)" }}>
-            <div style={{ width: "100px", height: "100px", borderRadius: "50%", background: "var(--primary-lightest)", overflow: "hidden", border: "4px solid var(--white)", boxShadow: "var(--shadow-md)", flexShrink: 0 }}>
-              {DEFAULT_PROFILE.avatar_url ? (
-                <img src={DEFAULT_PROFILE.avatar_url} alt="Profil" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              ) : (
-                <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "32px", fontWeight: "bold", color: "var(--primary)" }}>
-                  {DEFAULT_PROFILE.full_name?.substring(0, 2).toUpperCase() || "VI"}
-                </div>
-              )}
+            <div style={{ position: "relative" }}>
+              <div style={{ width: "100px", height: "100px", borderRadius: "50%", background: "var(--primary-lightest)", overflow: "hidden", border: "4px solid var(--white)", boxShadow: "var(--shadow-md)", flexShrink: 0 }}>
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="Profil" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                ) : (
+                  <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "32px", fontWeight: "bold", color: "var(--primary)" }}>
+                    {DEFAULT_PROFILE.full_name?.substring(0, 2).toUpperCase() || "VI"}
+                  </div>
+                )}
+              </div>
+              
+              <button 
+                onClick={() => fileInputRef.current?.click()}
+                style={{ position: "absolute", bottom: "0", right: "0", background: "var(--primary)", color: "var(--fixed-white)", border: "none", borderRadius: "50%", width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "var(--shadow-sm)", transition: "transform 0.2s" }}
+                onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.1)"}
+                onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
+                title="Modifier la photo"
+              >
+                <Camera size={16} />
+              </button>
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleFileChange} 
+                accept="image/*" 
+                style={{ display: "none" }} 
+              />
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-4)" }}>
@@ -159,74 +181,6 @@ export default function SettingsPage() {
             </button>
           </div>
         </div>
-
-        {/* Section Avancée (Supabase) */}
-        <div className="card" style={{ border: "1px dashed var(--gray-300)" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", marginBottom: "var(--space-6)" }}>
-            <div className="avatar avatar-sm" style={{ background: "var(--gray-100)", color: "var(--gray-600)" }}>
-              <Database size={20} />
-            </div>
-            <div>
-              <h2 style={{ fontSize: "var(--text-lg)", fontWeight: 700, margin: 0, color: "var(--gray-900)" }}>Avancé : Connexion Base de données</h2>
-              <p style={{ color: "var(--gray-500)", margin: 0, fontSize: "var(--text-sm)" }}>
-                Contournez Vercel et connectez Supabase directement d'ici.
-              </p>
-            </div>
-          </div>
-
-          {saved && (
-            <div style={{ backgroundColor: "var(--success-light)", color: "var(--success-dark)", padding: "var(--space-4)", borderRadius: "var(--radius-md)", display: "flex", alignItems: "center", gap: "var(--space-2)", marginBottom: "var(--space-6)" }}>
-              <CheckCircle2 size={18} />
-              <span style={{ fontWeight: 600 }}>Connexion sauvegardée ! Redirection...</span>
-            </div>
-          )}
-
-          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
-            <div>
-              <label style={{ display: "block", marginBottom: "var(--space-2)", fontWeight: 600, fontSize: "var(--text-sm)", color: "var(--gray-700)" }}>
-                Supabase Project URL
-              </label>
-              <input 
-                type="text" 
-                className="input" 
-                placeholder="https://xxxxxx.supabase.co" 
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-              />
-            </div>
-
-            <div>
-              <label style={{ display: "block", marginBottom: "var(--space-2)", fontWeight: 600, fontSize: "var(--text-sm)", color: "var(--gray-700)" }}>
-                Supabase API Key (anon / public)
-              </label>
-              <input 
-                type="password" 
-                className="input" 
-                placeholder="eyJh..." 
-                value={key}
-                onChange={(e) => setKey(e.target.value)}
-              />
-            </div>
-
-            <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-2)", backgroundColor: "var(--gray-50)", padding: "var(--space-4)", borderRadius: "var(--radius-md)", marginTop: "var(--space-2)" }}>
-              <Shield size={16} style={{ color: "var(--primary)", flexShrink: 0, marginTop: "2px" }} />
-              <p style={{ fontSize: "11px", color: "var(--gray-500)", margin: 0 }}>
-                Vos clés sont sauvegardées localement de manière sécurisée dans votre navigateur. Elles ne transitent par aucun autre serveur que celui de Supabase.
-              </p>
-            </div>
-
-            <button 
-              className="btn btn-outline" 
-              style={{ marginTop: "var(--space-2)", width: "100%", padding: "12px" }}
-              onClick={handleSave}
-              disabled={!url || !key}
-            >
-              <Save size={18} style={{ marginRight: "var(--space-2)" }} />
-              Connecter et Sauvegarder
-            </button>
-          </div>
-        </div>
-
       </div>
     </div>
   );

@@ -52,26 +52,45 @@ export default function DashboardLayout({
   });
 
   useEffect(() => {
+    const handleAvatarUpdate = () => {
+      const customAvatar = localStorage.getItem("V_CUSTOM_AVATAR");
+      if (customAvatar) {
+        setProfile(prev => ({ ...prev, avatar_url: customAvatar }));
+      }
+    };
+    
+    window.addEventListener("avatarUpdate", handleAvatarUpdate);
+    handleAvatarUpdate(); // Vérifier au montage
+
+    const loadProfile = async () => {
+      const p = await db.getProfile();
+      if (p) {
+        const customAvatar = localStorage.getItem("V_CUSTOM_AVATAR");
+        if (customAvatar) {
+          p.avatar_url = customAvatar;
+        }
+        setProfile(p);
+      }
+    };
+
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         router.push("/login");
         return;
       }
+      loadProfile();
     };
     checkAuth();
-
-    const loadProfile = async () => {
-      const p = await db.getProfile();
-      if (p) setProfile(p);
-    };
-    loadProfile();
 
     const handleStorage = () => {
       loadProfile();
     };
     window.addEventListener("storage", handleStorage);
-    return () => window.removeEventListener("storage", handleStorage);
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("avatarUpdate", handleAvatarUpdate);
+    };
   }, [router]);
 
   const navigationGroups = [
