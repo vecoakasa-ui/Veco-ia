@@ -896,7 +896,7 @@ export default function Home({ searchParams }: HomeProps) {
               <span style={{ fontSize: 'var(--text-sm)', fontWeight: '700', letterSpacing: '0.5px' }}>Propriétaires & Bailleurs</span>
             </div>
             
-            <h2 style={{ fontSize: 'calc(var(--text-3xl) + 0.5vw)', fontWeight: '900', lineHeight: 1.2, margin: 0 }}>
+            <h2 style={{ fontSize: 'calc(var(--text-4xl) + 0.5vw)', color: '#ffffff', fontWeight: '900', lineHeight: 1.2, margin: 0 }}>
               Vous avez un bien immobilier ? <br/>
               <span style={{ color: 'var(--orange)' }}>Gérez-le facilement.</span>
             </h2>
