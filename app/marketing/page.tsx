@@ -49,7 +49,7 @@ export default function MarketingPage() {
         <Link href="/" className="flex items-center gap-2 mb-8 hover:opacity-80 transition-opacity">
           <div className="bg-orange-500 text-white p-2 rounded-lg font-bold flex items-center justify-center w-10 h-10">V</div>
           <span className="text-xl font-extrabold text-slate-800">
-            Veco<span className="text-orange-500"> IA</span>
+            Vision Immo<span className="text-orange-500"> 2.0</span>
           </span>
         </Link>
         
@@ -129,14 +129,14 @@ export default function MarketingPage() {
               <span className="text-orange-500 font-bold mt-1">•</span>
               <div>
                 <strong className="text-slate-900 block mb-1">Pour les Investisseurs :</strong> 
-                "Veco IA est une plateforme SaaS qui digitalise et automatise la gestion immobilière en Afrique. Nous transformons un secteur traditionnellement informel, opaque et chronophage en une industrie structurée, transparente et hautement rentable grâce à des paiements intégrés (Mobile Money) et une gestion automatisée."
+                "Vision Immo 2.0 est une plateforme SaaS qui digitalise et automatise la gestion immobilière en Afrique. Nous transformons un secteur traditionnellement informel, opaque et chronophage en une industrie structurée, transparente et hautement rentable grâce à des paiements intégrés (Mobile Money) et une gestion automatisée."
               </div>
             </li>
             <li className="flex gap-3 bg-slate-50 p-4 rounded-xl border border-slate-100">
               <span className="text-orange-500 font-bold mt-1">•</span>
               <div>
                 <strong className="text-slate-900 block mb-1">Pour les Agences (B2B) :</strong> 
-                "Fini les impayés, les relances manuelles et la paperasse. Veco IA est votre assistant virtuel qui encaisse vos loyers, gère vos contrats et suit les incidents. Gagnez 10h par semaine et sécurisez vos revenus."
+                "Fini les impayés, les relances manuelles et la paperasse. Vision Immo 2.0 est votre assistant virtuel qui encaisse vos loyers, gère vos contrats et suit les incidents. Gagnez 10h par semaine et sécurisez vos revenus."
               </div>
             </li>
             <li className="flex gap-3 bg-slate-50 p-4 rounded-xl border border-slate-100">
@@ -153,7 +153,7 @@ export default function MarketingPage() {
           </h3>
           <ol className="space-y-4 text-slate-700 list-decimal pl-5">
             <li className="pl-2">
-              <strong className="text-slate-900">L'Éducation :</strong> Montrer un gérant frustré avec ses cahiers (Avant) VS un gérant détendu qui reçoit une notification sur Veco IA (Après).
+              <strong className="text-slate-900">L'Éducation :</strong> Montrer un gérant frustré avec ses cahiers (Avant) VS un gérant détendu qui reçoit une notification sur Vision Immo 2.0 (Après).
             </li>
             <li className="pl-2">
               <strong className="text-slate-900">L'Offre Irrésistible :</strong> Essai gratuit de 30 jours + Onboarding gratuit (vous importez leurs fichiers Excel pour eux).
@@ -188,7 +188,7 @@ export default function MarketingPage() {
               <h3 className="text-lg font-bold text-emerald-700 mb-3 mt-0 flex items-center justify-between">
                 Slide 3 : La Solution <span>✅</span>
               </h3>
-              <p className="text-slate-700 mb-3 text-sm font-medium">Veco IA, le gestionnaire 100% digital :</p>
+              <p className="text-slate-700 mb-3 text-sm font-medium">Vision Immo 2.0, le gestionnaire 100% digital :</p>
               <ul className="list-disc pl-5 text-slate-700 space-y-1 text-sm">
                 <li>Suivi en temps réel des encaissements</li>
                 <li>Paiement facile via Mobile Money</li>
@@ -208,9 +208,9 @@ export default function MarketingPage() {
           <div className="mt-8">
             <h3 className="text-lg font-bold text-slate-800 mb-3">Slide 9 : La Concurrence ⚔️</h3>
             <ul className="list-disc pl-5 text-slate-700 space-y-2">
-              <li><strong>Concurrent N°1 : Le Papier & Excel (90%).</strong> Le but est d'éduquer. Veco IA est infiniment plus rapide.</li>
+              <li><strong>Concurrent N°1 : Le Papier & Excel (90%).</strong> Le but est d'éduquer. Vision Immo 2.0 est infiniment plus rapide.</li>
               <li><strong>Logiciels Étrangers :</strong> Ignorent la réalité africaine (Pas de Mobile Money).</li>
-              <li><strong>Logiciels Locaux :</strong> Vieillissants et complexes. Veco IA est simple et intuitif.</li>
+              <li><strong>Logiciels Locaux :</strong> Vieillissants et complexes. Vision Immo 2.0 est simple et intuitif.</li>
             </ul>
           </div>
 
@@ -236,9 +236,9 @@ export default function MarketingPage() {
             <div className="border-l-4 border-slate-300 pl-5 relative">
               <div className="absolute w-3 h-3 bg-slate-300 rounded-full -left-[8px] top-1.5"></div>
               <div className="font-bold text-slate-500 uppercase tracking-wider text-sm mb-1">0:00 - 0:15 | L'Accroche</div>
-              <p className="text-slate-700 mb-3"><strong className="text-slate-900">📹 Écran :</strong> Logo Veco IA puis écran de connexion.</p>
+              <p className="text-slate-700 mb-3"><strong className="text-slate-900">📹 Écran :</strong> Logo Vision Immo 2.0 puis écran de connexion.</p>
               <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded-r-lg text-slate-700 italic font-medium">
-                "Gérer des dizaines de locataires avec des cahiers et des fichiers Excel ? C'est de l'histoire ancienne. Découvrez Veco IA..."
+                "Gérer des dizaines de locataires avec des cahiers et des fichiers Excel ? C'est de l'histoire ancienne. Découvrez Vision Immo 2.0..."
               </div>
             </div>
 
@@ -278,7 +278,7 @@ export default function MarketingPage() {
               <div className="w-10 h-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold shrink-0 shadow-sm">V</div>
               <div>
                 <strong className="text-slate-900 block mb-1">Vous :</strong>
-                <p className="text-slate-700 m-0">"Bonjour, c'est Venance de Veco IA. Est-ce que vous avez 30 secondes ?"</p>
+                <p className="text-slate-700 m-0">"Bonjour, c'est Venance de Vision Immo 2.0. Est-ce que vous avez 30 secondes ?"</p>
               </div>
             </div>
             <div className="flex gap-4">
@@ -307,13 +307,13 @@ export default function MarketingPage() {
             </div>
             <div className="border border-slate-200 rounded-xl p-5 hover:border-orange-300 transition-colors">
               <strong className="text-slate-900 text-lg block mb-2">"Mes locataires ne sauront pas utiliser ça..."</strong>
-              <span className="text-slate-600">"Ils n'ont rien à télécharger. Ils reçoivent un SMS avec un lien, ils valident sur Orange Money ou Wave, et c'est fini. S'ils ont WhatsApp, ils sauront utiliser Veco IA."</span>
+              <span className="text-slate-600">"Ils n'ont rien à télécharger. Ils reçoivent un SMS avec un lien, ils valident sur Orange Money ou Wave, et c'est fini. S'ils ont WhatsApp, ils sauront utiliser Vision Immo 2.0."</span>
             </div>
           </div>
         </section>
 
         <footer className="text-center text-slate-400 text-sm pb-12 mt-16 border-t border-slate-200 pt-8">
-          Créé pour <strong className="text-slate-600">Veco IA</strong> en 2026.
+          Créé pour <strong className="text-slate-600">Vision Immo 2.0</strong> en 2026.
         </footer>
       </main>
     </div>

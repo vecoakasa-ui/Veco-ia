@@ -209,7 +209,7 @@ export default function Home({ searchParams }: HomeProps) {
               <Building2 size={20} className="text-orange" />
             </div>
             <span style={{ fontSize: 'var(--text-lg)', fontWeight: '900', color: 'var(--primary)', letterSpacing: '-0.02em' }}>
-              Veco<span className="text-orange"> IA</span>
+              Vision Immo<span className="text-orange"> 2.0</span>
             </span>
           </Link>
 
@@ -320,37 +320,92 @@ export default function Home({ searchParams }: HomeProps) {
       <section 
         className="hero-section"
         style={{
-          background: 'linear-gradient(rgba(10, 61, 42, 0.88) 0%, rgba(10, 61, 42, 0.5) 100%), url("/gestimmo_hero_bg.png") center/cover no-repeat',
+          background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
           paddingTop: 'calc(var(--navbar-height) + var(--space-20))',
           paddingBottom: 'var(--space-24)',
-          color: 'white'
+          position: 'relative',
+          overflow: 'hidden'
         }}
       >
-        <div className="container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', justifyContent: 'center' }}>
-          <div className="hero-content animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', width: '100%', maxWidth: '800px' }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.15)', padding: '6px 14px', borderRadius: 'var(--radius-full)', color: 'white', fontSize: 'var(--text-xs)', fontWeight: '600', marginBottom: 'var(--space-6)', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
+        <div className="container" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-12)', alignItems: 'center' }}>
+          
+          {/* Left Column : Text */}
+          <div className="hero-content animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.8)', padding: '6px 14px', borderRadius: 'var(--radius-full)', color: 'var(--gray-900)', fontSize: 'var(--text-xs)', fontWeight: '700', marginBottom: 'var(--space-6)', border: '1px solid rgba(0,0,0,0.05)', boxShadow: 'var(--shadow-sm)' }}>
               <span style={{ display: 'inline-flex', width: '16px', height: '12px', background: 'linear-gradient(to right, #E25822 33.3%, white 33.3%, white 66.6%, #0A3D2A 66.6%)', borderRadius: '1px' }}></span>
-              Depuis la Côte d&apos;Ivoire
+              Solution N°1 en Afrique
             </div>
             
-            <h1 className="hero-title" style={{ color: 'white', fontSize: 'var(--text-5xl)', fontWeight: '900', lineHeight: 1.15, marginBottom: 'var(--space-6)', textAlign: 'center' }}>
-              Gérez vos biens <span className="underline-white" style={{ color: 'var(--orange)', background: 'none', WebkitBackgroundClip: 'unset', backgroundClip: 'unset', WebkitTextFillColor: 'var(--orange)' }}>10x plus vite,</span> sans papier ni impayés.
+            <h1 className="hero-title" style={{ color: 'var(--gray-900)', fontSize: 'calc(var(--text-4xl) + 1vw)', fontWeight: '900', lineHeight: 1.15, marginBottom: 'var(--space-6)', letterSpacing: '-0.03em' }}>
+              Concentrez-vous sur vos revenus. <span style={{ color: 'var(--orange)' }}>Nous gérons le reste.</span>
             </h1>
             
-            <p style={{ fontSize: 'var(--text-base)', color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.65, maxWidth: '640px', marginBottom: 'var(--space-8)', textAlign: 'center', marginInline: 'auto' }}>
-              Veco IA est la 1ère plateforme 100% digitale en Afrique qui encaisse vos loyers (Mobile Money), génère vos quittances et gère vos locataires automatiquement.
+            <p style={{ fontSize: 'var(--text-lg)', color: 'var(--gray-600)', lineHeight: 1.65, marginBottom: 'var(--space-8)' }}>
+              La plateforme SaaS premium pour automatiser la gestion immobilière. Multipliez vos revenus, éliminez les impayés et sécurisez vos investissements grâce aux paiements Mobile Money et à notre intelligence artificielle.
             </p>
             
-            <div className="hero-buttons" style={{ display: 'flex', gap: 'var(--space-4)', justifyContent: 'center', flexWrap: 'wrap', width: '100%', maxWidth: '440px', margin: '0 auto' }}>
-              <a href="/register" className="btn btn-orange" style={{ minWidth: '160px', padding: '10px 24px', fontSize: 'var(--text-sm)', fontWeight: '600' }}>
-                Commencer l'essai gratuit <ArrowRight size={16} style={{ marginLeft: '6px' }} />
+            <div className="hero-buttons" style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
+              <a href="/register" className="btn btn-orange" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', boxShadow: '0 10px 25px -5px rgba(249, 115, 22, 0.4)', transition: 'transform 0.2s, box-shadow 0.2s' }}>
+                Demander une démo <ArrowRight size={18} style={{ marginLeft: '8px' }} />
               </a>
-              <a href="#features" className="btn btn-contact" style={{ minWidth: '160px', padding: '10px 24px', fontSize: 'var(--text-sm)', fontWeight: '600', background: 'transparent', borderColor: 'white', color: 'white' }}>
-                Voir le fonctionnement
+              <a href="#features" className="btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', background: 'white', color: 'var(--gray-900)', border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-sm)', transition: 'transform 0.2s, box-shadow 0.2s' }}>
+                Commencer gratuitement
               </a>
             </div>
           </div>
+
+          {/* Right Column : Image with animations */}
+          <div className="hero-image-wrapper hide-mobile" style={{ position: 'relative', display: 'flex', justifyContent: 'center', animation: 'float 6s ease-in-out infinite' }}>
+            <img 
+              src="/hero-immo-mockup.png" 
+              alt="Vision Immo 2.0 Mockup" 
+              style={{ width: '100%', maxWidth: '500px', height: 'auto', filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.25))', borderRadius: '24px' }} 
+            />
+            {/* Floating badges for extra animation */}
+            <div style={{ position: 'absolute', top: '10%', left: '-10%', background: 'white', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 5s ease-in-out infinite reverse' }}>
+              <div style={{ background: '#dcfce7', color: '#16a34a', padding: '8px', borderRadius: '50%' }}><Check size={20} /></div>
+              <div>
+                <p style={{ margin: 0, fontSize: '12px', color: 'var(--gray-500)', fontWeight: 600 }}>Paiement reçu</p>
+                <p style={{ margin: 0, fontSize: '14px', color: 'var(--gray-900)', fontWeight: 800 }}>+ 150 000 FCFA</p>
+              </div>
+            </div>
+            
+            <div style={{ position: 'absolute', bottom: '15%', right: '-5%', background: 'white', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 7s ease-in-out infinite' }}>
+              <div style={{ background: '#fef3c7', color: '#d97706', padding: '8px', borderRadius: '50%' }}><Sparkles size={20} /></div>
+              <div>
+                <p style={{ margin: 0, fontSize: '12px', color: 'var(--gray-500)', fontWeight: 600 }}>Locataire satisfait</p>
+                <p style={{ margin: 0, fontSize: '14px', color: 'var(--gray-900)', fontWeight: 800 }}>Quittance envoyée</p>
+              </div>
+            </div>
+          </div>
         </div>
+        
+        {/* CSS for float animation */}
+        <style dangerouslySetInnerHTML={{__html: `
+          @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+          }
+          @media (max-width: 992px) {
+            .hero-section .container {
+              grid-template-columns: 1fr !important;
+            }
+            .hero-content {
+              align-items: center !important;
+              text-align: center !important;
+            }
+            .hero-title {
+              font-size: var(--text-4xl) !important;
+            }
+            .hero-buttons {
+              justify-content: center !important;
+            }
+            .hide-mobile {
+              display: none !important;
+            }
+          }
+        `}} />
       </section>
 
       {/* Values Banner overlapping hero */}
@@ -453,10 +508,10 @@ export default function Home({ searchParams }: HomeProps) {
               La fin du stress pour les <span style={{ color: 'var(--orange)' }}>gestionnaires</span>{" "}immobiliers
             </h2>
             <p style={{ color: 'var(--gray-600)', marginBottom: 'var(--space-4)', fontSize: 'var(--text-base)', lineHeight: 1.65 }}>
-              <strong>Avant Veco IA :</strong> Vous courriez après les locataires pour les loyers, vous perdiez du temps à écrire des reçus papier, et les erreurs de comptabilité plombaient votre rentabilité (jusqu'à 20% de pertes !).
+              <strong>Avant Vision Immo 2.0 :</strong> Vous courriez après les locataires pour les loyers, vous perdiez du temps à écrire des reçus papier, et les erreurs de comptabilité plombaient votre rentabilité (jusqu'à 20% de pertes !).
             </p>
             <p style={{ color: 'var(--gray-600)', marginBottom: 'var(--space-8)', fontSize: 'var(--text-base)', lineHeight: 1.65 }}>
-              <strong>Avec Veco IA :</strong> Vos loyers sont payés via Mobile Money, vos quittances sont générées automatiquement, vos incidents sont centralisés, et vous suivez la rentabilité de vos biens en temps réel depuis votre téléphone.
+              <strong>Avec Vision Immo 2.0 :</strong> Vos loyers sont payés via Mobile Money, vos quittances sont générées automatiquement, vos incidents sont centralisés, et vous suivez la rentabilité de vos biens en temps réel depuis votre téléphone.
             </p>
             <a href="#contact" className="btn btn-green-to-white" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
               En savoir plus sur nous <ArrowRight size={16} />
