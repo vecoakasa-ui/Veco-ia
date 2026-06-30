@@ -44,18 +44,22 @@ export default function ProprietairesPage() {
   const [commission, setCommission] = useState("10");
 
   const loadData = async () => {
-    // 1. Instant load from cache (Stale-While-Revalidate)
-    const cached = getFromStorage("landlords", []);
-    if (cached && cached.length > 0) {
-      setLandlords(cached);
+    try {
+      // 1. Instant load from cache (Stale-While-Revalidate)
+      const cached = getFromStorage("landlords", []);
+      if (cached && cached.length > 0) {
+        setLandlords(cached);
+      }
+      
+      // 2. Background fetch for fresh data
+      const freshData = await db.getLandlords();
+      setLandlords(freshData);
+      
+      const freshProps = await db.getProperties();
+      setProperties(freshProps);
+    } finally {
+      setIsLoading(false);
     }
-    
-    // 2. Background fetch for fresh data
-    const freshData = await db.getLandlords();
-    setLandlords(freshData);
-    
-    const freshProps = await db.getProperties();
-    setProperties(freshProps);
   };
 
   useEffect(() => {
