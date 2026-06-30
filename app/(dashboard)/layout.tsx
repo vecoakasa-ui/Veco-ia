@@ -46,7 +46,7 @@ export default function DashboardLayout({
     email: "contact@visionimmo.com",
     phone: "+225 07 00 00 00 00",
     role: "owner",
-    avatar_url: null,
+    avatar_url: "/owner_avatar.png",
     subscription_plan: "pro",
     created_at: "",
   });

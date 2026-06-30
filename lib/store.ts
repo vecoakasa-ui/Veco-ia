@@ -467,6 +467,9 @@ export const db = {
           if (data.email && data.email.toLowerCase() === 'vecoakasa@gmail.com') {
             data.role = 'admin';
           }
+          if (!data.avatar_url) {
+            data.avatar_url = "/owner_avatar.png";
+          }
           return data as Profile;
         }
       }
