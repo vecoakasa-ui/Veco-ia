@@ -9,13 +9,15 @@
    CSS Custom Properties (Design Tokens)
    ============================================ */
 :root {
+  color-scheme: light dark;
+
   /* Fixed colors that never change in dark mode */
   --fixed-white: #FFFFFF;
   --fixed-gray-900: #111827;
 
   /* Primary brand color - Forest Green */
   --primary: #0A3D2A;
-  --primary-light: #0E523A;
+  --primary-light: #166A48;
   --primary-lighter: #E6F0EC;
   --primary-lightest: #F0F7F4;
   --primary-dark: #072C1E;

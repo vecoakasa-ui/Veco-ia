@@ -260,7 +260,7 @@ export default function Home({ searchParams }: HomeProps) {
               top: 'var(--navbar-height)',
               left: 0,
               width: '100%',
-              background: 'white',
+              background: 'var(--white)',
               borderBottom: '1px solid var(--gray-200)',
               padding: 'var(--space-6) var(--space-4)',
               display: 'flex',
@@ -368,7 +368,7 @@ export default function Home({ searchParams }: HomeProps) {
               <a href="/register" className="btn btn-orange pulse-btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', transition: 'transform 0.2s, box-shadow 0.2s', display: 'flex', alignItems: 'center', gap: '8px', background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', borderRadius: 'var(--radius-lg)' }}>
                 <Calendar size={18} /> Demander une démo
               </a>
-              <a href="#features" className="btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', background: 'white', color: 'var(--gray-900)', border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-sm)', transition: 'transform 0.2s, box-shadow 0.2s' }}>
+              <a href="#features" className="btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', background: 'var(--white)', color: 'var(--gray-900)', border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-sm)', transition: 'transform 0.2s, box-shadow 0.2s' }}>
                 Commencer gratuitement
               </a>
             </div>
@@ -382,7 +382,7 @@ export default function Home({ searchParams }: HomeProps) {
               style={{ width: '100%', maxWidth: '380px', height: 'auto', filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.25))', borderRadius: '24px', zIndex: 2, position: 'relative' }} 
             />
             {/* Floating badges for extra animation */}
-            <div className="floating-badge badge-left" style={{ position: 'absolute', top: '10%', left: '-15%', background: 'white', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 5s ease-in-out infinite reverse', zIndex: 3 }}>
+            <div className="floating-badge badge-left" style={{ position: 'absolute', top: '10%', left: '-15%', background: 'var(--white)', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 5s ease-in-out infinite reverse', zIndex: 3 }}>
               <div style={{ background: '#dcfce7', color: '#16a34a', padding: '8px', borderRadius: '50%' }}><Check size={20} /></div>
               <div>
                 <p style={{ margin: 0, fontSize: '12px', color: 'var(--gray-500)', fontWeight: 600 }}>Paiement reçu</p>
@@ -390,7 +390,7 @@ export default function Home({ searchParams }: HomeProps) {
               </div>
             </div>
             
-            <div className="floating-badge badge-right" style={{ position: 'absolute', bottom: '15%', right: '-15%', background: 'white', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 7s ease-in-out infinite', zIndex: 3 }}>
+            <div className="floating-badge badge-right" style={{ position: 'absolute', bottom: '15%', right: '-15%', background: 'var(--white)', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 7s ease-in-out infinite', zIndex: 3 }}>
               <div style={{ background: '#fef3c7', color: '#d97706', padding: '8px', borderRadius: '50%' }}><Sparkles size={20} /></div>
               <div>
                 <p style={{ margin: 0, fontSize: '12px', color: 'var(--gray-500)', fontWeight: 600 }}>Locataire satisfait</p>
@@ -412,7 +412,7 @@ export default function Home({ searchParams }: HomeProps) {
             <a href="/register" className="btn btn-orange pulse-btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', transition: 'transform 0.2s, box-shadow 0.2s', display: 'flex', alignItems: 'center', gap: '8px', background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', borderRadius: 'var(--radius-lg)' }}>
               <Calendar size={18} /> Demander une démo
             </a>
-            <a href="#features" className="btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', background: 'white', color: 'var(--gray-900)', border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-sm)', transition: 'transform 0.2s, box-shadow 0.2s' }}>
+            <a href="#features" className="btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', background: 'var(--white)', color: 'var(--gray-900)', border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-sm)', transition: 'transform 0.2s, box-shadow 0.2s' }}>
               Commencer gratuitement
             </a>
           </div>
@@ -746,7 +746,7 @@ export default function Home({ searchParams }: HomeProps) {
             />
             
             {/* Floating Stat 1 */}
-            <div className="floating-stat-card" style={{ position: 'absolute', top: '5%', right: '-5%', background: 'white', padding: '12px 16px', borderRadius: '16px', boxShadow: 'var(--shadow-xl)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 5s ease-in-out infinite reverse', zIndex: 2 }}>
+            <div className="floating-stat-card" style={{ position: 'absolute', top: '5%', right: '-5%', background: 'var(--white)', padding: '12px 16px', borderRadius: '16px', boxShadow: 'var(--shadow-xl)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 5s ease-in-out infinite reverse', zIndex: 2 }}>
               <div style={{ background: '#ffedd5', color: '#ea580c', padding: '10px', borderRadius: '50%' }}><Building2 size={24} /></div>
               <div>
                 <p style={{ margin: 0, fontSize: '18px', color: 'var(--gray-900)', fontWeight: 900 }}>+100</p>
@@ -755,7 +755,7 @@ export default function Home({ searchParams }: HomeProps) {
             </div>
 
             {/* Floating Stat 2 */}
-            <div className="floating-stat-card" style={{ position: 'absolute', bottom: '25%', left: '-10%', background: 'white', padding: '12px 16px', borderRadius: '16px', boxShadow: 'var(--shadow-xl)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 7s ease-in-out infinite', zIndex: 2 }}>
+            <div className="floating-stat-card" style={{ position: 'absolute', bottom: '25%', left: '-10%', background: 'var(--white)', padding: '12px 16px', borderRadius: '16px', boxShadow: 'var(--shadow-xl)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 7s ease-in-out infinite', zIndex: 2 }}>
               <div style={{ background: '#dcfce7', color: '#16a34a', padding: '10px', borderRadius: '50%' }}><Users size={24} /></div>
               <div>
                 <p style={{ margin: 0, fontSize: '18px', color: 'var(--gray-900)', fontWeight: 900 }}>+80</p>
@@ -764,7 +764,7 @@ export default function Home({ searchParams }: HomeProps) {
             </div>
             
             {/* Floating Stat 3 */}
-            <div className="floating-stat-card" style={{ position: 'absolute', bottom: '-5%', right: '15%', background: 'white', padding: '12px 16px', borderRadius: '16px', boxShadow: 'var(--shadow-xl)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 4s ease-in-out infinite reverse', zIndex: 2 }}>
+            <div className="floating-stat-card" style={{ position: 'absolute', bottom: '-5%', right: '15%', background: 'var(--white)', padding: '12px 16px', borderRadius: '16px', boxShadow: 'var(--shadow-xl)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 4s ease-in-out infinite reverse', zIndex: 2 }}>
               <div style={{ background: '#fef3c7', color: '#d97706', padding: '10px', borderRadius: '50%' }}><Clock size={24} /></div>
               <div>
                 <p style={{ margin: 0, fontSize: '18px', color: 'var(--gray-900)', fontWeight: 900 }}>+5 Ans</p>
@@ -809,7 +809,7 @@ export default function Home({ searchParams }: HomeProps) {
             <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(22,163,74,0.1) 0%, transparent 60%)', zIndex: 0, animation: 'float 8s ease-in-out infinite' }}></div>
             
             {/* Review 1 */}
-            <div className="testimonial-card" style={{ position: 'relative', zIndex: 1, background: 'white', padding: 'var(--space-6)', borderRadius: '24px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.05)', transform: 'perspective(1000px) rotateY(5deg)', transition: 'all 0.5s ease' }}>
+            <div className="testimonial-card" style={{ position: 'relative', zIndex: 1, background: 'var(--white)', padding: 'var(--space-6)', borderRadius: '24px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.05)', transform: 'perspective(1000px) rotateY(5deg)', transition: 'all 0.5s ease' }}>
               <div style={{ display: 'flex', gap: '4px', color: '#fbbf24', marginBottom: 'var(--space-4)' }}>
                 <Star size={20} fill="currentColor" />
                 <Star size={20} fill="currentColor" />
@@ -834,7 +834,7 @@ export default function Home({ searchParams }: HomeProps) {
             </div>
 
             {/* Review 2 */}
-            <div className="testimonial-card" style={{ position: 'relative', zIndex: 2, background: 'white', padding: 'var(--space-6)', borderRadius: '24px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15)', border: '1px solid rgba(0,0,0,0.05)', transform: 'perspective(1000px) scale(1.05)', transition: 'all 0.5s ease' }}>
+            <div className="testimonial-card" style={{ position: 'relative', zIndex: 2, background: 'var(--white)', padding: 'var(--space-6)', borderRadius: '24px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15)', border: '1px solid rgba(0,0,0,0.05)', transform: 'perspective(1000px) scale(1.05)', transition: 'all 0.5s ease' }}>
               <div style={{ display: 'flex', gap: '4px', color: '#fbbf24', marginBottom: 'var(--space-4)' }}>
                 <Star size={20} fill="currentColor" />
                 <Star size={20} fill="currentColor" />
@@ -859,7 +859,7 @@ export default function Home({ searchParams }: HomeProps) {
             </div>
 
             {/* Review 3 */}
-            <div className="testimonial-card" style={{ position: 'relative', zIndex: 1, background: 'white', padding: 'var(--space-6)', borderRadius: '24px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.05)', transform: 'perspective(1000px) rotateY(-5deg)', transition: 'all 0.5s ease' }}>
+            <div className="testimonial-card" style={{ position: 'relative', zIndex: 1, background: 'var(--white)', padding: 'var(--space-6)', borderRadius: '24px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.05)', transform: 'perspective(1000px) rotateY(-5deg)', transition: 'all 0.5s ease' }}>
               <div style={{ display: 'flex', gap: '4px', color: '#fbbf24', marginBottom: 'var(--space-4)' }}>
                 <Star size={20} fill="currentColor" />
                 <Star size={20} fill="currentColor" />
@@ -1047,7 +1047,7 @@ export default function Home({ searchParams }: HomeProps) {
           <div className="contact-grid">
             {/* Info */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
-              <div className="card" style={{ background: 'white' }}>
+              <div className="card" style={{ background: 'var(--white)' }}>
                 <h4 style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-2)', fontSize: 'var(--text-base)', color: 'var(--primary)' }}>
                   <Phone size={18} /> Téléphone & WhatsApp
                 </h4>
@@ -1055,7 +1055,7 @@ export default function Home({ searchParams }: HomeProps) {
                 <p style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-400)', marginTop: '4px' }}>Lun - Ven, 8h00 à 18h00</p>
               </div>
 
-              <div className="card" style={{ background: 'white' }}>
+              <div className="card" style={{ background: 'var(--white)' }}>
                 <h4 style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-2)', fontSize: 'var(--text-base)', color: 'var(--primary)' }}>
                   <Mail size={18} /> E-mail
                 </h4>
@@ -1063,7 +1063,7 @@ export default function Home({ searchParams }: HomeProps) {
                 <p style={{ fontSize: 'var(--text-xs)', color: 'var(--gray-400)', marginTop: '4px' }}>Réponse sous 24h ouvrées</p>
               </div>
 
-              <div className="card" style={{ background: 'white' }}>
+              <div className="card" style={{ background: 'var(--white)' }}>
                 <h4 style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', marginBottom: 'var(--space-2)', fontSize: 'var(--text-base)', color: 'var(--primary)' }}>
                   <MapPin size={18} /> Adresse
                 </h4>
@@ -1072,7 +1072,7 @@ export default function Home({ searchParams }: HomeProps) {
             </div>
 
             {/* Form */}
-            <div className="card" style={{ background: 'white' }}>
+            <div className="card" style={{ background: 'var(--white)' }}>
               <form onSubmit={(e) => { e.preventDefault(); alert('Message envoyé avec succès ! Notre équipe vous contactera rapidement.'); }} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
                 <div className="form-row-2col">
                   <div className="input-group">
@@ -1306,7 +1306,7 @@ export default function Home({ searchParams }: HomeProps) {
             style={{
               width: "100%",
               maxWidth: "460px",
-              background: "white",
+              background: 'var(--white)',
               padding: "var(--space-6)",
               borderTop: "6px solid var(--primary)",
               color: "var(--gray-800)"
@@ -1369,7 +1369,7 @@ export default function Home({ searchParams }: HomeProps) {
                 {/* QR Code Option */}
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-3)", background: "var(--gray-50)", padding: "var(--space-4)", borderRadius: "var(--radius-lg)", border: "1px dashed var(--gray-300)" }}>
                   <span style={{ fontSize: "var(--text-xs)", fontWeight: "700", color: "var(--primary)", textTransform: "uppercase", letterSpacing: "0.5px" }}>Option 1 : Paiement Sécurisé par Code QR</span>
-                  <div style={{ padding: "8px", background: "white", borderRadius: "8px", boxShadow: "var(--shadow-sm)" }}>
+                  <div style={{ padding: "8px", background: 'var(--white)', borderRadius: "8px", boxShadow: "var(--shadow-sm)" }}>
                     { }
                     <img 
                       src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&color=111827&data=paydunya_${selectedOperator}_sub_${selectedPlan || 'pro'}_${selectedPrice || '15000'}`} 
@@ -1383,7 +1383,7 @@ export default function Home({ searchParams }: HomeProps) {
                   <button 
                     type="button" 
                     className="btn btn-outline btn-sm" 
-                    style={{ width: "100%", background: "white", borderColor: "var(--success)", color: "var(--success-dark)" }}
+                    style={{ width: "100%", background: 'var(--white)', borderColor: "var(--success)", color: "var(--success-dark)" }}
                     onClick={() => setSimStep('otp_verification')}
                   >
                     <Check size={12} /> J&apos;ai scanné et validé sur mon mobile
