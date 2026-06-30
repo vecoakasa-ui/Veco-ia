@@ -867,6 +867,7 @@ export default function Home({ searchParams }: HomeProps) {
               <a href="#services" className="footer-link">Nos services</a>
               <a href="#why-us" className="footer-link">Pourquoi nous choisir</a>
               <a href="#pricing" className="footer-link">Tarifs</a>
+              <Link href="/marketing" className="footer-link">Stratégie Pitch</Link>
               <a href="#contact" className="footer-link">Contact</a>
             </div>
           </div>
