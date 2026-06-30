@@ -23,7 +23,9 @@ import {
   Loader2,
   Smartphone,
   ArrowUp,
-  Calendar
+  Calendar,
+  ChevronDown,
+  HelpCircle
 } from "lucide-react";
 
 interface HomeProps {
@@ -52,6 +54,11 @@ export default function Home({ searchParams }: HomeProps) {
   const [otpError, setOtpError] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  const toggleFaq = (index: number) => {
+    setOpenFaq(openFaq === index ? null : index);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -992,6 +999,75 @@ export default function Home({ searchParams }: HomeProps) {
                 </button>
               </form>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================
+         FAQ Section
+         ============================================ */}
+      <section id="faq" className="section" style={{ background: 'var(--white)' }}>
+        <div className="container" style={{ maxWidth: '800px' }}>
+          <div style={{ textAlign: 'center', marginBottom: 'var(--space-12)' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: 'var(--primary-lighter)', color: 'var(--primary)', padding: '16px', borderRadius: '50%', marginBottom: 'var(--space-4)', animation: 'float 4s ease-in-out infinite', boxShadow: 'var(--shadow-md)' }}>
+              <HelpCircle size={36} />
+            </div>
+            <span className="section-label">Foire Aux Questions</span>
+            <h2 className="section-title">Vous avez des questions ? Nous avons les réponses.</h2>
+            <p className="section-subtitle" style={{ margin: '0 auto' }}>
+              Retrouvez ici les réponses aux questions les plus fréquemment posées par nos bailleurs et gestionnaires.
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+            {[
+              { q: "Comment fonctionne la période d'essai gratuit ?", a: "Vous disposez de 14 jours pour tester l'intégralité de la plateforme sans aucun engagement. Aucune carte bancaire n'est requise lors de l'inscription." },
+              { q: "Mes données sont-elles sécurisées ?", a: "Absolument. Nous utilisons des protocoles de chiffrement de niveau bancaire. Vos données et celles de vos locataires sont stockées de manière ultra-sécurisée et sauvegardées quotidiennement." },
+              { q: "Puis-je gérer plusieurs propriétés à la fois ?", a: "Oui, Vision Immo 2.0 est conçu pour s'adapter à votre portefeuille. Que vous ayez 1 ou 100 biens, notre interface vous permet de tout piloter depuis un seul et même tableau de bord avec une vue d'ensemble claire." },
+              { q: "Proposez-vous une assistance en cas de problème ?", a: "Notre équipe support est disponible 7j/7 par chat, WhatsApp et email pour vous accompagner à chaque étape de votre gestion. Un centre d'aide détaillé est également à votre disposition." },
+              { q: "Comment les paiements des loyers sont-ils gérés ?", a: "Vos locataires peuvent payer directement en ligne via mobile money (Orange, MTN, Wave, Moov) ou par carte bancaire. Les fonds sont reversés automatiquement et les quittances sont générées sans votre intervention." }
+            ].map((faq, index) => (
+              <div 
+                key={index}
+                className="card"
+                style={{ 
+                  background: openFaq === index ? 'var(--primary-lighter)' : 'white', 
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  border: openFaq === index ? '2px solid var(--primary)' : '1px solid var(--gray-200)',
+                  boxShadow: openFaq === index ? 'var(--shadow-md)' : 'var(--shadow-sm)'
+                }}
+                onClick={() => toggleFaq(index)}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'var(--space-4)' }}>
+                  <h4 style={{ margin: 0, fontSize: 'var(--text-md)', fontWeight: openFaq === index ? '800' : '700', color: openFaq === index ? 'var(--primary)' : 'var(--gray-900)' }}>
+                    {faq.q}
+                  </h4>
+                  <div style={{ 
+                    color: openFaq === index ? 'var(--primary)' : 'var(--gray-500)',
+                    transform: openFaq === index ? 'rotate(180deg)' : 'rotate(0deg)',
+                    transition: 'transform 0.3s ease',
+                    background: openFaq === index ? 'rgba(255,255,255,0.8)' : 'var(--gray-100)',
+                    padding: '8px',
+                    borderRadius: '50%'
+                  }}>
+                    <ChevronDown size={20} />
+                  </div>
+                </div>
+                
+                <div style={{ 
+                  maxHeight: openFaq === index ? '200px' : '0px',
+                  overflow: 'hidden',
+                  transition: 'max-height 0.4s ease, margin-top 0.4s ease, opacity 0.4s ease',
+                  marginTop: openFaq === index ? 'var(--space-4)' : '0',
+                  opacity: openFaq === index ? 1 : 0
+                }}>
+                  <p style={{ margin: 0, fontSize: 'var(--text-sm)', color: 'var(--gray-700)', lineHeight: 1.6 }}>
+                    {faq.a}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
