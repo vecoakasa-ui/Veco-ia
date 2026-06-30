@@ -329,7 +329,7 @@ export default function Home({ searchParams }: HomeProps) {
       <section 
         className="hero-section"
         style={{
-          background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
+          background: 'linear-gradient(135deg, var(--gray-50) 0%, var(--gray-200) 100%)',
           paddingTop: 'calc(var(--navbar-height) + var(--space-20))',
           paddingBottom: 'var(--space-24)',
           position: 'relative',
@@ -351,7 +351,7 @@ export default function Home({ searchParams }: HomeProps) {
               <MapPin size={48} style={{ position: 'absolute', top: '65%', left: '25%', color: 'var(--gray-900)' }} />
             </div>
 
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.8)', padding: '6px 14px', borderRadius: 'var(--radius-full)', color: 'var(--gray-900)', fontSize: 'var(--text-xs)', fontWeight: '700', marginBottom: 'var(--space-6)', border: '1px solid rgba(0,0,0,0.05)', boxShadow: 'var(--shadow-sm)' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'var(--white)', padding: '6px 14px', borderRadius: 'var(--radius-full)', color: 'var(--gray-900)', fontSize: 'var(--text-xs)', fontWeight: '700', marginBottom: 'var(--space-6)', border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-sm)' }}>
               <span style={{ display: 'inline-flex', width: '16px', height: '12px', background: 'linear-gradient(to right, #E25822 33.3%, white 33.3%, white 66.6%, #0A3D2A 66.6%)', borderRadius: '1px' }}></span>
               Solution N°1 en Afrique
             </div>
@@ -742,7 +742,7 @@ export default function Home({ searchParams }: HomeProps) {
             <img 
               src="/dashboard-mockup.png" 
               alt="Vision Immo 2.0 Dashboard" 
-              style={{ width: '100%', maxWidth: '440px', height: 'auto', borderRadius: '24px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', zIndex: 1, position: 'relative', border: '6px solid white' }}
+              style={{ width: '100%', maxWidth: '440px', height: 'auto', borderRadius: '24px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', zIndex: 1, position: 'relative', border: '6px solid var(--white)' }}
             />
             
             {/* Floating Stat 1 */}
@@ -1143,7 +1143,7 @@ export default function Home({ searchParams }: HomeProps) {
                 key={index}
                 className="card"
                 style={{ 
-                  background: openFaq === index ? 'var(--primary-lighter)' : 'white', 
+                  background: openFaq === index ? 'var(--primary-lighter)' : 'var(--white)', 
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
                   border: openFaq === index ? '2px solid var(--primary)' : '1px solid var(--gray-200)',
@@ -1159,7 +1159,7 @@ export default function Home({ searchParams }: HomeProps) {
                     color: openFaq === index ? 'var(--primary)' : 'var(--gray-500)',
                     transform: openFaq === index ? 'rotate(180deg)' : 'rotate(0deg)',
                     transition: 'transform 0.3s ease',
-                    background: openFaq === index ? 'rgba(255,255,255,0.8)' : 'var(--gray-100)',
+                    background: openFaq === index ? 'var(--white)' : 'var(--gray-100)',
                     padding: '8px',
                     borderRadius: '50%'
                   }}>
