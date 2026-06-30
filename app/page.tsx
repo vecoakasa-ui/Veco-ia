@@ -25,7 +25,8 @@ import {
   ArrowUp,
   Calendar,
   ChevronDown,
-  HelpCircle
+  HelpCircle,
+  Star
 } from "lucide-react";
 
 interface HomeProps {
@@ -785,6 +786,117 @@ export default function Home({ searchParams }: HomeProps) {
           @media (max-width: 480px) {
             .floating-stat-card {
               transform: scale(0.7);
+            }
+          }
+        `}} />
+      </section>
+
+      {/* ============================================
+         Testimonials Section
+         ============================================ */}
+      <section id="testimonials" className="section" style={{ background: 'var(--white)', overflow: 'hidden' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', marginBottom: 'var(--space-12)' }}>
+            <span className="section-label">Avis Clients</span>
+            <h2 className="section-title">Ce qu'ils pensent de Vision Immo 2.0</h2>
+            <p className="section-subtitle" style={{ margin: '0 auto' }}>
+              Découvrez les retours des propriétaires et agences qui utilisent notre solution au quotidien.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--space-8)', position: 'relative' }}>
+            {/* Background decorative element */}
+            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(22,163,74,0.1) 0%, transparent 60%)', zIndex: 0, animation: 'float 8s ease-in-out infinite' }}></div>
+            
+            {/* Review 1 */}
+            <div className="testimonial-card" style={{ position: 'relative', zIndex: 1, background: 'white', padding: 'var(--space-6)', borderRadius: '24px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.05)', transform: 'perspective(1000px) rotateY(5deg)', transition: 'all 0.5s ease' }}>
+              <div style={{ display: 'flex', gap: '4px', color: '#fbbf24', marginBottom: 'var(--space-4)' }}>
+                <Star size={20} fill="currentColor" />
+                <Star size={20} fill="currentColor" />
+                <Star size={20} fill="currentColor" />
+                <Star size={20} fill="currentColor" />
+                <Star size={20} fill="currentColor" />
+              </div>
+              <p style={{ fontSize: 'var(--text-md)', color: 'var(--gray-700)', lineHeight: 1.6, marginBottom: 'var(--space-6)', fontStyle: 'italic' }}>
+                "Depuis que j'utilise Vision Immo 2.0, la gestion de mes 15 appartements est devenue un jeu d'enfant. Les quittances automatiques sont un vrai gain de temps."
+              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
+                <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: 'var(--primary-lighter)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)', fontWeight: 'bold', fontSize: '20px' }}>
+                  A
+                </div>
+                <div>
+                  <h4 style={{ margin: 0, fontSize: 'var(--text-base)', fontWeight: '800', color: 'var(--gray-900)' }}>Amadou K.</h4>
+                  <p style={{ margin: 0, fontSize: 'var(--text-xs)', color: 'var(--gray-500)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <MapPin size={12} color="var(--orange)" /> Abidjan, Cocody
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Review 2 */}
+            <div className="testimonial-card" style={{ position: 'relative', zIndex: 2, background: 'white', padding: 'var(--space-6)', borderRadius: '24px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.15)', border: '1px solid rgba(0,0,0,0.05)', transform: 'perspective(1000px) scale(1.05)', transition: 'all 0.5s ease' }}>
+              <div style={{ display: 'flex', gap: '4px', color: '#fbbf24', marginBottom: 'var(--space-4)' }}>
+                <Star size={20} fill="currentColor" />
+                <Star size={20} fill="currentColor" />
+                <Star size={20} fill="currentColor" />
+                <Star size={20} fill="currentColor" />
+                <Star size={20} fill="currentColor" />
+              </div>
+              <p style={{ fontSize: 'var(--text-md)', color: 'var(--gray-700)', lineHeight: 1.6, marginBottom: 'var(--space-6)', fontStyle: 'italic' }}>
+                "L'intégration des paiements par Mobile Money a révolutionné notre agence. Nos locataires paient plus vite et sans se déplacer."
+              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
+                <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: '#ffedd5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ea580c', fontWeight: 'bold', fontSize: '20px' }}>
+                  S
+                </div>
+                <div>
+                  <h4 style={{ margin: 0, fontSize: 'var(--text-base)', fontWeight: '800', color: 'var(--gray-900)' }}>Sarah M.</h4>
+                  <p style={{ margin: 0, fontSize: 'var(--text-xs)', color: 'var(--gray-500)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <MapPin size={12} color="var(--primary)" /> Yamoussoukro
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Review 3 */}
+            <div className="testimonial-card" style={{ position: 'relative', zIndex: 1, background: 'white', padding: 'var(--space-6)', borderRadius: '24px', boxShadow: '0 20px 40px -10px rgba(0,0,0,0.1)', border: '1px solid rgba(0,0,0,0.05)', transform: 'perspective(1000px) rotateY(-5deg)', transition: 'all 0.5s ease' }}>
+              <div style={{ display: 'flex', gap: '4px', color: '#fbbf24', marginBottom: 'var(--space-4)' }}>
+                <Star size={20} fill="currentColor" />
+                <Star size={20} fill="currentColor" />
+                <Star size={20} fill="currentColor" />
+                <Star size={20} fill="currentColor" />
+                <Star size={20} fill="currentColor" />
+              </div>
+              <p style={{ fontSize: 'var(--text-md)', color: 'var(--gray-700)', lineHeight: 1.6, marginBottom: 'var(--space-6)', fontStyle: 'italic' }}>
+                "Le tableau de bord est super intuitif. En un coup d'œil, je vois les loyers impayés et j'envoie des relances automatiques."
+              </p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-4)' }}>
+                <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: '#dcfce7', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#16a34a', fontWeight: 'bold', fontSize: '20px' }}>
+                  M
+                </div>
+                <div>
+                  <h4 style={{ margin: 0, fontSize: 'var(--text-base)', fontWeight: '800', color: 'var(--gray-900)' }}>Marc T.</h4>
+                  <p style={{ margin: 0, fontSize: 'var(--text-xs)', color: 'var(--gray-500)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <MapPin size={12} color="#fbbf24" /> San-Pédro
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <style dangerouslySetInnerHTML={{__html: `
+          .testimonial-card:hover {
+            transform: perspective(1000px) rotateY(0deg) scale(1.08) !important;
+            box-shadow: 0 30px 60px -15px rgba(0,0,0,0.15) !important;
+            z-index: 10 !important;
+          }
+          @media (max-width: 992px) {
+            .testimonial-card {
+              transform: none !important;
+            }
+            .testimonial-card:hover {
+              transform: translateY(-10px) !important;
             }
           }
         `}} />
