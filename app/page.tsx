@@ -727,44 +727,60 @@ export default function Home({ searchParams }: HomeProps) {
             </ul>
           </div>
 
-          <div className="stats-grid animate-scale-in">
-            {/* Stat 1 */}
-            <div className="stat-card">
-              <div className="stat-icon orange">
-                <Building2 size={20} />
+          <div className="why-us-image-wrapper" style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', animation: 'float 6s ease-in-out infinite', padding: 'var(--space-8) 0' }}>
+            {/* Background decorative shape */}
+            <div style={{ position: 'absolute', width: '350px', height: '350px', background: 'linear-gradient(135deg, #f9731633 0%, #16a34a33 100%)', borderRadius: '50%', filter: 'blur(50px)', zIndex: 0 }}></div>
+            
+            <img 
+              src="/dashboard-mockup.png" 
+              alt="Vision Immo 2.0 Dashboard" 
+              style={{ width: '100%', maxWidth: '440px', height: 'auto', borderRadius: '24px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', zIndex: 1, position: 'relative', border: '6px solid white' }}
+            />
+            
+            {/* Floating Stat 1 */}
+            <div className="floating-stat-card" style={{ position: 'absolute', top: '5%', right: '-5%', background: 'white', padding: '12px 16px', borderRadius: '16px', boxShadow: 'var(--shadow-xl)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 5s ease-in-out infinite reverse', zIndex: 2 }}>
+              <div style={{ background: '#ffedd5', color: '#ea580c', padding: '10px', borderRadius: '50%' }}><Building2 size={24} /></div>
+              <div>
+                <p style={{ margin: 0, fontSize: '18px', color: 'var(--gray-900)', fontWeight: 900 }}>+100</p>
+                <p style={{ margin: 0, fontSize: '12px', color: 'var(--gray-500)', fontWeight: 600 }}>Biens gérés</p>
               </div>
-              <div className="stat-number">+100</div>
-              <div className="stat-label">Biens gérés</div>
             </div>
 
-            {/* Stat 2 */}
-            <div className="stat-card">
-              <div className="stat-icon green">
-                <Users size={20} />
+            {/* Floating Stat 2 */}
+            <div className="floating-stat-card" style={{ position: 'absolute', bottom: '25%', left: '-10%', background: 'white', padding: '12px 16px', borderRadius: '16px', boxShadow: 'var(--shadow-xl)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 7s ease-in-out infinite', zIndex: 2 }}>
+              <div style={{ background: '#dcfce7', color: '#16a34a', padding: '10px', borderRadius: '50%' }}><Users size={24} /></div>
+              <div>
+                <p style={{ margin: 0, fontSize: '18px', color: 'var(--gray-900)', fontWeight: 900 }}>+80</p>
+                <p style={{ margin: 0, fontSize: '12px', color: 'var(--gray-500)', fontWeight: 600 }}>Clients satisfaits</p>
               </div>
-              <div className="stat-number">+80</div>
-              <div className="stat-label">Clients satisfaits</div>
             </div>
-
-            {/* Stat 3 */}
-            <div className="stat-card">
-              <div className="stat-icon green">
-                <Clock size={20} />
+            
+            {/* Floating Stat 3 */}
+            <div className="floating-stat-card" style={{ position: 'absolute', bottom: '-5%', right: '15%', background: 'white', padding: '12px 16px', borderRadius: '16px', boxShadow: 'var(--shadow-xl)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 4s ease-in-out infinite reverse', zIndex: 2 }}>
+              <div style={{ background: '#fef3c7', color: '#d97706', padding: '10px', borderRadius: '50%' }}><Clock size={24} /></div>
+              <div>
+                <p style={{ margin: 0, fontSize: '18px', color: 'var(--gray-900)', fontWeight: 900 }}>+5 Ans</p>
+                <p style={{ margin: 0, fontSize: '12px', color: 'var(--gray-500)', fontWeight: 600 }}>D&apos;expérience</p>
               </div>
-              <div className="stat-number">+5</div>
-              <div className="stat-label">Années d&apos;expérience</div>
-            </div>
-
-            {/* Stat 4 */}
-            <div className="stat-card">
-              <div className="stat-icon orange">
-                <MapPin size={20} />
-              </div>
-              <div className="stat-number">Abidjan</div>
-              <div className="stat-label">Couverture nationale</div>
             </div>
           </div>
         </div>
+        
+        <style dangerouslySetInnerHTML={{__html: `
+          @media (max-width: 992px) {
+            .floating-stat-card {
+              transform: scale(0.8);
+            }
+            .why-us-image-wrapper {
+              margin-top: var(--space-8);
+            }
+          }
+          @media (max-width: 480px) {
+            .floating-stat-card {
+              transform: scale(0.7);
+            }
+          }
+        `}} />
       </section>
 
       {/* ============================================
