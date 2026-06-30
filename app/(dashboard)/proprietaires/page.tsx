@@ -19,6 +19,7 @@ import { Landlord, Property } from "@/lib/types";
 
 export default function ProprietairesPage() {
   const [landlords, setLandlords] = useState<Landlord[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [properties, setProperties] = useState<Property[]>([]);
   const [search, setSearch] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
@@ -231,7 +232,14 @@ export default function ProprietairesPage() {
               </tr>
             </thead>
             <tbody>
-              {filteredLandlords.length === 0 ? (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={10} style={{ textAlign: "center", padding: "var(--space-16)" }}>
+                    <div style={{ width: "24px", height: "24px", border: "3px solid var(--primary)", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto var(--space-4) auto" }}></div>
+                    <p style={{ color: "var(--gray-500)", fontWeight: 500, margin: 0 }}>Chargement des données...</p>
+                  </td>
+                </tr>
+              ) : filteredLandlords.length === 0 ? (
                 <tr>
                   <td colSpan={7} style={{ textAlign: "center", padding: "var(--space-16)", color: "var(--gray-400)" }}>
                     Aucun propriétaire enregistré.

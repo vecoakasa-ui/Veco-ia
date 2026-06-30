@@ -30,6 +30,7 @@ export default function DashboardPage() {
     total_leases: 0
   });
   const [recentPayments, setRecentPayments] = useState<Payment[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [upcomingPayments, setUpcomingPayments] = useState<Payment[]>([]);
   const [chartData, setChartData] = useState<{month: string, val: number, rawTotal: number}[]>([
     { month: "Jan", val: 0, rawTotal: 0 }, { month: "Fév", val: 0, rawTotal: 0 }, { month: "Mar", val: 0, rawTotal: 0 },
@@ -290,8 +291,14 @@ export default function DashboardPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {recentPayments.length === 0 ? (
-                    <tr>
+                  {isLoading ? (
+                  <tr>
+                    <td colSpan={5} style={{ textAlign: "center", padding: "var(--space-8)" }}>
+                      <div style={{ width: "20px", height: "20px", border: "2px solid var(--primary)", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto" }}></div>
+                    </td>
+                  </tr>
+                ) : recentPayments.length === 0 ? (
+                  <tr>
                       <td colSpan={5} style={{ textAlign: "center", padding: "var(--space-8)", color: "var(--gray-400)" }}>
                         Aucun paiement validé trouvé.
                       </td>
@@ -384,7 +391,11 @@ export default function DashboardPage() {
             <h3 style={{ fontSize: "var(--text-base)", fontWeight: "700", marginBottom: "var(--space-4)" }}>Prochaines échéances</h3>
             
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
-              {upcomingPayments.length === 0 ? (
+              {isLoading ? (
+                <div style={{ padding: "var(--space-8)", textAlign: "center" }}>
+                  <div style={{ width: "20px", height: "20px", border: "2px solid var(--primary)", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto" }}></div>
+                </div>
+              ) : upcomingPayments.length === 0 ? (
                 <div style={{ textAlign: "center", padding: "var(--space-6)", color: "var(--gray-400)", fontSize: "var(--text-sm)" }}>
                   Aucune échéance à venir.
                 </div>

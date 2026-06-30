@@ -8,6 +8,7 @@ import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 export default function IncidentsPage() {
   const [incidents, setIncidents] = useState<Incident[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [properties, setProperties] = useState<Record<string, Property>>({});
   const [tenants, setTenants] = useState<Record<string, Tenant>>({});
@@ -39,6 +40,7 @@ export default function IncidentsPage() {
       setIncidents(list);
       setProperties(props);
       setTenants(tens);
+      setIsLoading(false);
     };
     loadIncidentsData();
   }, []);
@@ -175,7 +177,12 @@ export default function IncidentsPage() {
         </div>
       </div>
 
-      {filtered.length === 0 ? (
+      {isLoading ? (
+        <div className="card" style={{ padding: "var(--space-16)", textAlign: "center" }}>
+          <div style={{ width: "24px", height: "24px", border: "3px solid var(--primary)", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto var(--space-4) auto" }}></div>
+          <p style={{ color: "var(--gray-500)", fontWeight: 500, margin: 0 }}>Chargement des données...</p>
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="card" style={{ textAlign: "center", padding: "var(--space-16)" }}>
           <AlertTriangle size={48} style={{ color: "var(--gray-300)", margin: "0 auto var(--space-4) auto" }} />
           <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 700 }}>Aucun incident</h3>

@@ -24,6 +24,7 @@ import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 export default function CautionsPage() {
   const [leases, setLeases] = useState<Lease[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   
   // Modals state
@@ -249,8 +250,13 @@ export default function CautionsPage() {
 
       {/* List */}
       <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
-        {filteredLeases.length === 0 ? (
-          <div className="card" style={{ textAlign: "center", padding: "var(--space-12)" }}>
+        {isLoading ? (
+        <div className="card" style={{ padding: "var(--space-16)", textAlign: "center" }}>
+          <div style={{ width: "24px", height: "24px", border: "3px solid var(--primary)", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto var(--space-4) auto" }}></div>
+          <p style={{ color: "var(--gray-500)", fontWeight: 500, margin: 0 }}>Chargement des données...</p>
+        </div>
+      ) : filteredLeases.length === 0 ? (
+        <div className="card" style={{ textAlign: "center", padding: "var(--space-12)" }}>
             <ClipboardCheck size={48} style={{ color: "var(--gray-300)", margin: "0 auto var(--space-4) auto" }} />
             <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 700, color: "var(--gray-600)" }}>Aucun bail trouvé</h3>
           </div>

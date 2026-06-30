@@ -21,6 +21,7 @@ type RelanceItem = Payment & {
 
 export default function RelancesPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [tenants, setTenants] = useState<Tenant[]>([]);
   const [search, setSearch] = useState("");
 
@@ -129,7 +130,12 @@ export default function RelancesPage() {
       </div>
 
       {/* List / Grid of Relances */}
-      {filteredItems.length === 0 ? (
+      {isLoading ? (
+        <div className="card" style={{ padding: "var(--space-16)", textAlign: "center" }}>
+          <div style={{ width: "24px", height: "24px", border: "3px solid var(--primary)", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto var(--space-4) auto" }}></div>
+          <p style={{ color: "var(--gray-500)", fontWeight: 500, margin: 0 }}>Chargement des données...</p>
+        </div>
+      ) : filteredItems.length === 0 ? (
         <div className="card" style={{ textAlign: "center", padding: "var(--space-16)" }}>
           <CheckCircle2 size={48} style={{ color: "var(--success)", margin: "0 auto var(--space-4) auto" }} />
           <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 700 }}>Aucune relance nécessaire</h3>

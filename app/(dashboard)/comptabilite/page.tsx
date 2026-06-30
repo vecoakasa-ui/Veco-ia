@@ -29,6 +29,7 @@ type Transaction = {
 
 export default function ComptabilitePage() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [properties, setProperties] = useState<Property[]>([]);
   const [landlords, setLandlords] = useState<Landlord[]>([]);
@@ -229,7 +230,14 @@ export default function ComptabilitePage() {
               </tr>
             </thead>
             <tbody>
-              {filteredTransactions.length === 0 ? (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={10} style={{ textAlign: "center", padding: "var(--space-16)" }}>
+                    <div style={{ width: "24px", height: "24px", border: "3px solid var(--primary)", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto var(--space-4) auto" }}></div>
+                    <p style={{ color: "var(--gray-500)", fontWeight: 500, margin: 0 }}>Chargement des données...</p>
+                  </td>
+                </tr>
+              ) : filteredTransactions.length === 0 ? (
                 <tr>
                   <td colSpan={6} style={{ textAlign: "center", padding: "var(--space-16)", color: "var(--gray-400)" }}>
                     Aucune transaction financière trouvée.

@@ -8,6 +8,7 @@ import { formatCurrency } from "@/lib/utils";
 
 export default function QuittancesPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
 
@@ -16,6 +17,7 @@ export default function QuittancesPage() {
     const loadQuittances = async () => {
       const allPayments = await db.getPayments();
       setPayments(allPayments.filter(p => p.status === "paid"));
+      setIsLoading(false);
     };
     loadQuittances();
   }, []);
@@ -90,7 +92,14 @@ export default function QuittancesPage() {
               </tr>
             </thead>
             <tbody>
-              {filtered.length === 0 ? (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={10} style={{ textAlign: "center", padding: "var(--space-16)" }}>
+                    <div style={{ width: "24px", height: "24px", border: "3px solid var(--primary)", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto var(--space-4) auto" }}></div>
+                    <p style={{ color: "var(--gray-500)", fontWeight: 500, margin: 0 }}>Chargement des données...</p>
+                  </td>
+                </tr>
+              ) : filtered.length === 0 ? (
                 <tr>
                   <td colSpan={5} style={{ padding: "var(--space-8)", textAlign: "center", color: "var(--gray-500)" }}>
                     Aucune quittance trouvée pour cette recherche.
