@@ -48,7 +48,7 @@ export default function DashboardPage() {
       try {
         const [s, allPayments] = await Promise.all([
           db.getStats(),
-          db.getPayments()
+          db.getDashboardPayments()
         ]);
         
         setStats(s);

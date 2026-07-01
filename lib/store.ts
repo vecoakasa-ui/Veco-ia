@@ -1088,6 +1088,39 @@ export const db = {
 
   // Calculate stats in real-time
   getStats: async (): Promise<DashboardStats> => {
+    if (isSupabaseConfigured()) {
+      try {
+        const [props, ten, pays, lands, leasesData, incidentsData, occupiedProps] = await Promise.all([
+          supabase.from("properties").select("id", { count: "exact", head: true }),
+          supabase.from("tenants").select("id", { count: "exact", head: true }),
+          supabase.from("payments").select("total, status"),
+          supabase.from("landlords").select("id", { count: "exact", head: true }),
+          supabase.from("leases").select("id", { count: "exact", head: true }),
+          supabase.from("incidents").select("id", { count: "exact", head: true }).in("status", ["open", "in_progress"]),
+          supabase.from("properties").select("id", { count: "exact", head: true }).eq("status", "occupied")
+        ]);
+        
+        const total_properties = props.count || 0;
+        const payments = pays.data || [];
+        
+        return {
+          total_properties,
+          total_tenants: ten.count || 0,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          total_revenue: payments.filter((p: any) => p.status === "paid").reduce((sum: number, p: any) => sum + p.total, 0),
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          late_payments: payments.filter((p: any) => p.status === "late").length,
+          occupancy_rate: total_properties > 0 ? Math.round(((occupiedProps.count || 0) / total_properties) * 100) : 0,
+          total_landlords: lands.count || 0,
+          total_leases: leasesData.count || 0,
+          unresolved_incidents: incidentsData.count || 0
+        };
+      } catch (err) {
+        console.error("Error fetching stats from Supabase:", err);
+        checkAuthError(err);
+      }
+    }
+
     const [properties, tenants, payments, landlords, leases, incidents] = await Promise.all([
       db.getProperties(),
       db.getTenants(),
@@ -1123,6 +1156,29 @@ export const db = {
       total_leases,
       unresolved_incidents
     };
+  },
+
+  getDashboardPayments: async (): Promise<Payment[]> => {
+    if (isSupabaseConfigured()) {
+      try {
+        const currentYear = new Date().getFullYear();
+        const startDate = `${currentYear}-01-01T00:00:00Z`;
+        
+        // Fetch only recent payments and payments of current year
+        const { data, error } = await supabase
+          .from("payments")
+          .select("*")
+          .gte("created_at", startDate)
+          .order("created_at", { ascending: false });
+          
+        if (error) throw error;
+        if (data) return data as Payment[];
+      } catch (err) {
+        console.error("Error fetching dashboard payments from Supabase:", err);
+        checkAuthError(err);
+      }
+    }
+    return await db.getPayments();
   },
 
   // ============================================
