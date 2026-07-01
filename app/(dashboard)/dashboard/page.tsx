@@ -12,7 +12,8 @@ import {
   ArrowRight,
   Banknote,
   Briefcase,
-  FileText
+  FileText,
+  AlertCircle
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { formatCurrency, formatDate, getPaymentStatusClass, getPaymentStatusLabel } from "@/lib/utils";
@@ -27,7 +28,8 @@ export default function DashboardPage() {
     late_payments: 0,
     occupancy_rate: 0,
     total_landlords: 0,
-    total_leases: 0
+    total_leases: 0,
+    unresolved_incidents: 0
   });
   const [recentPayments, setRecentPayments] = useState<Payment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -223,6 +225,22 @@ export default function DashboardPage() {
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "var(--text-xs)", color: stats.late_payments > 0 ? "var(--danger-dark)" : "var(--gray-500)", fontWeight: stats.late_payments > 0 ? 600 : 400 }}>
             {stats.late_payments > 0 ? "Nécessite des relances de paiement" : "Aucun retard de paiement"}
+          </div>
+        </div>
+
+        {/* Card 7: Incidents Non Résolus */}
+        <div className="card" onClick={() => router.push("/incidents")} style={{ cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "space-between", borderLeft: (stats.unresolved_incidents || 0) > 0 ? "4px solid var(--danger)" : "4px solid var(--success)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-4)" }}>
+            <div>
+              <span style={{ fontSize: "var(--text-xs)", fontWeight: "600", color: "var(--gray-500)", textTransform: "uppercase" }}>Incidents en Attente</span>
+              <h3 style={{ fontSize: "var(--text-3xl)", fontWeight: "800", color: (stats.unresolved_incidents || 0) > 0 ? "var(--danger)" : "var(--gray-900)", margin: "4px 0 0 0" }}>{stats.unresolved_incidents || 0}</h3>
+            </div>
+            <div style={{ padding: "10px", background: (stats.unresolved_incidents || 0) > 0 ? "var(--danger-light)" : "rgba(16, 185, 129, 0.1)", color: (stats.unresolved_incidents || 0) > 0 ? "var(--danger)" : "var(--success)", borderRadius: "var(--radius-lg)" }}>
+              <AlertCircle size={20} />
+            </div>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "var(--text-xs)", color: (stats.unresolved_incidents || 0) > 0 ? "var(--danger-dark)" : "var(--gray-500)", fontWeight: (stats.unresolved_incidents || 0) > 0 ? 600 : 400 }}>
+            {(stats.unresolved_incidents || 0) > 0 ? "Nécessite votre attention" : "Aucun incident signalé"} <ArrowRight size={12} />
           </div>
         </div>
       </div>

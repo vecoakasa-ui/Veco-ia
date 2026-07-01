@@ -1088,12 +1088,13 @@ export const db = {
 
   // Calculate stats in real-time
   getStats: async (): Promise<DashboardStats> => {
-    const [properties, tenants, payments, landlords, leases] = await Promise.all([
+    const [properties, tenants, payments, landlords, leases, incidents] = await Promise.all([
       db.getProperties(),
       db.getTenants(),
       db.getPayments(),
       db.getLandlords(),
-      db.getLeases()
+      db.getLeases(),
+      db.getIncidents()
     ]);
 
     const total_properties = properties.length;
@@ -1110,6 +1111,8 @@ export const db = {
     const occupiedCount = properties.filter(p => p.status === "occupied").length;
     const occupancy_rate = total_properties > 0 ? Math.round((occupiedCount / total_properties) * 100) : 0;
 
+    const unresolved_incidents = incidents.filter(i => i.status === "open" || i.status === "in_progress").length;
+
     return {
       total_properties,
       total_tenants,
@@ -1117,7 +1120,8 @@ export const db = {
       late_payments,
       occupancy_rate,
       total_landlords,
-      total_leases
+      total_leases,
+      unresolved_incidents
     };
   },
 

@@ -46,7 +46,11 @@ export default function CautionsPage() {
   const [deductionAmount, setDeductionAmount] = useState("");
 
   const loadData = async () => {
-    setLeases(await db.getLeases());
+    try {
+      setLeases(await db.getLeases());
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {

@@ -31,8 +31,12 @@ export default function PaiementsPage() {
   const [payDate, setPayDate] = useState(new Date().toISOString().split('T')[0]);
 
   const loadPayments = async () => {
-    const list = await db.getPayments();
-    setPayments(list);
+    try {
+      const list = await db.getPayments();
+      setPayments(list);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const copyPaymentLink = (id: string) => {

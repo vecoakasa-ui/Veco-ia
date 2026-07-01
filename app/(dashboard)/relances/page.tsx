@@ -26,8 +26,12 @@ export default function RelancesPage() {
   const [search, setSearch] = useState("");
 
   const loadData = async () => {
-    setPayments(await db.getPayments());
-    setTenants(await db.getTenants());
+    try {
+      setPayments(await db.getPayments());
+      setTenants(await db.getTenants());
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {

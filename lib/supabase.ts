@@ -15,7 +15,25 @@ export function isSupabaseConfigured(): boolean {
   );
 }
 
+// Custom fetch wrapper to prevent infinite hangs if Supabase is paused or unreachable
+const customFetch = async (url: RequestInfo | URL, options?: RequestInit) => {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), 15000); // 15 seconds timeout
+  try {
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    return response;
+  } catch (error) {
+    throw error;
+  } finally {
+    clearTimeout(id);
+  }
+};
+
 // Toujours créer un client dummy si non configuré pour éviter les crashs
 export const supabase = isSupabaseConfigured()
-  ? createBrowserClient(supabaseUrl, supabaseAnonKey)
+  ? createBrowserClient(supabaseUrl, supabaseAnonKey, {
+      global: {
+        fetch: customFetch
+      }
+    })
   : (null as unknown as ReturnType<typeof createBrowserClient>);

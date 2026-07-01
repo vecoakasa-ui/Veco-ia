@@ -195,6 +195,7 @@ export interface DashboardStats {
   occupancy_rate: number;
   total_landlords?: number;
   total_leases?: number;
+  unresolved_incidents?: number;
 }
 
 export interface PricingPlan {

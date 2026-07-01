@@ -46,10 +46,14 @@ export default function ComptabilitePage() {
   const [landlordId, setLandlordId] = useState("");
 
   const loadData = async () => {
-    setExpenses(await db.getExpenses());
-    setPayments(await db.getPayments());
-    setProperties(await db.getProperties());
-    setLandlords(await db.getLandlords());
+    try {
+      setExpenses(await db.getExpenses());
+      setPayments(await db.getPayments());
+      setProperties(await db.getProperties());
+      setLandlords(await db.getLandlords());
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
