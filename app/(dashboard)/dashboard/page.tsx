@@ -43,42 +43,49 @@ export default function DashboardPage() {
   useEffect(() => {
     // Load dynamic data from localStorage or Supabase
     const runLoad = async () => {
-      const s = await db.getStats();
-      setStats(s);
-      const allPayments = await db.getPayments();
-      setRecentPayments(allPayments.filter(p => p.status === "paid").slice(0, 4));
-      setUpcomingPayments(allPayments.filter(p => p.status === "upcoming" || p.status === "pending").slice(0, 3));
+      try {
+        const [s, allPayments] = await Promise.all([
+          db.getStats(),
+          db.getPayments()
+        ]);
+        
+        setStats(s);
+        setRecentPayments(allPayments.filter(p => p.status === "paid").slice(0, 4));
+        setUpcomingPayments(allPayments.filter(p => p.status === "upcoming" || p.status === "pending").slice(0, 3));
 
-      // Calcul du graphique des revenus
-      const currentYear = new Date().getFullYear();
-      const currentMonthIndex = new Date().getMonth();
-      const monthNames = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"];
-      
-      const newChartData = monthNames.map((m) => ({ month: m, val: 0, rawTotal: 0 }));
-      
-      const paidThisYear = allPayments.filter(p => p.status === "paid" && new Date(p.payment_date || p.created_at).getFullYear() === currentYear);
-      
-      paidThisYear.forEach(p => {
-        const pMonthIndex = new Date(p.payment_date || p.created_at).getMonth();
-        newChartData[pMonthIndex].rawTotal += p.total;
-      });
+        // Calcul du graphique des revenus
+        const currentYear = new Date().getFullYear();
+        const currentMonthIndex = new Date().getMonth();
+        const monthNames = ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"];
+        
+        const newChartData = monthNames.map((m) => ({ month: m, val: 0, rawTotal: 0 }));
+        
+        const paidThisYear = allPayments.filter(p => p.status === "paid" && new Date(p.payment_date || p.created_at).getFullYear() === currentYear);
+        
+        paidThisYear.forEach(p => {
+          const pMonthIndex = new Date(p.payment_date || p.created_at).getMonth();
+          newChartData[pMonthIndex].rawTotal += p.total;
+        });
 
-      const maxRev = Math.max(...newChartData.map(d => d.rawTotal), 1);
-      const normalizedChartData = newChartData.map(d => ({
-        month: d.month,
-        val: Math.round((d.rawTotal / maxRev) * 100),
-        rawTotal: d.rawTotal
-      }));
-      setChartData(normalizedChartData);
+        const maxRev = Math.max(...newChartData.map(d => d.rawTotal), 1);
+        const normalizedChartData = newChartData.map(d => ({
+          month: d.month,
+          val: Math.round((d.rawTotal / maxRev) * 100),
+          rawTotal: d.rawTotal
+        }));
+        setChartData(normalizedChartData);
 
-      // Calcul de la croissance par rapport au mois précédent
-      const thisMonthRev = newChartData[currentMonthIndex].rawTotal;
-      const lastMonthRev = currentMonthIndex > 0 ? newChartData[currentMonthIndex - 1].rawTotal : 0;
-      
-      if (lastMonthRev === 0) {
-        setRevenueGrowth(thisMonthRev > 0 ? 100 : 0);
-      } else {
-        setRevenueGrowth(Math.round(((thisMonthRev - lastMonthRev) / lastMonthRev) * 100));
+        // Calcul de la croissance par rapport au mois précédent
+        const thisMonthRev = newChartData[currentMonthIndex].rawTotal;
+        const lastMonthRev = currentMonthIndex > 0 ? newChartData[currentMonthIndex - 1].rawTotal : 0;
+        
+        if (lastMonthRev === 0) {
+          setRevenueGrowth(thisMonthRev > 0 ? 100 : 0);
+        } else {
+          setRevenueGrowth(Math.round(((thisMonthRev - lastMonthRev) / lastMonthRev) * 100));
+        }
+      } finally {
+        setIsLoading(false);
       }
     };
 
