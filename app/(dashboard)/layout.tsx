@@ -132,8 +132,14 @@ export default function DashboardLayout({
   ];
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    router.push("/login");
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      localStorage.removeItem("V_CUSTOM_AVATAR");
+      window.location.href = "/login";
+    }
   };
 
   return (
