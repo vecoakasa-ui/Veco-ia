@@ -136,7 +136,11 @@ export default function DashboardPage() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-4)" }}>
             <div>
               <span style={{ fontSize: "var(--text-xs)", fontWeight: "600", color: "var(--gray-500)", textTransform: "uppercase" }}>Biens Immobiliers</span>
-              <h3 style={{ fontSize: "var(--text-3xl)", fontWeight: "800", color: "var(--gray-900)", margin: "4px 0 0 0" }}>{stats.total_properties}</h3>
+              {isLoading ? (
+                <div style={{ height: "36px", width: "60px", background: "var(--gray-200)", borderRadius: "4px", margin: "4px 0 0 0", animation: "pulse 1.5s infinite" }}></div>
+              ) : (
+                <h3 style={{ fontSize: "var(--text-3xl)", fontWeight: "800", color: "var(--gray-900)", margin: "4px 0 0 0" }}>{stats.total_properties}</h3>
+              )}
             </div>
             <div style={{ padding: "10px", background: "var(--orange-lighter)", color: "var(--orange)", borderRadius: "var(--radius-lg)" }}>
               <Building2 size={20} />
@@ -152,7 +156,11 @@ export default function DashboardPage() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-4)" }}>
             <div>
               <span style={{ fontSize: "var(--text-xs)", fontWeight: "600", color: "var(--gray-500)", textTransform: "uppercase" }}>Locataires Actifs</span>
-              <h3 style={{ fontSize: "var(--text-3xl)", fontWeight: "800", color: "var(--gray-900)", margin: "4px 0 0 0" }}>{stats.total_tenants}</h3>
+              {isLoading ? (
+                <div style={{ height: "36px", width: "60px", background: "var(--gray-200)", borderRadius: "4px", margin: "4px 0 0 0", animation: "pulse 1.5s infinite" }}></div>
+              ) : (
+                <h3 style={{ fontSize: "var(--text-3xl)", fontWeight: "800", color: "var(--gray-900)", margin: "4px 0 0 0" }}>{stats.total_tenants}</h3>
+              )}
             </div>
             <div style={{ padding: "10px", background: "var(--primary-lighter)", color: "var(--primary)", borderRadius: "var(--radius-lg)" }}>
               <Users size={20} />
@@ -168,7 +176,11 @@ export default function DashboardPage() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-4)" }}>
             <div>
               <span style={{ fontSize: "var(--text-xs)", fontWeight: "600", color: "var(--gray-500)", textTransform: "uppercase" }}>Propriétaires</span>
-              <h3 style={{ fontSize: "var(--text-3xl)", fontWeight: "800", color: "var(--gray-900)", margin: "4px 0 0 0" }}>{stats.total_landlords || 0}</h3>
+              {isLoading ? (
+                <div style={{ height: "36px", width: "60px", background: "var(--gray-200)", borderRadius: "4px", margin: "4px 0 0 0", animation: "pulse 1.5s infinite" }}></div>
+              ) : (
+                <h3 style={{ fontSize: "var(--text-3xl)", fontWeight: "800", color: "var(--gray-900)", margin: "4px 0 0 0" }}>{stats.total_landlords || 0}</h3>
+              )}
             </div>
             <div style={{ padding: "10px", background: "rgba(16, 185, 129, 0.1)", color: "var(--success)", borderRadius: "var(--radius-lg)" }}>
               <Briefcase size={20} />
@@ -184,7 +196,11 @@ export default function DashboardPage() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-4)" }}>
             <div>
               <span style={{ fontSize: "var(--text-xs)", fontWeight: "600", color: "var(--gray-500)", textTransform: "uppercase" }}>Contrats de Bail</span>
-              <h3 style={{ fontSize: "var(--text-3xl)", fontWeight: "800", color: "var(--gray-900)", margin: "4px 0 0 0" }}>{stats.total_leases || 0}</h3>
+              {isLoading ? (
+                <div style={{ height: "36px", width: "60px", background: "var(--gray-200)", borderRadius: "4px", margin: "4px 0 0 0", animation: "pulse 1.5s infinite" }}></div>
+              ) : (
+                <h3 style={{ fontSize: "var(--text-3xl)", fontWeight: "800", color: "var(--gray-900)", margin: "4px 0 0 0" }}>{stats.total_leases || 0}</h3>
+              )}
             </div>
             <div style={{ padding: "10px", background: "rgba(99, 102, 241, 0.1)", color: "#6366f1", borderRadius: "var(--radius-lg)" }}>
               <FileText size={20} />
@@ -195,12 +211,16 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Card 3: Revenus */}
+        {/* Card 5: Revenus */}
         <div className="card" onClick={() => router.push("/paiements")} style={{ cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "space-between", borderLeft: "4px solid var(--primary)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-4)" }}>
             <div>
               <span style={{ fontSize: "var(--text-xs)", fontWeight: "600", color: "var(--gray-500)", textTransform: "uppercase" }}>Revenus Net Encaisés</span>
-              <h3 style={{ fontSize: "var(--text-2xl)", fontWeight: "800", color: "var(--success-dark)", margin: "6px 0 0 0" }}>{formatCurrency(stats.total_revenue)}</h3>
+              {isLoading ? (
+                <div style={{ height: "32px", width: "120px", background: "var(--gray-200)", borderRadius: "4px", margin: "6px 0 0 0", animation: "pulse 1.5s infinite" }}></div>
+              ) : (
+                <h3 style={{ fontSize: "var(--text-2xl)", fontWeight: "800", color: "var(--success-dark)", margin: "6px 0 0 0" }}>{formatCurrency(stats.total_revenue)}</h3>
+              )}
             </div>
             <div style={{ padding: "10px", background: "var(--primary-lighter)", color: "var(--primary)", borderRadius: "var(--radius-lg)" }}>
               <Banknote size={20} />
@@ -212,12 +232,16 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Card 4: Retards */}
+        {/* Card 6: Retards */}
         <div className="card" onClick={() => router.push("/paiements")} style={{ cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "space-between", borderLeft: stats.late_payments > 0 ? "4px solid var(--danger)" : "4px solid var(--orange)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-4)" }}>
             <div>
               <span style={{ fontSize: "var(--text-xs)", fontWeight: "600", color: "var(--gray-500)", textTransform: "uppercase" }}>Paiements en Retard</span>
-              <h3 style={{ fontSize: "var(--text-3xl)", fontWeight: "800", color: stats.late_payments > 0 ? "var(--danger)" : "var(--gray-900)", margin: "4px 0 0 0" }}>{stats.late_payments}</h3>
+              {isLoading ? (
+                <div style={{ height: "36px", width: "60px", background: "var(--gray-200)", borderRadius: "4px", margin: "4px 0 0 0", animation: "pulse 1.5s infinite" }}></div>
+              ) : (
+                <h3 style={{ fontSize: "var(--text-3xl)", fontWeight: "800", color: stats.late_payments > 0 ? "var(--danger)" : "var(--gray-900)", margin: "4px 0 0 0" }}>{stats.late_payments}</h3>
+              )}
             </div>
             <div style={{ padding: "10px", background: stats.late_payments > 0 ? "var(--danger-light)" : "var(--orange-lighter)", color: stats.late_payments > 0 ? "var(--danger)" : "var(--orange)", borderRadius: "var(--radius-lg)" }}>
               <AlertTriangle size={20} />
@@ -233,7 +257,11 @@ export default function DashboardPage() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-4)" }}>
             <div>
               <span style={{ fontSize: "var(--text-xs)", fontWeight: "600", color: "var(--gray-500)", textTransform: "uppercase" }}>Incidents en Attente</span>
-              <h3 style={{ fontSize: "var(--text-3xl)", fontWeight: "800", color: (stats.unresolved_incidents || 0) > 0 ? "var(--danger)" : "var(--gray-900)", margin: "4px 0 0 0" }}>{stats.unresolved_incidents || 0}</h3>
+              {isLoading ? (
+                <div style={{ height: "36px", width: "60px", background: "var(--gray-200)", borderRadius: "4px", margin: "4px 0 0 0", animation: "pulse 1.5s infinite" }}></div>
+              ) : (
+                <h3 style={{ fontSize: "var(--text-3xl)", fontWeight: "800", color: (stats.unresolved_incidents || 0) > 0 ? "var(--danger)" : "var(--gray-900)", margin: "4px 0 0 0" }}>{stats.unresolved_incidents || 0}</h3>
+              )}
             </div>
             <div style={{ padding: "10px", background: (stats.unresolved_incidents || 0) > 0 ? "var(--danger-light)" : "rgba(16, 185, 129, 0.1)", color: (stats.unresolved_incidents || 0) > 0 ? "var(--danger)" : "var(--success)", borderRadius: "var(--radius-lg)" }}>
               <AlertCircle size={20} />
@@ -270,21 +298,33 @@ export default function DashboardPage() {
                 {/* Bars */}
                 {chartData.map((bar, idx) => (
                   <div key={idx} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", zIndex: 5 }}>
-                    <div 
-                      style={{ 
-                        width: "60%", 
-                        height: `${bar.val || 5}px`, 
-                        minHeight: bar.val > 0 ? `${bar.val * 1.5}px` : "4px",
-                        background: idx === new Date().getMonth()
-                          ? "var(--orange)" 
-                          : idx % 2 === 0 
-                            ? "var(--primary-lighter)" 
-                            : "var(--orange-lighter)",
-                        borderRadius: "4px 4px 0 0",
-                        transition: "all 0.5s ease"
-                      }}
-                      title={`${bar.month}: ${bar.rawTotal > 0 ? formatCurrency(bar.rawTotal) : "0 FCFA"}`}
-                    ></div>
+                    {isLoading ? (
+                      <div 
+                        style={{ 
+                          width: "60%", 
+                          height: `${(idx * 17) % 50 + 20}px`, 
+                          background: "var(--gray-200)",
+                          borderRadius: "4px 4px 0 0",
+                          animation: "pulse 1.5s infinite"
+                        }}
+                      ></div>
+                    ) : (
+                      <div 
+                        style={{ 
+                          width: "60%", 
+                          height: `${bar.val || 5}px`, 
+                          minHeight: bar.val > 0 ? `${bar.val * 1.5}px` : "4px",
+                          background: idx === new Date().getMonth()
+                            ? "var(--orange)" 
+                            : idx % 2 === 0 
+                              ? "var(--primary-lighter)" 
+                              : "var(--orange-lighter)",
+                          borderRadius: "4px 4px 0 0",
+                          transition: "all 0.5s ease"
+                        }}
+                        title={`${bar.month}: ${bar.rawTotal > 0 ? formatCurrency(bar.rawTotal) : "0 FCFA"}`}
+                      ></div>
+                    )}
                     <span style={{ fontSize: "10px", color: "var(--gray-500)", marginTop: "var(--space-2)" }}>{bar.month}</span>
                   </div>
                 ))}
@@ -357,46 +397,52 @@ export default function DashboardPage() {
             
             {/* SVG circular gauge */}
             <div style={{ position: "relative", width: "130px", height: "130px", margin: "var(--space-4) 0" }}>
-              <svg style={{ width: "100%", height: "100%", transform: "rotate(-90deg)" }}>
-                <circle
-                  cx="65"
-                  cy="65"
-                  r="55"
-                  style={{
-                    fill: "transparent",
-                    stroke: "var(--gray-200)",
-                    strokeWidth: "10"
-                  }}
-                />
-                <circle
-                  cx="65"
-                  cy="65"
-                  r="55"
-                  style={{
-                    fill: "transparent",
-                    stroke: "var(--orange)",
-                    strokeWidth: "10",
-                    strokeDasharray: "345.5", // 2 * pi * r = 2 * 3.1415 * 55
-                    strokeDashoffset: `${345.5 - (345.5 * stats.occupancy_rate) / 100}`,
-                    strokeLinecap: "round",
-                    transition: "stroke-dashoffset 1s ease"
-                  }}
-                />
-              </svg>
-              <div 
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  textAlign: "center"
-                }}
-              >
-                <h4 style={{ fontSize: "var(--text-2xl)", fontWeight: "800", color: "var(--gray-900)", margin: 0 }}>
-                  {stats.occupancy_rate}%
-                </h4>
-                <span style={{ fontSize: "9px", color: "var(--gray-400)", fontWeight: "600", textTransform: "uppercase" }}>Occupé</span>
-              </div>
+              {isLoading ? (
+                 <div style={{ width: "100%", height: "100%", borderRadius: "50%", border: "10px solid var(--gray-200)", animation: "pulse 1.5s infinite" }}></div>
+              ) : (
+                <>
+                  <svg style={{ width: "100%", height: "100%", transform: "rotate(-90deg)" }}>
+                    <circle
+                      cx="65"
+                      cy="65"
+                      r="55"
+                      style={{
+                        fill: "transparent",
+                        stroke: "var(--gray-200)",
+                        strokeWidth: "10"
+                      }}
+                    />
+                    <circle
+                      cx="65"
+                      cy="65"
+                      r="55"
+                      style={{
+                        fill: "transparent",
+                        stroke: "var(--orange)",
+                        strokeWidth: "10",
+                        strokeDasharray: "345.5", // 2 * pi * r = 2 * 3.1415 * 55
+                        strokeDashoffset: `${345.5 - (345.5 * stats.occupancy_rate) / 100}`,
+                        strokeLinecap: "round",
+                        transition: "stroke-dashoffset 1s ease"
+                      }}
+                    />
+                  </svg>
+                  <div 
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      textAlign: "center"
+                    }}
+                  >
+                    <h4 style={{ fontSize: "var(--text-2xl)", fontWeight: "800", color: "var(--gray-900)", margin: 0 }}>
+                      {stats.occupancy_rate}%
+                    </h4>
+                    <span style={{ fontSize: "9px", color: "var(--gray-400)", fontWeight: "600", textTransform: "uppercase" }}>Occupé</span>
+                  </div>
+                </>
+              )}
             </div>
 
             <div style={{ display: "flex", gap: "var(--space-4)", width: "100%", justifyContent: "center", marginTop: "var(--space-2)" }}>
