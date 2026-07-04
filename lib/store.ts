@@ -481,7 +481,7 @@ export const db = {
           const savedRole = typeof window !== 'undefined' ? localStorage.getItem('oauth_role') : null;
           const role = savedRole === 'tenant' ? 'tenant' : 'owner';
           
-          let newProfile: Profile = {
+          let newProfile: Partial<Profile> = {
             id: ownerId,
             full_name: session.user.user_metadata?.full_name || "",
             email: session.user.email || "",
@@ -504,7 +504,7 @@ export const db = {
           
           if (!insertError) {
              if (!newProfile.avatar_url) newProfile.avatar_url = "/owner_avatar.png";
-             return newProfile;
+             return newProfile as Profile;
           } else {
              console.error("Failed to auto-create profile:", insertError);
           }
