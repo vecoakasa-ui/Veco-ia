@@ -122,13 +122,12 @@ export default function DashboardLayout({
 
   const navigationGroups = [
     {
-      groupName: "Gestion",
+      groupName: "Ma Gestion",
       items: [
         { name: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard },
-        { name: "Propriétaires", href: "/proprietaires", icon: Briefcase },
-        { name: "Biens immobiliers", href: "/biens", icon: Building2 },
-        { name: "Locataires", href: "/locataires", icon: Users },
-        { name: "Contrats de bail", href: "/contrats", icon: FolderLock },
+        { name: "Mes Biens", href: "/biens", icon: Building2 },
+        { name: "Mes Locataires", href: "/locataires", icon: Users },
+        { name: "Mes Contrats", href: "/contrats", icon: FolderLock },
         { name: "Incidents", href: "/incidents", icon: AlertTriangle },
       ]
     },
