@@ -17,6 +17,7 @@ import {
 import { db } from "@/lib/store";
 import { Property, Profile } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
+import MapModuleWrapper from "@/components/MapModuleWrapper";
 
 export default function ExplorerPage() {
   const params = useParams();
@@ -76,8 +77,15 @@ export default function ExplorerPage() {
         <h1 style={{ fontSize: "var(--text-2xl)", fontWeight: 800, color: "var(--gray-900)", marginBottom: "4px" }}>
           Explorer les Biens
         </h1>
-        <p style={{ color: "var(--gray-500)", margin: 0 }}>Découvrez nos logements actuellement disponibles à la location.</p>
+        <p style={{ color: "var(--gray-500)", margin: 0 }}>Découvrez nos logements actuellement disponibles à la location et visualisez-les sur la carte.</p>
       </div>
+
+      {/* Map View */}
+      {properties.length > 0 && (
+        <div className="card" style={{ padding: "0", overflow: "hidden", marginBottom: "var(--space-2)" }}>
+          <MapModuleWrapper properties={properties} />
+        </div>
+      )}
 
       {/* Properties Grid */}
       {properties.length === 0 ? (

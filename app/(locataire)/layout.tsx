@@ -18,7 +18,8 @@ import {
   Mail,
   Phone,
   ShieldCheck,
-  User
+  User,
+  LayoutDashboard
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Profile } from "@/lib/types";
@@ -123,8 +124,8 @@ export default function LocataireLayout({
     {
       groupName: "Mon Espace",
       items: [
-        { name: "Accueil", href: tenantId ? `/locataire/${tenantId}` : "#", icon: Home },
-        { name: "Explorer", href: tenantId ? `/locataire/${tenantId}/explorer` : "#", icon: Building },
+        { name: "Accueil", href: tenantId ? `/locataire/${tenantId}` : "#", icon: LayoutDashboard },
+        { name: "Explorer", href: tenantId ? `/locataire/${tenantId}/explorer` : "#", icon: Home },
         { name: "Mes Paiements", href: tenantId ? `/locataire/${tenantId}#paiements` : "#", icon: FileText },
         { name: "Mes Incidents", href: tenantId ? `/locataire/${tenantId}#incidents` : "#", icon: AlertTriangle },
       ]
@@ -198,17 +199,15 @@ export default function LocataireLayout({
                         borderRadius: "var(--radius-lg)",
                         fontSize: "var(--text-sm)",
                         fontWeight: isActuallyActive ? 600 : 500,
-                        color: isActuallyActive ? "var(--white)" : "var(--gray-400)",
-                        background: isActuallyActive ? "var(--primary)" : "transparent",
-                        borderLeft: isActuallyActive ? "4px solid var(--orange)" : "4px solid transparent",
-                        paddingLeft: isActuallyActive ? "calc(var(--space-4) - 4px)" : "var(--space-4)",
-                        transition: "all var(--transition-fast)",
+                        color: isActuallyActive ? "#F77F00" : "var(--gray-400)",
+                        background: isActuallyActive ? "rgba(247, 127, 0, 0.1)" : "transparent",
+                        transition: "all 0.2s ease",
                         textDecoration: "none"
                       }}
                       className={isActuallyActive ? "" : "hover-sidebar-link"}
                     >
-                      {Icon ? <Icon size={18} /> : <div style={{ width: 18, height: 18 }} />}
-                      <span>{item.name}</span>
+                      {Icon ? <Icon size={18} style={{ color: "#009E60" }} /> : <div style={{ width: 18, height: 18 }} />}
+                      <span style={{ color: isActuallyActive ? "#F77F00" : "inherit" }}>{item.name}</span>
                     </Link>
                   );
                 })}
@@ -311,6 +310,9 @@ export default function LocataireLayout({
                   <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                     {group.items.map((item) => {
                       const Icon = item.icon;
+                      const isActive = pathname === item.href.split('#')[0] && (typeof window !== 'undefined' ? window.location.hash === (item.href.includes('#') ? '#' + item.href.split('#')[1] : '') : false);
+                      const isActuallyActive = isActive || (item.name === "Accueil" && typeof window !== 'undefined' && !window.location.hash);
+                      
                       return (
                         <Link
                           key={item.name}
@@ -323,16 +325,14 @@ export default function LocataireLayout({
                             padding: "var(--space-3) var(--space-4)",
                             borderRadius: "var(--radius-lg)",
                             fontSize: "var(--text-sm)",
-                            fontWeight: 500,
-                            color: "var(--gray-400)",
-                            background: "transparent",
-                            borderLeft: "4px solid transparent",
-                            paddingLeft: "var(--space-4)",
+                            fontWeight: isActuallyActive ? 600 : 500,
+                            color: isActuallyActive ? "#F77F00" : "var(--gray-400)",
+                            background: isActuallyActive ? "rgba(247, 127, 0, 0.1)" : "transparent",
                             textDecoration: "none"
                           }}
                         >
-                          {Icon ? <Icon size={18} /> : <div style={{ width: 18, height: 18 }} />}
-                          <span>{item.name}</span>
+                          {Icon ? <Icon size={18} style={{ color: isActuallyActive ? "#009E60" : "var(--gray-500)" }} /> : <div style={{ width: 18, height: 18 }} />}
+                          <span style={{ color: isActuallyActive ? "#F77F00" : "inherit" }}>{item.name}</span>
                         </Link>
                       );
                     })}
