@@ -2,7 +2,7 @@ import { createServerClient } from '@supabase/auth-helpers-nextjs';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export async function proxy(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   let res = NextResponse.next({
     request: {
       headers: req.headers,
@@ -44,11 +44,36 @@ export async function proxy(req: NextRequest) {
     data: { session },
   } = await supabase.auth.getSession();
 
-  const isAuthRoute = req.nextUrl.pathname.startsWith('/login') || req.nextUrl.pathname.startsWith('/register') || req.nextUrl.pathname.startsWith('/forgot-password') || req.nextUrl.pathname.startsWith('/reset-password');
+  // List of routes that require authentication
+  const protectedRoutes = [
+    '/dashboard',
+    '/biens',
+    '/locataires',
+    '/contrats',
+    '/paiements',
+    '/quittances',
+    '/incidents',
+    '/abonnement',
+    '/cautions',
+    '/comptabilite',
+    '/proprietaires',
+    '/relances',
+    '/settings',
+    '/admin',
+    '/locataire'
+  ];
+
+  const isProtectedRoute = protectedRoutes.some(route => 
+    req.nextUrl.pathname.startsWith(route)
+  );
+  
+  const authRoutes = ['/login', '/register', '/forgot-password', '/reset-password'];
+  const isAuthRoute = authRoutes.some(route => req.nextUrl.pathname.startsWith(route));
+  
   const isPublicRoute = req.nextUrl.pathname === '/';
 
-  // Si l'utilisateur n'est pas connecté et essaie d'accéder à une route protégée (tout sauf /, /login, /register, etc.)
-  if (!session && !isAuthRoute && !isPublicRoute) {
+  // Si l'utilisateur n'est pas connecté et essaie d'accéder à une route protégée (ou toute route qui n'est pas auth/public)
+  if (!session && (isProtectedRoute || (!isAuthRoute && !isPublicRoute && req.nextUrl.pathname !== '/'))) {
     const redirectUrl = req.nextUrl.clone();
     redirectUrl.pathname = '/login';
     return NextResponse.redirect(redirectUrl);
@@ -65,5 +90,7 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
 };
