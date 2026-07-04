@@ -318,7 +318,7 @@ export default function PortailLocatairePage() {
                       </div>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
-                      <span style={{ fontWeight: 800, color: "var(--gray-900)" }}>{formatCurrency(p.total)}</span>
+                      <span style={{ fontWeight: 800, color: "var(--primary)" }}>{formatCurrency(p.total)}</span>
                       {p.status === "paid" && (
                         <button className="btn btn-ghost" style={{ padding: "8px", color: "var(--primary)", background: "var(--primary-lightest)" }} title="Télécharger la quittance" onClick={() => alert("Génération du PDF en cours...")}>
                           <Download size={16} />

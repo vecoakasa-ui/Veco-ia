@@ -289,7 +289,7 @@ export default function PaiementsLocatairePage() {
 
                 <div style={{ display: "flex", alignItems: "center", gap: "var(--space-6)", flexWrap: "wrap" }}>
                   <div style={{ textAlign: "right" }}>
-                    <div style={{ fontWeight: 800, fontSize: "var(--text-lg)", color: "var(--gray-900)" }}>
+                    <div style={{ fontWeight: 800, fontSize: "var(--text-lg)", color: "var(--primary)" }}>
                       {formatCurrency(payment.total)}
                     </div>
                     {payment.charges > 0 && (
