@@ -1,9 +1,11 @@
 "use client";
  
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Home, FileText, AlertTriangle, User } from "lucide-react";
 import { useEffect, useState } from "react";
+import { db } from "@/lib/store";
+import { supabase } from "@/lib/supabase";
 
 export default function LocataireLayout({
   children,
@@ -11,7 +13,24 @@ export default function LocataireLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [tenantId, setTenantId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        router.push("/login");
+        return;
+      }
+      
+      const profile = await db.getProfile();
+      if (!profile || profile.role !== "tenant") {
+        router.push("/dashboard");
+      }
+    };
+    checkAuth();
+  }, [router]);
 
   useEffect(() => {
     // Extract tenant ID from URL (e.g. /locataire/tenant-1)

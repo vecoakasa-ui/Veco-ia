@@ -79,7 +79,27 @@ export default function DashboardLayout({
         router.push("/login");
         return;
       }
-      loadProfile();
+      
+      const p = await db.getProfile();
+      if (p) {
+        if (p.role === "tenant") {
+          router.push("/locataire/dashboard");
+          return;
+        }
+        if (p.role === "admin") {
+          router.push("/admin/dashboard");
+          return;
+        }
+
+        const customAvatar = localStorage.getItem("V_CUSTOM_AVATAR");
+        if (customAvatar) {
+          p.avatar_url = customAvatar;
+        }
+        setProfile(p);
+      } else {
+        // Fallback for missing profile
+        router.push("/login");
+      }
     };
     checkAuth();
 

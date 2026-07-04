@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { db } from "@/lib/store";
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [role, setRole] = useState<"owner" | "tenant">("owner");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -20,7 +22,14 @@ export default function LoginPage() {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        router.push("/dashboard");
+        const profile = await db.getProfile();
+        if (profile?.role === "tenant") {
+          router.push("/locataire/dashboard");
+        } else if (profile?.role === "admin") {
+          router.push("/admin/dashboard");
+        } else {
+          router.push("/dashboard");
+        }
       }
     };
     checkAuth();
@@ -47,8 +56,16 @@ export default function LoginPage() {
         }
       }
 
-      // Connexion réussie, redirection vers le tableau de bord
-      router.push("/dashboard");
+      // Fetch profile to redirect to the correct dashboard
+      const profile = await db.getProfile();
+      if (profile?.role === "tenant") {
+        router.push("/locataire/dashboard");
+      } else if (profile?.role === "admin") {
+        router.push("/admin/dashboard");
+      } else {
+        router.push("/dashboard");
+      }
+      
     } catch (err: unknown) {
       console.error("Login error:", err);
       const errorObj = err as Error;
@@ -92,6 +109,29 @@ export default function LoginPage() {
         )}
 
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+            {/* Role selector tab */}
+            <div className="input-group">
+              <label className="input-label">Vous êtes un :</label>
+              <div style={{ display: 'flex', background: 'var(--gray-100)', padding: '4px', borderRadius: 'var(--radius-lg)' }}>
+                <button
+                  type="button"
+                  className={`btn btn-sm ${role === 'owner' ? 'btn-primary' : 'btn-ghost'}`}
+                  onClick={() => setRole('owner')}
+                  style={{ flex: 1, borderRadius: 'var(--radius-md)', padding: '6px' }}
+                >
+                  Propriétaire / Bailleur
+                </button>
+                <button
+                  type="button"
+                  className={`btn btn-sm ${role === 'tenant' ? 'btn-orange' : 'btn-ghost'}`}
+                  onClick={() => setRole('tenant')}
+                  style={{ flex: 1, borderRadius: 'var(--radius-md)', padding: '6px' }}
+                >
+                  Locataire
+                </button>
+              </div>
+            </div>
+
             <div className="input-group">
               <label className="input-label">Adresse E-mail</label>
                 <div className="input-with-icon">

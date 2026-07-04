@@ -6,6 +6,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LayoutDashboard, Users, Activity, LogOut, Settings, ShieldAlert, Building, FileText, CreditCard, AlertTriangle, Crown } from "lucide-react";
 import { db } from "@/lib/store";
+import { supabase } from "@/lib/supabase";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,14 +33,22 @@ export default function AdminLayout({
 
   useEffect(() => {
     async function checkAdminAccess() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        setIsAuthorized(false);
+        router.push("/login");
+        return;
+      }
+
       try {
         const profile = await db.getProfile();
-        // Vérification stricte : seul vecoakasa a accès à cet espace
-        if (profile && profile.email?.toLowerCase() === "vecoakasa@gmail.com") {
+        // Vérification stricte : seul un admin a accès à cet espace
+        if (profile && profile.role === "admin") {
           setIsAuthorized(true);
         } else {
           setIsAuthorized(false);
-          router.push("/dashboard"); // Redirection des intrus
+          if (profile?.role === "tenant") router.push("/locataire/dashboard");
+          else router.push("/dashboard"); // Redirection des intrus
         }
       } catch {
         setIsAuthorized(false);

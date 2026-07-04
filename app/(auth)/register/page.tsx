@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Lock, Mail, User, CheckCircle2, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { db } from "@/lib/store";
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -28,7 +29,14 @@ export default function RegisterPage({ searchParams }: PageProps) {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        router.push("/dashboard");
+        const profile = await db.getProfile();
+        if (profile?.role === "tenant") {
+          router.push("/locataire/dashboard");
+        } else if (profile?.role === "admin") {
+          router.push("/admin/dashboard");
+        } else {
+          router.push("/dashboard");
+        }
       }
     };
     checkAuth();
@@ -68,7 +76,11 @@ export default function RegisterPage({ searchParams }: PageProps) {
 
       if (data?.session) {
         // Inscription réussie avec connexion immédiate
-        router.push("/dashboard");
+        if (role === "tenant") {
+          router.push("/locataire/dashboard");
+        } else {
+          router.push("/dashboard");
+        }
       } else {
         // Inscription réussie mais nécessite une confirmation d'email
         setSuccessMsg("Votre compte a été créé avec succès ! Veuillez vérifier votre boîte e-mail pour confirmer votre adresse avant de vous connecter.");
