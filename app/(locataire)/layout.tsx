@@ -121,7 +121,7 @@ export default function LocataireLayout({
         { name: "Accueil", href: tenantId ? `/locataire/${tenantId}` : "#", icon: LayoutDashboard },
         { name: "Explorer", href: tenantId ? `/locataire/${tenantId}/explorer` : "#", icon: Home },
         { name: "Mes Paiements", href: tenantId ? `/locataire/${tenantId}/paiements` : "#", icon: FileText },
-        { name: "Mes Incidents", href: tenantId ? `/locataire/${tenantId}#incidents` : "#", icon: AlertTriangle },
+        { name: "Mes Incidents", href: tenantId ? `/locataire/${tenantId}/incidents` : "#", icon: AlertTriangle },
       ]
     }
   ];
