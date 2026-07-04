@@ -12,7 +12,9 @@ import {
   Phone,
   Mail,
   Home,
-  User
+  User,
+  LayoutGrid,
+  Map
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Property, Profile } from "@/lib/types";
@@ -24,6 +26,7 @@ export default function ExplorerPage() {
   const tenantId = params.id as string;
 
   const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<"grid" | "map">("grid");
   const [properties, setProperties] = useState<Property[]>([]);
   const [tenantProfile, setTenantProfile] = useState<Profile | null>(null);
   
@@ -73,92 +76,126 @@ export default function ExplorerPage() {
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
       {/* Header */}
-      <div>
-        <h1 style={{ fontSize: "var(--text-2xl)", fontWeight: 800, color: "var(--gray-900)", marginBottom: "4px" }}>
-          Explorer les Biens
-        </h1>
-        <p style={{ color: "var(--gray-500)", margin: 0 }}>Découvrez nos logements actuellement disponibles à la location et visualisez-les sur la carte.</p>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "var(--space-4)" }}>
+        <div>
+          <h1 style={{ fontSize: "var(--text-2xl)", fontWeight: 800, color: "var(--gray-900)", marginBottom: "4px" }}>
+            Explorer les Biens
+          </h1>
+          <p style={{ color: "var(--gray-500)", margin: 0 }}>Découvrez nos logements actuellement disponibles à la location et visualisez-les sur la carte.</p>
+        </div>
+
+        <div style={{ display: "flex", background: "var(--gray-200)", padding: "4px", borderRadius: "var(--radius-lg)" }}>
+          <button 
+            onClick={() => setViewMode('grid')}
+            style={{ 
+              display: "flex", alignItems: "center", gap: "8px", 
+              padding: "8px 16px", borderRadius: "var(--radius-md)", border: "none", cursor: "pointer",
+              background: viewMode === 'grid' ? "var(--white)" : "transparent",
+              color: viewMode === 'grid' ? "var(--primary)" : "var(--gray-600)",
+              fontWeight: viewMode === 'grid' ? 600 : 500,
+              boxShadow: viewMode === 'grid' ? "var(--shadow-sm)" : "none",
+              transition: "all 0.2s"
+            }}
+          >
+            <LayoutGrid size={18} /> Grille
+          </button>
+          <button 
+            onClick={() => setViewMode('map')}
+            style={{ 
+              display: "flex", alignItems: "center", gap: "8px", 
+              padding: "8px 16px", borderRadius: "var(--radius-md)", border: "none", cursor: "pointer",
+              background: viewMode === 'map' ? "var(--white)" : "transparent",
+              color: viewMode === 'map' ? "var(--primary)" : "var(--gray-600)",
+              fontWeight: viewMode === 'map' ? 600 : 500,
+              boxShadow: viewMode === 'map' ? "var(--shadow-sm)" : "none",
+              transition: "all 0.2s"
+            }}
+          >
+            <Map size={18} /> Carte
+          </button>
+        </div>
       </div>
 
-      {/* Map View */}
-      {properties.length > 0 && (
-        <div className="card" style={{ padding: "0", overflow: "hidden", marginBottom: "var(--space-2)" }}>
+      {/* Content View */}
+      {viewMode === 'map' ? (
+        <div className="card animate-fade-in" style={{ padding: "0", overflow: "hidden", marginBottom: "var(--space-2)" }}>
           <MapModuleWrapper properties={properties} />
         </div>
-      )}
-
-      {/* Properties Grid */}
-      {properties.length === 0 ? (
-        <div className="card" style={{ padding: "var(--space-8)", textAlign: "center", background: "var(--white)" }}>
-          <Building size={48} style={{ color: "var(--gray-300)", margin: "0 auto var(--space-4)" }} />
-          <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 700, color: "var(--gray-700)", margin: "0 0 var(--space-2)" }}>
-            Aucun bien disponible
-          </h3>
-          <p style={{ color: "var(--gray-500)", margin: 0 }}>Il n'y a actuellement aucun logement vacant sur la plateforme. Revenez plus tard !</p>
-        </div>
       ) : (
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-          gap: "var(--space-6)"
-        }}>
-          {properties.map((property) => (
-            <div key={property.id} className="card" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}>
-              {/* Image Header */}
-              <div style={{ 
-                height: "200px", 
-                background: property.images && property.images.length > 0 ? `url(${property.images[0]}) center/cover` : "var(--gray-200)",
-                position: "relative"
-              }}>
-                {(!property.images || property.images.length === 0) && (
-                  <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", color: "var(--gray-400)" }}>
-                    <Home size={48} />
-                  </div>
-                )}
-                <div style={{ position: "absolute", top: "12px", right: "12px" }}>
-                  <span className="badge badge-success" style={{ fontWeight: 700, boxShadow: "var(--shadow-sm)" }}>
-                    Disponible
-                  </span>
-                </div>
-              </div>
-
-              {/* Content */}
-              <div style={{ padding: "var(--space-5)", display: "flex", flexDirection: "column", flex: 1 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-2)" }}>
-                  <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 700, margin: 0, color: "var(--gray-900)" }}>{property.name}</h3>
-                  <span style={{ fontSize: "var(--text-lg)", fontWeight: 800, color: "var(--primary)" }}>{formatCurrency(property.monthly_rent)}<span style={{ fontSize: "12px", fontWeight: 500, color: "var(--gray-500)" }}>/mois</span></span>
-                </div>
-                
-                <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-600)", display: "flex", alignItems: "center", gap: "6px", margin: "0 0 var(--space-4)" }}>
-                  <MapPin size={14} style={{ color: "var(--gray-400)" }} />
-                  {property.address}, {property.city}
-                </p>
-
-                <div style={{ display: "flex", gap: "var(--space-2)", marginBottom: "var(--space-4)" }}>
-                  <span style={{ fontSize: "11px", fontWeight: 600, background: "var(--gray-100)", color: "var(--gray-600)", padding: "4px 8px", borderRadius: "var(--radius-sm)", textTransform: "uppercase" }}>
-                    {property.type === "apartment" ? "Appartement" : property.type === "house" ? "Maison" : property.type === "studio" ? "Studio" : "Villa"}
-                  </span>
-                </div>
-                
-                {property.description && (
-                  <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", marginBottom: "var(--space-6)", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                    {property.description}
-                  </p>
-                )}
-
-                <div style={{ marginTop: "auto" }}>
-                  <button 
-                    onClick={() => setSelectedProperty(property)}
-                    className="btn btn-primary" 
-                    style={{ width: "100%", justifyContent: "center" }}
-                  >
-                    Je suis intéressé
-                  </button>
-                </div>
-              </div>
+        <>
+          {properties.length === 0 ? (
+            <div className="card animate-fade-in" style={{ padding: "var(--space-8)", textAlign: "center", background: "var(--white)" }}>
+              <Building size={48} style={{ color: "var(--gray-300)", margin: "0 auto var(--space-4)" }} />
+              <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 700, color: "var(--gray-700)", margin: "0 0 var(--space-2)" }}>
+                Aucun bien disponible
+              </h3>
+              <p style={{ color: "var(--gray-500)", margin: 0 }}>Il n'y a actuellement aucun logement vacant sur la plateforme. Revenez plus tard !</p>
             </div>
-          ))}
-        </div>
+          ) : (
+            <div className="animate-fade-in" style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+              gap: "var(--space-6)"
+            }}>
+              {properties.map((property) => (
+                <div key={property.id} className="card" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+                  {/* Image Header */}
+                  <div style={{ 
+                    height: "200px", 
+                    background: property.images && property.images.length > 0 ? `url(${property.images[0]}) center/cover` : "var(--gray-200)",
+                    position: "relative"
+                  }}>
+                    {(!property.images || property.images.length === 0) && (
+                      <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", color: "var(--gray-400)" }}>
+                        <Home size={48} />
+                      </div>
+                    )}
+                    <div style={{ position: "absolute", top: "12px", right: "12px" }}>
+                      <span className="badge badge-success" style={{ fontWeight: 700, boxShadow: "var(--shadow-sm)" }}>
+                        Disponible
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div style={{ padding: "var(--space-5)", display: "flex", flexDirection: "column", flex: 1 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-2)" }}>
+                      <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 700, margin: 0, color: "var(--gray-900)" }}>{property.name}</h3>
+                      <span style={{ fontSize: "var(--text-lg)", fontWeight: 800, color: "var(--primary)" }}>{formatCurrency(property.monthly_rent)}<span style={{ fontSize: "12px", fontWeight: 500, color: "var(--gray-500)" }}>/mois</span></span>
+                    </div>
+                    
+                    <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-600)", display: "flex", alignItems: "center", gap: "6px", margin: "0 0 var(--space-4)" }}>
+                      <MapPin size={14} style={{ color: "var(--gray-400)" }} />
+                      {property.address}, {property.city}
+                    </p>
+
+                    <div style={{ display: "flex", gap: "var(--space-2)", marginBottom: "var(--space-4)" }}>
+                      <span style={{ fontSize: "11px", fontWeight: 600, background: "var(--gray-100)", color: "var(--gray-600)", padding: "4px 8px", borderRadius: "var(--radius-sm)", textTransform: "uppercase" }}>
+                        {property.type === "apartment" ? "Appartement" : property.type === "house" ? "Maison" : property.type === "studio" ? "Studio" : "Villa"}
+                      </span>
+                    </div>
+                    
+                    {property.description && (
+                      <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", marginBottom: "var(--space-6)", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                        {property.description}
+                      </p>
+                    )}
+
+                    <div style={{ marginTop: "auto" }}>
+                      <button 
+                        onClick={() => setSelectedProperty(property)}
+                        className="btn btn-primary" 
+                        style={{ width: "100%", justifyContent: "center" }}
+                      >
+                        Je suis intéressé
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
 
       {/* Interest Modal */}
