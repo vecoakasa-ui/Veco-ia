@@ -7,6 +7,7 @@ import {
   Home,
   FileText,
   AlertTriangle,
+  Building,
   Building2,
   LogOut,
   Bell,
@@ -123,6 +124,7 @@ export default function LocataireLayout({
       groupName: "Mon Espace",
       items: [
         { name: "Accueil", href: tenantId ? `/locataire/${tenantId}` : "#", icon: Home },
+        { name: "Explorer", href: tenantId ? `/locataire/${tenantId}/explorer` : "#", icon: Building },
         { name: "Mes Paiements", href: tenantId ? `/locataire/${tenantId}#paiements` : "#", icon: FileText },
         { name: "Mes Incidents", href: tenantId ? `/locataire/${tenantId}#incidents` : "#", icon: AlertTriangle },
       ]
