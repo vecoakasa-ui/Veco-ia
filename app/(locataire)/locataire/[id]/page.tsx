@@ -150,7 +150,7 @@ export default function PortailLocatairePage() {
       
       {/* Premium Welcome Banner */}
       <div style={{
-        background: "linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)",
+        background: "linear-gradient(135deg, #F77F00 0%, #D65A00 100%)", // Orange (Côte d'Ivoire)
         borderRadius: "var(--radius-xl)",
         padding: "var(--space-8)",
         color: "var(--white)",
@@ -159,16 +159,16 @@ export default function PortailLocatairePage() {
         gap: "var(--space-2)",
         position: "relative",
         overflow: "hidden",
-        boxShadow: "var(--shadow-lg)"
+        boxShadow: "0 10px 25px -5px rgba(247, 127, 0, 0.4)"
       }}>
         {/* Background decorative elements */}
-        <div style={{ position: "absolute", top: "-20px", right: "-20px", width: "150px", height: "150px", background: "rgba(255,255,255,0.1)", borderRadius: "50%", filter: "blur(20px)" }}></div>
-        <div style={{ position: "absolute", bottom: "-30px", right: "100px", width: "100px", height: "100px", background: "rgba(255,255,255,0.05)", borderRadius: "50%", filter: "blur(15px)" }}></div>
+        <div style={{ position: "absolute", top: "-20px", right: "-20px", width: "150px", height: "150px", background: "rgba(255,255,255,0.15)", borderRadius: "50%", filter: "blur(20px)" }}></div>
+        <div style={{ position: "absolute", bottom: "-30px", right: "100px", width: "100px", height: "100px", background: "rgba(255,255,255,0.1)", borderRadius: "50%", filter: "blur(15px)" }}></div>
         
         <h1 style={{ fontSize: "var(--text-3xl)", fontWeight: 800, margin: 0, position: "relative", zIndex: 1 }}>
           Bonjour, {tenant.full_name?.split(' ')[0] || "Locataire"} 👋
         </h1>
-        <p style={{ fontSize: "var(--text-lg)", color: "rgba(255,255,255,0.8)", margin: 0, position: "relative", zIndex: 1, maxWidth: "600px" }}>
+        <p style={{ fontSize: "var(--text-lg)", color: "rgba(255,255,255,0.9)", margin: 0, position: "relative", zIndex: 1, maxWidth: "600px" }}>
           Bienvenue sur votre espace résidentiel. Gérez votre logement, vos paiements et vos demandes en toute simplicité.
         </p>
       </div>
@@ -178,11 +178,11 @@ export default function PortailLocatairePage() {
         
         {/* Financial Status Card */}
         {upcomingPayment ? (
-          <div className="card hover-scale" style={{ background: "var(--gray-900)", color: "white", padding: "var(--space-6)", border: "none", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+          <div className="card hover-scale" style={{ background: "linear-gradient(135deg, #009E60 0%, #007A4B 100%)", color: "white", padding: "var(--space-6)", border: "none", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "0 10px 25px -5px rgba(0, 158, 96, 0.3)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-4)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <div style={{ background: "rgba(255,255,255,0.1)", padding: "10px", borderRadius: "var(--radius-md)" }}>
-                  <Wallet size={24} style={{ color: "var(--orange)" }} />
+                <div style={{ background: "rgba(255,255,255,0.2)", padding: "10px", borderRadius: "var(--radius-md)" }}>
+                  <Wallet size={24} style={{ color: "var(--white)" }} />
                 </div>
                 <div>
                   <span style={{ fontSize: "var(--text-sm)", fontWeight: 600, color: "rgba(255,255,255,0.6)", display: "block", textTransform: "uppercase", letterSpacing: "1px" }}>Prochain Loyer</span>
