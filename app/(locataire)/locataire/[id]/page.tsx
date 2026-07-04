@@ -41,22 +41,53 @@ export default function PortailLocatairePage() {
   const [incidentPriority, setIncidentPriority] = useState<"low"|"medium"|"high"|"urgent">("medium");
 
   const loadData = async () => {
-    if (!tenantId) return;
     setLoading(true);
     
+    // Get logged in profile
+    const profile = await db.getProfile();
+    if (!profile) {
+      setLoading(false);
+      return;
+    }
+
     const allTenants = await db.getTenants();
-    const currentTenant = allTenants.find(t => t.id === tenantId) || null;
+    // Try to find the tenant record linked to this profile
+    let currentTenant = allTenants.find(t => t.profile_id === profile.id);
+    
+    // If no tenant record exists (e.g. newly registered user), create a temporary one for display
+    if (!currentTenant) {
+      currentTenant = {
+        id: "temp-" + profile.id,
+        profile_id: profile.id,
+        property_id: "",
+        owner_id: "",
+        lease_start: "",
+        lease_end: "",
+        lease_type: "residential",
+        status: "active",
+        created_at: new Date().toISOString(),
+        full_name: profile.full_name,
+        email: profile.email,
+        phone: profile.phone,
+        property_name: "Aucun logement assigné"
+      };
+    }
+    
     setTenant(currentTenant);
 
-    if (currentTenant) {
+    if (currentTenant && currentTenant.property_id) {
       const allLeases = await db.getLeases();
-      setLease(allLeases.find(l => l.tenant_id === tenantId && l.status === "active") || null);
+      setLease(allLeases.find(l => l.tenant_id === currentTenant?.id && l.status === "active") || null);
 
       const allPayments = await db.getPayments();
-      setPayments(allPayments.filter(p => p.tenant_id === tenantId).sort((a, b) => new Date(b.due_date).getTime() - new Date(a.due_date).getTime()));
+      setPayments(allPayments.filter(p => p.tenant_id === currentTenant?.id).sort((a, b) => new Date(b.due_date).getTime() - new Date(a.due_date).getTime()));
 
       const allIncidents = await db.getIncidents();
-      setIncidents(allIncidents.filter(i => i.tenant_id === tenantId));
+      setIncidents(allIncidents.filter(i => i.tenant_id === currentTenant?.id));
+    } else {
+      setLease(null);
+      setPayments([]);
+      setIncidents([]);
     }
     
     setLoading(false);
@@ -68,7 +99,7 @@ export default function PortailLocatairePage() {
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tenantId]);
+  }, [params.id]);
 
   const handleReportIncident = async (e: React.FormEvent) => {
     e.preventDefault();
