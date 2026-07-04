@@ -10,7 +10,6 @@ export function isSupabaseConfigured(): boolean {
   return (
     !!supabaseUrl &&
     supabaseUrl !== 'inserez_votre_supabase_url_ici' &&
-    supabaseUrl !== 'https://nunntgrphkkebbmbumxs.supabase.co' &&
     !!supabaseAnonKey &&
     supabaseAnonKey !== 'inserez_votre_supabase_anon_key_ici'
   );
