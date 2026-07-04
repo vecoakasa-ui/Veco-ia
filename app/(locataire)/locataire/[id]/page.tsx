@@ -330,9 +330,9 @@ export default function PortailLocatairePage() {
               )}
             </div>
             {payments.length > 4 && (
-              <button className="btn btn-ghost" style={{ width: "100%", marginTop: "var(--space-4)", color: "var(--primary)", fontSize: "var(--text-sm)", fontWeight: 600 }}>
+              <Link href={`/locataire/${tenantId}/paiements`} className="btn btn-ghost" style={{ width: "100%", marginTop: "var(--space-4)", color: "var(--primary)", fontSize: "var(--text-sm)", fontWeight: 600, display: "flex", justifyContent: "center" }}>
                 Voir tout l'historique
-              </button>
+              </Link>
             )}
           </section>
         </div>

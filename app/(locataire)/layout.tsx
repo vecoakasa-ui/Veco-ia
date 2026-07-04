@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import {
   Home,
   FileText,
@@ -47,15 +47,9 @@ export default function LocataireLayout({
     created_at: "",
   });
 
-  const [tenantId, setTenantId] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Extract tenant ID from URL (e.g. /locataire/tenant-1)
-    const match = pathname.match(/\/locataire\/([^\/]+)/);
-    if (match && match[1]) {
-      setTenantId(match[1]);
-    }
-  }, [pathname]);
+  const params = useParams();
+  // Extract tenantId from params if available, otherwise fallback to pathname parsing
+  const tenantId = (params?.id as string) || (pathname.match(/\/locataire\/([^\/]+)/)?.[1]) || null;
 
   useEffect(() => {
     const handleAvatarUpdate = () => {
@@ -126,7 +120,7 @@ export default function LocataireLayout({
       items: [
         { name: "Accueil", href: tenantId ? `/locataire/${tenantId}` : "#", icon: LayoutDashboard },
         { name: "Explorer", href: tenantId ? `/locataire/${tenantId}/explorer` : "#", icon: Home },
-        { name: "Mes Paiements", href: tenantId ? `/locataire/${tenantId}#paiements` : "#", icon: FileText },
+        { name: "Mes Paiements", href: tenantId ? `/locataire/${tenantId}/paiements` : "#", icon: FileText },
         { name: "Mes Incidents", href: tenantId ? `/locataire/${tenantId}#incidents` : "#", icon: AlertTriangle },
       ]
     }
@@ -182,10 +176,11 @@ export default function LocataireLayout({
               <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                 {group.items.map((item) => {
                   const Icon = item.icon;
-                  // Handle hash based active state for single page structure
-                  const isActive = pathname === item.href.split('#')[0] && (typeof window !== 'undefined' ? window.location.hash === (item.href.includes('#') ? '#' + item.href.split('#')[1] : '') : false);
-                  // Since we are mostly on one page, just default to first item active if no hash
-                  const isActuallyActive = isActive || (item.name === "Accueil" && typeof window !== 'undefined' && !window.location.hash);
+                  const basePath = item.href.split('#')[0];
+                  const itemHash = item.href.includes('#') ? '#' + item.href.split('#')[1] : '';
+                  const isPathMatch = pathname === basePath;
+                  const isHashMatch = typeof window !== 'undefined' ? window.location.hash === itemHash : !itemHash;
+                  const isActuallyActive = isPathMatch && isHashMatch;
                   
                   return (
                     <Link
@@ -310,8 +305,11 @@ export default function LocataireLayout({
                   <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                     {group.items.map((item) => {
                       const Icon = item.icon;
-                      const isActive = pathname === item.href.split('#')[0] && (typeof window !== 'undefined' ? window.location.hash === (item.href.includes('#') ? '#' + item.href.split('#')[1] : '') : false);
-                      const isActuallyActive = isActive || (item.name === "Accueil" && typeof window !== 'undefined' && !window.location.hash);
+                      const basePath = item.href.split('#')[0];
+                      const itemHash = item.href.includes('#') ? '#' + item.href.split('#')[1] : '';
+                      const isPathMatch = pathname === basePath;
+                      const isHashMatch = typeof window !== 'undefined' ? window.location.hash === itemHash : !itemHash;
+                      const isActuallyActive = isPathMatch && isHashMatch;
                       
                       return (
                         <Link
