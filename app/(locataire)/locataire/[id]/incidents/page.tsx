@@ -41,7 +41,7 @@ const getIncidentPriorityLabel = (priority: IncidentPriority) => {
     case "low": return "Basse";
     case "medium": return "Moyenne";
     case "high": return "Haute";
-    case "critical": return "Critique";
+    case "urgent": return "Urgente";
     default: return priority;
   }
 };
@@ -372,7 +372,7 @@ export default function IncidentsLocatairePage() {
                   <div style={{ textAlign: "right", display: "flex", flexDirection: "column", gap: "4px", alignItems: "flex-end" }}>
                     <span style={{ fontSize: "12px", fontWeight: 600, color: "var(--gray-500)", textTransform: "uppercase" }}>Priorité</span>
                     <span className={`badge`} style={{ 
-                      background: incident.priority === 'critical' ? "var(--danger)" : incident.priority === 'high' ? "var(--orange)" : incident.priority === 'medium' ? "var(--warning)" : "var(--gray-300)",
+                      background: incident.priority === 'urgent' ? "var(--danger)" : incident.priority === 'high' ? "var(--orange)" : incident.priority === 'medium' ? "var(--warning)" : "var(--gray-300)",
                       color: incident.priority === 'medium' ? "var(--gray-900)" : "white",
                       border: "none"
                     }}>
@@ -429,7 +429,7 @@ export default function IncidentsLocatairePage() {
                     <option value="low">Basse (Non urgent)</option>
                     <option value="medium">Moyenne (Gênant)</option>
                     <option value="high">Haute (Urgent)</option>
-                    <option value="critical">Critique (Danger immédiat)</option>
+                    <option value="urgent">Urgente (Danger immédiat)</option>
                   </select>
                 </div>
                 
