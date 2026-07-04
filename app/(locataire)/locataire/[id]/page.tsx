@@ -16,7 +16,10 @@ import {
   Wallet,
   Wrench,
   Search,
-  ArrowRight
+  ArrowRight,
+  Compass,
+  Sparkles,
+  Sun
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Tenant, Lease, Payment, Incident } from "@/lib/types";
@@ -161,9 +164,29 @@ export default function PortailLocatairePage() {
         overflow: "hidden",
         boxShadow: "0 10px 25px -5px rgba(247, 127, 0, 0.4)"
       }}>
-        {/* Background decorative elements */}
-        <div style={{ position: "absolute", top: "-20px", right: "-20px", width: "150px", height: "150px", background: "rgba(255,255,255,0.15)", borderRadius: "50%", filter: "blur(20px)" }}></div>
-        <div style={{ position: "absolute", bottom: "-30px", right: "100px", width: "100px", height: "100px", background: "rgba(255,255,255,0.1)", borderRadius: "50%", filter: "blur(15px)" }}></div>
+        {/* CSS for animations */}
+        <style dangerouslySetInnerHTML={{__html: `
+          @keyframes spin-slow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          @keyframes float-gentle {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+          }
+        `}} />
+        
+        {/* Animated Background Elements */}
+        <div style={{ position: "absolute", top: "-40px", right: "-20px", opacity: 0.15, animation: "spin-slow 20s linear infinite" }}>
+          <Compass size={250} />
+        </div>
+        <div style={{ position: "absolute", bottom: "10px", right: "220px", opacity: 0.2, animation: "float-gentle 4s ease-in-out infinite" }}>
+          <Sparkles size={40} />
+        </div>
+        <div style={{ position: "absolute", top: "20px", right: "280px", opacity: 0.1, animation: "spin-slow 15s linear infinite reverse" }}>
+          <Sun size={80} />
+        </div>
         
         <h1 style={{ fontSize: "var(--text-3xl)", fontWeight: 800, margin: 0, position: "relative", zIndex: 1 }}>
           Bonjour, {tenant.full_name?.split(' ')[0] || "Locataire"} 👋
