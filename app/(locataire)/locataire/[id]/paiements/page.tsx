@@ -153,12 +153,12 @@ export default function PaiementsLocatairePage() {
             ) : upcomingTotal > 0 ? (
               <span className="badge badge-warning" style={{ border: "none", fontWeight: 800 }}>À venir</span>
             ) : (
-              <span className="badge" style={{ background: "rgba(255,255,255,0.2)", color: "white", border: "none", fontWeight: 800 }}>À jour</span>
+              <span className="badge" style={{ background: "var(--primary)", color: "white", border: "none", fontWeight: 800 }}>À jour</span>
             )}
           </div>
           
           <div>
-            <h2 style={{ fontSize: "42px", fontWeight: 800, margin: "0 0 4px 0", letterSpacing: "-1px" }}>{formatCurrency(upcomingTotal)}</h2>
+            <h2 style={{ fontSize: "42px", fontWeight: 800, margin: "0 0 4px 0", letterSpacing: "-1px", color: "var(--primary)" }}>{formatCurrency(upcomingTotal)}</h2>
             {upcomingPayments.length > 0 ? (
               <p style={{ color: "rgba(255,255,255,0.8)", fontSize: "var(--text-sm)", margin: 0, display: "flex", alignItems: "center", gap: "6px" }}>
                 <Clock size={14} /> Pour {upcomingPayments.length} échéance(s)
