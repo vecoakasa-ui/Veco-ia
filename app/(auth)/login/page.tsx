@@ -208,6 +208,9 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={async () => {
+                if (typeof window !== 'undefined') {
+                  localStorage.setItem('oauth_role', role);
+                }
                 await supabase.auth.signInWithOAuth({
                   provider: 'google',
                   options: {

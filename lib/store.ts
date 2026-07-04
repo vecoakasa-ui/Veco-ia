@@ -454,14 +454,19 @@ export const db = {
   // Profile
   getProfile: async (): Promise<Profile | null> => {
     try {
-      const ownerId = await getOwnerId();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return null;
+      
+      const ownerId = session.user.id;
       if (isSupabaseConfigured()) {
         const { data, error } = await supabase
           .from("profiles")
           .select("*")
           .eq("id", ownerId)
           .maybeSingle();
+          
         if (error) throw error;
+        
         if (data) {
           // Rendre ce compte UNIQUE Super Administrateur (Insensible à la casse)
           if (data.email && data.email.toLowerCase() === 'vecoakasa@gmail.com') {
@@ -471,11 +476,43 @@ export const db = {
             data.avatar_url = "/owner_avatar.png";
           }
           return data as Profile;
+        } else {
+          // Si le profil n'existe pas (ex: connexion Google), on le crée
+          const savedRole = typeof window !== 'undefined' ? localStorage.getItem('oauth_role') : null;
+          const role = savedRole === 'tenant' ? 'tenant' : 'owner';
+          
+          let newProfile: Profile = {
+            id: ownerId,
+            full_name: session.user.user_metadata?.full_name || "",
+            email: session.user.email || "",
+            role: role,
+            phone: ""
+          };
+          
+          // Vérification admin
+          if (newProfile.email && newProfile.email.toLowerCase() === 'vecoakasa@gmail.com') {
+            newProfile.role = 'admin';
+          }
+          
+          const { error: insertError } = await supabase.from("profiles").insert({
+            id: newProfile.id,
+            full_name: newProfile.full_name,
+            email: newProfile.email,
+            role: newProfile.role,
+            phone: newProfile.phone
+          });
+          
+          if (!insertError) {
+             if (!newProfile.avatar_url) newProfile.avatar_url = "/owner_avatar.png";
+             return newProfile;
+          } else {
+             console.error("Failed to auto-create profile:", insertError);
+          }
         }
       }
     } catch (err) {
       console.error("Error fetching profile from Supabase:", err);
-        checkAuthError(err);
+      checkAuthError(err);
     }
     return null;
   },
