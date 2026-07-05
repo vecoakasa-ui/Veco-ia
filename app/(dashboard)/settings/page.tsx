@@ -189,27 +189,89 @@ export default function SettingsPage() {
             </div>
             <div>
               <h2 style={{ fontSize: "var(--text-lg)", fontWeight: 700, margin: 0, color: "var(--gray-900)" }}>Données locales</h2>
-              <p style={{ color: "var(--gray-500)", margin: 0, fontSize: "var(--text-sm)" }}>Gestion de la base de données de test du navigateur.</p>
+              <p style={{ color: "var(--gray-500)", margin: 0, fontSize: "var(--text-sm)" }}>Gestion de la base de données de test et des sauvegardes.</p>
             </div>
           </div>
 
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div>
-              <p style={{ fontWeight: 600, color: "var(--gray-900)", margin: "0 0 4px 0" }}>Vider les données de test</p>
-              <p style={{ color: "var(--gray-500)", fontSize: "12px", margin: 0, maxWidth: "400px" }}>Cette action supprimera toutes les données stockées localement sur votre navigateur (faux paiements, locataires, etc.) et rechargera l'application.</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+            {/* Sauvegarder */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: "var(--space-4)", borderBottom: "1px solid var(--gray-100)" }}>
+              <div>
+                <p style={{ fontWeight: 600, color: "var(--gray-900)", margin: "0 0 4px 0" }}>Sauvegarder les données</p>
+                <p style={{ color: "var(--gray-500)", fontSize: "12px", margin: 0, maxWidth: "400px" }}>Téléchargez une copie complète de vos données locales pour pouvoir les restaurer plus tard.</p>
+              </div>
+              <button 
+                className="btn btn-primary"
+                onClick={() => {
+                  const data = JSON.stringify(localStorage);
+                  const blob = new Blob([data], { type: 'application/json' });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement('a');
+                  a.href = url;
+                  a.download = `veco_immo_backup_${new Date().toISOString().split('T')[0]}.json`;
+                  a.click();
+                }}
+              >
+                Télécharger (Backup)
+              </button>
             </div>
-            <button 
-              className="btn"
-              onClick={() => {
-                if (window.confirm("Êtes-vous sûr de vouloir supprimer toutes les données locales ? Cette action est irréversible.")) {
-                  localStorage.clear();
-                  window.location.reload();
-                }
-              }}
-              style={{ background: "var(--danger)", color: "var(--fixed-white)", border: "none", padding: "8px 16px", borderRadius: "var(--radius-md)", cursor: "pointer", fontWeight: 600 }}
-            >
-              Vider le cache
-            </button>
+
+            {/* Restaurer */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: "var(--space-4)", borderBottom: "1px solid var(--gray-100)" }}>
+              <div>
+                <p style={{ fontWeight: 600, color: "var(--gray-900)", margin: "0 0 4px 0" }}>Restaurer les données</p>
+                <p style={{ color: "var(--gray-500)", fontSize: "12px", margin: 0, maxWidth: "400px" }}>Importez un fichier de sauvegarde précédemment téléchargé pour restaurer vos données.</p>
+              </div>
+              <label className="btn btn-outline" style={{ cursor: "pointer", margin: 0 }}>
+                Importer (Restaurer)
+                <input 
+                  type="file" 
+                  accept=".json" 
+                  style={{ display: "none" }}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onload = (event) => {
+                        try {
+                          const data = JSON.parse(event.target?.result as string);
+                          if (window.confirm("Êtes-vous sûr de vouloir écraser vos données actuelles avec cette sauvegarde ?")) {
+                            localStorage.clear();
+                            Object.keys(data).forEach(key => {
+                              localStorage.setItem(key, data[key]);
+                            });
+                            window.location.reload();
+                          }
+                        } catch (err) {
+                          alert("Le fichier de sauvegarde est invalide.");
+                        }
+                      };
+                      reader.readAsText(file);
+                    }
+                  }}
+                />
+              </label>
+            </div>
+
+            {/* Vider */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <p style={{ fontWeight: 600, color: "var(--gray-900)", margin: "0 0 4px 0" }}>Vider les données</p>
+                <p style={{ color: "var(--danger-dark)", fontSize: "12px", margin: 0, maxWidth: "400px" }}>Cette action supprimera toutes les données locales. Pensez à faire une sauvegarde avant !</p>
+              </div>
+              <button 
+                className="btn"
+                onClick={() => {
+                  if (window.confirm("Avez-vous fait une sauvegarde ? Cette action est irréversible. Voulez-vous vraiment vider toutes les données locales ?")) {
+                    localStorage.clear();
+                    window.location.reload();
+                  }
+                }}
+                style={{ background: "var(--danger)", color: "var(--fixed-white)", border: "none", padding: "8px 16px", borderRadius: "var(--radius-md)", cursor: "pointer", fontWeight: 600 }}
+              >
+                Vider le cache
+              </button>
+            </div>
           </div>
         </div>
       </div>
