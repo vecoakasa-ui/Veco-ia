@@ -8,6 +8,8 @@ import { LayoutDashboard, Users, Activity, LogOut, Settings, ShieldAlert, Buildi
 import { db } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
 
+import { playNotificationBeep, playAlertBeep } from "@/lib/audio";
+
 const inter = Inter({ subsets: ["latin"] });
 
 const adminNavItems = [
@@ -46,6 +48,21 @@ export default function AdminLayout({
         if (profile && profile.email?.toLowerCase() === "vecoakasa@gmail.com") {
           setIsAuthorized(true);
         } else {
+          // Tentative d'accès non autorisée détectée !
+          // On envoie un broadcast (alerte) au Super Admin s'il est connecté
+          const alertChannel = supabase.channel('admin_alerts');
+          alertChannel.subscribe((status) => {
+            if (status === 'SUBSCRIBED') {
+              alertChannel.send({
+                type: 'broadcast',
+                event: 'unauthorized_access',
+                payload: { email: profile?.email }
+              });
+              // On peut fermer ce canal d'envoi après 1 seconde
+              setTimeout(() => { supabase.removeChannel(alertChannel); }, 1000);
+            }
+          });
+
           setIsAuthorized(false);
           if (profile?.role === "tenant") router.push("/locataire/dashboard");
           else router.push("/dashboard"); // Redirection des intrus
@@ -57,6 +74,34 @@ export default function AdminLayout({
     }
     checkAdminAccess();
   }, [router]);
+
+  // Écouteur global pour les notifications sonores de l'Administrateur
+  useEffect(() => {
+    if (isAuthorized) {
+      const channel = supabase.channel('admin_alerts')
+        // Écouter les ajouts de biens
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'properties' }, () => {
+          playNotificationBeep();
+        })
+        // Écouter les nouveaux incidents déclarés
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'incidents' }, () => {
+          playNotificationBeep();
+        })
+        // Écouter les paiements de loyer
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'payments' }, () => {
+          playNotificationBeep();
+        })
+        // Écouter les alertes d'accès non autorisé
+        .on('broadcast', { event: 'unauthorized_access' }, () => {
+          playAlertBeep();
+        })
+        .subscribe();
+        
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+  }, [isAuthorized]);
 
   if (isAuthorized === null) {
     return (

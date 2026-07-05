@@ -1,0 +1,8 @@
+- [x] Créer `lib/audio.ts` avec les fonctions `playNotificationBeep()` (bip doux) et `playAlertBeep()` (bip d'erreur/alerte).
+- [x] Mettre à jour `app/(admin)/layout.tsx` pour écouter les événements temps réel (Supabase Realtime) sur :
+  - `properties` (Nouveau bien)
+  - `incidents` (Nouvel incident)
+  - `payments` (Nouveau paiement de loyer)
+- [x] Implémenter la détection de tentatives d'accès non autorisé :
+  - Envoyer un broadcast (ou enregistrer l'événement) lorsqu'un intrus est détecté sur l'espace admin.
+  - Jouer le `playAlertBeep()` côté Super Admin lorsqu'il reçoit ce broadcast.
