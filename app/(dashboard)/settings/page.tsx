@@ -181,6 +181,37 @@ export default function SettingsPage() {
             </button>
           </div>
         </div>
+        {/* Section Base de données (Local) */}
+        <div className="card" style={{ border: "1px solid var(--danger-light)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", marginBottom: "var(--space-4)", borderBottom: "1px solid var(--gray-200)", paddingBottom: "var(--space-4)" }}>
+            <div className="avatar avatar-sm" style={{ background: "var(--danger-light)", color: "var(--danger-dark)" }}>
+              <Monitor size={20} />
+            </div>
+            <div>
+              <h2 style={{ fontSize: "var(--text-lg)", fontWeight: 700, margin: 0, color: "var(--gray-900)" }}>Données locales</h2>
+              <p style={{ color: "var(--gray-500)", margin: 0, fontSize: "var(--text-sm)" }}>Gestion de la base de données de test du navigateur.</p>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div>
+              <p style={{ fontWeight: 600, color: "var(--gray-900)", margin: "0 0 4px 0" }}>Vider les données de test</p>
+              <p style={{ color: "var(--gray-500)", fontSize: "12px", margin: 0, maxWidth: "400px" }}>Cette action supprimera toutes les données stockées localement sur votre navigateur (faux paiements, locataires, etc.) et rechargera l'application.</p>
+            </div>
+            <button 
+              className="btn"
+              onClick={() => {
+                if (window.confirm("Êtes-vous sûr de vouloir supprimer toutes les données locales ? Cette action est irréversible.")) {
+                  localStorage.clear();
+                  window.location.reload();
+                }
+              }}
+              style={{ background: "var(--danger)", color: "var(--fixed-white)", border: "none", padding: "8px 16px", borderRadius: "var(--radius-md)", cursor: "pointer", fontWeight: 600 }}
+            >
+              Vider le cache
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
