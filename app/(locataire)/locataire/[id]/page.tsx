@@ -51,7 +51,7 @@ export default function PortailLocatairePage() {
     }
 
     const allTenants = await db.getTenants();
-    let currentTenant;
+    let currentTenant: Tenant | undefined;
     
     // If the logged-in user is a tenant, they can only see their own space
     if (profile.role === "tenant") {
@@ -82,7 +82,7 @@ export default function PortailLocatairePage() {
         email: profile.email,
         phone: profile.phone,
         property_name: "Aucun logement assigné"
-      };
+      } as Tenant;
     }
     
     setTenant(currentTenant);
