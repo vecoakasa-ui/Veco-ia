@@ -4,6 +4,7 @@
 
 export type UserRole = 'owner' | 'tenant' | 'admin';
 export type SubscriptionPlan = 'free' | 'pro' | 'business';
+export type SubscriptionStatus = 'trialing' | 'active' | 'past_due' | 'canceled' | 'expired';
 
 export interface Profile {
   id: string;
@@ -13,6 +14,11 @@ export interface Profile {
   role: UserRole;
   avatar_url: string | null;
   subscription_plan: SubscriptionPlan;
+  subscription_status?: SubscriptionStatus;
+  trial_start_date?: string;
+  trial_end_date?: string;
+  cancel_reason?: string;
+  cancel_feedback?: string;
   is_suspended?: boolean;
   created_at: string;
   next_billing_date?: string; // Added for SaaS subscriptions

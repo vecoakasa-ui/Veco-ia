@@ -7,10 +7,12 @@ import {
   Smartphone, 
   Loader2, 
   AlertCircle, 
-  Award
+  Award,
+  X
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Profile } from "@/lib/types";
+import { supabase } from "@/lib/supabase";
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -39,6 +41,12 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
   const [otp, setOtp] = useState("");
   const [otpError, setOtpError] = useState("");
   const [phoneError, setPhoneError] = useState("");
+
+  // Cancellation states
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [cancelReason, setCancelReason] = useState("");
+  const [cancelFeedback, setCancelFeedback] = useState("");
+  const [isCanceling, setIsCanceling] = useState(false);
 
   const loadProfile = async () => {
     const p = await db.getProfile();
@@ -119,10 +127,52 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
     setSimStep('processing');
 
     // Simulate subscription processing
-    setTimeout(() => {
+    setTimeout(async () => {
+      // Update local profile to mimic subscription success for demo
+      if (profile) {
+        try {
+          const newEndDate = new Date();
+          newEndDate.setMonth(newEndDate.getMonth() + (isYearly ? 12 : 1));
+          
+          await supabase.from("profiles").update({
+            subscription_plan: queryPlan as 'pro' | 'business',
+            subscription_status: 'active',
+            next_billing_date: newEndDate.toISOString()
+          }).eq("id", profile.id);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      
       // Redirect to success route
       router.push(`/abonnement/success?plan=${queryPlan || 'pro'}`);
     }, 2500);
+  };
+
+  const handleCancelSubscription = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!profile) return;
+    setIsCanceling(true);
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ 
+          subscription_status: "canceled",
+          cancel_reason: cancelReason,
+          cancel_feedback: cancelFeedback
+        })
+        .eq("id", profile.id);
+        
+      if (error) throw error;
+      
+      setProfile({ ...profile, subscription_status: "canceled", cancel_reason: cancelReason, cancel_feedback: cancelFeedback });
+      setShowCancelModal(false);
+    } catch (error) {
+      console.error("Cancellation error:", error);
+      alert("Une erreur est survenue lors du désabonnement.");
+    } finally {
+      setIsCanceling(false);
+    }
   };
 
   const plans = [
@@ -202,11 +252,24 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
           </div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: "8px" }}>
           <span style={{ fontSize: "var(--text-2xl)", fontWeight: 900, color: "white" }}>
             {currentPlanObj.price === 0 ? "Gratuit" : `${currentPlanObj.price.toLocaleString("fr-FR")} FCFA/mois`}
           </span>
-          <span style={{ fontSize: "10px", color: "var(--gray-400)", marginTop: "2px" }}>Facturation sans engagement</span>
+          {profile.subscription_status === 'canceled' ? (
+            <span style={{ fontSize: "11px", color: "var(--warning)", marginTop: "2px", fontWeight: "bold" }}>Abonnement annulé (actif jusqu'à la fin de la période)</span>
+          ) : currentPlanObj.price > 0 ? (
+            <button 
+              onClick={() => setShowCancelModal(true)}
+              style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.2)", color: "var(--gray-300)", padding: "4px 12px", borderRadius: "100px", fontSize: "11px", cursor: "pointer", transition: "all 0.2s" }}
+              onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.1)'; e.currentTarget.style.color = 'white'; }}
+              onMouseOut={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--gray-300)'; }}
+            >
+              Se désabonner
+            </button>
+          ) : (
+            <span style={{ fontSize: "10px", color: "var(--gray-400)", marginTop: "2px" }}>Facturation sans engagement</span>
+          )}
         </div>
       </div>
 
@@ -489,6 +552,65 @@ export default function SubscriptionPage({ searchParams }: PageProps) {
         </div>
       )}
 
+      {/* ============================================
+         Cancellation Feedback Modal
+         ============================================ */}
+      {showCancelModal && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(17, 24, 39, 0.7)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px", backdropFilter: "blur(4px)" }}>
+          <div className="card animate-scale-in" style={{ width: "100%", maxWidth: "500px", background: "white", padding: "24px", position: "relative" }}>
+            <button onClick={() => setShowCancelModal(false)} style={{ position: "absolute", top: "16px", right: "16px", background: "transparent", border: "none", color: "var(--gray-400)", cursor: "pointer" }}>
+              <X size={20} />
+            </button>
+
+            <h3 style={{ fontSize: "20px", fontWeight: 800, color: "var(--gray-900)", marginBottom: "8px" }}>Souhaitez-vous vraiment nous quitter ?</h3>
+            <p style={{ fontSize: "14px", color: "var(--gray-500)", marginBottom: "24px", lineHeight: 1.5 }}>
+              Nous sommes désolés de vous voir partir. Votre abonnement restera actif jusqu'à la fin de la période facturée. Pour nous aider à nous améliorer, pourriez-vous nous dire pourquoi vous annulez ?
+            </p>
+
+            <form onSubmit={handleCancelSubscription} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div className="input-group">
+                <label className="input-label">Raison principale de l'annulation *</label>
+                <select 
+                  required
+                  value={cancelReason}
+                  onChange={(e) => setCancelReason(e.target.value)}
+                  className="input"
+                  style={{ cursor: "pointer" }}
+                >
+                  <option value="" disabled>Sélectionnez une raison...</option>
+                  <option value="too_expensive">C'est trop cher</option>
+                  <option value="no_longer_needed">Je n'en ai plus besoin</option>
+                  <option value="too_many_bugs">Il y a des bugs/erreurs</option>
+                  <option value="too_complex">Je n'ai pas compris comment ça fonctionne</option>
+                  <option value="missing_features">Il manque des fonctionnalités</option>
+                  <option value="other">Autre raison</option>
+                </select>
+              </div>
+
+              <div className="input-group">
+                <label className="input-label">Dites-nous en plus (optionnel)</label>
+                <textarea 
+                  value={cancelFeedback}
+                  onChange={(e) => setCancelFeedback(e.target.value)}
+                  className="input"
+                  rows={3}
+                  placeholder="Partagez votre expérience avec nous..."
+                  style={{ resize: "vertical" }}
+                />
+              </div>
+
+              <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
+                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowCancelModal(false)}>
+                  Conserver mon abonnement
+                </button>
+                <button type="submit" className="btn btn-primary" style={{ flex: 1, background: "var(--danger)", borderColor: "var(--danger)" }} disabled={isCanceling}>
+                  {isCanceling ? <Loader2 className="animate-spin" size={18} /> : "Confirmer l'annulation"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

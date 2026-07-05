@@ -109,6 +109,28 @@ export default function DashboardLayout({
           p.avatar_url = customAvatar;
         }
         setProfile(p);
+
+        // Access Control based on subscription
+        if (p.role === "owner") {
+          const now = new Date();
+          let locked = false;
+          
+          if (p.subscription_status === "expired" || p.subscription_status === "past_due") {
+            locked = true;
+          } else if (p.subscription_status === "trialing" && p.trial_end_date) {
+            const trialEnd = new Date(p.trial_end_date);
+            if (trialEnd < now) {
+              locked = true;
+            }
+          }
+          
+          if (locked) {
+            setIsAuthorized(false);
+            router.push("/abonnement/locked");
+            return;
+          }
+        }
+
         setIsAuthorized(true);
       } else {
         // Fallback for missing profile
@@ -191,6 +213,15 @@ export default function DashboardLayout({
       window.location.href = "/login";
     }
   };
+
+  const remainingDays = (() => {
+    if (profile.subscription_status === "trialing" && profile.trial_end_date) {
+      const diff = new Date(profile.trial_end_date).getTime() - new Date().getTime();
+      const days = Math.ceil(diff / (1000 * 3600 * 24));
+      return days > 0 ? days : 0;
+    }
+    return null;
+  })();
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "var(--gray-100)" }}>
@@ -630,6 +661,23 @@ export default function DashboardLayout({
             </div>
           </div>
         </header>
+
+        {/* Trial Alert Banner */}
+        {remainingDays !== null && remainingDays <= 30 && (
+          <div style={{ background: "var(--warning-lightest)", padding: "12px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgba(245, 158, 11, 0.2)", flexWrap: "wrap", gap: "12px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <AlertTriangle size={18} style={{ color: "var(--warning-dark)" }} />
+              <span style={{ fontSize: "14px", color: "var(--warning-dark)", fontWeight: 500 }}>
+                {remainingDays > 0 
+                  ? `Il vous reste ${remainingDays} jour${remainingDays > 1 ? 's' : ''} d'essai gratuit. Pensez à vous abonner pour ne pas perdre l'accès à vos données.`
+                  : "Votre période d'essai expire aujourd'hui. Veuillez vous abonner pour éviter le blocage de votre espace."}
+              </span>
+            </div>
+            <Link href="/abonnement" className="btn btn-sm" style={{ background: "var(--warning)", color: "white", border: "none", padding: "6px 12px", borderRadius: "6px", fontSize: "12px", fontWeight: 600, textDecoration: "none" }}>
+              S'abonner maintenant
+            </Link>
+          </div>
+        )}
 
         {/* Sub-page Body Container */}
         <main 

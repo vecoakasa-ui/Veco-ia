@@ -24,6 +24,12 @@ CREATE TABLE profiles (
   role TEXT NOT NULL DEFAULT 'owner',
   avatar_url TEXT,
   subscription_plan TEXT NOT NULL DEFAULT 'free',
+  subscription_status TEXT DEFAULT 'trialing',
+  trial_start_date TIMESTAMPTZ,
+  trial_end_date TIMESTAMPTZ,
+  next_billing_date TIMESTAMPTZ,
+  cancel_reason TEXT,
+  cancel_feedback TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -236,14 +242,20 @@ CREATE POLICY "Owners can manage their expenses"
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS trigger AS $$
 BEGIN
-  INSERT INTO public.profiles (id, full_name, email, phone, role, subscription_plan)
+  INSERT INTO public.profiles (
+    id, full_name, email, phone, role, subscription_plan,
+    subscription_status, trial_start_date, trial_end_date
+  )
   VALUES (
     new.id::text,
     COALESCE(new.raw_user_meta_data->>'full_name', ''),
     new.email,
     new.phone,
     COALESCE(new.raw_user_meta_data->>'role', 'owner'),
-    'free'
+    'free',
+    'trialing',
+    NOW(),
+    NOW() + interval '1 month'
   );
   RETURN new;
 END;
