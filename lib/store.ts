@@ -434,11 +434,16 @@ export const getOwnerId = async (): Promise<string> => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const checkAuthError = (err: any) => {
-  if (err && (err.code === 'PGRST303' || (err.message && err.message.includes('JWT expired')))) {
+  if (err && (err.code === 'PGRST303' || (err.message && err.message.includes('JWT expire')) || err.name === 'AuthSessionMissingError')) {
     console.error('Session expirée, déconnexion forcée...');
     if (typeof window !== 'undefined') {
       localStorage.clear();
-      window.location.href = '/login';
+      // Supabase stores sessions in cookies when using createBrowserClient, so we MUST call signOut()
+      supabase.auth.signOut().finally(() => {
+        if (window.location.pathname !== '/login') {
+          window.location.href = '/login?error=session_expired';
+        }
+      });
     }
   }
 };

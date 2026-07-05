@@ -413,9 +413,27 @@ export default function IncidentsLocatairePage() {
                     required
                     className="input"
                     rows={4}
-                    placeholder="Décrivez le problème en détail..."
+                    placeholder="Expliquer le problème avec un maximum de détails..."
                     value={newIncident.description}
                     onChange={e => setNewIncident({...newIncident, description: e.target.value})}
+                    style={{
+                      border: "2px solid var(--gray-300)",
+                      backgroundColor: "var(--gray-50)",
+                      borderRadius: "var(--radius-lg)",
+                      padding: "16px",
+                      minHeight: "120px",
+                      resize: "vertical",
+                      width: "100%",
+                      boxShadow: "inset 0 2px 4px rgba(0,0,0,0.02)"
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = "var(--orange)";
+                      e.target.style.backgroundColor = "var(--white)";
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = "var(--gray-300)";
+                      e.target.style.backgroundColor = "var(--gray-50)";
+                    }}
                   />
                 </div>
 
