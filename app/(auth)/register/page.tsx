@@ -70,8 +70,7 @@ export default function RegisterPage({ searchParams }: PageProps) {
       if (data?.user) {
         // Force the creation of a profile in the profiles table
         const startDate = new Date();
-        const endDate = new Date();
-        endDate.setMonth(endDate.getMonth() + 1);
+        const endDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
         await supabase.from("profiles").upsert({
           id: data.user.id,

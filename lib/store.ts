@@ -484,8 +484,7 @@ export const db = {
           // Auto-migrate existing users who don't have trial dates
           if (data.role === 'owner' && (!data.trial_end_date || !data.subscription_status)) {
             const startDate = new Date();
-            const endDate = new Date();
-            endDate.setMonth(endDate.getMonth() + 1);
+            const endDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
             
             data.subscription_status = 'trialing';
             data.trial_start_date = startDate.toISOString();
@@ -525,11 +524,7 @@ export const db = {
             phone: newProfile.phone,
             subscription_status: 'trialing',
             trial_start_date: new Date().toISOString(),
-            trial_end_date: (() => {
-              const d = new Date();
-              d.setMonth(d.getMonth() + 1);
-              return d.toISOString();
-            })()
+            trial_end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
           });
           
           if (!insertError) {
