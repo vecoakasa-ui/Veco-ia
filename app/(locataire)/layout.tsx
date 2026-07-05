@@ -383,10 +383,33 @@ export default function LocataireLayout({
                   borderRadius: "var(--radius-md)",
                   fontSize: "var(--text-xs)",
                   fontWeight: 600,
-                  cursor: "pointer"
-                }}
-              >
-                <LogOut size={14} />
+                <Link 
+                  href={tenantId ? `/locataire/${tenantId}/profil` : "#"}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "var(--space-2)",
+                    padding: "var(--space-2) var(--space-3)",
+                    background: "rgba(255, 255, 255, 0.05)",
+                    color: "var(--fixed-white)",
+                    borderRadius: "var(--radius-md)",
+                    fontSize: "var(--text-xs)",
+                    fontWeight: 600,
+                    textDecoration: "none",
+                    marginBottom: "var(--space-2)"
+                  }}
+                >
+                  <User size={14} />
+                  <span>Mon Profil</span>
+                </Link>
+                <button 
+                  onClick={handleLogout}
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "var(--space-2)",
+                    border: "none",
                 <span>Se déconnecter</span>
               </button>
             </div>
@@ -531,6 +554,13 @@ export default function LocataireLayout({
                   </div>
 
                   <div style={{ padding: "var(--space-2)" }}>
+                    <Link 
+                      href={tenantId ? `/locataire/${tenantId}/profil` : "#"}
+                      style={{ width: "100%", display: "flex", alignItems: "center", gap: "var(--space-2)", padding: "var(--space-2) var(--space-3)", fontSize: "var(--text-sm)", color: "var(--gray-700)", background: "transparent", border: "none", cursor: "pointer", borderRadius: "var(--radius-sm)", transition: "background 0.2s", textDecoration: "none", marginBottom: "4px" }}
+                      className="hover-bg-gray-100"
+                    >
+                      <User size={16} /> Mon Profil
+                    </Link>
                     <button 
                       onClick={handleLogout}
                       style={{ width: "100%", display: "flex", alignItems: "center", gap: "var(--space-2)", padding: "var(--space-2) var(--space-3)", fontSize: "var(--text-sm)", color: "var(--danger)", background: "transparent", border: "none", cursor: "pointer", borderRadius: "var(--radius-sm)", transition: "background 0.2s", textAlign: "left" }}
