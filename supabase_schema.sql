@@ -192,6 +192,10 @@ CREATE POLICY "Tenants can view assigned properties"
   ON properties FOR SELECT 
   USING (id IN (SELECT property_id FROM tenants WHERE profile_id = auth.uid()::text));
 
+CREATE POLICY "Anyone can view vacant properties"
+  ON properties FOR SELECT
+  USING (status = 'vacant');
+
 -- 3. TENANTS Policies
 CREATE POLICY "Owners can manage their tenants" 
   ON tenants FOR ALL 

@@ -609,10 +609,18 @@ export const db = {
   getProperties: async (): Promise<Property[]> => {
     if (isSupabaseConfigured()) {
       try {
-        const { data } = await supabase
+        const ownerId = await getOwnerId();
+        let query = supabase
           .from("properties")
           .select("*")
           .order("created_at", { ascending: true });
+          
+        const { data: profile } = await supabase.from('profiles').select('role').eq('id', ownerId).single();
+        if (profile?.role === 'owner') {
+          query = query.eq('owner_id', ownerId);
+        }
+
+        const { data } = await query;
         if (data) return data as Property[];
       } catch (err) {
         console.error("Error fetching properties from Supabase:", err);
