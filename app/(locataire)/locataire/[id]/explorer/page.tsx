@@ -14,7 +14,8 @@ import {
   Home,
   User,
   LayoutGrid,
-  Map
+  Map,
+  AlertTriangle
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
@@ -33,6 +34,7 @@ export default function ExplorerPage() {
   const [message, setMessage] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -56,6 +58,7 @@ export default function ExplorerPage() {
     e.preventDefault();
     if (!selectedProperty) return;
 
+    setSubmitError(null);
     setIsSubmitting(true);
     const formData = new FormData(e.currentTarget);
     const name = formData.get("name") as string;
@@ -83,9 +86,9 @@ export default function ExplorerPage() {
         setSelectedProperty(null);
         setMessage("");
       }, 3000);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("Une erreur est survenue lors de l'envoi de la demande.");
+      setSubmitError(err.message || "Une erreur est survenue lors de l'envoi.");
     } finally {
       setIsSubmitting(false);
     }
@@ -241,7 +244,7 @@ export default function ExplorerPage() {
           <div className="card animate-fade-in" style={{ width: "100%", maxWidth: "500px", padding: 0, overflow: "hidden" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "var(--space-4)", borderBottom: "1px solid var(--gray-200)", background: "var(--gray-50)" }}>
               <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 700, margin: 0 }}>Signaler votre intérêt</h3>
-              <button onClick={() => { setSelectedProperty(null); setShowSuccess(false); }} style={{ color: "var(--gray-500)", background: "none", border: "none", cursor: "pointer" }}>
+              <button onClick={() => { setSelectedProperty(null); setShowSuccess(false); setSubmitError(null); }} style={{ color: "var(--gray-500)", background: "none", border: "none", cursor: "pointer" }}>
                 <X size={20} />
               </button>
             </div>
@@ -261,6 +264,16 @@ export default function ExplorerPage() {
                       Vous êtes sur le point d'envoyer une demande pour <strong>{selectedProperty.name}</strong> au loyer de <strong>{formatCurrency(selectedProperty.monthly_rent)}</strong>.
                     </p>
                   </div>
+
+                  {submitError && (
+                    <div className="animate-fade-in" style={{ display: "flex", gap: "var(--space-3)", padding: "var(--space-3)", background: "#FEF2F2", border: "1px solid #F87171", borderRadius: "var(--radius-md)", marginBottom: "var(--space-5)" }}>
+                      <AlertTriangle size={20} style={{ color: "#EF4444", flexShrink: 0 }} />
+                      <p style={{ margin: 0, fontSize: "var(--text-sm)", color: "#991B1B" }}>
+                        <strong>Erreur : </strong> {submitError}
+                        {submitError.includes("inquiries") && " (Avez-vous bien exécuté le script SQL pour créer la table ?)"}
+                      </p>
+                    </div>
+                  )}
 
                   <form onSubmit={handleInterestSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--space-5)" }}>
                     {/* Pre-filled info based on profile if available */}
