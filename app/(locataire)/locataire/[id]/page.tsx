@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { 
-  Building, 
   CalendarClock, 
   Download, 
   AlertTriangle, 
@@ -28,7 +27,6 @@ import Link from "next/link";
 
 export default function PortailLocatairePage() {
   const params = useParams();
-  const router = useRouter();
   const tenantId = params.id as string;
 
   const [loading, setLoading] = useState(true);
@@ -101,7 +99,7 @@ export default function PortailLocatairePage() {
     const handleStorage = () => loadData();
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [params.id]);
 
   const handleReportIncident = async (e: React.FormEvent) => {

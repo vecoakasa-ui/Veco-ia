@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { User, Camera, Mail, Phone, Calendar, ShieldCheck } from "lucide-react";
+import { User, Camera, Mail, Phone, ShieldCheck } from "lucide-react";
 import { db } from "@/lib/store";
 import { Profile } from "@/lib/types";
 

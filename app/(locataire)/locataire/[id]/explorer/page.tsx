@@ -17,14 +17,11 @@ import {
   Map
 } from "lucide-react";
 import { db } from "@/lib/store";
-import { Property, Profile } from "@/lib/types";
+import { Property } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 import MapModuleWrapper from "@/components/MapModuleWrapper";
 
 export default function ExplorerPage() {
-  const params = useParams();
-  const tenantId = params.id as string;
-
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<"grid" | "map">("grid");
   const [properties, setProperties] = useState<Property[]>([]);

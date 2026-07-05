@@ -153,7 +153,7 @@ export default function AdminParametresPage() {
                           });
                           window.location.reload();
                         }
-                      } catch (err) {
+                      } catch {
                         alert("Le fichier de sauvegarde est invalide.");
                       }
                     };

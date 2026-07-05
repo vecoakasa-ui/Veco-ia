@@ -14,17 +14,14 @@ import {
   LogOut,
   Bell,
   Menu,
-  Shield,
   X,
   Sparkles,
-  Briefcase,
   Wallet,
   MessageSquare,
   ClipboardCheck,
   Settings,
   Mail,
-  Phone,
-  ShieldCheck
+  Phone
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Profile } from "@/lib/types";
@@ -206,8 +203,8 @@ export default function DashboardLayout({
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
-    } catch (error) {
-      console.error("Logout error:", error);
+    } catch {
+      // console.error(err);
     } finally {
       localStorage.removeItem("V_CUSTOM_AVATAR");
       window.location.href = "/login";

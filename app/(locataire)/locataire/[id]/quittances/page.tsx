@@ -15,7 +15,7 @@ import { formatCurrency, formatDate } from "@/lib/utils";
 
 export default function TenantQuittancesPage() {
   const params = useParams();
-  const tenantId = params.id as string;
+  
 
   const [loading, setLoading] = useState(true);
   const [tenant, setTenant] = useState<Tenant | null>(null);
@@ -52,7 +52,7 @@ export default function TenantQuittancesPage() {
 
   useEffect(() => {
     loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [params.id]);
 
   const filteredPayments = payments.filter(p => 

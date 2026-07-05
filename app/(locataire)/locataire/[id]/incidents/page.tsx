@@ -48,9 +48,7 @@ const getIncidentPriorityLabel = (priority: IncidentPriority) => {
 
 export default function IncidentsLocatairePage() {
   const params = useParams();
-  const tenantId = params.id as string;
-  const router = useRouter();
-
+  
   const [loading, setLoading] = useState(true);
   const [tenant, setTenant] = useState<Tenant | null>(null);
   const [incidents, setIncidents] = useState<Incident[]>([]);
@@ -117,7 +115,7 @@ export default function IncidentsLocatairePage() {
     const handleStorage = () => loadData();
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [params.id]);
 
   const handleAddIncident = async (e: React.FormEvent) => {

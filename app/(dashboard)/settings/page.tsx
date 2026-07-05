@@ -242,7 +242,7 @@ export default function SettingsPage() {
                             });
                             window.location.reload();
                           }
-                        } catch (err) {
+                        } catch {
                           alert("Le fichier de sauvegarde est invalide.");
                         }
                       };
