@@ -19,7 +19,8 @@ import {
   Phone,
   ShieldCheck,
   User,
-  LayoutDashboard
+  LayoutDashboard,
+  Wallet
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Profile } from "@/lib/types";
@@ -125,7 +126,8 @@ export default function LocataireLayout({
       items: [
         { name: "Accueil", href: tenantId ? `/locataire/${tenantId}` : "#", icon: LayoutDashboard },
         { name: "Explorer", href: tenantId ? `/locataire/${tenantId}/explorer` : "#", icon: Home },
-        { name: "Mes Paiements", href: tenantId ? `/locataire/${tenantId}/paiements` : "#", icon: FileText },
+        { name: "Mes Paiements", href: tenantId ? `/locataire/${tenantId}/paiements` : "#", icon: Wallet },
+        { name: "Mes Quittances", href: tenantId ? `/locataire/${tenantId}/quittances` : "#", icon: FileText },
         { name: "Mes Incidents", href: tenantId ? `/locataire/${tenantId}/incidents` : "#", icon: AlertTriangle },
       ]
     }
