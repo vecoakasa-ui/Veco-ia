@@ -18,7 +18,7 @@ export function isSupabaseConfigured(): boolean {
 // Custom fetch wrapper to prevent infinite hangs if Supabase is paused or unreachable
 const customFetch = async (url: RequestInfo | URL, options?: RequestInit) => {
   const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), 1500); // 1.5 seconds timeout au lieu de 15s
+  const id = setTimeout(() => controller.abort(), 10000); // 10 seconds timeout au lieu de 1.5s
   try {
     const response = await fetch(url, { ...options, signal: controller.signal });
     return response;

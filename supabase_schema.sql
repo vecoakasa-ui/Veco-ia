@@ -272,3 +272,10 @@ BEGIN
     REVOKE EXECUTE ON FUNCTION public.rls_auto_enable() FROM anon, authenticated;
   END IF;
 END $$;
+
+-- ============================================
+-- SUPABASE REALTIME CONFIGURATION
+-- ============================================
+
+-- Activer Realtime pour les tables écoutées dans le code (properties, incidents, payments)
+ALTER PUBLICATION supabase_realtime ADD TABLE properties, incidents, payments;
