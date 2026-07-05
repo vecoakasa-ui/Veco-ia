@@ -6,7 +6,7 @@
  */
 export const playNotificationBeep = () => {
   try {
-    const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const audioCtx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
     
     // 2 oscillators for a pleasant bell-like sound
     const osc1 = audioCtx.createOscillator();
@@ -44,7 +44,7 @@ export const playNotificationBeep = () => {
  */
 export const playAlertBeep = () => {
   try {
-    const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const audioCtx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
     
     // Create a harsh sawtooth sound for alert
     const playSingleAlert = (startTime: number) => {

@@ -481,7 +481,7 @@ export const db = {
           const savedRole = typeof window !== 'undefined' ? localStorage.getItem('oauth_role') : null;
           const role = savedRole === 'tenant' ? 'tenant' : 'owner';
           
-          let newProfile: Partial<Profile> = {
+          const newProfile: Partial<Profile> = {
             id: ownerId,
             full_name: session.user.user_metadata?.full_name || "",
             email: session.user.email || "",

@@ -369,7 +369,28 @@ export default function LocataireLayout({
                 </div>
               </div>
 
-              <button
+              <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
+              <Link 
+                href={tenantId ? `/locataire/${tenantId}/profil` : "#"}
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "var(--space-2)",
+                  padding: "var(--space-2) var(--space-3)",
+                  background: "rgba(255, 255, 255, 0.05)",
+                  color: "var(--fixed-white)",
+                  borderRadius: "var(--radius-md)",
+                  fontSize: "var(--text-xs)",
+                  fontWeight: 600,
+                  textDecoration: "none",
+                }}
+              >
+                <User size={14} />
+                <span>Mon Profil</span>
+              </Link>
+              <button 
                 onClick={handleLogout}
                 style={{
                   width: "100%",
@@ -383,35 +404,14 @@ export default function LocataireLayout({
                   borderRadius: "var(--radius-md)",
                   fontSize: "var(--text-xs)",
                   fontWeight: 600,
-                <Link 
-                  href={tenantId ? `/locataire/${tenantId}/profil` : "#"}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "var(--space-2)",
-                    padding: "var(--space-2) var(--space-3)",
-                    background: "rgba(255, 255, 255, 0.05)",
-                    color: "var(--fixed-white)",
-                    borderRadius: "var(--radius-md)",
-                    fontSize: "var(--text-xs)",
-                    fontWeight: 600,
-                    textDecoration: "none",
-                    marginBottom: "var(--space-2)"
-                  }}
-                >
-                  <User size={14} />
-                  <span>Mon Profil</span>
-                </Link>
-                <button 
-                  onClick={handleLogout}
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "var(--space-2)",
-                    border: "none",
+                  cursor: "pointer",
+                  border: "none",
+                }}
+              >
+                <LogOut size={14} />
                 <span>Se déconnecter</span>
               </button>
+            </div>
             </div>
           </aside>
         </div>
