@@ -482,15 +482,17 @@ export const db = {
           }
           
           // Auto-migrate existing users who don't have trial dates
-          if (data.role === 'owner' && data.subscription_status === 'trialing' && !data.trial_end_date) {
+          if (data.role === 'owner' && (!data.trial_end_date || !data.subscription_status)) {
             const startDate = new Date();
             const endDate = new Date();
             endDate.setMonth(endDate.getMonth() + 1);
             
+            data.subscription_status = 'trialing';
             data.trial_start_date = startDate.toISOString();
             data.trial_end_date = endDate.toISOString();
             
             supabase.from("profiles").update({
+              subscription_status: 'trialing',
               trial_start_date: data.trial_start_date,
               trial_end_date: data.trial_end_date
             }).eq("id", ownerId).then();
