@@ -15,12 +15,13 @@ export default function RegisterPage({ searchParams }: PageProps) {
   const router = useRouter();
   const resolvedSearchParams = use(searchParams);
   const plan = (resolvedSearchParams.plan as string) || "free";
+  const queryRole = resolvedSearchParams.role === "tenant" ? "tenant" : "owner";
 
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [role, setRole] = useState<"owner" | "tenant">("owner");
+  const [role, setRole] = useState<"owner" | "tenant">(queryRole);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
@@ -287,7 +288,7 @@ export default function RegisterPage({ searchParams }: PageProps) {
             <p style={{ textAlign: 'center', fontSize: 'var(--text-xs)', color: 'var(--gray-500)', margin: 0 }}>
               Vous avez déjà un compte ?
             </p>
-            <Link href="/login" className="btn btn-outline" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <Link href={`/login?role=${role}`} className="btn btn-outline" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
               Se connecter
             </Link>
           </div>

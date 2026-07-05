@@ -1,18 +1,25 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { db } from "@/lib/store";
 
-export default function LoginPage() {
+interface PageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default function LoginPage({ searchParams }: PageProps) {
   const router = useRouter();
+  const resolvedSearchParams = use(searchParams);
+  const queryRole = resolvedSearchParams.role === "tenant" ? "tenant" : "owner";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [role, setRole] = useState<"owner" | "tenant">("owner");
+  const [role, setRole] = useState<"owner" | "tenant">(queryRole);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -258,7 +265,7 @@ export default function LoginPage() {
             <p style={{ textAlign: 'center', fontSize: 'var(--text-xs)', color: 'var(--gray-500)', margin: 0 }}>
               Vous n'avez pas encore de compte ?
             </p>
-            <Link href="/register" className="btn btn-outline" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <Link href={`/register?role=${role}`} className="btn btn-outline" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
               Créer un compte gratuitement
             </Link>
           </div>
