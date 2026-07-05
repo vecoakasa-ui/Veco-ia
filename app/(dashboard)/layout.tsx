@@ -84,6 +84,19 @@ export default function DashboardLayout({
       
       const p = await db.getProfile();
       if (p) {
+        const oauthRole = localStorage.getItem('oauth_role');
+        if (oauthRole && p.role !== "admin" && oauthRole !== p.role) {
+          localStorage.removeItem('oauth_role');
+          await supabase.auth.signOut();
+          setIsAuthorized(false);
+          router.push(`/login?error=role_mismatch&expected=${p.role}`);
+          return;
+        }
+
+        if (oauthRole) {
+          localStorage.removeItem('oauth_role');
+        }
+
         if (p.role === "tenant") {
           setIsAuthorized(false);
           router.push("/locataire/dashboard");

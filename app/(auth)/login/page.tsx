@@ -19,6 +19,17 @@ export default function LoginPage() {
   console.log("Login page rendered - check Google button");
 
   useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const errorQuery = searchParams.get("error");
+    const expectedQuery = searchParams.get("expected");
+    
+    if (errorQuery === "role_mismatch" && expectedQuery) {
+      const roleFr = expectedQuery === "owner" ? "Propriétaire" : "Locataire";
+      const attemptFr = expectedQuery === "owner" ? "Locataire" : "Propriétaire";
+      setError(`Ce compte est enregistré en tant que ${roleFr}. Vous ne pouvez pas vous connecter en tant que ${attemptFr}.`);
+      window.history.replaceState(null, '', '/login');
+    }
+
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
@@ -58,6 +69,14 @@ export default function LoginPage() {
 
       // Fetch profile to redirect to the correct dashboard
       const profile = await db.getProfile();
+      
+      if (profile && profile.role !== "admin" && profile.role !== role) {
+        await supabase.auth.signOut();
+        const roleFr = profile.role === "owner" ? "Propriétaire" : "Locataire";
+        const attemptFr = role === "owner" ? "Propriétaire" : "Locataire";
+        throw new Error(`Ce compte est enregistré en tant que ${roleFr}. Vous ne pouvez pas vous connecter en tant que ${attemptFr}.`);
+      }
+
       if (profile?.role === "tenant") {
         router.push("/locataire/dashboard");
       } else if (profile?.role === "admin") {
