@@ -34,12 +34,18 @@ export default function LoginPage() {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
         const profile = await db.getProfile();
-        if (profile?.role === "tenant") {
-          router.push("/locataire/dashboard");
-        } else if (profile?.role === "admin") {
-          router.push("/admin/dashboard");
+        if (profile) {
+          if (profile.role === "tenant") {
+            router.push("/locataire/dashboard");
+          } else if (profile.role === "admin") {
+            router.push("/admin/dashboard");
+          } else {
+            router.push("/dashboard");
+          }
         } else {
-          router.push("/dashboard");
+          // Prevent infinite loop if profile is missing
+          await supabase.auth.signOut();
+          setError("Impossible de charger le profil de cet utilisateur. Veuillez réessayer.");
         }
       }
     };
