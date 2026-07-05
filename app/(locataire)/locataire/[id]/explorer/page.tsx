@@ -262,12 +262,12 @@ export default function ExplorerPage() {
                     </p>
                   </div>
 
-                  <form onSubmit={handleInterestSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+                  <form onSubmit={handleInterestSubmit} style={{ display: "flex", flexDirection: "column", gap: "var(--space-5)" }}>
                     {/* Pre-filled info based on profile if available */}
-                    <div className="form-group">
-                      <label className="form-label">Nom complet</label>
-                      <div className="input-with-icon">
-                        <User size={18} className="input-icon" />
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Nom complet</label>
+                      <div style={{ position: "relative" }}>
+                        <User size={18} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--gray-400)" }} />
                         <input 
                           type="text" 
                           name="name"
@@ -275,15 +275,16 @@ export default function ExplorerPage() {
                           defaultValue={tenantProfile?.full_name || ""} 
                           required 
                           placeholder="Votre nom complet"
+                          style={{ paddingLeft: "36px", width: "100%", height: "48px", borderRadius: "var(--radius-md)" }}
                         />
                       </div>
                     </div>
 
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-4)" }}>
-                      <div className="form-group">
-                        <label className="form-label">Téléphone</label>
-                        <div className="input-with-icon">
-                          <Phone size={18} className="input-icon" />
+                      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                        <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Téléphone</label>
+                        <div style={{ position: "relative" }}>
+                          <Phone size={18} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--gray-400)" }} />
                           <input 
                             type="tel" 
                             name="phone"
@@ -291,13 +292,14 @@ export default function ExplorerPage() {
                             defaultValue={tenantProfile?.phone || ""} 
                             required 
                             placeholder="+225..."
+                            style={{ paddingLeft: "36px", width: "100%", height: "48px", borderRadius: "var(--radius-md)" }}
                           />
                         </div>
                       </div>
-                      <div className="form-group">
-                        <label className="form-label">Email</label>
-                        <div className="input-with-icon">
-                          <Mail size={18} className="input-icon" />
+                      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                        <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Email</label>
+                        <div style={{ position: "relative" }}>
+                          <Mail size={18} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--gray-400)" }} />
                           <input 
                             type="email" 
                             name="email"
@@ -305,25 +307,27 @@ export default function ExplorerPage() {
                             defaultValue={tenantProfile?.email || ""} 
                             required 
                             placeholder="votre@email.com"
+                            style={{ paddingLeft: "36px", width: "100%", height: "48px", borderRadius: "var(--radius-md)" }}
                           />
                         </div>
                       </div>
                     </div>
 
-                    <div className="form-group">
-                      <label className="form-label">Message (optionnel)</label>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Message (optionnel)</label>
                       <textarea 
                         className="form-control" 
-                        rows={3} 
+                        rows={4} 
                         placeholder="Précisez votre situation, votre date d'emménagement souhaitée, etc."
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
+                        style={{ width: "100%", padding: "12px", resize: "vertical", borderRadius: "var(--radius-md)" }}
                       ></textarea>
                     </div>
 
-                    <div style={{ marginTop: "var(--space-2)" }}>
-                      <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ width: "100%", justifyContent: "center", padding: "12px", fontSize: "16px" }}>
-                        {isSubmitting ? <Loader2 size={20} className="animate-spin" /> : "Envoyer ma demande"}
+                    <div style={{ marginTop: "var(--space-2)", paddingTop: "var(--space-4)", borderTop: "1px solid var(--gray-200)" }}>
+                      <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ width: "100%", justifyContent: "center", padding: "14px", fontSize: "16px", fontWeight: 600, height: "52px" }}>
+                        {isSubmitting ? <Loader2 size={24} className="animate-spin" /> : "Envoyer ma demande"}
                       </button>
                     </div>
                   </form>
