@@ -54,8 +54,8 @@ export default function TenantPaymentPage({ params }: PageProps) {
           property_id: "prop-mock",
           owner_id: "owner-1",
           amount: 250000,
-          charges: 15000,
-          total: 265000,
+          charges: 0,
+          total: 250000,
           month: "Juin",
           year: 2026,
           status: "pending",
@@ -90,7 +90,7 @@ export default function TenantPaymentPage({ params }: PageProps) {
           propertyName: payment.property_name || "Bien immobilier",
           month: payment.month,
           year: payment.year,
-          amount: payment.total
+          amount: payment.amount
         })
       });
 
@@ -239,15 +239,11 @@ export default function TenantPaymentPage({ params }: PageProps) {
                   <span style={{ color: "var(--gray-500)" }}>Loyer mensuel</span>
                   <span style={{ fontWeight: 500 }}>{formatCurrency(payment.amount)}</span>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "var(--text-sm)" }}>
-                  <span style={{ color: "var(--gray-500)" }}>Frais de charges</span>
-                  <span style={{ fontWeight: 500 }}>{formatCurrency(payment.charges)}</span>
-                </div>
               </div>
 
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-8)" }}>
                 <span style={{ fontWeight: 800, fontSize: "var(--text-base)" }}>Montant Total à payer</span>
-                <span style={{ fontWeight: 900, fontSize: "var(--text-2xl)", color: "var(--primary)" }}>{formatCurrency(payment.total)}</span>
+                <span style={{ fontWeight: 900, fontSize: "var(--text-2xl)", color: "var(--primary)" }}>{formatCurrency(payment.amount)}</span>
               </div>
 
               {apiError && (

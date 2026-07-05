@@ -229,7 +229,7 @@ export default function QuittancesPage() {
                 {/* Receipt Details */}
                 <div style={{ marginBottom: "40px" }}>
                   <p style={{ fontSize: "15px", lineHeight: "1.6", color: "#333" }}>
-                    Nous soussignés, <strong>Agence Veco Immo</strong>, déclarons avoir reçu de <strong>{selectedPayment.tenant_name}</strong> la somme de <strong>{formatCurrency(selectedPayment.total)}</strong> au titre du paiement du loyer et des charges pour le local situé à l'adresse du bien <strong>{selectedPayment.property_name}</strong>.
+                    Nous soussignés, <strong>Agence Veco Immo</strong>, déclarons avoir reçu de <strong>{selectedPayment.tenant_name}</strong> la somme de <strong>{formatCurrency(selectedPayment.total)}</strong> au titre du paiement du loyer pour le local situé à l'adresse du bien <strong>{selectedPayment.property_name}</strong>.
                   </p>
                 </div>
 
