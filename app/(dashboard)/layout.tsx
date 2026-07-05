@@ -165,14 +165,7 @@ export default function DashboardLayout({
     }
   ];
 
-  if (profile?.email?.toLowerCase() === 'vecoakasa@gmail.com') {
-    navigationGroups.push({
-      groupName: "Super Administrateur",
-      items: [
-        { name: "Espace Super Admin", href: "/admin/dashboard", icon: Shield }
-      ]
-    });
-  }
+  // Super Admin Navigation removed to keep it completely invisible from the dashboard
 
   if (isAuthorized === null) {
     return (
@@ -288,33 +281,7 @@ export default function DashboardLayout({
             </div>
           </div>
 
-          {profile.role === 'admin' && (
-            <Link
-              href="/admin/dashboard"
-              style={{
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "var(--space-2)",
-                padding: "var(--space-2) var(--space-3)",
-                background: "rgba(16, 185, 129, 0.1)",
-                color: "var(--success)",
-                borderRadius: "var(--radius-md)",
-                fontSize: "var(--text-xs)",
-                fontWeight: 600,
-                cursor: "pointer",
-                transition: "background var(--transition-fast)",
-                textDecoration: "none",
-                marginBottom: "var(--space-2)"
-              }}
-              onMouseOver={(e) => e.currentTarget.style.background = "rgba(16, 185, 129, 0.2)"}
-              onMouseOut={(e) => e.currentTarget.style.background = "rgba(16, 185, 129, 0.1)"}
-            >
-              <ShieldCheck size={14} />
-              <span>Espace Super Admin</span>
-            </Link>
-          )}
+
 
           <button
             onClick={handleLogout}
@@ -444,30 +411,7 @@ export default function DashboardLayout({
                 </div>
               </div>
 
-              {profile.role === 'admin' && (
-                <Link
-                  href="/admin/dashboard"
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "var(--space-2)",
-                    padding: "var(--space-2) var(--space-3)",
-                    background: "rgba(16, 185, 129, 0.1)",
-                    color: "var(--success)",
-                    borderRadius: "var(--radius-md)",
-                    fontSize: "var(--text-xs)",
-                    fontWeight: 600,
-                    cursor: "pointer",
-                    textDecoration: "none",
-                    marginBottom: "var(--space-2)"
-                  }}
-                >
-                  <ShieldCheck size={14} />
-                  <span>Espace Super Admin</span>
-                </Link>
-              )}
+
 
               <button
                 onClick={handleLogout}
