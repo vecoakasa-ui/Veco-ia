@@ -35,6 +35,7 @@ export default function LocataireLayout({
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
   
   const [profile, setProfile] = useState<Profile>({
     id: "tenant-1",
@@ -76,6 +77,7 @@ export default function LocataireLayout({
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
+        setIsAuthorized(false);
         router.push("/login");
         return;
       }
@@ -83,6 +85,7 @@ export default function LocataireLayout({
       const p = await db.getProfile();
       if (p) {
         if (p.role !== "tenant") {
+          setIsAuthorized(false);
           router.push("/dashboard");
           return;
         }
@@ -92,7 +95,9 @@ export default function LocataireLayout({
           p.avatar_url = customAvatar;
         }
         setProfile(p);
+        setIsAuthorized(true);
       } else {
+        setIsAuthorized(false);
         router.push("/login");
       }
     };
@@ -136,6 +141,20 @@ export default function LocataireLayout({
       window.location.href = "/login";
     }
   };
+
+  if (isAuthorized === null) {
+    return (
+      <div style={{ display: "flex", height: "100vh", alignItems: "center", justifyContent: "center", background: "var(--gray-50)", flexDirection: "column", gap: "16px" }}>
+        <div className="spinner" style={{ width: "40px", height: "40px", border: "3px solid var(--gray-200)", borderTopColor: "var(--orange)", borderRadius: "50%", animation: "spin 1s linear infinite" }}></div>
+        <p style={{ color: "var(--gray-500)", fontSize: "14px", fontWeight: "600" }}>Chargement de votre espace locataire...</p>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
+
+  if (!isAuthorized) {
+    return null;
+  }
 
   return (
     <div style={{ display: "flex", minHeight: "100vh", background: "var(--gray-100)" }}>

@@ -39,6 +39,7 @@ export default function DashboardLayout({
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
   
   const [profile, setProfile] = useState<Profile>({
     id: "owner-1",
@@ -76,6 +77,7 @@ export default function DashboardLayout({
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
+        setIsAuthorized(false);
         router.push("/login");
         return;
       }
@@ -83,10 +85,12 @@ export default function DashboardLayout({
       const p = await db.getProfile();
       if (p) {
         if (p.role === "tenant") {
+          setIsAuthorized(false);
           router.push("/locataire/dashboard");
           return;
         }
         if (p.role === "admin") {
+          setIsAuthorized(false);
           router.push("/admin/dashboard");
           return;
         }
@@ -96,8 +100,10 @@ export default function DashboardLayout({
           p.avatar_url = customAvatar;
         }
         setProfile(p);
+        setIsAuthorized(true);
       } else {
         // Fallback for missing profile
+        setIsAuthorized(false);
         router.push("/login");
       }
     };
@@ -144,11 +150,25 @@ export default function DashboardLayout({
     {
       groupName: "Système",
       items: [
-        { name: "Paramètres (Base)", href: "/settings", icon: Settings },
         { name: "Mon Abonnement", href: "/abonnement", icon: Sparkles },
+        { name: "Paramètres", href: "/settings", icon: Settings },
       ]
     }
   ];
+
+  if (isAuthorized === null) {
+    return (
+      <div style={{ display: "flex", height: "100vh", alignItems: "center", justifyContent: "center", background: "var(--gray-50)", flexDirection: "column", gap: "16px" }}>
+        <div className="spinner" style={{ width: "40px", height: "40px", border: "3px solid var(--gray-200)", borderTopColor: "var(--primary)", borderRadius: "50%", animation: "spin 1s linear infinite" }}></div>
+        <p style={{ color: "var(--gray-500)", fontSize: "14px", fontWeight: "600" }}>Chargement de votre espace sécurisé...</p>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+      </div>
+    );
+  }
+
+  if (!isAuthorized) {
+    return null;
+  }
 
   const handleLogout = async () => {
     try {
