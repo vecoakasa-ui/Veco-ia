@@ -42,7 +42,7 @@ export default function DemandesPage() {
       
       const properties = await db.getProperties();
       
-      const combined = (inqData || []).map(inq => ({
+      const combined = (inqData || []).map((inq: any) => ({
         ...inq,
         property: properties.find(p => p.id === inq.property_id)
       }));

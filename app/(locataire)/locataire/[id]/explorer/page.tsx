@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
-import { Property } from "@/lib/types";
+import { Property, Profile } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 import MapModuleWrapper from "@/components/MapModuleWrapper";
 
