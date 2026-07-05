@@ -51,7 +51,7 @@ export default function AdminLayout({
           // Tentative d'accès non autorisée détectée !
           // On envoie un broadcast (alerte) au Super Admin s'il est connecté
           const alertChannel = supabase.channel('admin_alerts');
-          alertChannel.subscribe((status) => {
+          alertChannel.subscribe((status: string) => {
             if (status === 'SUBSCRIBED') {
               alertChannel.send({
                 type: 'broadcast',
