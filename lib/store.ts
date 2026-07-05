@@ -660,6 +660,18 @@ export const db = {
       }
     }
 
+    // Fallback dynamique selon la ville
+    if (!lat || !lng) {
+      if (property.city.toLowerCase().includes("yamoussoukro")) {
+        lat = 6.827623;
+        lng = -5.289343;
+      } else {
+        // Abidjan par défaut
+        lat = 5.30966;
+        lng = -4.01266;
+      }
+    }
+
     const newProperty: Property = {
       ...property,
       id: "prop-" + generateId(),
@@ -667,8 +679,8 @@ export const db = {
       is_validated: true,
       created_at: new Date().toISOString(),
       tenant_count: 0,
-      lat: lat || 5.30966, // Fallback par défaut
-      lng: lng || -4.01266
+      lat,
+      lng
     };
 
     // If property has a landlord, update landlord count

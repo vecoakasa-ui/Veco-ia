@@ -275,7 +275,7 @@ export default function ExplorerPage() {
                           defaultValue={tenantProfile?.full_name || ""} 
                           required 
                           placeholder="Votre nom complet"
-                          style={{ paddingLeft: "36px", width: "100%", height: "48px", borderRadius: "var(--radius-md)" }}
+                          style={{ paddingLeft: "36px", width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none" }}
                         />
                       </div>
                     </div>
@@ -292,7 +292,7 @@ export default function ExplorerPage() {
                             defaultValue={tenantProfile?.phone || ""} 
                             required 
                             placeholder="+225..."
-                            style={{ paddingLeft: "36px", width: "100%", height: "48px", borderRadius: "var(--radius-md)" }}
+                            style={{ paddingLeft: "36px", width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none" }}
                           />
                         </div>
                       </div>
@@ -307,7 +307,7 @@ export default function ExplorerPage() {
                             defaultValue={tenantProfile?.email || ""} 
                             required 
                             placeholder="votre@email.com"
-                            style={{ paddingLeft: "36px", width: "100%", height: "48px", borderRadius: "var(--radius-md)" }}
+                            style={{ paddingLeft: "36px", width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none" }}
                           />
                         </div>
                       </div>
@@ -321,7 +321,7 @@ export default function ExplorerPage() {
                         placeholder="Précisez votre situation, votre date d'emménagement souhaitée, etc."
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
-                        style={{ width: "100%", padding: "12px", resize: "vertical", borderRadius: "var(--radius-md)" }}
+                        style={{ width: "100%", padding: "12px", resize: "vertical", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none" }}
                       ></textarea>
                     </div>
 
