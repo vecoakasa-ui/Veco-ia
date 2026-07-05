@@ -87,7 +87,8 @@ export default function AdminLayout({
         left: 0,
         bottom: 0,
         height: "100vh",
-        zIndex: 50
+        zIndex: 50,
+        overflowY: "auto"
       }}>
         <div className="sidebar-logo" style={{ marginBottom: "40px", padding: "0 12px", display: "flex", alignItems: "center", gap: "16px" }}>
           <div className="logo-icon" style={{ 
