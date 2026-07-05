@@ -17,6 +17,7 @@ import {
   Map
 } from "lucide-react";
 import { db } from "@/lib/store";
+import { supabase } from "@/lib/supabase";
 import { Property } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 import MapModuleWrapper from "@/components/MapModuleWrapper";
@@ -31,6 +32,7 @@ export default function ExplorerPage() {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
   const [message, setMessage] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -50,15 +52,43 @@ export default function ExplorerPage() {
     loadData();
   }, []);
 
-  const handleInterestSubmit = (e: React.FormEvent) => {
+  const handleInterestSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Simulate sending inquiry to owner
-    setShowSuccess(true);
-    setTimeout(() => {
-      setShowSuccess(false);
-      setSelectedProperty(null);
-      setMessage("");
-    }, 3000);
+    if (!selectedProperty) return;
+
+    setIsSubmitting(true);
+    const formData = new FormData(e.currentTarget);
+    const name = formData.get("name") as string;
+    const phone = formData.get("phone") as string;
+    const email = formData.get("email") as string;
+
+    try {
+      const { error } = await supabase.from('inquiries').insert([{
+        id: crypto.randomUUID(),
+        property_id: selectedProperty.id,
+        owner_id: selectedProperty.owner_id,
+        tenant_id: tenantProfile?.id || null,
+        tenant_name: name || tenantProfile?.full_name || '',
+        tenant_phone: phone || tenantProfile?.phone || '',
+        tenant_email: email || tenantProfile?.email || '',
+        message: message,
+        status: 'pending'
+      }]);
+
+      if (error) throw error;
+      
+      setShowSuccess(true);
+      setTimeout(() => {
+        setShowSuccess(false);
+        setSelectedProperty(null);
+        setMessage("");
+      }, 3000);
+    } catch (err) {
+      console.error(err);
+      alert("Une erreur est survenue lors de l'envoi de la demande.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (loading) {
@@ -240,6 +270,7 @@ export default function ExplorerPage() {
                         <User size={18} className="input-icon" />
                         <input 
                           type="text" 
+                          name="name"
                           className="form-control" 
                           defaultValue={tenantProfile?.full_name || ""} 
                           required 
@@ -255,6 +286,7 @@ export default function ExplorerPage() {
                           <Phone size={18} className="input-icon" />
                           <input 
                             type="tel" 
+                            name="phone"
                             className="form-control" 
                             defaultValue={tenantProfile?.phone || ""} 
                             required 
@@ -268,6 +300,7 @@ export default function ExplorerPage() {
                           <Mail size={18} className="input-icon" />
                           <input 
                             type="email" 
+                            name="email"
                             className="form-control" 
                             defaultValue={tenantProfile?.email || ""} 
                             required 
@@ -289,8 +322,8 @@ export default function ExplorerPage() {
                     </div>
 
                     <div style={{ marginTop: "var(--space-2)" }}>
-                      <button type="submit" className="btn btn-primary" style={{ width: "100%", justifyContent: "center", padding: "12px", fontSize: "16px" }}>
-                        Envoyer ma demande
+                      <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ width: "100%", justifyContent: "center", padding: "12px", fontSize: "16px" }}>
+                        {isSubmitting ? <Loader2 size={20} className="animate-spin" /> : "Envoyer ma demande"}
                       </button>
                     </div>
                   </form>

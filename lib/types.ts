@@ -163,7 +163,18 @@ export interface Incident {
   resolved_at: string | null;
 }
 
-
+export interface Inquiry {
+  id: string;
+  property_id: string;
+  owner_id: string;
+  tenant_id?: string;
+  tenant_name: string;
+  tenant_phone: string;
+  tenant_email: string;
+  message?: string;
+  status: 'pending' | 'accepted' | 'rejected';
+  created_at: string;
+}
 
 export interface Receipt {
   id: string;

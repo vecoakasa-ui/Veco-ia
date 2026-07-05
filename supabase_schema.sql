@@ -163,6 +163,20 @@ CREATE TABLE incidents (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+-- 6.5 INQUIRIES Table (Demandes de location)
+CREATE TABLE inquiries (
+  id TEXT PRIMARY KEY,
+  property_id TEXT REFERENCES properties(id) ON DELETE CASCADE,
+  owner_id TEXT REFERENCES profiles(id) ON DELETE CASCADE,
+  tenant_id TEXT REFERENCES profiles(id) ON DELETE SET NULL,
+  tenant_name TEXT NOT NULL,
+  tenant_phone TEXT NOT NULL,
+  tenant_email TEXT NOT NULL,
+  message TEXT,
+  status TEXT NOT NULL DEFAULT 'pending', -- pending, accepted, rejected
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 -- 7. RLS ENABLED
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE landlords ENABLE ROW LEVEL SECURITY;
@@ -222,6 +236,21 @@ CREATE POLICY "Owners can manage payments"
 CREATE POLICY "Tenants can view and manage their payments" 
   ON payments FOR ALL 
   USING (tenant_id IN (SELECT id FROM tenants WHERE profile_id = auth.uid()::text));
+
+-- 6.5 INQUIRIES Policies
+ALTER TABLE inquiries ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Owners can manage inquiries for their properties" 
+  ON inquiries FOR ALL 
+  USING (owner_id = auth.uid()::text);
+
+CREATE POLICY "Anyone can insert inquiries" 
+  ON inquiries FOR INSERT 
+  WITH CHECK (true);
+
+CREATE POLICY "Tenants can view their own inquiries" 
+  ON inquiries FOR SELECT 
+  USING (tenant_id = auth.uid()::text);
 
 -- 6. INCIDENTS Policies
 CREATE POLICY "Owners can manage incidents of their properties" 

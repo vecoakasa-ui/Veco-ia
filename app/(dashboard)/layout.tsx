@@ -162,6 +162,7 @@ export default function DashboardLayout({
         { name: "Mes Biens", href: "/biens", icon: Building2 },
         { name: "Mes Locataires", href: "/locataires", icon: Users },
         { name: "Mes Contrats", href: "/contrats", icon: FolderLock },
+        { name: "Demandes", href: "/demandes", icon: MessageSquare },
         { name: "Incidents", href: "/incidents", icon: AlertTriangle },
       ]
     },
