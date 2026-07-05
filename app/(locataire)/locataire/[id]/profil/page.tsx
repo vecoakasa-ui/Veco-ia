@@ -84,44 +84,44 @@ export default function TenantProfilePage() {
           <span className="badge" style={{ marginTop: "8px", background: "rgba(16, 185, 129, 0.1)", color: "#10B981", border: "1px solid rgba(16, 185, 129, 0.2)" }}>Locataire Actif</span>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-6)" }}>
-          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-3)" }}>
-            <div style={{ padding: "10px", background: "var(--gray-50)", borderRadius: "var(--radius-md)", color: "var(--gray-500)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "var(--space-4)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)", padding: "var(--space-4)", border: "1px solid var(--gray-200)", borderRadius: "var(--radius-lg)", background: "var(--white)", boxShadow: "var(--shadow-xs)" }}>
+            <div style={{ padding: "12px", background: "var(--primary-lightest)", borderRadius: "var(--radius-md)", color: "var(--primary)", flexShrink: 0 }}>
               <User size={20} />
             </div>
-            <div>
-              <label style={{ display: "block", fontSize: "12px", color: "var(--gray-500)", fontWeight: 600, textTransform: "uppercase", marginBottom: "4px" }}>Nom complet</label>
-              <div style={{ fontWeight: 600, color: "var(--gray-900)" }}>{profile.full_name}</div>
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <label style={{ display: "block", fontSize: "11px", color: "var(--gray-500)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "4px" }}>Nom complet</label>
+              <div style={{ fontWeight: 700, fontSize: "15px", color: "var(--gray-900)", wordBreak: "break-word", lineHeight: 1.2 }}>{profile.full_name}</div>
             </div>
           </div>
 
-          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-3)" }}>
-            <div style={{ padding: "10px", background: "var(--gray-50)", borderRadius: "var(--radius-md)", color: "var(--gray-500)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)", padding: "var(--space-4)", border: "1px solid var(--gray-200)", borderRadius: "var(--radius-lg)", background: "var(--white)", boxShadow: "var(--shadow-xs)" }}>
+            <div style={{ padding: "12px", background: "var(--orange-lightest)", borderRadius: "var(--radius-md)", color: "var(--orange)", flexShrink: 0 }}>
               <Mail size={20} />
             </div>
-            <div>
-              <label style={{ display: "block", fontSize: "12px", color: "var(--gray-500)", fontWeight: 600, textTransform: "uppercase", marginBottom: "4px" }}>Adresse Email</label>
-              <div style={{ fontWeight: 600, color: "var(--gray-900)" }}>{profile.email}</div>
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <label style={{ display: "block", fontSize: "11px", color: "var(--gray-500)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "4px" }}>Adresse Email</label>
+              <div style={{ fontWeight: 700, fontSize: "15px", color: "var(--gray-900)", wordBreak: "break-word", lineHeight: 1.2 }}>{profile.email}</div>
             </div>
           </div>
 
-          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-3)" }}>
-            <div style={{ padding: "10px", background: "var(--gray-50)", borderRadius: "var(--radius-md)", color: "var(--gray-500)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)", padding: "var(--space-4)", border: "1px solid var(--gray-200)", borderRadius: "var(--radius-lg)", background: "var(--white)", boxShadow: "var(--shadow-xs)" }}>
+            <div style={{ padding: "12px", background: "var(--info-light)", borderRadius: "var(--radius-md)", color: "var(--info-dark)", flexShrink: 0 }}>
               <Phone size={20} />
             </div>
-            <div>
-              <label style={{ display: "block", fontSize: "12px", color: "var(--gray-500)", fontWeight: 600, textTransform: "uppercase", marginBottom: "4px" }}>Téléphone</label>
-              <div style={{ fontWeight: 600, color: "var(--gray-900)" }}>{profile.phone || "+225 00 00 00 00 00"}</div>
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <label style={{ display: "block", fontSize: "11px", color: "var(--gray-500)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "4px" }}>Téléphone</label>
+              <div style={{ fontWeight: 700, fontSize: "15px", color: "var(--gray-900)", wordBreak: "break-word", lineHeight: 1.2 }}>{profile.phone || "+225 00 00 00 00 00"}</div>
             </div>
           </div>
 
-          <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-3)" }}>
-            <div style={{ padding: "10px", background: "var(--gray-50)", borderRadius: "var(--radius-md)", color: "var(--gray-500)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)", padding: "var(--space-4)", border: "1px solid var(--success-light)", borderRadius: "var(--radius-lg)", background: "var(--success-lightest)", boxShadow: "var(--shadow-xs)" }}>
+            <div style={{ padding: "12px", background: "var(--white)", borderRadius: "var(--radius-md)", color: "var(--success-dark)", flexShrink: 0, boxShadow: "var(--shadow-xs)" }}>
               <ShieldCheck size={20} />
             </div>
-            <div>
-              <label style={{ display: "block", fontSize: "12px", color: "var(--gray-500)", fontWeight: 600, textTransform: "uppercase", marginBottom: "4px" }}>Privilèges</label>
-              <div style={{ fontWeight: 600, color: "var(--gray-900)" }}>Locataire Autorisé</div>
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <label style={{ display: "block", fontSize: "11px", color: "var(--success-dark)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "4px", opacity: 0.8 }}>Privilèges</label>
+              <div style={{ fontWeight: 800, fontSize: "15px", color: "var(--success-dark)", wordBreak: "break-word", lineHeight: 1.2 }}>Locataire Autorisé</div>
             </div>
           </div>
         </div>
