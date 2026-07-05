@@ -400,7 +400,7 @@ export default function IncidentsLocatairePage() {
                   <input
                     type="text"
                     required
-                    className="input-field"
+                    className="input"
                     placeholder="Ex: Fuite d'eau, Chauffage en panne..."
                     value={newIncident.title}
                     onChange={e => setNewIncident({...newIncident, title: e.target.value})}
@@ -411,7 +411,7 @@ export default function IncidentsLocatairePage() {
                   <label style={{ display: "block", marginBottom: "8px", fontSize: "var(--text-sm)", fontWeight: 600, color: "var(--gray-700)" }}>Description détaillée *</label>
                   <textarea
                     required
-                    className="input-field"
+                    className="input"
                     rows={4}
                     placeholder="Décrivez le problème en détail..."
                     value={newIncident.description}
@@ -422,7 +422,7 @@ export default function IncidentsLocatairePage() {
                 <div>
                   <label style={{ display: "block", marginBottom: "8px", fontSize: "var(--text-sm)", fontWeight: 600, color: "var(--gray-700)" }}>Priorité</label>
                   <select
-                    className="input-field"
+                    className="input"
                     value={newIncident.priority}
                     onChange={e => setNewIncident({...newIncident, priority: e.target.value as IncidentPriority})}
                   >
