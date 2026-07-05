@@ -79,7 +79,7 @@ export default function LocataireLayout({
       
       const p = await db.getProfile();
       if (p) {
-        if (p.role !== "tenant") {
+        if (p.role !== "tenant" && p.role !== "owner" && p.role !== "admin") {
           setIsAuthorized(false);
           router.push("/dashboard");
           return;
