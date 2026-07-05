@@ -663,7 +663,7 @@ export default function DashboardLayout({
         </header>
 
         {/* Trial Alert Banner */}
-        {remainingDays !== null && remainingDays <= 30 && (
+        {remainingDays !== null && (
           <div style={{ background: "var(--warning-lightest)", padding: "12px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid rgba(245, 158, 11, 0.2)", flexWrap: "wrap", gap: "12px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
               <AlertTriangle size={18} style={{ color: "var(--warning-dark)" }} />
