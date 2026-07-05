@@ -14,6 +14,7 @@ import {
   LogOut,
   Bell,
   Menu,
+  Shield,
   X,
   Sparkles,
   Briefcase,
@@ -102,11 +103,6 @@ export default function DashboardLayout({
           router.push("/locataire/dashboard");
           return;
         }
-        if (p.role === "admin") {
-          setIsAuthorized(false);
-          router.push("/admin/dashboard");
-          return;
-        }
 
         const customAvatar = localStorage.getItem("V_CUSTOM_AVATAR");
         if (customAvatar) {
@@ -168,6 +164,15 @@ export default function DashboardLayout({
       ]
     }
   ];
+
+  if (profile?.email?.toLowerCase() === 'vecoakasa@gmail.com') {
+    navigationGroups.push({
+      groupName: "Super Administrateur",
+      items: [
+        { name: "Espace Super Admin", href: "/admin/dashboard", icon: Shield }
+      ]
+    });
+  }
 
   if (isAuthorized === null) {
     return (
