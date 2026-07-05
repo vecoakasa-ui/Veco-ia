@@ -69,12 +69,19 @@ export default function RegisterPage({ searchParams }: PageProps) {
 
       if (data?.user) {
         // Force the creation of a profile in the profiles table
+        const startDate = new Date();
+        const endDate = new Date();
+        endDate.setMonth(endDate.getMonth() + 1);
+
         await supabase.from("profiles").upsert({
           id: data.user.id,
           full_name: fullName,
           email: email,
           role: role,
-          phone: ""
+          phone: "",
+          subscription_status: 'trialing',
+          trial_start_date: startDate.toISOString(),
+          trial_end_date: endDate.toISOString()
         });
       }
 

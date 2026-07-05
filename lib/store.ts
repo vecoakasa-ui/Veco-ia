@@ -480,6 +480,22 @@ export const db = {
           if (!data.avatar_url) {
             data.avatar_url = "/owner_avatar.png";
           }
+          
+          // Auto-migrate existing users who don't have trial dates
+          if (data.role === 'owner' && data.subscription_status === 'trialing' && !data.trial_end_date) {
+            const startDate = new Date();
+            const endDate = new Date();
+            endDate.setMonth(endDate.getMonth() + 1);
+            
+            data.trial_start_date = startDate.toISOString();
+            data.trial_end_date = endDate.toISOString();
+            
+            supabase.from("profiles").update({
+              trial_start_date: data.trial_start_date,
+              trial_end_date: data.trial_end_date
+            }).eq("id", ownerId).then();
+          }
+
           return data as Profile;
         } else {
           // Si le profil n'existe pas (ex: connexion Google), on le crée
@@ -504,7 +520,14 @@ export const db = {
             full_name: newProfile.full_name,
             email: newProfile.email,
             role: newProfile.role,
-            phone: newProfile.phone
+            phone: newProfile.phone,
+            subscription_status: 'trialing',
+            trial_start_date: new Date().toISOString(),
+            trial_end_date: (() => {
+              const d = new Date();
+              d.setMonth(d.getMonth() + 1);
+              return d.toISOString();
+            })()
           });
           
           if (!insertError) {
