@@ -8,7 +8,7 @@ import { AlertTriangle, X } from "lucide-react";
 // Changez SHOW_BANNER à 'true' pour afficher le message sur tout le site
 // Changez SHOW_BANNER à 'false' pour le masquer
 // ==========================================
-const SHOW_BANNER = true;
+const SHOW_BANNER = false;
 const BANNER_MESSAGE = "🚨 Maintenance en cours : Notre équipe déploie actuellement une nouvelle mise à jour majeure. Certaines fonctionnalités peuvent être momentanément indisponibles.";
 
 export default function AnnouncementBanner() {
