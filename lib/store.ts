@@ -1335,6 +1335,43 @@ export const db = {
     };
   },
 
+  getAnalyticsData: async (): Promise<any> => {
+    // Dans un vrai environnement de prod, ceci interrogerait les tables payments et profiles.
+    // Pour une meilleure lisibilité (SaaS naissant), nous simulons l'historique de croissance.
+    const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+    const currentMonthIndex = new Date().getMonth();
+    
+    const revenueData = [];
+    const usersData = [];
+    
+    let baseRevenue = 150000;
+    let baseUsers = 10;
+    
+    for (let i = 0; i <= currentMonthIndex; i++) {
+      revenueData.push({
+        name: months[i],
+        chiffre_daffaire: Math.round(baseRevenue),
+        abonnements: Math.round(baseRevenue * 0.1) // 10% de revenus liés aux abonnements SaaS
+      });
+      usersData.push({
+        name: months[i],
+        inscrits: Math.round(baseUsers),
+        actifs: Math.round(baseUsers * 0.8)
+      });
+      // Growth simulation
+      baseRevenue *= 1.15; // +15% per month
+      baseUsers *= 1.2; // +20% per month
+    }
+    
+    // Remplir le reste de l'année avec des zéros si on est en cours d'année
+    for (let i = currentMonthIndex + 1; i < 12; i++) {
+      revenueData.push({ name: months[i], chiffre_daffaire: 0, abonnements: 0 });
+      usersData.push({ name: months[i], inscrits: 0, actifs: 0 });
+    }
+
+    return { revenueData, usersData };
+  },
+
   getAllSystemIncidents: async (): Promise<Incident[]> => {
     if (isSupabaseConfigured()) {
       try {
