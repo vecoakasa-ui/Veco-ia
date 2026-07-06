@@ -41,6 +41,12 @@ export default function IncidentsPage() {
       setProperties(props);
       setTenants(tens);
       setIsLoading(false);
+      
+      const p = await db.getProfile();
+      if (p) {
+        localStorage.setItem(`last_viewed_${p.id}_incidents`, new Date().toISOString());
+        window.dispatchEvent(new CustomEvent('notificationViewed', { detail: 'incidents' }));
+      }
     };
     loadIncidentsData();
   }, []);

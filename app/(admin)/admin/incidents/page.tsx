@@ -44,8 +44,12 @@ export default function AdminIncidentsPage() {
         setTenants(tens);
         setIncidents(incs);
         setFilteredIncidents(incs);
+        setIsLoading(false);
+
+        localStorage.setItem(`last_viewed_admin_incidents`, new Date().toISOString());
+        window.dispatchEvent(new CustomEvent('notificationViewed', { detail: 'admin_incidents' }));
       } catch (error) {
-        console.error("Erreur lors du chargement des incidents", error);
+        console.error("Error fetching admin incidents:", error);
       } finally {
         setIsLoading(false);
       }

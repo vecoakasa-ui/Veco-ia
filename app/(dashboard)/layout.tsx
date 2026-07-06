@@ -191,6 +191,63 @@ export default function DashboardLayout({
 
   // Super Admin Navigation removed to keep it completely invisible from the dashboard
 
+  const [hasNewDemandes, setHasNewDemandes] = useState(false);
+  const [hasNewIncidents, setHasNewIncidents] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthorized || profile.role !== "owner") return;
+
+    const checkNotifications = async () => {
+      try {
+        const lastViewedDemandes = localStorage.getItem(`last_viewed_${profile.id}_demandes`);
+        const lastViewedIncidents = localStorage.getItem(`last_viewed_${profile.id}_incidents`);
+
+        // Get properties
+        const { data: props } = await supabase.from('properties').select('id').eq('owner_id', profile.id);
+        const propIds = props?.map((p: any) => p.id) || [];
+
+        if (propIds.length > 0) {
+          // Check demandes
+          let inqQuery = supabase.from('inquiries').select('id', { count: 'exact', head: true }).in('property_id', propIds).eq('status', 'pending');
+          if (lastViewedDemandes) {
+            inqQuery = inqQuery.gt('created_at', lastViewedDemandes);
+          }
+          const { count: inqCount } = await inqQuery;
+          setHasNewDemandes((inqCount || 0) > 0);
+
+          // Check incidents
+          let incQuery = supabase.from('incidents').select('id', { count: 'exact', head: true }).in('property_id', propIds).eq('status', 'open');
+          if (lastViewedIncidents) {
+            incQuery = incQuery.gt('created_at', lastViewedIncidents);
+          }
+          const { count: incCount } = await incQuery;
+          setHasNewIncidents((incCount || 0) > 0);
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    checkNotifications();
+
+    const handleViewed = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail === 'demandes') setHasNewDemandes(false);
+      if (customEvent.detail === 'incidents') setHasNewIncidents(false);
+    };
+    window.addEventListener('notificationViewed', handleViewed);
+
+    return () => {
+      window.removeEventListener('notificationViewed', handleViewed);
+    };
+  }, [isAuthorized, profile.id, profile.role]);
+
+  const hasBadge = (itemName: string) => {
+    if (itemName === "Demandes") return hasNewDemandes;
+    if (itemName === "Incidents") return hasNewIncidents;
+    return false;
+  };
+
   if (isAuthorized === null) {
     return (
       <div style={{ display: "flex", height: "100vh", alignItems: "center", justifyContent: "center", background: "var(--gray-50)", flexDirection: "column", gap: "16px" }}>
@@ -291,7 +348,10 @@ export default function DashboardLayout({
                       className={isActive ? "" : "hover-sidebar-link"}
                     >
                       {Icon ? <Icon size={18} /> : <div style={{ width: 18, height: 18 }} />}
-                      <span>{item.name}</span>
+                      <span style={{ flex: 1 }}>{item.name}</span>
+                      {hasBadge(item.name) && (
+                        <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "var(--danger)", boxShadow: "0 0 8px rgba(239, 68, 68, 0.6)" }}></div>
+                      )}
                     </Link>
                   );
                 })}
@@ -423,7 +483,10 @@ export default function DashboardLayout({
                           }}
                         >
                           {Icon ? <Icon size={18} /> : <div style={{ width: 18, height: 18 }} />}
-                          <span>{item.name}</span>
+                          <span style={{ flex: 1 }}>{item.name}</span>
+                          {hasBadge(item.name) && (
+                            <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "var(--danger)", boxShadow: "0 0 8px rgba(239, 68, 68, 0.6)" }}></div>
+                          )}
                         </Link>
                       );
                     })}

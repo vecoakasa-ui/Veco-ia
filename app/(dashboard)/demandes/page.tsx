@@ -25,6 +25,14 @@ export default function DemandesPage() {
 
   useEffect(() => {
     loadInquiries();
+    
+    // Marquer la page comme vue pour les notifications
+    db.getProfile().then(p => {
+      if (p) {
+        localStorage.setItem(`last_viewed_${p.id}_demandes`, new Date().toISOString());
+        window.dispatchEvent(new CustomEvent('notificationViewed', { detail: 'demandes' }));
+      }
+    });
   }, []);
 
   const loadInquiries = async () => {

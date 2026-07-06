@@ -104,6 +104,45 @@ export default function AdminLayout({
     }
   }, [isAuthorized]);
 
+  const [hasNewIncidents, setHasNewIncidents] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthorized) return;
+
+    const checkAdminNotifications = async () => {
+      try {
+        const lastViewedIncidents = localStorage.getItem(`last_viewed_admin_incidents`);
+        
+        let incQuery = supabase.from('incidents').select('id', { count: 'exact', head: true }).eq('status', 'open');
+        if (lastViewedIncidents) {
+          incQuery = incQuery.gt('created_at', lastViewedIncidents);
+        }
+        const { count: incCount } = await incQuery;
+        setHasNewIncidents((incCount || 0) > 0);
+
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    checkAdminNotifications();
+
+    const handleViewed = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      if (customEvent.detail === 'admin_incidents') setHasNewIncidents(false);
+    };
+    window.addEventListener('notificationViewed', handleViewed);
+
+    return () => {
+      window.removeEventListener('notificationViewed', handleViewed);
+    };
+  }, [isAuthorized]);
+
+  const hasBadge = (itemName: string) => {
+    if (itemName === "Support & Incidents") return hasNewIncidents;
+    return false;
+  };
+
   if (isAuthorized === null) {
     return (
       <div style={{ display: "flex", height: "100vh", alignItems: "center", justifyContent: "center", background: "var(--gray-50)", flexDirection: "column", gap: "16px" }}>
@@ -162,7 +201,10 @@ export default function AdminLayout({
             return (
               <Link key={item.href} href={item.href} className={`admin-nav-item ${isActive ? 'active' : ''}`}>
                 <Icon size={22} className="admin-nav-icon" />
-                <span>{item.label}</span>
+                <span style={{ flex: 1 }}>{item.label}</span>
+                {hasBadge(item.label) && (
+                  <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "var(--danger)", boxShadow: "0 0 8px rgba(239, 68, 68, 0.6)" }}></div>
+                )}
               </Link>
             );
           })}
