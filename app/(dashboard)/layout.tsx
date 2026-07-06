@@ -99,6 +99,10 @@ export default function DashboardLayout({
           setIsAuthorized(false);
           router.push("/locataire/dashboard");
           return;
+        } else if (p.role === "admin") {
+          setIsAuthorized(false);
+          router.push("/admin/dashboard");
+          return;
         }
 
         const customAvatar = localStorage.getItem("V_CUSTOM_AVATAR");

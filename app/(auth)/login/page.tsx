@@ -44,6 +44,8 @@ export default function LoginPage({ searchParams }: PageProps) {
         if (profile) {
           if (profile.role === "tenant") {
             router.push("/locataire/dashboard");
+          } else if (profile.role === "admin") {
+            router.push("/admin/dashboard");
           } else {
             router.push("/dashboard");
           }
@@ -90,6 +92,8 @@ export default function LoginPage({ searchParams }: PageProps) {
 
       if (profile?.role === "tenant") {
         router.push("/locataire/dashboard");
+      } else if (profile?.role === "admin") {
+        router.push("/admin/dashboard");
       } else {
         router.push("/dashboard");
       }
