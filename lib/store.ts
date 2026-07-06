@@ -476,7 +476,7 @@ export const db = {
           // Rendre ce compte UNIQUE Super Administrateur
           if (data.email) {
             const emailLower = data.email.toLowerCase();
-            if (emailLower === 'vecoakasa@gmail.com' || emailLower === 'visionimmo@gmail.com' || emailLower.startsWith('admin')) {
+            if (emailLower === 'visionimmo@gmail.com') {
               data.role = 'admin';
             }
           }
@@ -517,7 +517,7 @@ export const db = {
           // Vérification admin
           if (newProfile.email) {
             const emailLower = newProfile.email.toLowerCase();
-            if (emailLower === 'vecoakasa@gmail.com' || emailLower === 'visionimmo@gmail.com' || emailLower.startsWith('admin')) {
+            if (emailLower === 'visionimmo@gmail.com') {
               newProfile.role = 'admin';
             }
           }
