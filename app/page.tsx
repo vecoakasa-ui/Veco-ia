@@ -366,7 +366,7 @@ function HomeContent() {
               <a href="/register" className="btn btn-orange pulse-btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', transition: 'transform 0.2s, box-shadow 0.2s', display: 'flex', alignItems: 'center', gap: '8px', background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', borderRadius: 'var(--radius-lg)' }}>
                 <Calendar size={18} /> Demander une démo
               </a>
-              <a href="#features" className="btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', background: 'var(--white)', color: 'var(--gray-900)', border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-sm)', transition: 'transform 0.2s, box-shadow 0.2s' }}>
+              <a href="#services" className="btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', background: 'var(--white)', color: 'var(--gray-900)', border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-sm)', transition: 'transform 0.2s, box-shadow 0.2s' }}>
                 Commencer gratuitement
               </a>
             </div>
@@ -410,7 +410,7 @@ function HomeContent() {
             <a href="/register" className="btn btn-orange pulse-btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', transition: 'transform 0.2s, box-shadow 0.2s', display: 'flex', alignItems: 'center', gap: '8px', background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', borderRadius: 'var(--radius-lg)' }}>
               <Calendar size={18} /> Demander une démo
             </a>
-            <a href="#features" className="btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', background: 'var(--white)', color: 'var(--gray-900)', border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-sm)', transition: 'transform 0.2s, box-shadow 0.2s' }}>
+            <a href="#services" className="btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', background: 'var(--white)', color: 'var(--gray-900)', border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-sm)', transition: 'transform 0.2s, box-shadow 0.2s' }}>
               Commencer gratuitement
             </a>
           </div>
@@ -624,7 +624,7 @@ function HomeContent() {
       {/* ============================================
          Services Section
          ============================================ */}
-      <section id="features" className="section" style={{ background: 'var(--gray-50)' }}>
+      <section id="services" className="section" style={{ background: 'var(--gray-50)' }}>
         <div className="container" style={{ textAlign: 'center', marginBottom: 'var(--space-16)' }}>
           <span className="section-label">Fonctionnalités Clés</span>
           <h2 className="section-title">
