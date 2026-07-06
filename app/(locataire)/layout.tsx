@@ -420,7 +420,7 @@ export default function LocataireLayout({
           display: "flex",
           flexDirection: "column",
           minWidth: 0,
-          marginLeft: "0px"
+          marginLeft: "var(--sidebar-width)"
         }}
         className="dashboard-content-wrapper"
       >

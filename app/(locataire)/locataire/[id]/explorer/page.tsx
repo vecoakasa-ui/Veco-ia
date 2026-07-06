@@ -162,11 +162,7 @@ export default function ExplorerPage() {
               <p style={{ color: "var(--gray-500)", margin: 0 }}>Il n'y a actuellement aucun logement vacant sur la plateforme. Revenez plus tard !</p>
             </div>
           ) : (
-            <div className="animate-fade-in" style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-              gap: "var(--space-6)"
-            }}>
+            <div className="grid-explorer animate-fade-in">
               {properties.map((property) => (
                 <div key={property.id} className="card" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}>
                   {/* Image Header */}
