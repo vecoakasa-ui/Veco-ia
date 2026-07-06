@@ -169,10 +169,10 @@ export default function AdminLayout({
         
         <div style={{ marginTop: "auto" }}>
           <div style={{ height: "1px", background: "#e2e8f0", margin: "24px 0" }}></div>
-          <Link href="/dashboard" className="admin-nav-item logout">
+          <button onClick={async () => { await supabase.auth.signOut(); router.push('/system-admin'); }} className="admin-nav-item logout" style={{ width: "100%", textAlign: "left", border: "none", cursor: "pointer" }}>
             <LogOut size={22} className="admin-nav-icon" />
-            <span>Quitter l'espace Admin</span>
-          </Link>
+            <span>Déconnexion</span>
+          </button>
         </div>
       </aside>
 
@@ -190,10 +190,10 @@ export default function AdminLayout({
             <span className="hide-mobile" style={{ fontWeight: 800, color: "#1e293b", fontSize: "22px" }}>Espace Super Administrateur</span>
             <span className="badge" style={{ background: "rgba(255, 130, 0, 0.1)", color: "#FF8200", border: "1px solid rgba(255, 130, 0, 0.2)", padding: "4px 10px", borderRadius: "100px", fontSize: "12px", fontWeight: "bold" }}>ADMINISTRATEUR</span>
           </div>
-          <Link href="/dashboard" className="hide-mobile" style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px 16px", background: "rgba(255, 130, 0, 0.1)", color: "#FF8200", borderRadius: "8px", textDecoration: "none", fontWeight: 600, fontSize: "14px", transition: "all 0.2s" }} onMouseOver={(e) => { e.currentTarget.style.background = "rgba(255, 130, 0, 0.2)"; }} onMouseOut={(e) => { e.currentTarget.style.background = "rgba(255, 130, 0, 0.1)"; }}>
+          <button onClick={async () => { await supabase.auth.signOut(); router.push('/system-admin'); }} className="hide-mobile" style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px 16px", background: "rgba(255, 130, 0, 0.1)", color: "#FF8200", borderRadius: "8px", border: "none", cursor: "pointer", fontWeight: 600, fontSize: "14px", transition: "all 0.2s" }} onMouseOver={(e) => { e.currentTarget.style.background = "rgba(255, 130, 0, 0.2)"; }} onMouseOut={(e) => { e.currentTarget.style.background = "rgba(255, 130, 0, 0.1)"; }}>
              <LogOut size={16} />
-             Retour Utilisateur
-          </Link>
+             Déconnexion sécurisée
+          </button>
         </header>
         <div className="content-area" style={{ flex: 1, padding: "32px" }}>
           {children}
