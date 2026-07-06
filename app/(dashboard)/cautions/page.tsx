@@ -538,14 +538,14 @@ export default function CautionsPage() {
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                     <div style={{ width: "40px", height: "40px", background: "var(--primary)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}><FileText size={24} color="white" /></div>
-                    <span style={{ fontSize: "20px", fontWeight: "800", color: "var(--primary)" }}>Veco Immo</span>
+                    <span style={{ fontSize: "20px", fontWeight: "800", color: "var(--primary)" }}>Vision Immo 2.0</span>
                   </div>
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "40px" }}>
                   <div style={{ flex: 1 }}>
                     <h3 style={{ fontSize: "12px", textTransform: "uppercase", color: "#888", letterSpacing: "1px", marginBottom: "8px" }}>Propriétaire / Bailleur</h3>
-                    <p style={{ margin: "0 0 4px 0", fontWeight: "bold", fontSize: "16px" }}>Agence Veco Immo</p>
+                    <p style={{ margin: "0 0 4px 0", fontWeight: "bold", fontSize: "16px" }}>Vision Immo 2.0</p>
                   </div>
                   <div style={{ flex: 1, textAlign: "right" }}>
                     <h3 style={{ fontSize: "12px", textTransform: "uppercase", color: "#888", letterSpacing: "1px", marginBottom: "8px" }}>Locataire</h3>
@@ -588,7 +588,7 @@ export default function CautionsPage() {
                   <div style={{ textAlign: "center" }}>
                     <p style={{ margin: "0 0 16px 0", fontSize: "14px", color: "#333", fontWeight: "bold" }}>Le Bailleur</p>
                     <div style={{ width: "160px", height: "60px", borderBottom: "1px dashed #ccc", margin: "0 auto", display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: "8px" }}>
-                      <span style={{ fontFamily: "cursive", fontSize: "24px", color: "var(--primary)" }}>Veco</span>
+                      <span style={{ fontFamily: "cursive", fontSize: "24px", color: "var(--primary)" }}>Vision Immo 2.0</span>
                     </div>
                   </div>
                   <div style={{ textAlign: "center" }}>
@@ -637,14 +637,14 @@ export default function CautionsPage() {
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                     <div style={{ width: "40px", height: "40px", background: "var(--primary)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}><FileText size={24} color="white" /></div>
-                    <span style={{ fontSize: "20px", fontWeight: "800", color: "var(--primary)" }}>Veco Immo</span>
+                    <span style={{ fontSize: "20px", fontWeight: "800", color: "var(--primary)" }}>Vision Immo 2.0</span>
                   </div>
                 </div>
 
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "40px" }}>
                   <div style={{ flex: 1 }}>
                     <h3 style={{ fontSize: "12px", textTransform: "uppercase", color: "#888", letterSpacing: "1px", marginBottom: "8px" }}>Propriétaire / Bailleur</h3>
-                    <p style={{ margin: "0 0 4px 0", fontWeight: "bold", fontSize: "16px" }}>Agence Veco Immo</p>
+                    <p style={{ margin: "0 0 4px 0", fontWeight: "bold", fontSize: "16px" }}>Vision Immo 2.0</p>
                   </div>
                   <div style={{ flex: 1, textAlign: "right" }}>
                     <h3 style={{ fontSize: "12px", textTransform: "uppercase", color: "#888", letterSpacing: "1px", marginBottom: "8px" }}>Locataire</h3>
@@ -682,7 +682,7 @@ export default function CautionsPage() {
                   <div style={{ textAlign: "center" }}>
                     <p style={{ margin: "0 0 16px 0", fontSize: "14px", color: "#333", fontWeight: "bold" }}>Le Bailleur</p>
                     <div style={{ width: "160px", height: "60px", borderBottom: "1px dashed #ccc", margin: "0 auto", display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: "8px" }}>
-                      <span style={{ fontFamily: "cursive", fontSize: "24px", color: "var(--primary)" }}>Veco</span>
+                      <span style={{ fontFamily: "cursive", fontSize: "24px", color: "var(--primary)" }}>Vision Immo 2.0</span>
                     </div>
                   </div>
                 </div>

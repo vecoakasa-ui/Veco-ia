@@ -261,7 +261,7 @@ export default function TenantQuittancesPage() {
                     <div style={{ width: "40px", height: "40px", background: "var(--primary)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}>
                       <FileText size={24} color="white" />
                     </div>
-                    <span style={{ fontSize: "20px", fontWeight: "800", color: "var(--primary)" }}>Veco Immo</span>
+                    <span style={{ fontSize: "20px", fontWeight: "800", color: "var(--primary)" }}>Vision Immo 2.0</span>
                   </div>
                 </div>
 
@@ -269,7 +269,7 @@ export default function TenantQuittancesPage() {
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "40px" }}>
                   <div style={{ flex: 1 }}>
                     <h3 style={{ fontSize: "12px", textTransform: "uppercase", color: "#888", letterSpacing: "1px", marginBottom: "8px" }}>Propriétaire / Bailleur</h3>
-                    <p style={{ margin: "0 0 4px 0", fontWeight: "bold", fontSize: "16px" }}>Agence Veco Immo</p>
+                    <p style={{ margin: "0 0 4px 0", fontWeight: "bold", fontSize: "16px" }}>Vision Immo 2.0</p>
                     <p style={{ margin: 0, color: "#444", fontSize: "14px" }}>Cocody, Abidjan</p>
                     <p style={{ margin: 0, color: "#444", fontSize: "14px" }}>contact@veco-ia.com</p>
                   </div>
@@ -283,7 +283,7 @@ export default function TenantQuittancesPage() {
                 {/* Receipt Details */}
                 <div style={{ marginBottom: "40px" }}>
                   <p style={{ fontSize: "15px", lineHeight: "1.6", color: "#333" }}>
-                    Nous soussignés, <strong>Agence Veco Immo</strong>, déclarons avoir reçu de <strong>{selectedPayment.tenant_name || (tenant && tenant.full_name)}</strong> la somme de <strong>{formatCurrency(selectedPayment.total)}</strong> au titre du paiement du loyer pour le local situé à l'adresse du bien <strong>{selectedPayment.property_name || (tenant && tenant.property_name)}</strong>.
+                    Nous soussignés, <strong>Vision Immo 2.0</strong>, déclarons avoir reçu de <strong>{selectedPayment.tenant_name || (tenant && tenant.full_name)}</strong> la somme de <strong>{formatCurrency(selectedPayment.total)}</strong> au titre du paiement du loyer pour le local situé à l'adresse du bien <strong>{selectedPayment.property_name || (tenant && tenant.property_name)}</strong>.
                   </p>
                 </div>
 
@@ -318,7 +318,7 @@ export default function TenantQuittancesPage() {
                   <div style={{ textAlign: "center" }}>
                     <p style={{ margin: "0 0 16px 0", fontSize: "14px", color: "#333", fontWeight: "bold" }}>Le Bailleur / Le Mandataire</p>
                     <div style={{ width: "160px", height: "60px", borderBottom: "1px dashed #ccc", margin: "0 auto", display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: "8px" }}>
-                      <span style={{ fontFamily: "cursive", fontSize: "24px", color: "var(--primary)" }}>Veco Immo</span>
+                      <span style={{ fontFamily: "cursive", fontSize: "24px", color: "var(--primary)" }}>Vision Immo 2.0</span>
                     </div>
                   </div>
                 </div>

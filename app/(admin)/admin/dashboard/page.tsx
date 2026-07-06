@@ -63,7 +63,7 @@ export default function AdminDashboardPage() {
       <div className="page-header">
         <div>
           <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", margin: 0 }}>Supervision Plateforme</p>
-          <h2 style={{ fontSize: "var(--text-xl)", fontWeight: "800", color: "var(--gray-900)", margin: 0 }}>Vue Globale de Veco IA</h2>
+          <h2 style={{ fontSize: "var(--text-xl)", fontWeight: "800", color: "var(--gray-900)", margin: 0 }}>Vue Globale de Vision Immo 2.0</h2>
         </div>
       </div>
 

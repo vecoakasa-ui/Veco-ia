@@ -190,7 +190,7 @@ export default function AdminLayout({
             <ShieldAlert size={24} color="#FFFFFF" />
           </div>
           <span style={{ color: "#1e293b", fontSize: "24px", fontWeight: "800", letterSpacing: "-0.5px", whiteSpace: "nowrap" }}>
-            Veco<span style={{ color: "#FF8200" }}>Admin</span>
+            Vision<span style={{ color: "#FF8200" }}>Admin</span>
           </span>
         </div>
         
