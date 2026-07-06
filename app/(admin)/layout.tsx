@@ -44,8 +44,8 @@ export default function AdminLayout({
 
       try {
         const profile = await db.getProfile();
-        // Vérification stricte : seul vecoakasa@gmail.com a accès à cet espace
-        if (profile && profile.email?.toLowerCase() === "vecoakasa@gmail.com") {
+        // Vérification stricte : seuls les rôles administrateurs ont accès à cet espace
+        if (profile && profile.role === "admin") {
           setIsAuthorized(true);
         } else {
           // Tentative d'accès non autorisée détectée !

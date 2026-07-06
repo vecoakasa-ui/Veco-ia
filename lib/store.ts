@@ -473,9 +473,12 @@ export const db = {
         if (error) throw error;
         
         if (data) {
-          // Rendre ce compte UNIQUE Super Administrateur (Insensible à la casse)
-          if (data.email && data.email.toLowerCase() === 'vecoakasa@gmail.com') {
-            data.role = 'admin';
+          // Rendre ce compte UNIQUE Super Administrateur
+          if (data.email) {
+            const emailLower = data.email.toLowerCase();
+            if (emailLower === 'vecoakasa@gmail.com' || emailLower === 'visionimmo@gmail.com' || emailLower.startsWith('admin')) {
+              data.role = 'admin';
+            }
           }
           if (!data.avatar_url) {
             data.avatar_url = "/owner_avatar.png";
@@ -512,8 +515,11 @@ export const db = {
           };
           
           // Vérification admin
-          if (newProfile.email && newProfile.email.toLowerCase() === 'vecoakasa@gmail.com') {
-            newProfile.role = 'admin';
+          if (newProfile.email) {
+            const emailLower = newProfile.email.toLowerCase();
+            if (emailLower === 'vecoakasa@gmail.com' || emailLower === 'visionimmo@gmail.com' || emailLower.startsWith('admin')) {
+              newProfile.role = 'admin';
+            }
           }
           
           const { error: insertError } = await supabase.from("profiles").insert({
@@ -1172,14 +1178,18 @@ export const db = {
   getStats: async (): Promise<DashboardStats> => {
     if (isSupabaseConfigured()) {
       try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const userId = session?.user?.id;
+        if (!userId) throw new Error("User not authenticated");
+
         const [props, ten, pays, lands, leasesData, incidentsData, occupiedProps] = await Promise.all([
-          supabase.from("properties").select("id", { count: "exact", head: true }),
-          supabase.from("tenants").select("id", { count: "exact", head: true }),
-          supabase.from("payments").select("total, status"),
-          supabase.from("landlords").select("id", { count: "exact", head: true }),
-          supabase.from("leases").select("id", { count: "exact", head: true }),
+          supabase.from("properties").select("id", { count: "exact", head: true }).eq("owner_id", userId),
+          supabase.from("tenants").select("id", { count: "exact", head: true }).eq("owner_id", userId),
+          supabase.from("payments").select("total, status").eq("owner_id", userId),
+          supabase.from("landlords").select("id", { count: "exact", head: true }).eq("owner_id", userId),
+          supabase.from("leases").select("id", { count: "exact", head: true }).eq("owner_id", userId),
           supabase.from("incidents").select("id", { count: "exact", head: true }).in("status", ["open", "in_progress"]),
-          supabase.from("properties").select("id", { count: "exact", head: true }).eq("status", "occupied")
+          supabase.from("properties").select("id", { count: "exact", head: true }).eq("status", "occupied").eq("owner_id", userId)
         ]);
         
         const total_properties = props.count || 0;
@@ -1403,5 +1413,49 @@ export const db = {
         }
       }
     ];
+  },
+  
+  getAdminStats: async (): Promise<any> => {
+    if (isSupabaseConfigured()) {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) throw new Error("Not authenticated");
+        
+        const [users, props, ten, pays] = await Promise.all([
+          supabase.from("profiles").select("id, role, subscription_status, subscription_plan"),
+          supabase.from("properties").select("id", { count: "exact", head: true }),
+          supabase.from("tenants").select("id", { count: "exact", head: true }),
+          supabase.from("payments").select("total, status")
+        ]);
+        
+        const allUsers = users.data || [];
+        const ownersCount = allUsers.filter(u => u.role === "owner").length;
+        const totalRevenue = (pays.data || [])
+          .filter(p => p.status === "paid")
+          .reduce((sum, p) => sum + p.total, 0);
+
+        // Platform subscription revenue (simulation for now)
+        const proUsers = allUsers.filter(u => u.subscription_plan === "pro").length;
+        const premiumUsers = allUsers.filter(u => u.subscription_plan === "premium").length;
+        const platformRevenue = (proUsers * 15000) + (premiumUsers * 25000);
+          
+        return {
+          total_owners: ownersCount,
+          total_properties: props.count || 0,
+          total_tenants: ten.count || 0,
+          total_platform_revenue: platformRevenue,
+          total_rent_revenue: totalRevenue
+        };
+      } catch (err) {
+        console.error("Admin stats error:", err);
+      }
+    }
+    return {
+      total_owners: 0,
+      total_properties: 0,
+      total_tenants: 0,
+      total_platform_revenue: 0,
+      total_rent_revenue: 0
+    };
   }
 };
