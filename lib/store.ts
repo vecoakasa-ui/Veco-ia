@@ -1429,14 +1429,14 @@ export const db = {
         ]);
         
         const allUsers = users.data || [];
-        const ownersCount = allUsers.filter(u => u.role === "owner").length;
+        const ownersCount = allUsers.filter((u: any) => u.role === "owner").length;
         const totalRevenue = (pays.data || [])
-          .filter(p => p.status === "paid")
-          .reduce((sum, p) => sum + p.total, 0);
+          .filter((p: any) => p.status === "paid")
+          .reduce((sum: number, p: any) => sum + p.total, 0);
 
         // Platform subscription revenue (simulation for now)
-        const proUsers = allUsers.filter(u => u.subscription_plan === "pro").length;
-        const premiumUsers = allUsers.filter(u => u.subscription_plan === "premium").length;
+        const proUsers = allUsers.filter((u: any) => u.subscription_plan === "pro").length;
+        const premiumUsers = allUsers.filter((u: any) => u.subscription_plan === "premium").length;
         const platformRevenue = (proUsers * 15000) + (premiumUsers * 25000);
           
         return {
