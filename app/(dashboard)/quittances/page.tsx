@@ -248,16 +248,9 @@ export default function QuittancesPage() {
                       <td style={{ padding: "16px", borderBottom: "1px solid #eee", color: "#333", textTransform: "capitalize" }}>{selectedPayment.month} {selectedPayment.year}</td>
                       <td style={{ padding: "16px", borderBottom: "1px solid #eee", textAlign: "right", color: "#333" }}>{formatCurrency(selectedPayment.amount)}</td>
                     </tr>
-                    {selectedPayment.charges > 0 && (
-                      <tr>
-                        <td style={{ padding: "16px", borderBottom: "1px solid #eee", color: "#333" }}>Charges récupérables</td>
-                        <td style={{ padding: "16px", borderBottom: "1px solid #eee", color: "#333", textTransform: "capitalize" }}>{selectedPayment.month} {selectedPayment.year}</td>
-                        <td style={{ padding: "16px", borderBottom: "1px solid #eee", textAlign: "right", color: "#333" }}>{formatCurrency(selectedPayment.charges)}</td>
-                      </tr>
-                    )}
                     <tr>
                       <td colSpan={2} style={{ padding: "16px", textAlign: "right", fontWeight: "bold", fontSize: "16px", color: "#111" }}>TOTAL PAYÉ</td>
-                      <td style={{ padding: "16px", textAlign: "right", fontWeight: "bold", fontSize: "18px", color: "var(--primary-dark)" }}>{formatCurrency(selectedPayment.total)}</td>
+                      <td style={{ padding: "16px", textAlign: "right", fontWeight: "bold", fontSize: "18px", color: "var(--primary-dark)" }}>{formatCurrency(selectedPayment.amount)}</td>
                     </tr>
                   </tbody>
                 </table>

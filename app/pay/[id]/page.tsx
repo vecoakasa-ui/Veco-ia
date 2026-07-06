@@ -292,7 +292,7 @@ export default function TenantPaymentPage({ params }: PageProps) {
               <div style={{ textAlign: "center", marginBottom: "var(--space-6)" }}>
                 <span style={{ fontSize: "11px", fontWeight: "700", textTransform: "uppercase", letterSpacing: "1px", color: "var(--primary)" }}>PayDunya Sandbox Checkout</span>
                 <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800", marginTop: "2px" }}>Choisir un moyen de paiement</h3>
-                <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-400)", marginTop: "2px" }}>Montant à payer : <strong style={{ color: "var(--gray-800)" }}>{formatCurrency(payment.total)}</strong></p>
+                <p style={{ fontSize: "var(--text-xs)", color: "var(--gray-400)", marginTop: "2px" }}>Montant à payer : <strong style={{ color: "var(--gray-800)" }}>{formatCurrency(payment.amount)}</strong></p>
               </div>
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-4)", marginBottom: "var(--space-6)" }}>
