@@ -318,8 +318,8 @@ export default function DashboardLayout({
             <div className="logo-icon" style={{ background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Building2 size={16} className="text-orange" />
             </div>
-            <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--orange)" }}>
-              Vision Immo 2.0
+            <span style={{ fontSize: "24px", fontWeight: "900", color: "var(--orange)", letterSpacing: "-0.5px" }}>
+              Veco
             </span>
           </Link>
         </div>
@@ -451,8 +451,8 @@ export default function DashboardLayout({
                 <div className="logo-icon" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "var(--primary)" }}>
                   <Building2 size={16} className="text-orange" />
                 </div>
-                <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--orange)" }}>
-                  Vision Immo 2.0
+                <span style={{ fontSize: "24px", fontWeight: "900", color: "var(--orange)", letterSpacing: "-0.5px" }}>
+                  Veco
                 </span>
               </Link>
               <button onClick={() => setMobileOpen(false)} style={{ color: "var(--fixed-white)" }}>
