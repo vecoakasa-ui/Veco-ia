@@ -1507,7 +1507,7 @@ export const db = {
         console.error(err);
       }
     }
-    return getFromStorage("buyers") || [];
+    return getFromStorage<any[]>("buyers", []);
   },
 
   addBuyer: async (buyer: any): Promise<any> => {
@@ -1521,7 +1521,7 @@ export const db = {
     if (isSupabaseConfigured()) {
       await supabase.from("buyers").insert(newBuyer);
     } else {
-      const b = getFromStorage("buyers") || [];
+      const b = getFromStorage<any[]>("buyers", []);
       setToStorage("buyers", [newBuyer, ...b]);
     }
     return newBuyer;
@@ -1549,7 +1549,7 @@ export const db = {
         console.error(err);
       }
     }
-    return getFromStorage("sales") || [];
+    return getFromStorage<any[]>("sales", []);
   },
 
   addSale: async (sale: any): Promise<any> => {
@@ -1562,7 +1562,7 @@ export const db = {
     if (isSupabaseConfigured()) {
       await supabase.from("sales").insert(newSale);
     } else {
-      const s = getFromStorage("sales") || [];
+      const s = getFromStorage<any[]>("sales", []);
       setToStorage("sales", [newSale, ...s]);
     }
     return newSale;
@@ -1577,7 +1577,7 @@ export const db = {
         console.error(err);
       }
     }
-    return getFromStorage("sale_installments") || [];
+    return getFromStorage<any[]>("sale_installments", []);
   },
 
   addSaleInstallment: async (inst: any): Promise<any> => {
@@ -1590,7 +1590,7 @@ export const db = {
     if (isSupabaseConfigured()) {
       await supabase.from("sale_installments").insert(newInst);
     } else {
-      const items = getFromStorage("sale_installments") || [];
+      const items = getFromStorage<any[]>("sale_installments", []);
       setToStorage("sale_installments", [...items, newInst]);
     }
     return newInst;
@@ -1604,7 +1604,7 @@ export const db = {
         payment_date: new Date().toISOString().split('T')[0]
       }).eq("id", id);
     } else {
-      const items = getFromStorage("sale_installments") || [];
+      const items = getFromStorage<any[]>("sale_installments", []);
       const idx = items.findIndex((i: any) => i.id === id);
       if (idx > -1) {
         items[idx].status = "paid";
