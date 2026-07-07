@@ -25,7 +25,7 @@ export default function AcheteursPage() {
 
   const showToast = (message: string, type: 'success' | 'error') => {
     setToast({ message, type });
-    setTimeout(() => setToast(null), 5000);
+    // setTimeout(() => setToast(null), 5000); // Désactivé pour qu'il puisse lire l'erreur
   };
 
   const loadData = async () => {
@@ -111,6 +111,7 @@ export default function AcheteursPage() {
       showToast("La vente a été enregistrée avec succès !", "success");
     } catch (error: any) {
       console.error("Error creating sale:", error);
+      alert("ERREUR SUPABASE: " + (error.message || JSON.stringify(error)));
       showToast(error.message || "Une erreur est survenue lors de l'enregistrement de la vente.", "error");
     }
   };
@@ -131,10 +132,11 @@ export default function AcheteursPage() {
           position: "fixed", top: "24px", right: "24px", zIndex: 9999,
           background: toast.type === 'error' ? "#fee2e2" : "#dcfce7",
           color: toast.type === 'error' ? "#991b1b" : "#166534",
-          padding: "16px 24px", borderRadius: "8px",
+          padding: "24px 32px", borderRadius: "12px",
           boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-          display: "flex", alignItems: "center", gap: "12px",
-          fontWeight: "500", animation: "slideIn 0.3s ease-out"
+          display: "flex", alignItems: "center", gap: "16px",
+          fontWeight: "600", fontSize: "16px", animation: "slideIn 0.3s ease-out",
+          maxWidth: "400px", wordWrap: "break-word"
         }}>
           {toast.type === 'error' ? <AlertCircle size={20} /> : <CheckCircle size={20} />}
           {toast.message}
