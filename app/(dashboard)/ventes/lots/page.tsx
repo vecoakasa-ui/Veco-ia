@@ -512,7 +512,7 @@ export default function LotsPage() {
                   {viewBuyer.full_name?.charAt(0) || "U"}
                 </div>
                 <div>
-                  <h3 style={{ margin: 0, fontSize: "20px", fontWeight: "bold" }}>{viewBuyer.full_name}</h3>
+                  <h3 style={{ margin: 0, fontSize: "24px", fontWeight: "900", color: "var(--orange)" }}>{viewBuyer.full_name}</h3>
                   <p style={{ margin: "4px 0 0 0", opacity: 0.8, fontSize: "14px" }}>Acheteur</p>
                 </div>
               </div>
