@@ -162,11 +162,11 @@ export default function AcheteursPage() {
 
       {/* Add Modal */}
       {showAddModal && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "flex-start", justifyContent: "center", zIndex: 100, padding: "5vh 16px", backdropFilter: "blur(4px)", overflowY: "auto" }}>
-          <div className="card animate-scale-in" style={{ width: "100%", maxWidth: "850px", background: 'white', padding: "0", maxHeight: "90vh", overflowY: "auto", overflowX: "hidden" }}>
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "flex-start", justifyContent: "center", zIndex: 100, padding: "16px", backdropFilter: "blur(4px)", overflowY: "auto" }}>
+          <div className="card animate-scale-in" style={{ width: "100%", maxWidth: "850px", background: 'white', padding: "0", marginTop: "40px", marginBottom: "40px", maxHeight: "calc(100vh - 80px)", overflowY: "auto" }}>
             
-            <div style={{ position: "sticky", top: 0, background: "white", zIndex: 10, padding: "20px 24px", borderBottom: "1px solid var(--gray-200)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <h3 style={{ fontSize: "20px", fontWeight: "800", margin: 0, display: "flex", alignItems: "center", gap: "8px", lineHeight: "1.5", paddingTop: "2px" }}>
+            <div style={{ position: "sticky", top: 0, background: "white", zIndex: 10, padding: "24px 24px 20px 24px", borderBottom: "1px solid var(--gray-200)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <h3 style={{ fontSize: "20px", fontWeight: "800", margin: 0, display: "flex", alignItems: "center", gap: "8px", lineHeight: "1.5" }}>
                 <Briefcase size={20} style={{ color: "var(--primary)" }} /> Enregistrer une vente
               </h3>
               <button className="btn btn-ghost btn-sm" onClick={() => setShowAddModal(false)} style={{ padding: "4px" }}>
