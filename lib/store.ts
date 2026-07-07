@@ -423,10 +423,16 @@ export function setToStorage<T>(key: string, value: T): void {
   }
 }
 
+let cachedOwnerId: string | null = null;
+
 export const getOwnerId = async (): Promise<string> => {
+  if (cachedOwnerId) return cachedOwnerId;
   if (isSupabaseConfigured()) {
     const { data } = await supabase.auth.getSession();
-    if (data?.session?.user) return data.session.user.id;
+    if (data?.session?.user) {
+      cachedOwnerId = data.session.user.id;
+      return cachedOwnerId;
+    }
   }
   throw new Error("Veuillez vous connecter pour continuer.");
 };
