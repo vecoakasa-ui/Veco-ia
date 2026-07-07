@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Users, Search, Plus, X, Briefcase, DollarSign, Calendar, MapPin, User, Mail, Phone, Home, CreditCard } from "lucide-react";
+import { Users, Search, Plus, X, Briefcase, DollarSign, Calendar, MapPin, User, Mail, Phone, Home, CreditCard, AlertCircle, CheckCircle } from "lucide-react";
 import { db } from "@/lib/store";
 import { formatCurrency } from "@/lib/utils";
 import MapModuleWrapper from "@/components/MapModuleWrapper";
@@ -12,6 +12,7 @@ export default function AcheteursPage() {
   const [search, setSearch] = useState("");
   const [showAddModal, setShowAddModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   // Add Buyer Form
   const [fullName, setFullName] = useState("");
@@ -21,6 +22,11 @@ export default function AcheteursPage() {
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [advance, setAdvance] = useState<number>(0);
   const [startDate, setStartDate] = useState("");
+
+  const showToast = (message: string, type: 'success' | 'error') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 5000);
+  };
 
   const loadData = async () => {
     setIsLoading(true);
@@ -102,9 +108,10 @@ export default function AcheteursPage() {
 
       await loadData();
       window.dispatchEvent(new Event("storage"));
+      showToast("La vente a été enregistrée avec succès !", "success");
     } catch (error: any) {
       console.error("Error creating sale:", error);
-      alert("Une erreur est survenue lors de l'enregistrement de la vente: " + (error.message || "Erreur inconnue"));
+      showToast(error.message || "Une erreur est survenue lors de l'enregistrement de la vente.", "error");
     }
   };
 
@@ -118,6 +125,32 @@ export default function AcheteursPage() {
 
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
+      {/* Toast Notification */}
+      {toast && (
+        <div style={{
+          position: "fixed", top: "24px", right: "24px", zIndex: 9999,
+          background: toast.type === 'error' ? "#fee2e2" : "#dcfce7",
+          color: toast.type === 'error' ? "#991b1b" : "#166534",
+          padding: "16px 24px", borderRadius: "8px",
+          boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+          display: "flex", alignItems: "center", gap: "12px",
+          fontWeight: "500", animation: "slideIn 0.3s ease-out"
+        }}>
+          {toast.type === 'error' ? <AlertCircle size={20} /> : <CheckCircle size={20} />}
+          {toast.message}
+          <button onClick={() => setToast(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "inherit", marginLeft: "8px" }}>
+            <X size={16} />
+          </button>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes slideIn {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+      `}</style>
+
       {/* Header section */}
       <div className="page-header">
         <div>
