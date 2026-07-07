@@ -451,7 +451,17 @@ export default function LotsPage() {
                         <div key={idx} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 12px", background: "var(--gray-50)", border: "1px solid var(--gray-200)", borderRadius: "var(--radius-sm)", fontSize: "12px" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: "8px", overflow: "hidden" }}>
                             <FileText size={14} style={{ color: "var(--gray-500)", flexShrink: 0 }} />
-                            <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "220px" }}>{doc.name}</span>
+                            <span 
+                              style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "220px", color: "var(--primary)", cursor: "pointer", textDecoration: "underline" }}
+                              onClick={() => {
+                                const url = URL.createObjectURL(doc);
+                                window.open(url, '_blank');
+                                setTimeout(() => URL.revokeObjectURL(url), 1000);
+                              }}
+                              title="Cliquez pour voir le document"
+                            >
+                              {doc.name}
+                            </span>
                           </div>
                           <button type="button" onClick={() => setDocuments(documents.filter((_, i) => i !== idx))} style={{ color: "var(--danger)", padding: "4px", display: "flex", alignItems: "center", justifyContent: "center" }}>
                             <X size={14} />
