@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Users, Search, Plus, X, Briefcase, DollarSign, Calendar } from "lucide-react";
+import { Users, Search, Plus, X, Briefcase, DollarSign, Calendar, MapPin, User, Mail, Phone, Home, CreditCard } from "lucide-react";
 import { db } from "@/lib/store";
 import { formatCurrency } from "@/lib/utils";
 
@@ -161,57 +161,162 @@ export default function AcheteursPage() {
 
       {/* Add Modal */}
       {showAddModal && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: "16px" }}>
-          <div className="card" style={{ width: "100%", maxWidth: "500px", background: 'white', padding: "24px", maxHeight: "90vh", overflowY: "auto" }}>
-            <h3 style={{ fontSize: "18px", fontWeight: "800", marginBottom: "24px", textAlign: "center" }}>Enregistrer une vente</h3>
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: "16px", backdropFilter: "blur(4px)" }}>
+          <div className="card animate-scale-in" style={{ width: "100%", maxWidth: "850px", background: 'white', padding: "0", maxHeight: "90vh", overflowY: "auto", overflowX: "hidden" }}>
             
-            <form onSubmit={handleAddSale} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              <div className="input-group">
-                <label className="input-label">Lot / Terrain</label>
-                <select required value={propertyId} onChange={(e) => setPropertyId(e.target.value)} className="input" style={{ appearance: "auto" }}>
-                  <option value="">Sélectionnez un lot disponible</option>
-                  {lots.map(l => <option key={l.id} value={l.id}>{l.name} - {formatCurrency(l.sale_price || 0)}</option>)}
-                </select>
-              </div>
-
-              <div className="input-group">
-                <label className="input-label">Nom de l'acheteur</label>
-                <input type="text" required value={fullName} onChange={(e) => setFullName(e.target.value)} className="input" />
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+            <div style={{ position: "sticky", top: 0, background: "white", zIndex: 10, padding: "20px 24px", borderBottom: "1px solid var(--gray-200)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <h3 style={{ fontSize: "20px", fontWeight: "800", margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
+                <Briefcase size={20} style={{ color: "var(--primary)" }} /> Enregistrer une vente
+              </h3>
+              <button className="btn btn-ghost btn-sm" onClick={() => setShowAddModal(false)} style={{ padding: "4px" }}>
+                <X size={20} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleAddSale} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "32px", padding: "24px" }}>
+              
+              {/* Left Column: Property */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                <h4 style={{ fontSize: "14px", fontWeight: "700", color: "var(--gray-600)", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>Le Bien (Terrain / Lot)</h4>
+                
                 <div className="input-group">
-                  <label className="input-label">Email</label>
-                  <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="input" />
+                  <div className="input-with-icon">
+                    <Home className="input-icon" size={16} />
+                    <select required value={propertyId} onChange={(e) => setPropertyId(e.target.value)} className="input" style={{ appearance: "auto", paddingLeft: "36px" }}>
+                      <option value="">Sélectionnez un lot disponible</option>
+                      {lots.map(l => <option key={l.id} value={l.id}>{l.name}</option>)}
+                    </select>
+                  </div>
                 </div>
-                <div className="input-group">
-                  <label className="input-label">Téléphone</label>
-                  <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} className="input" />
+
+                {/* Preview Card */}
+                {propertyId ? (() => {
+                  const prop = lots.find(l => l.id === propertyId);
+                  if (!prop) return null;
+                  return (
+                    <div style={{ borderRadius: "var(--radius-md)", border: "1px solid var(--gray-200)", overflow: "hidden", background: "var(--gray-50)", marginTop: "8px" }}>
+                      <div style={{ height: "160px", background: prop.images?.[0] ? `url(${prop.images[0]}) center/cover` : "var(--gray-300)", position: "relative" }}>
+                        <span className="badge badge-primary" style={{ position: "absolute", top: "12px", right: "12px", background: "white", color: "var(--gray-900)" }}>
+                          {prop.type === 'lotissement' ? 'Lotissement' : 'Terrain'}
+                        </span>
+                      </div>
+                      <div style={{ padding: "16px" }}>
+                        <h5 style={{ margin: "0 0 8px 0", fontSize: "16px", fontWeight: "800" }}>{prop.name}</h5>
+                        <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", color: "var(--gray-500)", marginBottom: "12px" }}>
+                          <MapPin size={14} /> {prop.address}, {prop.city}
+                        </div>
+                        <div style={{ fontSize: "18px", fontWeight: "800", color: "var(--primary-dark)", display: "flex", alignItems: "center", gap: "6px" }}>
+                          Prix de base : {formatCurrency(prop.sale_price || 0)}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })() : (
+                  <div style={{ flex: 1, border: "2px dashed var(--gray-200)", borderRadius: "var(--radius-md)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px", color: "var(--gray-400)", textAlign: "center", background: "var(--gray-50)", marginTop: "8px" }}>
+                    <MapPin size={32} style={{ marginBottom: "12px", opacity: 0.5 }} />
+                    <p style={{ margin: 0, fontSize: "14px" }}>Sélectionnez un lot pour voir l'aperçu</p>
+                  </div>
+                )}
+              </div>
+
+              {/* Right Column: Buyer & Payment */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                
+                {/* Buyer Info */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                  <h4 style={{ fontSize: "14px", fontWeight: "700", color: "var(--gray-600)", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>L'Acheteur</h4>
+                  
+                  <div className="input-group">
+                    <label className="input-label">Nom complet</label>
+                    <div className="input-with-icon">
+                      <User className="input-icon" size={16} />
+                      <input type="text" required value={fullName} onChange={(e) => setFullName(e.target.value)} className="input" style={{ paddingLeft: "36px" }} placeholder="Ex: Jean Dupont" />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                    <div className="input-group">
+                      <label className="input-label">Email (Optionnel)</label>
+                      <div className="input-with-icon">
+                        <Mail className="input-icon" size={16} />
+                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="input" style={{ paddingLeft: "36px" }} placeholder="jean@email.com" />
+                      </div>
+                    </div>
+                    <div className="input-group">
+                      <label className="input-label">Téléphone</label>
+                      <div className="input-with-icon">
+                        <Phone className="input-icon" size={16} />
+                        <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} className="input" style={{ paddingLeft: "36px" }} placeholder="07 00 00 00 00" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              <div className="input-group">
-                <label className="input-label">Prix Total (FCFA)</label>
-                <input type="number" required value={totalPrice} onChange={(e) => setTotalPrice(Number(e.target.value))} className="input" />
-              </div>
+                <div style={{ height: "1px", background: "var(--gray-200)", margin: "4px 0" }}></div>
 
-              <div className="input-group">
-                <label className="input-label">Avance Payée (FCFA)</label>
-                <input type="number" required value={advance} onChange={(e) => setAdvance(Number(e.target.value))} className="input" />
-              </div>
+                {/* Financials */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                  <h4 style={{ fontSize: "14px", fontWeight: "700", color: "var(--gray-600)", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>Détails Financiers</h4>
 
-              <div className="input-group">
-                <label className="input-label">Reste à payer : {formatCurrency(totalPrice - advance)}</label>
-              </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                    <div className="input-group">
+                      <label className="input-label">Prix conclu (FCFA)</label>
+                      <div className="input-with-icon">
+                        <DollarSign className="input-icon" size={16} />
+                        <input type="number" required value={totalPrice} onChange={(e) => setTotalPrice(Number(e.target.value))} className="input" style={{ paddingLeft: "36px" }} />
+                      </div>
+                    </div>
+                    
+                    <div className="input-group">
+                      <label className="input-label">Date d'achat</label>
+                      <div className="input-with-icon">
+                        <Calendar className="input-icon" size={16} />
+                        <input type="date" required value={startDate} onChange={(e) => setStartDate(e.target.value)} className="input" style={{ paddingLeft: "36px" }} />
+                      </div>
+                    </div>
+                  </div>
 
-              <div className="input-group">
-                <label className="input-label">Date d'achat</label>
-                <input type="date" required value={startDate} onChange={(e) => setStartDate(e.target.value)} className="input" />
-              </div>
+                  <div className="input-group">
+                    <label className="input-label">Avance Payée (FCFA)</label>
+                    <div className="input-with-icon">
+                      <CreditCard className="input-icon" size={16} />
+                      <input 
+                        type="number" 
+                        required 
+                        value={advance} 
+                        onChange={(e) => {
+                          const val = Number(e.target.value);
+                          if (val <= totalPrice) setAdvance(val);
+                        }} 
+                        className="input" 
+                        style={{ paddingLeft: "36px", borderColor: advance > 0 ? "var(--primary)" : "" }} 
+                      />
+                    </div>
+                  </div>
 
-              <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
-                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowAddModal(false)}>Annuler</button>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>Valider la vente</button>
+                  {/* Summary Box */}
+                  <div style={{ background: "var(--primary-lighter)", border: "1px solid rgba(var(--primary-rgb), 0.2)", borderRadius: "var(--radius-md)", padding: "16px", marginTop: "8px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                      <span style={{ color: "var(--gray-600)", fontSize: "14px" }}>Prix Total</span>
+                      <span style={{ fontWeight: "600" }}>{formatCurrency(totalPrice)}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                      <span style={{ color: "var(--gray-600)", fontSize: "14px" }}>Avance</span>
+                      <span style={{ fontWeight: "600", color: "var(--primary)" }}>- {formatCurrency(advance)}</span>
+                    </div>
+                    <div style={{ height: "1px", background: "rgba(0,0,0,0.05)", margin: "0 -16px 12px -16px" }}></div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                      <span style={{ color: "var(--primary-dark)", fontWeight: "800", fontSize: "16px" }}>Reste à payer</span>
+                      <span style={{ fontWeight: "800", fontSize: "20px", color: "var(--primary-dark)" }}>{formatCurrency(totalPrice - advance)}</span>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div style={{ display: "flex", gap: "12px", marginTop: "16px" }}>
+                  <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowAddModal(false)}>Annuler</button>
+                  <button type="submit" className="btn btn-primary" style={{ flex: 2 }}>Valider la vente</button>
+                </div>
               </div>
             </form>
           </div>
