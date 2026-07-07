@@ -161,12 +161,12 @@ export default function AdminVenteDashboard() {
           <h3 style={{ fontSize: "18px", fontWeight: "800", margin: "0 0 24px 0" }}>Évolution des paiements</h3>
           <div style={{ height: "250px", width: "100%" }}>
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData} margin={{ top: 5, right: 0, left: -20, bottom: 5 }}>
+              <BarChart data={chartData} margin={{ top: 20, right: 30, left: 10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#64748b" }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#64748b" }} tickFormatter={(value) => `${value / 1000}k`} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#64748b" }} tickFormatter={(value) => value >= 1000000 ? `${value / 1000000}M` : `${value / 1000}k`} />
                 <Tooltip cursor={{ fill: '#f1f5f9' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
-                <Bar dataKey="amount" radius={[4, 4, 0, 0]}>
+                <Bar dataKey="amount" radius={[4, 4, 0, 0]} maxBarSize={60}>
                   {chartData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.status === 'paid' ? '#10b981' : entry.status === 'late' || (entry.status === 'pending' && new Date(installments[index].due_date) < new Date()) ? '#ef4444' : '#cbd5e1'} />
                   ))}
