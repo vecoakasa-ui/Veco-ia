@@ -18,6 +18,7 @@ export default function AcheteursPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [idCardNumber, setIdCardNumber] = useState("");
   const [propertyId, setPropertyId] = useState("");
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [advance, setAdvance] = useState<number>(0);
@@ -67,6 +68,7 @@ export default function AcheteursPage() {
         full_name: fullName,
         email,
         phone,
+        id_card_number: idCardNumber,
         avatar_url: null
       });
 
@@ -100,6 +102,7 @@ export default function AcheteursPage() {
       setFullName("");
       setEmail("");
       setPhone("");
+      setIdCardNumber("");
       setPropertyId("");
       setTotalPrice(0);
       setAdvance(0);
@@ -295,6 +298,14 @@ export default function AcheteursPage() {
                         <Phone className="input-icon" size={16} />
                         <input type="text" value={phone} onChange={(e) => setPhone(e.target.value)} className="input" style={{ paddingLeft: "36px" }} placeholder="07 00 00 00 00" />
                       </div>
+                    </div>
+                  </div>
+                  
+                  <div className="input-group">
+                    <label className="input-label">N° Pièce d'identité <span style={{ color: "var(--danger)" }}>*</span></label>
+                    <div className="input-with-icon">
+                      <CreditCard className="input-icon" size={16} />
+                      <input type="text" required value={idCardNumber} onChange={(e) => setIdCardNumber(e.target.value)} className="input" style={{ paddingLeft: "36px" }} placeholder="Ex: C001234567" />
                     </div>
                   </div>
                 </div>
