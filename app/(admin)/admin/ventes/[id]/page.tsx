@@ -165,19 +165,19 @@ export default function AdminVenteDashboard() {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                 <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#64748b" }} />
                 <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#64748b" }} tickFormatter={(value) => value >= 1000000 ? `${value / 1000000}M` : `${value / 1000}k`} />
-                <Tooltip cursor={{ fill: '#f1f5f9' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
-                <Bar dataKey="amount" radius={[4, 4, 0, 0]} maxBarSize={60}>
+                <Tooltip cursor={{ fill: 'rgba(255, 130, 0, 0.1)' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                <Bar dataKey="amount" radius={[4, 4, 0, 0]} maxBarSize={32}>
                   {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.status === 'paid' ? '#10b981' : entry.status === 'late' || (entry.status === 'pending' && new Date(installments[index].due_date) < new Date()) ? '#ef4444' : '#cbd5e1'} />
+                    <Cell key={`cell-${index}`} fill={entry.status === 'paid' ? '#009A44' : entry.status === 'late' || (entry.status === 'pending' && new Date(installments[index].due_date) < new Date()) ? '#FF8200' : '#e2e8f0'} />
                   ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
           <div style={{ display: "flex", justifyContent: "center", gap: "24px", marginTop: "16px", fontSize: "13px", color: "var(--gray-600)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}><span style={{ width: "12px", height: "12px", borderRadius: "2px", background: "#10b981" }}></span> Payé</div>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}><span style={{ width: "12px", height: "12px", borderRadius: "2px", background: "#ef4444" }}></span> En retard</div>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}><span style={{ width: "12px", height: "12px", borderRadius: "2px", background: "#cbd5e1" }}></span> À venir</div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}><span style={{ width: "12px", height: "12px", borderRadius: "2px", background: "#009A44" }}></span> Payé</div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}><span style={{ width: "12px", height: "12px", borderRadius: "2px", background: "#FF8200" }}></span> En retard</div>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}><span style={{ width: "12px", height: "12px", borderRadius: "2px", background: "#e2e8f0" }}></span> À venir</div>
           </div>
         </div>
 
