@@ -52,6 +52,7 @@ export default function LotsPage() {
   const [lat, setLat] = useState<number | undefined>(undefined);
   const [lng, setLng] = useState<number | undefined>(undefined);
   const [editMainImage, setEditMainImage] = useState("");
+  const [documents, setDocuments] = useState<File[]>([]);
 
   const loadProperties = async () => {
     setIsLoading(true);
@@ -143,6 +144,7 @@ export default function LotsPage() {
     setMainImage("");
     setLat(undefined);
     setLng(undefined);
+    setDocuments([]);
     setShowAddModal(false);
 
     await loadProperties();
@@ -337,6 +339,14 @@ export default function LotsPage() {
 
                 <div className="input-group">
                   <label className="input-label">Image principale</label>
+                  {mainImage && (
+                    <div style={{ position: "relative", width: "100%", height: "140px", borderRadius: "var(--radius-md)", overflow: "hidden", marginBottom: "8px", border: "1px solid var(--gray-200)" }}>
+                      <img src={mainImage} alt="Aperçu" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      <button type="button" onClick={() => setMainImage("")} style={{ position: "absolute", top: "8px", right: "8px", background: "rgba(255,255,255,0.9)", borderRadius: "50%", padding: "4px", boxShadow: "var(--shadow-sm)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <X size={14} color="var(--danger)" />
+                      </button>
+                    </div>
+                  )}
                   <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
                     <div className="input-with-icon" style={{ flex: 1 }}>
                       <ImageIcon className="input-icon" size={16} />
@@ -427,13 +437,29 @@ export default function LotsPage() {
                   <label style={{ border: "2px dashed var(--primary)", borderRadius: "var(--radius-md)", padding: "16px", textAlign: "center", color: "var(--primary)", background: "var(--primary-lightest)", cursor: "pointer", display: "block", transition: "all 0.2s" }} className="hover-scale">
                     <input type="file" multiple accept=".pdf,.doc,.docx,image/*" style={{ display: "none" }} onChange={(e) => {
                       if (e.target.files && e.target.files.length > 0) {
-                        alert(e.target.files.length + " document(s) prêt(s) pour l'upload.");
+                        setDocuments([...documents, ...Array.from(e.target.files)]);
                       }
                     }} />
                     <FileText size={24} style={{ margin: "0 auto 8px auto" }} />
                     <p style={{ fontSize: "13px", margin: 0, fontWeight: "600" }}>Cliquez ici pour charger Titre Foncier, ACD...</p>
                     <p style={{ fontSize: "11px", margin: "4px 0 0 0", opacity: 0.7 }}>Formats acceptés : PDF, Images (Max 5Mo)</p>
                   </label>
+
+                  {documents.length > 0 && (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                      {documents.map((doc, idx) => (
+                        <div key={idx} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 12px", background: "var(--gray-50)", border: "1px solid var(--gray-200)", borderRadius: "var(--radius-sm)", fontSize: "12px" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: "8px", overflow: "hidden" }}>
+                            <FileText size={14} style={{ color: "var(--gray-500)", flexShrink: 0 }} />
+                            <span style={{ whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: "220px" }}>{doc.name}</span>
+                          </div>
+                          <button type="button" onClick={() => setDocuments(documents.filter((_, i) => i !== idx))} style={{ color: "var(--danger)", padding: "4px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <X size={14} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div style={{ display: "flex", gap: "12px", marginTop: "auto", paddingTop: "16px" }}>
