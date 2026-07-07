@@ -286,7 +286,7 @@ export default function LotsPage() {
 
       {/* Add Modal */}
       {showAddModal && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: "16px", backdropFilter: "blur(4px)" }}>
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "flex-start", justifyContent: "center", zIndex: 100, padding: "5vh 16px", backdropFilter: "blur(4px)", overflowY: "auto" }}>
           <div className="card animate-scale-in" style={{ width: "100%", maxWidth: "850px", background: 'white', padding: "0", maxHeight: "90vh", overflowY: "auto", overflowX: "hidden" }}>
             
             <div style={{ position: "sticky", top: 0, background: "white", zIndex: 10, padding: "20px 24px", borderBottom: "1px solid var(--gray-200)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
