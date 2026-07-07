@@ -28,11 +28,20 @@ export default function LocatairesPage() {
 
 function LocatairesContent() {
   const searchParams = useSearchParams();
+  const initialPropertyId = searchParams.get("property_id");
   const initialSearch = searchParams.get("search") || "";
   
   const [tenants, setTenants] = useState<Tenant[]>([]);
   const [properties, setProperties] = useState<Property[]>([]);
   const [search, setSearch] = useState(initialSearch);
+  const [filterPropertyId, setFilterPropertyId] = useState<string | null>(initialPropertyId);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    if (filterPropertyId && e.target.value !== initialSearch) {
+      setFilterPropertyId(null);
+    }
+  };
   const [showAddModal, setShowAddModal] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -218,7 +227,11 @@ function LocatairesContent() {
   };
 
   const filteredTenants = tenants.filter((t) => {
+    if (filterPropertyId && t.property_id !== filterPropertyId) {
+      return false;
+    }
     const term = search.toLowerCase();
+    if (!term) return true;
     const matchesSearch = 
       (t.full_name?.toLowerCase() || "").includes(term) ||
       (t.email?.toLowerCase() || "").includes(term) ||
@@ -251,7 +264,7 @@ function LocatairesContent() {
             type="text"
             placeholder="Rechercher par nom, email, téléphone ou bien loué..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={handleSearchChange}
             className="input"
           />
         </div>

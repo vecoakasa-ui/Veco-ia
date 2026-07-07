@@ -387,7 +387,7 @@ export default function BiensPage() {
                      <span style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", display: "flex", alignItems: "center", position: "relative", zIndex: 10 }}>
                       {p.landlord_name && <span style={{color: "var(--gray-700)", fontWeight: 600, marginRight: "8px"}}>{p.landlord_name} &bull;</span>}
                       {p.tenant_count && p.tenant_count > 0 ? (
-                        <button type="button" onClick={() => router.push(`/locataires?search=${encodeURIComponent(p.name)}`)} style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }} title="Voir la liste des locataires">
+                        <button type="button" onClick={() => router.push(`/locataires?property_id=${p.id}&search=${encodeURIComponent(p.name)}`)} style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }} title="Voir la liste des locataires">
                           {p.tenant_count} Locataire(s)
                         </button>
                       ) : "Aucun locataire"}
@@ -400,7 +400,7 @@ export default function BiensPage() {
                      <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", position: "relative", zIndex: 10 }}>
                       {p.landlord_name && <span style={{display: "block", color: "var(--gray-700)", fontWeight: 600, marginBottom: "2px"}}>{p.landlord_name}</span>}
                       {p.tenant_count && p.tenant_count > 0 ? (
-                        <button type="button" onClick={() => router.push(`/locataires?search=${encodeURIComponent(p.name)}`)} style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }} title="Voir la liste des locataires">
+                        <button type="button" onClick={() => router.push(`/locataires?property_id=${p.id}&search=${encodeURIComponent(p.name)}`)} style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }} title="Voir la liste des locataires">
                           {p.tenant_count} Locataire(s)
                         </button>
                       ) : "Aucun locataire"}
