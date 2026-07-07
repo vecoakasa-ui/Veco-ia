@@ -290,7 +290,7 @@ export default function LotsPage() {
           <div className="card animate-scale-in" style={{ width: "100%", maxWidth: "850px", background: 'white', padding: "0", maxHeight: "90vh", overflowY: "auto", overflowX: "hidden" }}>
             
             <div style={{ position: "sticky", top: 0, background: "white", zIndex: 10, padding: "20px 24px", borderBottom: "1px solid var(--gray-200)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-              <h3 style={{ fontSize: "20px", fontWeight: "800", margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
+              <h3 style={{ fontSize: "20px", fontWeight: "800", margin: 0, display: "flex", alignItems: "center", gap: "8px", lineHeight: "1.5", paddingTop: "2px" }}>
                 <Map size={20} style={{ color: "var(--primary)" }} /> Ajouter un Terrain / Lotissement
               </h3>
               <button className="btn btn-ghost btn-sm" onClick={() => setShowAddModal(false)} style={{ padding: "4px" }}>
