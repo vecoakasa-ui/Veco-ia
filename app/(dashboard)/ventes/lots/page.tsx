@@ -275,7 +275,7 @@ export default function LotsPage() {
                 </div>
                 
                 <div style={{ fontSize: "var(--text-base)", fontWeight: 800, color: "var(--primary-dark)", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <DollarSign size={18} style={{ color: "var(--primary)" }} /> {formatCurrency(p.sale_price || 0)}
+                  {formatCurrency(p.sale_price || 0)}
                 </div>
 
                 <div style={{ borderTop: "1px solid var(--gray-100)", paddingTop: "var(--space-3)", marginTop: "auto", display: "flex", justifyContent: "flex-end", gap: "var(--space-2)" }}>
@@ -352,10 +352,7 @@ export default function LotsPage() {
                 
                 <div className="input-group">
                   <label className="input-label">Prix de vente (FCFA)</label>
-                  <div className="input-with-icon">
-                    <DollarSign className="input-icon" size={16} />
-                    <input type="number" required value={salePrice} onChange={(e) => setSalePrice(e.target.value)} className="input" style={{ paddingLeft: "36px" }} />
-                  </div>
+                  <input type="number" required value={salePrice} onChange={(e) => setSalePrice(e.target.value)} className="input" />
                 </div>
 
                 <div className="input-group">

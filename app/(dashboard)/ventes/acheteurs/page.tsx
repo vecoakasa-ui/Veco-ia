@@ -319,10 +319,7 @@ export default function AcheteursPage() {
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                     <div className="input-group">
                       <label className="input-label">Prix conclu (FCFA)</label>
-                      <div className="input-with-icon">
-                        <DollarSign className="input-icon" size={16} />
-                        <input type="number" required value={totalPrice} onChange={(e) => setTotalPrice(Number(e.target.value))} className="input" style={{ paddingLeft: "36px" }} />
-                      </div>
+                      <input type="number" required value={totalPrice} onChange={(e) => setTotalPrice(Number(e.target.value))} className="input" />
                     </div>
                     
                     <div className="input-group">
@@ -336,20 +333,17 @@ export default function AcheteursPage() {
 
                   <div className="input-group">
                     <label className="input-label">Avance Payée (FCFA)</label>
-                    <div className="input-with-icon">
-                      <CreditCard className="input-icon" size={16} />
-                      <input 
-                        type="number" 
-                        required 
-                        value={advance} 
-                        onChange={(e) => {
-                          const val = Number(e.target.value);
-                          if (val <= totalPrice) setAdvance(val);
-                        }} 
-                        className="input" 
-                        style={{ paddingLeft: "36px", borderColor: advance > 0 ? "var(--primary)" : "" }} 
-                      />
-                    </div>
+                    <input 
+                      type="number" 
+                      required 
+                      value={advance} 
+                      onChange={(e) => {
+                        const val = Number(e.target.value);
+                        if (val <= totalPrice) setAdvance(val);
+                      }} 
+                      className="input" 
+                      style={{ borderColor: advance > 0 ? "var(--primary)" : "" }} 
+                    />
                   </div>
 
                   {/* Summary Box */}
