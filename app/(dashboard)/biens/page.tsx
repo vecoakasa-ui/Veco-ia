@@ -215,6 +215,9 @@ export default function BiensPage() {
   };
 
   const filteredProperties = properties.filter((p) => {
+    // Exclude terrains and lotissements as they are managed in the sales module
+    if (p.type === 'terrain' || p.type === 'lotissement') return false;
+
     const safeName = p.name || "";
     const safeAddress = p.address || "";
     const matchesSearch = 
