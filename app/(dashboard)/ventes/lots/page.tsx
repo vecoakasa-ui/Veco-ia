@@ -508,7 +508,7 @@ export default function LotsPage() {
           <div className="card animate-scale-in" style={{ width: "100%", maxWidth: "500px", background: 'white', padding: "0", overflow: "hidden" }}>
             <div style={{ background: "var(--primary)", padding: "24px", color: "white", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px", fontWeight: "bold", color: "var(--primary)" }}>
+                <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px", fontWeight: "bold", color: "var(--orange)" }}>
                   {viewBuyer.full_name?.charAt(0) || "U"}
                 </div>
                 <div>

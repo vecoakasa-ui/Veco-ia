@@ -186,7 +186,7 @@ export default function AcheteursPage() {
           {filteredSales.map((sale) => (
             <div key={sale.id} className="card" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "var(--space-4)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                <div style={{ width: "48px", height: "48px", borderRadius: "50%", background: "var(--primary-lighter)", color: "var(--primary-dark)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}>
+                <div style={{ width: "48px", height: "48px", borderRadius: "50%", background: "var(--primary-lighter)", color: "var(--orange)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}>
                   {(sale.buyer_name || "A")[0].toUpperCase()}
                 </div>
                 <div>

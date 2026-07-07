@@ -318,7 +318,7 @@ export default function DashboardLayout({
             <div className="logo-icon" style={{ background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <Building2 size={16} className="text-orange" />
             </div>
-            <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--fixed-white)" }}>
+            <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--orange)" }}>
               Vision Immo 2.0
             </span>
           </Link>
@@ -451,7 +451,7 @@ export default function DashboardLayout({
                 <div className="logo-icon" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "var(--primary)" }}>
                   <Building2 size={16} className="text-orange" />
                 </div>
-                <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--fixed-white)" }}>
+                <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--orange)" }}>
                   Vision Immo 2.0
                 </span>
               </Link>
