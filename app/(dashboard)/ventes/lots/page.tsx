@@ -220,6 +220,9 @@ export default function LotsPage() {
             <button className={`btn btn-sm ${viewMode === "list" ? "" : "btn-ghost"}`} onClick={() => setViewMode("list")}>
               <List size={16} /> Liste
             </button>
+            <button className={`btn btn-sm ${viewMode === "map" ? "" : "btn-ghost"}`} onClick={() => setViewMode("map")}>
+              <Map size={16} /> Plan
+            </button>
           </div>
           <select className="input" value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} style={{ width: "160px", appearance: "auto" }}>
             <option value="all">Tous les types</option>
@@ -245,6 +248,10 @@ export default function LotsPage() {
         <div className="card" style={{ textAlign: "center", padding: "var(--space-16)" }}>
           <Map size={48} style={{ color: "var(--gray-300)", margin: "0 auto var(--space-4) auto" }} />
           <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 700 }}>Aucun terrain ou lot trouvé</h3>
+        </div>
+      ) : viewMode === "map" ? (
+        <div className="card" style={{ padding: 0, overflow: "hidden", height: "600px" }}>
+          <MapModuleWrapper properties={filteredProperties} height="100%" />
         </div>
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: viewMode === "grid" ? "repeat(auto-fill, minmax(250px, 1fr))" : "1fr", gap: "var(--space-6)" }}>
