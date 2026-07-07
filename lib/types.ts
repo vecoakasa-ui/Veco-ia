@@ -53,7 +53,7 @@ export interface Landlord {
   property_count?: number;
 }
 
-export type PropertyType = 'apartment' | 'studio' | 'villa' | 'house' | 'building' | 'cour_commune' | 'residence';
+export type PropertyType = 'apartment' | 'studio' | 'villa' | 'house' | 'building' | 'cour_commune' | 'residence' | 'lotissement' | 'terrain';
 export type PropertyStatus = 'occupied' | 'vacant' | 'maintenance';
 
 export interface Property {
@@ -65,6 +65,7 @@ export interface Property {
   city: string;
   country: string;
   monthly_rent: number;
+  sale_price?: number; // Added for land sales
   status: PropertyStatus;
   description: string;
   images: string[];

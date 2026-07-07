@@ -1494,5 +1494,124 @@ export const db = {
       total_platform_revenue: 0,
       total_rent_revenue: 0
     };
+  },
+
+  // --- SALES MODULE API ---
+
+  getBuyers: async (): Promise<any[]> => {
+    if (isSupabaseConfigured()) {
+      try {
+        const { data, error } = await supabase.from("buyers").select("*").order("created_at", { ascending: false });
+        if (!error && data) return data;
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    return getFromStorage("buyers") || [];
+  },
+
+  addBuyer: async (buyer: any): Promise<any> => {
+    const ownerId = await getOwnerId();
+    const newBuyer = {
+      ...buyer,
+      id: "buyer-" + generateId(),
+      profile_id: "profile-" + generateId(),
+      created_at: new Date().toISOString()
+    };
+    if (isSupabaseConfigured()) {
+      await supabase.from("buyers").insert(newBuyer);
+    } else {
+      const b = getFromStorage("buyers") || [];
+      setToStorage("buyers", [newBuyer, ...b]);
+    }
+    return newBuyer;
+  },
+
+  getSales: async (): Promise<any[]> => {
+    if (isSupabaseConfigured()) {
+      try {
+        const { data, error } = await supabase
+          .from("sales")
+          .select(`
+            *,
+            buyers ( full_name ),
+            properties ( name )
+          `)
+          .order("created_at", { ascending: false });
+        if (!error && data) {
+          return data.map((s: any) => ({
+            ...s,
+            buyer_name: s.buyers?.full_name,
+            property_name: s.properties?.name
+          }));
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    return getFromStorage("sales") || [];
+  },
+
+  addSale: async (sale: any): Promise<any> => {
+    const newSale = {
+      ...sale,
+      id: "sale-" + generateId(),
+      status: "active",
+      created_at: new Date().toISOString()
+    };
+    if (isSupabaseConfigured()) {
+      await supabase.from("sales").insert(newSale);
+    } else {
+      const s = getFromStorage("sales") || [];
+      setToStorage("sales", [newSale, ...s]);
+    }
+    return newSale;
+  },
+
+  getSaleInstallments: async (): Promise<any[]> => {
+    if (isSupabaseConfigured()) {
+      try {
+        const { data, error } = await supabase.from("sale_installments").select("*").order("due_date", { ascending: true });
+        if (!error && data) return data;
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    return getFromStorage("sale_installments") || [];
+  },
+
+  addSaleInstallment: async (inst: any): Promise<any> => {
+    const newInst = {
+      ...inst,
+      id: "inst-" + generateId(),
+      status: "pending",
+      created_at: new Date().toISOString()
+    };
+    if (isSupabaseConfigured()) {
+      await supabase.from("sale_installments").insert(newInst);
+    } else {
+      const items = getFromStorage("sale_installments") || [];
+      setToStorage("sale_installments", [...items, newInst]);
+    }
+    return newInst;
+  },
+
+  payInstallment: async (id: string, method: string): Promise<void> => {
+    if (isSupabaseConfigured()) {
+      await supabase.from("sale_installments").update({
+        status: "paid",
+        payment_method: method,
+        payment_date: new Date().toISOString().split('T')[0]
+      }).eq("id", id);
+    } else {
+      const items = getFromStorage("sale_installments") || [];
+      const idx = items.findIndex((i: any) => i.id === id);
+      if (idx > -1) {
+        items[idx].status = "paid";
+        items[idx].payment_method = method;
+        items[idx].payment_date = new Date().toISOString().split('T')[0];
+        setToStorage("sale_installments", items);
+      }
+    }
   }
 };

@@ -107,9 +107,9 @@ export default function BiensPage() {
       lng
     });
 
-    if ((type === 'building' || type === 'cour_commune' || type === 'residence') && unitsCount > 0) {
-      const childType = type === 'cour_commune' ? 'house' : 'apartment';
-      const prefix = type === 'cour_commune' ? 'Maison' : 'Appt';
+    if ((type === 'building' || type === 'cour_commune' || type === 'residence' || type === 'lotissement') && unitsCount > 0) {
+      const childType = type === 'lotissement' ? 'terrain' : (type === 'cour_commune' ? 'house' : 'apartment');
+      const prefix = type === 'lotissement' ? 'Lot' : (type === 'cour_commune' ? 'Maison' : 'Appt');
 
       for (let i = 1; i <= unitsCount; i++) {
         await db.addProperty({
@@ -543,12 +543,14 @@ export default function BiensPage() {
                   <option value="building">Immeuble</option>
                   <option value="cour_commune">Cour Commune</option>
                   <option value="residence">Résidence</option>
+                  <option value="lotissement">Lotissement</option>
+                  <option value="terrain">Terrain</option>
                 </select>
               </div>
 
-              {(type === 'building' || type === 'cour_commune' || type === 'residence') && (
+              {(type === 'building' || type === 'cour_commune' || type === 'residence' || type === 'lotissement') && (
                 <div className="input-group">
-                  <label className="input-label">Nombre d'unités (appartements/maisons) à créer</label>
+                  <label className="input-label">Nombre d'unités ({type === 'lotissement' ? 'terrains' : 'appartements/maisons'}) à créer</label>
                   <input
                     type="number"
                     min="0"
@@ -558,7 +560,7 @@ export default function BiensPage() {
                     className="input"
                   />
                   <p style={{ fontSize: "12px", color: "var(--gray-500)", marginTop: "4px" }}>
-                    Les {type === 'cour_commune' ? 'maisons' : 'appartements'} seront automatiquement créés et rattachés à ce complexe.
+                    Les {type === 'lotissement' ? 'lots (terrains)' : type === 'cour_commune' ? 'maisons' : 'appartements'} seront automatiquement créés et rattachés à ce complexe.
                   </p>
                 </div>
               )}
@@ -579,7 +581,9 @@ export default function BiensPage() {
               </div>
 
               <div className="input-group">
-                <label className="input-label">Loyer mensuel (FCFA)</label>
+                <label className="input-label">
+                  {(type === 'lotissement' || type === 'terrain') ? 'Prix de vente (FCFA)' : 'Loyer mensuel (FCFA)'}
+                </label>
                 <input
                   type="number"
                   required

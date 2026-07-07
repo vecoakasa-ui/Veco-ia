@@ -1,64 +1,34 @@
-# État du Projet - Veco IA (Property Management Dashboard)
+# État du Projet - Vision Immo 2.0 (Property Management Dashboard)
 
 ## Description
-Ceci est une application de gestion immobilière (Property Management) développée avec **Next.js (App Router)**. L'application permet de gérer des biens immobiliers, des locataires, des contrats de location, des paiements, des quittances, des incidents et des abonnements.
+Application de gestion immobilière développée avec **Next.js (App Router)**. L'application permet de gérer des biens immobiliers (appartements, villas, immeubles, cours communes, résidences), des locataires, des paiements, des quittances, et bientôt des ventes de terrains.
 
-## Technologies Utilisées
-- **Framework :** Next.js (v16.2.9) - App Router
-- **Langage :** TypeScript / React (v19.2.7)
-- **Base de données / Backend :** Supabase (`@supabase/supabase-js`)
-- **Paiements :** PayDunya (intégration via `lib/paydunya.ts`)
-- **Cartographie :** Google Maps (`@react-google-maps/api`)
-- **Icônes :** Lucide React
-- **Graphiques :** Recharts
+## Technologies
+- **Framework :** Next.js - App Router (React)
+- **Base de données / Backend :** Supabase (PostgreSQL)
+- **Cartographie :** Google Maps
 - **Style :** CSS natif (`globals.css`) et modules CSS
 
-## Structure du Projet (Workspace)
+## Ce qui a été fait jusqu'à présent
+1. **Architecture de base :** Dashboard complet avec gestion des locataires, paiements, quittances, cautions.
+2. **Gestion des "Super-structures" (Immeubles, Cours Communes, Résidences) :**
+   - Création de la logique de génération automatique d'unités (appartements/maisons) rattachées à une super-structure (système de `parent_id`).
+   - Masquage des super-structures lors de l'assignation des locataires pour forcer l'assignation aux unités enfants.
+   - Les badges visuels permettent de repérer facilement l'immeuble parent d'un appartement.
 
-```
-/
-├── app/                      # Dossier principal de l'application (Next.js App Router)
-│   ├── (auth)/               # Routes liées à l'authentification
-│   ├── (dashboard)/          # Interface principale (Tableau de bord)
-│   │   ├── abonnement/       # Gestion des abonnements
-│   │   ├── biens/            # Gestion des propriétés/biens immobiliers
-│   │   ├── contrats/         # Gestion des contrats de bail
-│   │   ├── dashboard/        # Vue d'ensemble du tableau de bord
-│   │   ├── incidents/        # Suivi des incidents (tickets)
-│   │   ├── locataires/       # Gestion des locataires
-│   │   ├── paiements/        # Suivi des paiements
-│   │   └── quittances/       # Génération et gestion des quittances de loyer
-│   │   └── layout.tsx        # Layout du tableau de bord (Sidebar, Header, etc.)
-│   ├── api/                  # Routes d'API (Backend Next.js)
-│   ├── pay/                  # Routes liées au processus de paiement
-│   ├── globals.css           # Styles globaux
-│   └── page.tsx              # Page d'accueil (Landing page)
-├── components/               # Composants React réutilisables
-│   ├── MapModule.tsx         # Composant d'intégration Google Maps
-│   └── MapModuleWrapper.tsx
-├── lib/                      # Utilitaires et configuration
-│   ├── paydunya.ts           # Logique et API PayDunya
-│   ├── store.ts              # Gestion de l'état (Zustand ou Context ?)
-│   ├── supabase.ts           # Client Supabase
-│   ├── types.ts              # Définitions des types TypeScript
-│   └── utils.ts              # Fonctions utilitaires
-├── public/                   # Fichiers statiques (images, etc.)
-├── package.json              # Dépendances et scripts NPM
-├── supabase_schema.sql       # Schéma de la base de données Supabase
-└── .env.local                # Variables d'environnement (Supabase URL, clés API, etc.)
-```
+## Ce qui est EN COURS (Où nous nous sommes arrêtés)
+Nous sommes en train de développer le **Module "Ventes & Terrains"**. 
+- Le but est de permettre à l'agent immobilier de gérer la vente de terrains lotis avec **paiement échelonné**, de manière 100% interne et sécurisée (pas de lien public).
+- L'agent crée le lotissement, enregistre lui-même l'acheteur, renseigne l'avance payée, et le système génère l'échéancier et le dashboard de l'acheteur.
 
-## État Actuel (Ce qui a été fait)
-- L'architecture de base Next.js App Router est en place.
-- La structure du tableau de bord avec ses différentes sections (`biens`, `locataires`, `contrats`, `paiements`, etc.) a été initialisée.
-- La configuration de base de données est définie via Supabase (avec le schéma `supabase_schema.sql`).
-- Intégration de l'authentification et des composants d'interface utilisateur (avec des cartes et des graphiques via `recharts`).
-- Modules spécifiques mis en place : Intégration de cartes (`MapModule.tsx`) et paiements (`paydunya.ts`).
-- La page d'accueil principale est très étoffée (`app/page.tsx` fait ~54ko).
-- Gestion de l'état centralisé ou des données initialisée dans `lib/store.ts`.
+**Action bloquante actuelle :**
+L'utilisateur devait exécuter le code SQL dans Supabase pour créer les tables `buyers`, `sales` et `sale_installments`. 
+La première tentative de script SQL a échoué car j'avais utilisé le type `UUID` pour les clés étrangères (`property_id`), alors que la base de données utilise le type `TEXT` pour les IDs générés manuellement par l'application. 
+-> J'ai généré le NOUVEAU script SQL corrigé (utilisant `TEXT`) que l'utilisateur doit exécuter.
 
-## Où nous en sommes
-- Le squelette et les fondations techniques de l'application sont solides et structurés.
-- Les principales routes du dashboard existent.
-- Il reste potentiellement à finaliser ou affiner la logique métier, la liaison réelle avec la base de données Supabase pour chaque page du dashboard, ou bien améliorer le design et l'expérience utilisateur globale.
-- L'environnement de développement est prêt à être étendu pour chaque module (abonnement, incidents, etc.).
+## Prochaines étapes à faire par le prochain Assistant
+1. Vérifier avec l'utilisateur que le nouveau script SQL (avec `TEXT` au lieu de `UUID`) a bien été exécuté avec succès sur Supabase.
+2. Coder l'interface du Module "Ventes & Terrains" dans `app/(dashboard)/` :
+   - Ajouter un onglet/menu pour les Ventes.
+   - Créer la logique côté Frontend (lib/store.ts, lib/types.ts) pour requêter ces nouvelles tables.
+   - Créer le dashboard spécifique pour les Acheteurs (`app/(acheteur)`).

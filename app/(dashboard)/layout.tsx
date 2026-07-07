@@ -21,7 +21,9 @@ import {
   ClipboardCheck,
   Settings,
   Mail,
-  Phone
+  Phone,
+  Map,
+  Briefcase
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Profile } from "@/lib/types";
@@ -178,6 +180,13 @@ export default function DashboardLayout({
         { name: "Comptabilité", href: "/comptabilite", icon: Wallet },
         { name: "Relances", href: "/relances", icon: MessageSquare },
         { name: "Cautions & États", href: "/cautions", icon: ClipboardCheck },
+      ]
+    },
+    {
+      groupName: "Ventes & Terrains",
+      items: [
+        { name: "Lots & Terrains", href: "/ventes/lots", icon: Map },
+        { name: "Acheteurs & Ventes", href: "/ventes/acheteurs", icon: Briefcase },
       ]
     },
     {

@@ -106,6 +106,8 @@ export function getPropertyTypeLabel(type: string): string {
     case 'building': return 'Immeuble';
     case 'cour_commune': return 'Cour Commune';
     case 'residence': return 'Résidence';
+    case 'lotissement': return 'Lotissement';
+    case 'terrain': return 'Terrain';
     default: return type;
   }
 }
