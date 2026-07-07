@@ -17,7 +17,8 @@ import {
   Trash2,
   Home,
   FileText,
-  Navigation
+  Navigation,
+  User
 } from "lucide-react";
 import { db } from "@/lib/store";
 import dynamic from "next/dynamic";
@@ -36,6 +37,9 @@ export default function LotsPage() {
   const [deleteProperty, setDeleteProperty] = useState<Property | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "grid" | "map">("grid");
   const [landlords, setLandlords] = useState<Landlord[]>([]);
+  const [sales, setSales] = useState<any[]>([]);
+  const [buyers, setBuyers] = useState<any[]>([]);
+  const [viewBuyer, setViewBuyer] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Form states
@@ -62,6 +66,8 @@ export default function LotsPage() {
       const lands = props.filter(p => p.type === 'terrain' || p.type === 'lotissement');
       setProperties(lands);
       setLandlords(await db.getLandlords());
+      setSales(await db.getSales());
+      setBuyers(await db.getBuyers());
     } finally {
       setIsLoading(false);
     }
@@ -273,10 +279,25 @@ export default function LotsPage() {
                 </div>
 
                 <div style={{ borderTop: "1px solid var(--gray-100)", paddingTop: "var(--space-3)", marginTop: "auto", display: "flex", justifyContent: "flex-end", gap: "var(--space-2)" }}>
-                  <button className="btn btn-ghost btn-sm" onClick={() => { setEditProperty(p); setEditMainImage(p.images?.[0] || ""); }}>
-                    <Edit3 size={14} />
-                  </button>
-                  <button className="btn btn-ghost btn-sm" style={{ color: "var(--danger)" }} onClick={() => setDeleteProperty(p)}>
+                  {p.status === 'occupied' ? (
+                    <button 
+                      className="btn btn-ghost btn-sm" 
+                      onClick={() => {
+                         const sale = sales.find(s => s.property_id === p.id);
+                         const buyer = sale ? buyers.find(b => b.id === sale.buyer_id) : null;
+                         if (buyer) setViewBuyer(buyer);
+                         else alert("Acheteur introuvable pour ce terrain.");
+                      }}
+                      title="Voir l'acheteur"
+                    >
+                      <User size={14} style={{ color: "var(--primary)" }} />
+                    </button>
+                  ) : (
+                    <button className="btn btn-ghost btn-sm" onClick={() => { setEditProperty(p); setEditMainImage(p.images?.[0] || ""); }} title="Modifier">
+                      <Edit3 size={14} />
+                    </button>
+                  )}
+                  <button className="btn btn-ghost btn-sm" style={{ color: "var(--danger)" }} onClick={() => setDeleteProperty(p)} title="Supprimer">
                     <Trash2 size={14} />
                   </button>
                 </div>
@@ -483,6 +504,54 @@ export default function LotsPage() {
       )}
 
       {/* Edit Modal / Delete Modal... Omitted for brevity but basically identical logic */}
+
+      {/* View Buyer Modal */}
+      {viewBuyer && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: "16px", backdropFilter: "blur(4px)" }}>
+          <div className="card animate-scale-in" style={{ width: "100%", maxWidth: "500px", background: 'white', padding: "0", overflow: "hidden" }}>
+            <div style={{ background: "var(--primary)", padding: "24px", color: "white", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "white", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "24px", fontWeight: "bold", color: "var(--primary)" }}>
+                  {viewBuyer.full_name?.charAt(0) || "U"}
+                </div>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: "20px", fontWeight: "bold" }}>{viewBuyer.full_name}</h3>
+                  <p style={{ margin: "4px 0 0 0", opacity: 0.8, fontSize: "14px" }}>Acheteur</p>
+                </div>
+              </div>
+              <button className="btn btn-ghost btn-sm" onClick={() => setViewBuyer(null)} style={{ color: "white", padding: "4px" }}>
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div style={{ padding: "24px", display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                <span style={{ fontSize: "12px", color: "var(--gray-500)", textTransform: "uppercase", fontWeight: "bold" }}>Email</span>
+                <span style={{ fontSize: "16px", color: "var(--gray-900)" }}>{viewBuyer.email || "Non renseigné"}</span>
+              </div>
+              
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                <span style={{ fontSize: "12px", color: "var(--gray-500)", textTransform: "uppercase", fontWeight: "bold" }}>Téléphone</span>
+                <span style={{ fontSize: "16px", color: "var(--gray-900)" }}>{viewBuyer.phone || "Non renseigné"}</span>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                <span style={{ fontSize: "12px", color: "var(--gray-500)", textTransform: "uppercase", fontWeight: "bold" }}>N° Pièce d'identité</span>
+                <span style={{ fontSize: "16px", color: "var(--gray-900)" }}>{viewBuyer.id_card_number || "Non renseigné"}</span>
+              </div>
+              
+              <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                <span style={{ fontSize: "12px", color: "var(--gray-500)", textTransform: "uppercase", fontWeight: "bold" }}>Adresse</span>
+                <span style={{ fontSize: "16px", color: "var(--gray-900)" }}>{viewBuyer.address || "Non renseigné"}</span>
+              </div>
+            </div>
+            
+            <div style={{ padding: "16px 24px", background: "var(--gray-50)", borderTop: "1px solid var(--gray-200)", display: "flex", justifyContent: "flex-end" }}>
+              <button className="btn btn-primary" onClick={() => setViewBuyer(null)}>Fermer</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
