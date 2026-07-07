@@ -55,52 +55,57 @@ export default function AcheteursPage() {
     e.preventDefault();
     if (!propertyId || !fullName || !startDate) return;
 
-    // 1. Create Buyer
-    const buyer = await db.addBuyer({
-      full_name: fullName,
-      email,
-      phone,
-      avatar_url: null
-    });
-
-    // 2. Create Sale
-    const sale = await db.addSale({
-      property_id: propertyId,
-      buyer_id: buyer.id,
-      total_price: totalPrice,
-      advance_payment: advance,
-      remaining_balance: totalPrice - advance,
-      start_date: startDate
-    });
-
-    // 3. Create initial advance payment installment
-    if (advance > 0) {
-      const inst = await db.addSaleInstallment({
-        sale_id: sale.id,
-        amount: advance,
-        due_date: startDate
+    try {
+      // 1. Create Buyer
+      const buyer = await db.addBuyer({
+        full_name: fullName,
+        email,
+        phone,
+        avatar_url: null
       });
-      await db.payInstallment(inst.id, 'cash');
+
+      // 2. Create Sale
+      const sale = await db.addSale({
+        property_id: propertyId,
+        buyer_id: buyer.id,
+        total_price: totalPrice,
+        advance_payment: advance,
+        remaining_balance: totalPrice - advance,
+        start_date: startDate
+      });
+
+      // 3. Create initial advance payment installment
+      if (advance > 0) {
+        const inst = await db.addSaleInstallment({
+          sale_id: sale.id,
+          amount: advance,
+          due_date: startDate
+        });
+        await db.payInstallment(inst.id, 'cash');
+      }
+
+      // 4. Update property status to occupied
+      const prop = lots.find(l => l.id === propertyId);
+      if (prop) {
+        await db.updateProperty({ ...prop, status: 'occupied' });
+      }
+
+      // Reset Form
+      setFullName("");
+      setEmail("");
+      setPhone("");
+      setPropertyId("");
+      setTotalPrice(0);
+      setAdvance(0);
+      setStartDate("");
+      setShowAddModal(false);
+
+      await loadData();
+      window.dispatchEvent(new Event("storage"));
+    } catch (error: any) {
+      console.error("Error creating sale:", error);
+      alert("Une erreur est survenue lors de l'enregistrement de la vente: " + (error.message || "Erreur inconnue"));
     }
-
-    // 4. Update property status to occupied
-    const prop = lots.find(l => l.id === propertyId);
-    if (prop) {
-      await db.updateProperty({ ...prop, status: 'occupied' });
-    }
-
-    // Reset Form
-    setFullName("");
-    setEmail("");
-    setPhone("");
-    setPropertyId("");
-    setTotalPrice(0);
-    setAdvance(0);
-    setStartDate("");
-    setShowAddModal(false);
-
-    await loadData();
-    window.dispatchEvent(new Event("storage"));
   };
 
   const filteredSales = sales.filter((s) => {

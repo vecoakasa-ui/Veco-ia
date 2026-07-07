@@ -1511,15 +1511,17 @@ export const db = {
   },
 
   addBuyer: async (buyer: any): Promise<any> => {
-    const ownerId = await getOwnerId();
     const newBuyer = {
       ...buyer,
       id: "buyer-" + generateId(),
-      profile_id: "profile-" + generateId(),
       created_at: new Date().toISOString()
     };
     if (isSupabaseConfigured()) {
-      await supabase.from("buyers").insert(newBuyer);
+      const { error } = await supabase.from("buyers").insert(newBuyer);
+      if (error) {
+        console.error("Erreur addBuyer:", error);
+        throw error;
+      }
     } else {
       const b = getFromStorage<any[]>("buyers", []);
       setToStorage("buyers", [newBuyer, ...b]);
@@ -1556,11 +1558,15 @@ export const db = {
     const newSale = {
       ...sale,
       id: "sale-" + generateId(),
-      status: "active",
+      status: "pending",
       created_at: new Date().toISOString()
     };
     if (isSupabaseConfigured()) {
-      await supabase.from("sales").insert(newSale);
+      const { error } = await supabase.from("sales").insert(newSale);
+      if (error) {
+        console.error("Erreur addSale:", error);
+        throw error;
+      }
     } else {
       const s = getFromStorage<any[]>("sales", []);
       setToStorage("sales", [newSale, ...s]);
@@ -1588,7 +1594,11 @@ export const db = {
       created_at: new Date().toISOString()
     };
     if (isSupabaseConfigured()) {
-      await supabase.from("sale_installments").insert(newInst);
+      const { error } = await supabase.from("sale_installments").insert(newInst);
+      if (error) {
+        console.error("Erreur addSaleInstallment:", error);
+        throw error;
+      }
     } else {
       const items = getFromStorage<any[]>("sale_installments", []);
       setToStorage("sale_installments", [...items, newInst]);

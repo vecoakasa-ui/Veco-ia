@@ -232,3 +232,49 @@ export interface NavItem {
   href: string;
   icon?: string;
 }
+
+// ============================================
+// Ventes & Terrains Types
+// ============================================
+
+export interface Buyer {
+  id: string;
+  full_name: string;
+  email?: string;
+  phone?: string;
+  avatar_url?: string | null;
+  created_at?: string;
+}
+
+export type SaleStatus = 'pending' | 'completed' | 'cancelled';
+
+export interface Sale {
+  id: string;
+  property_id: string;
+  buyer_id: string;
+  total_price: number;
+  advance_payment: number;
+  remaining_balance: number;
+  start_date: string;
+  status?: SaleStatus;
+  created_at?: string;
+  
+  // Joined fields
+  buyer_name?: string;
+  buyer_email?: string;
+  buyer_phone?: string;
+  property_name?: string;
+}
+
+export type InstallmentStatus = 'pending' | 'paid' | 'late';
+
+export interface SaleInstallment {
+  id: string;
+  sale_id: string;
+  amount: number;
+  due_date: string;
+  status: InstallmentStatus;
+  payment_method?: PaymentMethod;
+  payment_date?: string;
+  created_at?: string;
+}
