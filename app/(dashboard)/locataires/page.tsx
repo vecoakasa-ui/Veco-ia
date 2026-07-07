@@ -241,7 +241,7 @@ function LocatairesContent() {
   });
 
   // Only show vacant/maintenance properties to assign, plus already assigned ones
-  const availableProperties = properties.filter(p => p.type !== 'building');
+  const availableProperties = properties.filter(p => p.type !== 'building' && p.type !== 'cour_commune' && p.type !== 'residence');
 
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>

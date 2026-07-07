@@ -107,11 +107,14 @@ export default function BiensPage() {
       lng
     });
 
-    if (type === 'building' && unitsCount > 0) {
+    if ((type === 'building' || type === 'cour_commune' || type === 'residence') && unitsCount > 0) {
+      const childType = type === 'cour_commune' ? 'house' : 'apartment';
+      const prefix = type === 'cour_commune' ? 'Maison' : 'Appt';
+
       for (let i = 1; i <= unitsCount; i++) {
         await db.addProperty({
-          name: `${name} - Appt ${i}`,
-          type: "apartment",
+          name: `${name} - ${prefix} ${i}`,
+          type: childType,
           address,
           city,
           country,
@@ -372,7 +375,7 @@ export default function BiensPage() {
               <div style={{ padding: "var(--space-3)", display: "flex", flexDirection: "column", flexGrow: 1, gap: "var(--space-2)" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                   <div>
-                    <span className={`badge ${p.type === 'villa' ? 'badge-primary' : p.type === 'building' ? 'badge-success' : 'badge-info'}`} style={{ textTransform: "uppercase", fontSize: "9px", padding: "2px 8px" }}>
+                    <span className={`badge ${p.type === 'villa' ? 'badge-primary' : (p.type === 'building' || p.type === 'residence' || p.type === 'cour_commune') ? 'badge-success' : 'badge-info'}`} style={{ textTransform: "uppercase", fontSize: "9px", padding: "2px 8px" }}>
                       {getPropertyTypeLabel(p.type)}
                     </span>
                     {p.parent_id && properties.find(parent => parent.id === p.parent_id) && (
@@ -538,12 +541,14 @@ export default function BiensPage() {
                   <option value="studio">Studio</option>
                   <option value="house">Maison</option>
                   <option value="building">Immeuble</option>
+                  <option value="cour_commune">Cour Commune</option>
+                  <option value="residence">Résidence</option>
                 </select>
               </div>
 
-              {type === 'building' && (
+              {(type === 'building' || type === 'cour_commune' || type === 'residence') && (
                 <div className="input-group">
-                  <label className="input-label">Nombre d'appartements à créer</label>
+                  <label className="input-label">Nombre d'unités (appartements/maisons) à créer</label>
                   <input
                     type="number"
                     min="0"
@@ -553,7 +558,7 @@ export default function BiensPage() {
                     className="input"
                   />
                   <p style={{ fontSize: "12px", color: "var(--gray-500)", marginTop: "4px" }}>
-                    Les appartements seront automatiquement créés et rattachés à cet immeuble.
+                    Les {type === 'cour_commune' ? 'maisons' : 'appartements'} seront automatiquement créés et rattachés à ce complexe.
                   </p>
                 </div>
               )}

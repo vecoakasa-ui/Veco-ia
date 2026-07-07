@@ -104,6 +104,8 @@ export function getPropertyTypeLabel(type: string): string {
     case 'villa': return 'Villa';
     case 'house': return 'Maison';
     case 'building': return 'Immeuble';
+    case 'cour_commune': return 'Cour Commune';
+    case 'residence': return 'Résidence';
     default: return type;
   }
 }

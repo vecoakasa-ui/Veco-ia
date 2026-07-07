@@ -53,7 +53,7 @@ export interface Landlord {
   property_count?: number;
 }
 
-export type PropertyType = 'apartment' | 'studio' | 'villa' | 'house' | 'building';
+export type PropertyType = 'apartment' | 'studio' | 'villa' | 'house' | 'building' | 'cour_commune' | 'residence';
 export type PropertyStatus = 'occupied' | 'vacant' | 'maintenance';
 
 export interface Property {
