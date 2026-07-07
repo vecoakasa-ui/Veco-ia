@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { 
   Building2, 
   MapPin, 
@@ -22,6 +24,7 @@ import { Property, PropertyType, Landlord } from "@/lib/types";
 import { formatCurrency, getPropertyStatusClass, getPropertyStatusLabel, getPropertyTypeLabel } from "@/lib/utils";
 
 export default function BiensPage() {
+  const router = useRouter();
   const [properties, setProperties] = useState<Property[]>([]);
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<string>("all");
@@ -326,9 +329,12 @@ export default function BiensPage() {
                 borderBottom: viewMode === "grid" ? "1px solid var(--gray-200)" : "none",
                 borderRight: viewMode === "list" ? "1px solid var(--gray-200)" : "none"
               }}>
-                <div className="card-image-zoom" style={{
+                <div className="card-image-zoom" 
+                     onClick={() => { setEditProperty(p); setEditMainImage(p.images?.[0] || ""); }}
+                     style={{
                   position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
                   background: p.images && p.images.length > 0 ? `url(${p.images[0]}) center/cover` : "var(--gray-200)", 
+                  cursor: "pointer"
                 }}></div>
                 {(!p.images || p.images.length === 0) && (
                   <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", color: "var(--gray-400)", display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
@@ -378,18 +384,26 @@ export default function BiensPage() {
                     </p>
                   )}
                   {viewMode === "list" && (
-                     <span style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", display: "flex", alignItems: "center" }}>
+                     <span style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", display: "flex", alignItems: "center", position: "relative", zIndex: 10 }}>
                       {p.landlord_name && <span style={{color: "var(--gray-700)", fontWeight: 600, marginRight: "8px"}}>{p.landlord_name} &bull;</span>}
-                      {p.tenant_count && p.tenant_count > 0 ? `${p.tenant_count} Locataire(s)` : "Aucun locataire"}
+                      {p.tenant_count && p.tenant_count > 0 ? (
+                        <button type="button" onClick={() => router.push(`/locataires?search=${encodeURIComponent(p.name)}`)} style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }} title="Voir la liste des locataires">
+                          {p.tenant_count} Locataire(s)
+                        </button>
+                      ) : "Aucun locataire"}
                     </span>
                   )}
                 </div>
 
                 <div style={{ borderTop: viewMode === "grid" ? "1px solid var(--gray-100)" : "none", paddingTop: viewMode === "grid" ? "var(--space-2)" : 0, marginTop: "auto", display: "flex", justifyContent: viewMode === "grid" ? "space-between" : "flex-end", alignItems: "center" }}>
                   {viewMode === "grid" && (
-                     <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)" }}>
+                     <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", position: "relative", zIndex: 10 }}>
                       {p.landlord_name && <span style={{display: "block", color: "var(--gray-700)", fontWeight: 600, marginBottom: "2px"}}>{p.landlord_name}</span>}
-                      {p.tenant_count && p.tenant_count > 0 ? `${p.tenant_count} Locataire(s)` : "Aucun locataire"}
+                      {p.tenant_count && p.tenant_count > 0 ? (
+                        <button type="button" onClick={() => router.push(`/locataires?search=${encodeURIComponent(p.name)}`)} style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none', background: 'none', border: 'none', padding: 0, cursor: 'pointer' }} title="Voir la liste des locataires">
+                          {p.tenant_count} Locataire(s)
+                        </button>
+                      ) : "Aucun locataire"}
                     </span>
                   )}
                   <div style={{ display: "flex", gap: "var(--space-2)" }}>

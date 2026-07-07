@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { 
   Search, 
   Plus, 
@@ -18,9 +19,20 @@ import { Tenant, Property } from "@/lib/types";
 import { formatDate, getPropertyTypeLabel } from "@/lib/utils";
 
 export default function LocatairesPage() {
+  return (
+    <Suspense fallback={<div>Chargement...</div>}>
+      <LocatairesContent />
+    </Suspense>
+  );
+}
+
+function LocatairesContent() {
+  const searchParams = useSearchParams();
+  const initialSearch = searchParams.get("search") || "";
+  
   const [tenants, setTenants] = useState<Tenant[]>([]);
   const [properties, setProperties] = useState<Property[]>([]);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(initialSearch);
   const [showAddModal, setShowAddModal] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
