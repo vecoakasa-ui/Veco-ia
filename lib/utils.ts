@@ -103,6 +103,7 @@ export function getPropertyTypeLabel(type: string): string {
     case 'studio': return 'Studio';
     case 'villa': return 'Villa';
     case 'house': return 'Maison';
+    case 'building': return 'Immeuble';
     default: return type;
   }
 }

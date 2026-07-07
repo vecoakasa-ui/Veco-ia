@@ -53,7 +53,7 @@ export interface Landlord {
   property_count?: number;
 }
 
-export type PropertyType = 'apartment' | 'studio' | 'villa' | 'house';
+export type PropertyType = 'apartment' | 'studio' | 'villa' | 'house' | 'building';
 export type PropertyStatus = 'occupied' | 'vacant' | 'maintenance';
 
 export interface Property {
@@ -75,6 +75,7 @@ export interface Property {
   tenant_count?: number;
   lat?: number;
   lng?: number;
+  parent_id?: string;
 }
 
 export type PaymentStatus = 'paid' | 'pending' | 'late' | 'upcoming';

@@ -39,6 +39,7 @@ export default function BiensPage() {
   // Form states
   const [name, setName] = useState("");
   const [type, setType] = useState<PropertyType>("apartment");
+  const [unitsCount, setUnitsCount] = useState<number>(0);
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("Abidjan");
   const [country, setCountry] = useState("Côte d'Ivoire");
@@ -89,15 +90,15 @@ export default function BiensPage() {
 
   const handleAddProperty = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !address || !rent) return;
+    if (!name || !address) return;
 
-    await db.addProperty({
+    const newProp = await db.addProperty({
       name,
       type,
       address,
       city,
       country,
-      monthly_rent: Number(rent),
+      monthly_rent: Number(rent) || 0,
       status: "vacant",
       description: desc,
       landlord_id: landlordId || undefined,
@@ -106,9 +107,30 @@ export default function BiensPage() {
       lng
     });
 
+    if (type === 'building' && unitsCount > 0) {
+      for (let i = 1; i <= unitsCount; i++) {
+        await db.addProperty({
+          name: `${name} - Appt ${i}`,
+          type: "apartment",
+          address,
+          city,
+          country,
+          monthly_rent: Number(rent) || 0,
+          status: "vacant",
+          description: desc,
+          landlord_id: landlordId || undefined,
+          images: mainImage ? [mainImage] : [],
+          lat,
+          lng,
+          parent_id: newProp.id
+        });
+      }
+    }
+
     // Reset form & close modal
     setName("");
     setType("apartment");
+    setUnitsCount(0);
     setAddress("");
     setCity("Abidjan");
     setCountry("Côte d'Ivoire");
@@ -350,9 +372,14 @@ export default function BiensPage() {
               <div style={{ padding: "var(--space-3)", display: "flex", flexDirection: "column", flexGrow: 1, gap: "var(--space-2)" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                   <div>
-                    <span className={`badge ${p.type === 'villa' ? 'badge-primary' : 'badge-info'}`} style={{ textTransform: "uppercase", fontSize: "9px", padding: "2px 8px" }}>
+                    <span className={`badge ${p.type === 'villa' ? 'badge-primary' : p.type === 'building' ? 'badge-success' : 'badge-info'}`} style={{ textTransform: "uppercase", fontSize: "9px", padding: "2px 8px" }}>
                       {getPropertyTypeLabel(p.type)}
                     </span>
+                    {p.parent_id && properties.find(parent => parent.id === p.parent_id) && (
+                      <span className="badge badge-glass" style={{ fontSize: "9px", padding: "2px 8px", marginLeft: "4px" }}>
+                        🏢 {properties.find(parent => parent.id === p.parent_id)?.name}
+                      </span>
+                    )}
                     <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--gray-900)", marginTop: "4px" }}>
                       {p.name}
                     </h3>
@@ -510,8 +537,26 @@ export default function BiensPage() {
                   <option value="villa">Villa</option>
                   <option value="studio">Studio</option>
                   <option value="house">Maison</option>
+                  <option value="building">Immeuble</option>
                 </select>
               </div>
+
+              {type === 'building' && (
+                <div className="input-group">
+                  <label className="input-label">Nombre d'appartements à créer</label>
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="Ex: 5"
+                    value={unitsCount || ""}
+                    onChange={(e) => setUnitsCount(Number(e.target.value) || 0)}
+                    className="input"
+                  />
+                  <p style={{ fontSize: "12px", color: "var(--gray-500)", marginTop: "4px" }}>
+                    Les appartements seront automatiquement créés et rattachés à cet immeuble.
+                  </p>
+                </div>
+              )}
 
               <div className="input-group">
                 <label className="input-label">Propriétaire (Bailleur)</label>
