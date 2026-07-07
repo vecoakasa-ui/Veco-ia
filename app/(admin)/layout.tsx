@@ -4,7 +4,7 @@ import { Inter } from "next/font/google";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { LayoutDashboard, Users, Activity, LogOut, Settings, ShieldAlert, Building, FileText, CreditCard, AlertTriangle, Crown, BarChart3 } from "lucide-react";
+import { LayoutDashboard, Users, Activity, LogOut, Settings, ShieldAlert, Building, FileText, CreditCard, AlertTriangle, Crown, BarChart3, Landmark } from "lucide-react";
 import { db } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
 
@@ -18,6 +18,7 @@ const adminNavItems = [
   { label: "Utilisateurs", href: "/admin/utilisateurs", icon: Users },
   { label: "Abonnements SaaS", href: "/admin/abonnements", icon: Crown },
   { label: "Gestion des Biens", href: "/admin/biens", icon: Building },
+  { label: "Ventes & Terrains", href: "/admin/ventes", icon: Landmark },
   { label: "Gestion des Contrats", href: "/admin/contrats", icon: FileText },
   { label: "Gestion Financière", href: "/admin/finances", icon: CreditCard },
   { label: "Support & Incidents", href: "/admin/incidents", icon: AlertTriangle },
