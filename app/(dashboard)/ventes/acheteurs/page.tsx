@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Users, Search, Plus, X, Briefcase, DollarSign, Calendar, MapPin, User, Mail, Phone, Home, CreditCard, AlertCircle, CheckCircle } from "lucide-react";
 import { db } from "@/lib/store";
 import { formatCurrency } from "@/lib/utils";
@@ -184,10 +185,11 @@ export default function AcheteursPage() {
       ) : (
         <div style={{ display: "grid", gap: "var(--space-4)" }}>
           {filteredSales.map((sale) => (
-            <div key={sale.id} className="card" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "var(--space-4)" }}>
+            <Link key={sale.id} href={`/ventes/acheteurs/${sale.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+              <div className="card card-interactive" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "var(--space-4)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                <div style={{ width: "48px", height: "48px", borderRadius: "50%", background: "var(--primary-lighter)", color: "var(--orange)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}>
-                  {(sale.buyer_name || "A")[0].toUpperCase()}
+                <div style={{ width: "48px", height: "48px", borderRadius: "50%", background: "var(--primary-lighter)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+                  <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(sale.buyer_name || "A")}&backgroundColor=e25822`} alt={sale.buyer_name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 </div>
                 <div>
                   <h3 style={{ fontSize: "16px", fontWeight: "bold", margin: 0 }}>{sale.buyer_name}</h3>
@@ -198,7 +200,8 @@ export default function AcheteursPage() {
                 <div style={{ fontSize: "16px", fontWeight: "bold", color: "var(--primary-dark)" }}>{formatCurrency(sale.total_price)}</div>
                 <div style={{ fontSize: "12px", color: "var(--gray-500)" }}>Reste à payer: {formatCurrency(sale.remaining_balance)}</div>
               </div>
-            </div>
+              </div>
+            </Link>
           ))}
         </div>
       )}

@@ -1585,6 +1585,19 @@ export const db = {
     return newSale;
   },
 
+  updateSale: async (id: string, updates: any): Promise<void> => {
+    if (isSupabaseConfigured()) {
+      await supabase.from("sales").update(updates).eq("id", id);
+    } else {
+      const items = getFromStorage<any[]>("sales", []);
+      const idx = items.findIndex((i: any) => i.id === id);
+      if (idx > -1) {
+        items[idx] = { ...items[idx], ...updates };
+        setToStorage("sales", items);
+      }
+    }
+  },
+
   getSaleInstallments: async (): Promise<any[]> => {
     if (isSupabaseConfigured()) {
       try {
