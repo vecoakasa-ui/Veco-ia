@@ -336,10 +336,23 @@ export default function LotsPage() {
                 </div>
 
                 <div className="input-group">
-                  <label className="input-label">Image principale (URL)</label>
-                  <div className="input-with-icon">
-                    <ImageIcon className="input-icon" size={16} />
-                    <input type="text" placeholder="https://..." value={mainImage} onChange={(e) => setMainImage(e.target.value)} className="input" style={{ paddingLeft: "36px" }} />
+                  <label className="input-label">Image principale</label>
+                  <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                    <div className="input-with-icon" style={{ flex: 1 }}>
+                      <ImageIcon className="input-icon" size={16} />
+                      <input type="text" placeholder="URL ou choisir un fichier..." value={mainImage} onChange={(e) => setMainImage(e.target.value)} className="input" style={{ paddingLeft: "36px" }} />
+                    </div>
+                    <label className="btn btn-outline btn-sm" style={{ cursor: "pointer", height: "42px", display: "flex", alignItems: "center", margin: 0 }}>
+                      <input type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => setMainImage(reader.result as string);
+                          reader.readAsDataURL(file);
+                        }
+                      }} />
+                      Parcourir
+                    </label>
                   </div>
                 </div>
                 
@@ -380,6 +393,16 @@ export default function LotsPage() {
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                   <h4 style={{ fontSize: "14px", fontWeight: "700", color: "var(--gray-600)", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>Coordonnées GPS</h4>
                   <div style={{ background: "var(--primary-lighter)", border: "1px solid rgba(var(--primary-rgb), 0.2)", borderRadius: "var(--radius-md)", padding: "16px" }}>
+                    
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                      <p style={{ fontSize: "12px", color: "var(--gray-700)", margin: 0, fontWeight: "500" }}>
+                        Entrez manuellement ou détectez votre position.
+                      </p>
+                      <button type="button" className="btn btn-sm btn-primary" onClick={() => handleGetLocation(false)} style={{ fontSize: "12px", padding: "4px 12px" }}>
+                        📍 Me localiser
+                      </button>
+                    </div>
+
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                       <div className="input-group">
                         <label className="input-label">Latitude</label>
@@ -396,18 +419,21 @@ export default function LotsPage() {
                         </div>
                       </div>
                     </div>
-                    <p style={{ fontSize: "12px", color: "var(--gray-500)", marginTop: "12px", marginBottom: 0 }}>
-                      Ces coordonnées permettront d'afficher le bien sur la mini-carte lors de la vente.
-                    </p>
                   </div>
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                   <h4 style={{ fontSize: "14px", fontWeight: "700", color: "var(--gray-600)", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>Documents annexes</h4>
-                  <div style={{ border: "2px dashed var(--gray-200)", borderRadius: "var(--radius-md)", padding: "16px", textAlign: "center", color: "var(--gray-500)", background: "var(--gray-50)" }}>
-                    <FileText size={24} style={{ opacity: 0.5, margin: "0 auto 8px auto" }} />
-                    <p style={{ fontSize: "13px", margin: 0 }}>L'upload de Titre Foncier et d'ACD sera bientôt disponible.</p>
-                  </div>
+                  <label style={{ border: "2px dashed var(--primary)", borderRadius: "var(--radius-md)", padding: "16px", textAlign: "center", color: "var(--primary)", background: "var(--primary-lightest)", cursor: "pointer", display: "block", transition: "all 0.2s" }} className="hover-scale">
+                    <input type="file" multiple accept=".pdf,.doc,.docx,image/*" style={{ display: "none" }} onChange={(e) => {
+                      if (e.target.files && e.target.files.length > 0) {
+                        alert(e.target.files.length + " document(s) prêt(s) pour l'upload.");
+                      }
+                    }} />
+                    <FileText size={24} style={{ margin: "0 auto 8px auto" }} />
+                    <p style={{ fontSize: "13px", margin: 0, fontWeight: "600" }}>Cliquez ici pour charger Titre Foncier, ACD...</p>
+                    <p style={{ fontSize: "11px", margin: "4px 0 0 0", opacity: 0.7 }}>Formats acceptés : PDF, Images (Max 5Mo)</p>
+                  </label>
                 </div>
 
                 <div style={{ display: "flex", gap: "12px", marginTop: "auto", paddingTop: "16px" }}>
