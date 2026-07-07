@@ -15,14 +15,59 @@ export function isSupabaseConfigured(): boolean {
   );
 }
 
-// Custom fetch wrapper to prevent infinite hangs if Supabase is paused or unreachable
+// Global cache for Supabase requests to massively improve performance and deduplicate parallel queries
+const fetchCache = new Map<string, { data?: Response; timestamp: number; promise?: Promise<Response> }>();
+const FETCH_CACHE_TTL = 3000; // 3 seconds TTL is enough for SPA navigation and deduplication
+
+// Custom fetch wrapper to prevent infinite hangs and implement lightning fast caching
 const customFetch = async (url: RequestInfo | URL, options?: RequestInit) => {
+  const isGet = !options?.method || options.method === 'GET';
+  let cacheKey = '';
+  
+  if (isGet) {
+    // We only care about caching GET requests (reads)
+    // The query string contains the Supabase SQL logic, so URL is a great cache key
+    cacheKey = url.toString() + (options?.headers ? JSON.stringify(options.headers) : '');
+    const cached = fetchCache.get(cacheKey);
+    
+    if (cached && (Date.now() - cached.timestamp < FETCH_CACHE_TTL)) {
+      // Deduplicate parallel requests (e.g., if layout and page both request profile at the same time)
+      if (cached.promise) {
+        const res = await cached.promise;
+        return res.clone();
+      }
+      if (cached.data) {
+        return cached.data.clone();
+      }
+    }
+  } else {
+    // If it's a mutation (POST, PATCH, DELETE), clear cache to ensure next reads are fresh
+    fetchCache.clear();
+  }
+
   const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), 10000); // 10 seconds timeout au lieu de 1.5s
+  const id = setTimeout(() => controller.abort(), 10000);
+  
   try {
-    const response = await fetch(url, { ...options, signal: controller.signal });
+    const fetchPromise = fetch(url, { ...options, signal: controller.signal });
+    
+    if (isGet) {
+      // Store the promise immediately so parallel identical requests can wait for it
+      fetchCache.set(cacheKey, { timestamp: Date.now(), promise: fetchPromise });
+    }
+
+    const response = await fetchPromise;
+    
+    if (isGet && response.ok) {
+      // Replace the promise with the actual cloned response data
+      fetchCache.set(cacheKey, { data: response.clone(), timestamp: Date.now() });
+    } else if (isGet) {
+      fetchCache.delete(cacheKey);
+    }
+    
     return response;
   } catch (error) {
+    if (isGet) fetchCache.delete(cacheKey);
     throw error;
   } finally {
     clearTimeout(id);
