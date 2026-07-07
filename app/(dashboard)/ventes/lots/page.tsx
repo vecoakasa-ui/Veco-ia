@@ -14,7 +14,10 @@ import {
   List,
   Grid,
   Image as ImageIcon,
-  Trash2
+  Trash2,
+  Home,
+  FileText,
+  Navigation
 } from "lucide-react";
 import { db } from "@/lib/store";
 import dynamic from "next/dynamic";
@@ -283,52 +286,134 @@ export default function LotsPage() {
 
       {/* Add Modal */}
       {showAddModal && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: "16px" }}>
-          <div className="card" style={{ width: "100%", maxWidth: "500px", background: 'white', padding: "24px", maxHeight: "90vh", overflowY: "auto" }}>
-            <h3 style={{ fontSize: "18px", fontWeight: "800", marginBottom: "24px", textAlign: "center" }}>Ajouter un Terrain / Lotissement</h3>
-            <form onSubmit={handleAddProperty} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              <div className="input-group">
-                <label className="input-label">Nom du bien</label>
-                <input type="text" required placeholder="Ex: Lotissement Palmeraie" value={name} onChange={(e) => setName(e.target.value)} className="input" />
-              </div>
-              <div className="input-group">
-                <label className="input-label">Type</label>
-                <select value={type} onChange={(e) => setType(e.target.value as PropertyType)} className="input" style={{ appearance: "auto" }}>
-                  <option value="terrain">Terrain simple (Lot)</option>
-                  <option value="lotissement">Lotissement (Génère plusieurs lots)</option>
-                </select>
-              </div>
-              {type === 'lotissement' && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 100, padding: "16px", backdropFilter: "blur(4px)" }}>
+          <div className="card animate-scale-in" style={{ width: "100%", maxWidth: "850px", background: 'white', padding: "0", maxHeight: "90vh", overflowY: "auto", overflowX: "hidden" }}>
+            
+            <div style={{ position: "sticky", top: 0, background: "white", zIndex: 10, padding: "20px 24px", borderBottom: "1px solid var(--gray-200)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <h3 style={{ fontSize: "20px", fontWeight: "800", margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
+                <Map size={20} style={{ color: "var(--primary)" }} /> Ajouter un Terrain / Lotissement
+              </h3>
+              <button className="btn btn-ghost btn-sm" onClick={() => setShowAddModal(false)} style={{ padding: "4px" }}>
+                <X size={20} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleAddProperty} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "32px", padding: "24px" }}>
+              
+              {/* Left Column: Infos de base */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                <h4 style={{ fontSize: "14px", fontWeight: "700", color: "var(--gray-600)", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>Informations principales</h4>
+                
                 <div className="input-group">
-                  <label className="input-label">Nombre de lots à générer</label>
-                  <input type="number" min="1" value={unitsCount || ""} onChange={(e) => setUnitsCount(Number(e.target.value))} className="input" />
+                  <label className="input-label">Nom du bien</label>
+                  <div className="input-with-icon">
+                    <Home className="input-icon" size={16} />
+                    <input type="text" required placeholder="Ex: Lotissement Palmeraie" value={name} onChange={(e) => setName(e.target.value)} className="input" style={{ paddingLeft: "36px" }} />
+                  </div>
                 </div>
-              )}
-              <div className="input-group">
-                <label className="input-label">Prix de vente (FCFA)</label>
-                <input type="number" required value={salePrice} onChange={(e) => setSalePrice(e.target.value)} className="input" />
-              </div>
-              <div className="input-group">
-                <label className="input-label">Adresse</label>
-                <input type="text" required value={address} onChange={(e) => setAddress(e.target.value)} className="input" />
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                
                 <div className="input-group">
-                  <label className="input-label">Ville</label>
-                  <input type="text" required value={city} onChange={(e) => setCity(e.target.value)} className="input" />
+                  <label className="input-label">Type</label>
+                  <select value={type} onChange={(e) => setType(e.target.value as PropertyType)} className="input" style={{ appearance: "auto" }}>
+                    <option value="terrain">Terrain simple (Lot)</option>
+                    <option value="lotissement">Lotissement (Génère plusieurs lots)</option>
+                  </select>
                 </div>
+                
+                {type === 'lotissement' && (
+                  <div className="input-group">
+                    <label className="input-label">Nombre de lots à générer</label>
+                    <input type="number" min="1" value={unitsCount || ""} onChange={(e) => setUnitsCount(Number(e.target.value))} className="input" />
+                  </div>
+                )}
+                
                 <div className="input-group">
-                  <label className="input-label">Pays</label>
-                  <input type="text" required value={country} onChange={(e) => setCountry(e.target.value)} className="input" />
+                  <label className="input-label">Prix de vente (FCFA)</label>
+                  <div className="input-with-icon">
+                    <DollarSign className="input-icon" size={16} />
+                    <input type="number" required value={salePrice} onChange={(e) => setSalePrice(e.target.value)} className="input" style={{ paddingLeft: "36px" }} />
+                  </div>
+                </div>
+
+                <div className="input-group">
+                  <label className="input-label">Image principale (URL)</label>
+                  <div className="input-with-icon">
+                    <ImageIcon className="input-icon" size={16} />
+                    <input type="text" placeholder="https://..." value={mainImage} onChange={(e) => setMainImage(e.target.value)} className="input" style={{ paddingLeft: "36px" }} />
+                  </div>
+                </div>
+                
+                <div className="input-group">
+                  <label className="input-label">Description (Optionnel)</label>
+                  <textarea value={desc} onChange={(e) => setDesc(e.target.value)} className="input" rows={3}></textarea>
                 </div>
               </div>
-              <div className="input-group">
-                <label className="input-label">Description</label>
-                <textarea value={desc} onChange={(e) => setDesc(e.target.value)} className="input" rows={3}></textarea>
-              </div>
-              <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
-                <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowAddModal(false)}>Annuler</button>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>Enregistrer</button>
+
+              {/* Right Column: Localisation & GPS */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                
+                <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                  <h4 style={{ fontSize: "14px", fontWeight: "700", color: "var(--gray-600)", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>Localisation & Coordonnées</h4>
+                  
+                  <div className="input-group">
+                    <label className="input-label">Adresse / Quartier</label>
+                    <div className="input-with-icon">
+                      <MapPin className="input-icon" size={16} />
+                      <input type="text" required value={address} onChange={(e) => setAddress(e.target.value)} className="input" style={{ paddingLeft: "36px" }} />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                    <div className="input-group">
+                      <label className="input-label">Ville</label>
+                      <input type="text" required value={city} onChange={(e) => setCity(e.target.value)} className="input" />
+                    </div>
+                    <div className="input-group">
+                      <label className="input-label">Pays</label>
+                      <input type="text" required value={country} onChange={(e) => setCountry(e.target.value)} className="input" />
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ height: "1px", background: "var(--gray-200)", margin: "4px 0" }}></div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                  <h4 style={{ fontSize: "14px", fontWeight: "700", color: "var(--gray-600)", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>Coordonnées GPS</h4>
+                  <div style={{ background: "var(--primary-lighter)", border: "1px solid rgba(var(--primary-rgb), 0.2)", borderRadius: "var(--radius-md)", padding: "16px" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                      <div className="input-group">
+                        <label className="input-label">Latitude</label>
+                        <div className="input-with-icon">
+                          <Navigation className="input-icon" size={16} />
+                          <input type="number" step="any" placeholder="Ex: 5.3599" value={lat || ""} onChange={(e) => setLat(e.target.value ? Number(e.target.value) : undefined)} className="input" style={{ paddingLeft: "36px", background: "white" }} />
+                        </div>
+                      </div>
+                      <div className="input-group">
+                        <label className="input-label">Longitude</label>
+                        <div className="input-with-icon">
+                          <Navigation className="input-icon" size={16} />
+                          <input type="number" step="any" placeholder="Ex: -4.0082" value={lng || ""} onChange={(e) => setLng(e.target.value ? Number(e.target.value) : undefined)} className="input" style={{ paddingLeft: "36px", background: "white" }} />
+                        </div>
+                      </div>
+                    </div>
+                    <p style={{ fontSize: "12px", color: "var(--gray-500)", marginTop: "12px", marginBottom: 0 }}>
+                      Ces coordonnées permettront d'afficher le bien sur la mini-carte lors de la vente.
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                  <h4 style={{ fontSize: "14px", fontWeight: "700", color: "var(--gray-600)", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>Documents annexes</h4>
+                  <div style={{ border: "2px dashed var(--gray-200)", borderRadius: "var(--radius-md)", padding: "16px", textAlign: "center", color: "var(--gray-500)", background: "var(--gray-50)" }}>
+                    <FileText size={24} style={{ opacity: 0.5, margin: "0 auto 8px auto" }} />
+                    <p style={{ fontSize: "13px", margin: 0 }}>L'upload de Titre Foncier et d'ACD sera bientôt disponible.</p>
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", gap: "12px", marginTop: "auto", paddingTop: "16px" }}>
+                  <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowAddModal(false)}>Annuler</button>
+                  <button type="submit" className="btn btn-primary" style={{ flex: 2 }}>Enregistrer le bien</button>
+                </div>
               </div>
             </form>
           </div>
