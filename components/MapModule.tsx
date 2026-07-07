@@ -20,9 +20,10 @@ if (typeof window !== "undefined") {
 
 interface MapModuleProps {
   properties: Property[];
+  height?: string;
 }
 
-export default function MapModule({ properties }: MapModuleProps) {
+export default function MapModule({ properties, height = "400px" }: MapModuleProps) {
   // Abidjan coordinates as default center
   const defaultCenter: [number, number] = [5.359951, -4.008256];
   
@@ -33,7 +34,7 @@ export default function MapModule({ properties }: MapModuleProps) {
     : defaultCenter;
 
   return (
-    <div style={{ height: "400px", width: "100%", borderRadius: "var(--radius-lg)", overflow: "hidden", border: "1px solid var(--gray-200)", zIndex: 0, position: "relative" }}>
+    <div style={{ height, width: "100%", borderRadius: "var(--radius-lg)", overflow: "hidden", border: "1px solid var(--gray-200)", zIndex: 0, position: "relative" }}>
       <MapContainer 
         center={center} 
         zoom={12} 

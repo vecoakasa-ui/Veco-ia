@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Users, Search, Plus, X, Briefcase, DollarSign, Calendar, MapPin, User, Mail, Phone, Home, CreditCard } from "lucide-react";
 import { db } from "@/lib/store";
 import { formatCurrency } from "@/lib/utils";
+import MapModuleWrapper from "@/components/MapModuleWrapper";
 
 export default function AcheteursPage() {
   const [sales, setSales] = useState<any[]>([]);
@@ -205,9 +206,15 @@ export default function AcheteursPage() {
                         <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "13px", color: "var(--gray-500)", marginBottom: "12px" }}>
                           <MapPin size={14} /> {prop.address}, {prop.city}
                         </div>
-                        <div style={{ fontSize: "18px", fontWeight: "800", color: "var(--primary-dark)", display: "flex", alignItems: "center", gap: "6px" }}>
+                        <div style={{ fontSize: "18px", fontWeight: "800", color: "var(--primary-dark)", display: "flex", alignItems: "center", gap: "6px", marginBottom: prop.lat && prop.lng ? "16px" : "0" }}>
                           Prix de base : {formatCurrency(prop.sale_price || 0)}
                         </div>
+                        {prop.lat && prop.lng && (
+                          <div style={{ borderTop: "1px solid var(--gray-200)", paddingTop: "16px" }}>
+                            <h6 style={{ margin: "0 0 8px 0", fontSize: "12px", color: "var(--gray-500)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Emplacement Exact (GPS)</h6>
+                            <MapModuleWrapper properties={[prop]} height="140px" />
+                          </div>
+                        )}
                       </div>
                     </div>
                   );

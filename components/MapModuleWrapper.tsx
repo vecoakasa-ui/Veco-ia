@@ -24,8 +24,9 @@ const MapModule = dynamic(() => import("./MapModule"), {
 
 interface MapModuleWrapperProps {
   properties: Property[];
+  height?: string;
 }
 
-export default function MapModuleWrapper({ properties }: MapModuleWrapperProps) {
-  return <MapModule properties={properties} />;
+export default function MapModuleWrapper({ properties, height }: MapModuleWrapperProps) {
+  return <MapModule properties={properties} height={height} />;
 }
