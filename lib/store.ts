@@ -1511,9 +1511,12 @@ export const db = {
   },
 
   addBuyer: async (buyer: any): Promise<any> => {
+    const ownerId = await getOwnerId();
     const newBuyer = {
       ...buyer,
       id: "buyer-" + generateId(),
+      owner_id: ownerId,
+      profile_id: null,
       created_at: new Date().toISOString()
     };
     if (isSupabaseConfigured()) {
@@ -1555,9 +1558,11 @@ export const db = {
   },
 
   addSale: async (sale: any): Promise<any> => {
+    const ownerId = await getOwnerId();
     const newSale = {
       ...sale,
       id: "sale-" + generateId(),
+      owner_id: ownerId,
       status: "pending",
       created_at: new Date().toISOString()
     };
@@ -1587,9 +1592,11 @@ export const db = {
   },
 
   addSaleInstallment: async (inst: any): Promise<any> => {
+    const ownerId = await getOwnerId();
     const newInst = {
       ...inst,
       id: "inst-" + generateId(),
+      owner_id: ownerId,
       status: "pending",
       created_at: new Date().toISOString()
     };
