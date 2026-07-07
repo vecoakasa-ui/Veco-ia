@@ -431,7 +431,7 @@ export const getOwnerId = async (): Promise<string> => {
     const { data } = await supabase.auth.getSession();
     if (data?.session?.user) {
       cachedOwnerId = data.session.user.id;
-      return cachedOwnerId;
+      return data.session.user.id;
     }
   }
   throw new Error("Veuillez vous connecter pour continuer.");
