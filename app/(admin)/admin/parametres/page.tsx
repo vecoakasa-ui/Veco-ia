@@ -182,16 +182,16 @@ export default function AdminParametresPage() {
           {/* Vider */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
-              <p style={{ fontWeight: 600, color: "var(--gray-900)", margin: "0 0 4px 0" }}>Vider les données</p>
-              <p style={{ color: "var(--danger-dark)", fontSize: "12px", margin: 0, maxWidth: "400px" }}>Cette action supprimera toutes les données locales. Pensez à faire une sauvegarde avant !</p>
+              <p style={{ fontWeight: 600, color: "var(--gray-900)", margin: "0 0 4px 0" }}>Vider le cache local</p>
+              <p style={{ color: "var(--danger-dark)", fontSize: "12px", margin: 0, maxWidth: "400px" }}>Cette action réinitialisera l'état de votre navigateur (préférences locales). Vos vraies données resteront intactes et sécurisées dans la base de données (Supabase).</p>
             </div>
             <button 
               className="btn"
               onClick={() => {
                 setConfirmModal({
                   isOpen: true,
-                  title: "Vider toutes les données",
-                  message: "Avez-vous fait une sauvegarde ? Cette action est irréversible. Voulez-vous vraiment vider toutes les données locales ?",
+                  title: "Vider le cache local",
+                  message: "Voulez-vous vraiment vider le cache local de votre navigateur ? Cela ne supprimera PAS vos données de la base de données.",
                   type: "danger",
                   action: () => {
                     localStorage.clear();
