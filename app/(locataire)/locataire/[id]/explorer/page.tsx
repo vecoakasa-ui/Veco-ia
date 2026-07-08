@@ -26,6 +26,7 @@ import MapModuleWrapper from "@/components/MapModuleWrapper";
 export default function ExplorerPage() {
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<"grid" | "map">("grid");
+  const [activeTab, setActiveTab] = useState<"location" | "achat">("location");
   const [properties, setProperties] = useState<Property[]>([]);
   const [tenantProfile, setTenantProfile] = useState<Profile | null>(null);
   
@@ -146,24 +147,58 @@ export default function ExplorerPage() {
         </div>
       </div>
 
+      {/* Tabs */}
+      <div style={{ display: "flex", borderBottom: "1px solid var(--gray-200)" }}>
+        <button 
+          onClick={() => setActiveTab("location")}
+          style={{ 
+            padding: "12px 24px", 
+            fontWeight: "600",
+            borderBottom: activeTab === "location" ? "2px solid var(--primary)" : "2px solid transparent",
+            color: activeTab === "location" ? "var(--primary)" : "var(--gray-500)",
+            background: "none",
+            borderTop: "none", borderLeft: "none", borderRight: "none", cursor: "pointer",
+            fontSize: "14px",
+            transition: "all 0.2s"
+          }}
+        >
+          À Louer (Appartements, Villas...)
+        </button>
+        <button 
+          onClick={() => setActiveTab("achat")}
+          style={{ 
+            padding: "12px 24px", 
+            fontWeight: "600",
+            borderBottom: activeTab === "achat" ? "2px solid var(--primary)" : "2px solid transparent",
+            color: activeTab === "achat" ? "var(--primary)" : "var(--gray-500)",
+            background: "none",
+            borderTop: "none", borderLeft: "none", borderRight: "none", cursor: "pointer",
+            fontSize: "14px",
+            transition: "all 0.2s"
+          }}
+        >
+          À Acheter (Terrains & Lots)
+        </button>
+      </div>
+
       {/* Content View */}
       {viewMode === 'map' ? (
         <div className="card animate-fade-in" style={{ padding: "0", overflow: "hidden", marginBottom: "var(--space-2)" }}>
-          <MapModuleWrapper properties={properties} />
+          <MapModuleWrapper properties={properties.filter(p => activeTab === 'location' ? p.type !== 'terrain' && p.type !== 'lotissement' : p.type === 'terrain' || p.type === 'lotissement')} />
         </div>
       ) : (
         <>
-          {properties.length === 0 ? (
+          {properties.filter(p => activeTab === 'location' ? p.type !== 'terrain' && p.type !== 'lotissement' : p.type === 'terrain' || p.type === 'lotissement').length === 0 ? (
             <div className="card animate-fade-in" style={{ padding: "var(--space-8)", textAlign: "center", background: "var(--white)" }}>
               <Building size={48} style={{ color: "var(--gray-300)", margin: "0 auto var(--space-4)" }} />
               <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 700, color: "var(--gray-700)", margin: "0 0 var(--space-2)" }}>
                 Aucun bien disponible
               </h3>
-              <p style={{ color: "var(--gray-500)", margin: 0 }}>Il n'y a actuellement aucun logement vacant sur la plateforme. Revenez plus tard !</p>
+              <p style={{ color: "var(--gray-500)", margin: 0 }}>Il n'y a actuellement aucun bien vacant dans cette catégorie. Revenez plus tard !</p>
             </div>
           ) : (
             <div className="grid-explorer animate-fade-in">
-              {properties.map((property) => (
+              {properties.filter(p => activeTab === 'location' ? p.type !== 'terrain' && p.type !== 'lotissement' : p.type === 'terrain' || p.type === 'lotissement').map((property) => (
                 <div key={property.id} className="card" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}>
                   {/* Image Header */}
                   <div style={{ 
@@ -257,7 +292,7 @@ export default function ExplorerPage() {
                   <div style={{ display: "flex", gap: "var(--space-3)", padding: "var(--space-3)", background: "var(--primary-lightest)", borderRadius: "var(--radius-md)", marginBottom: "var(--space-5)" }}>
                     <Info size={20} style={{ color: "var(--primary)", flexShrink: 0 }} />
                     <p style={{ margin: 0, fontSize: "var(--text-sm)", color: "var(--primary-dark)" }}>
-                      Vous êtes sur le point d'envoyer une demande pour <strong>{selectedProperty.name}</strong> au loyer de <strong>{formatCurrency(selectedProperty.monthly_rent)}</strong>.
+                      Vous êtes sur le point d'envoyer une demande {selectedProperty.type === 'terrain' || selectedProperty.type === 'lotissement' ? "d'achat" : "de location"} pour <strong>{selectedProperty.name}</strong> au {selectedProperty.type === 'terrain' || selectedProperty.type === 'lotissement' ? "prix" : "loyer"} de <strong>{formatCurrency(selectedProperty.monthly_rent)}</strong>.
                     </p>
                   </div>
 
@@ -327,7 +362,7 @@ export default function ExplorerPage() {
                       <textarea 
                         className="form-control" 
                         rows={4} 
-                        placeholder="Précisez votre situation, votre date d'emménagement souhaitée, etc."
+                        placeholder={selectedProperty?.type === 'terrain' || selectedProperty?.type === 'lotissement' ? "Précisez votre projet d'achat, vos conditions de financement, etc." : "Précisez votre situation, votre date d'emménagement souhaitée, etc."}
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
                         style={{ width: "100%", padding: "12px", resize: "vertical", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none" }}
@@ -336,7 +371,7 @@ export default function ExplorerPage() {
 
                     <div style={{ marginTop: "var(--space-2)", paddingTop: "var(--space-4)", borderTop: "1px solid var(--gray-200)" }}>
                       <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ width: "100%", justifyContent: "center", padding: "14px", fontSize: "16px", fontWeight: 600, height: "52px" }}>
-                        {isSubmitting ? <Loader2 size={24} className="animate-spin" /> : "Envoyer ma demande"}
+                        {isSubmitting ? <Loader2 size={24} className="animate-spin" /> : (selectedProperty?.type === 'terrain' || selectedProperty?.type === 'lotissement' ? "Envoyer ma demande d'achat" : "Envoyer ma demande de location")}
                       </button>
                     </div>
                   </form>
