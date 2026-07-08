@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Moon, Sun, Monitor, User, Camera } from "lucide-react";
 import { useTheme } from "../../../components/ThemeProvider";
-import { DEFAULT_PROFILE } from "../../../lib/store";
+import { DEFAULT_PROFILE, db } from "../../../lib/store";
+import { Profile } from "../../../lib/types";
 import ConfirmModal from "@/components/ConfirmModal";
 import AlertModal from "@/components/AlertModal";
 
@@ -12,6 +13,10 @@ export default function SettingsPage() {
   
   const [avatarUrl, setAvatarUrl] = useState<string | null>(DEFAULT_PROFILE.avatar_url);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({ full_name: "", phone: "" });
 
   const [confirmModal, setConfirmModal] = useState<{isOpen: boolean, title: string, message: string, type: "danger"|"warning", action: () => void}>({isOpen: false, title: "", message: "", type: "warning", action: () => {}});
   const [alertModal, setAlertModal] = useState<{isOpen: boolean, title: string, message: string, type: "error"|"success"|"info"}>({isOpen: false, title: "", message: "", type: "error"});
@@ -37,11 +42,27 @@ export default function SettingsPage() {
     if (customAvatar) {
       setAvatarUrl(customAvatar);
     }
+    
+    db.getProfile().then(p => {
+      if (p) {
+        setProfile(p);
+        setFormData({ full_name: p.full_name || "", phone: p.phone || "" });
+        if (!customAvatar && p.avatar_url) setAvatarUrl(p.avatar_url);
+      }
+    });
   }, []);
 
-
-
-  return (
+  const handleSaveProfile = async () => {
+    if (!profile) return;
+    try {
+      await db.updateProfile({ ...profile, full_name: formData.full_name, phone: formData.phone });
+      setProfile({ ...profile, full_name: formData.full_name, phone: formData.phone });
+      setIsEditing(false);
+      setAlertModal({ isOpen: true, title: "Succès", message: "Profil mis à jour avec succès", type: "success" });
+    } catch (err) {
+      setAlertModal({ isOpen: true, title: "Erreur", message: "Impossible de mettre à jour le profil", type: "error" });
+    }
+  };  return (
     <div className="container animate-fade-in" style={{ maxWidth: "800px", padding: "var(--space-6) 0" }}>
       <div style={{ marginBottom: "var(--space-6)" }}>
         <h1 style={{ fontSize: "var(--text-2xl)", fontWeight: 800, margin: 0, color: "var(--gray-900)" }}>Paramètres</h1>
@@ -59,6 +80,19 @@ export default function SettingsPage() {
             <div>
               <h2 style={{ fontSize: "var(--text-lg)", fontWeight: 700, margin: 0, color: "var(--gray-900)" }}>Mon Profil</h2>
             </div>
+            <div style={{ marginLeft: "auto" }}>
+              {isEditing ? (
+                <div style={{ display: "flex", gap: "8px" }}>
+                  <button className="btn btn-outline" onClick={() => {
+                    setIsEditing(false);
+                    if (profile) setFormData({ full_name: profile.full_name || "", phone: profile.phone || "" });
+                  }}>Annuler</button>
+                  <button className="btn btn-primary" onClick={handleSaveProfile}>Enregistrer</button>
+                </div>
+              ) : (
+                <button className="btn btn-outline" onClick={() => setIsEditing(true)}>Modifier</button>
+              )}
+            </div>
           </div>
           
           <div style={{ display: "flex", alignItems: "center", gap: "var(--space-6)" }}>
@@ -68,7 +102,7 @@ export default function SettingsPage() {
                   <img src={avatarUrl} alt="Profil" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 ) : (
                   <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "32px", fontWeight: "bold", color: "var(--primary)" }}>
-                    {DEFAULT_PROFILE.full_name?.substring(0, 2).toUpperCase() || "VI"}
+                    {(profile?.full_name || DEFAULT_PROFILE.full_name)?.substring(0, 2).toUpperCase() || "VI"}
                   </div>
                 )}
               </div>
@@ -94,21 +128,39 @@ export default function SettingsPage() {
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-4)" }}>
                 <div>
                   <label style={{ display: "block", marginBottom: "4px", fontSize: "12px", color: "var(--gray-500)", fontWeight: 600, textTransform: "uppercase" }}>Nom complet</label>
-                  <div style={{ fontWeight: 600, color: "var(--gray-900)", padding: "8px 12px", background: "var(--gray-50)", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-200)" }}>{DEFAULT_PROFILE.full_name}</div>
+                  {isEditing ? (
+                    <input 
+                      className="input" 
+                      value={formData.full_name} 
+                      onChange={(e) => setFormData({...formData, full_name: e.target.value})} 
+                      style={{ width: "100%", padding: "8px 12px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)" }}
+                    />
+                  ) : (
+                    <div style={{ fontWeight: 600, color: "var(--gray-900)", padding: "8px 12px", background: "var(--gray-50)", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-200)" }}>{profile?.full_name || DEFAULT_PROFILE.full_name}</div>
+                  )}
                 </div>
                 <div>
                   <label style={{ display: "block", marginBottom: "4px", fontSize: "12px", color: "var(--gray-500)", fontWeight: 600, textTransform: "uppercase" }}>Rôle</label>
                   <div style={{ fontWeight: 600, color: "var(--primary)", padding: "8px 12px", background: "var(--primary-lightest)", borderRadius: "var(--radius-md)", border: "1px solid var(--primary-lighter)", display: "inline-block" }}>
-                    {DEFAULT_PROFILE.role === 'owner' ? 'Propriétaire' : 'Administrateur'}
+                    {(profile?.role || DEFAULT_PROFILE.role) === 'owner' ? 'Propriétaire' : 'Administrateur'}
                   </div>
                 </div>
                 <div>
                   <label style={{ display: "block", marginBottom: "4px", fontSize: "12px", color: "var(--gray-500)", fontWeight: 600, textTransform: "uppercase" }}>Email de connexion</label>
-                  <div style={{ fontWeight: 500, color: "var(--gray-900)", padding: "8px 12px", background: "var(--gray-50)", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-200)" }}>{DEFAULT_PROFILE.email}</div>
+                  <div style={{ fontWeight: 500, color: "var(--gray-900)", padding: "8px 12px", background: "var(--gray-50)", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-200)" }}>{profile?.email || DEFAULT_PROFILE.email}</div>
                 </div>
                 <div>
                   <label style={{ display: "block", marginBottom: "4px", fontSize: "12px", color: "var(--gray-500)", fontWeight: 600, textTransform: "uppercase" }}>Téléphone</label>
-                  <div style={{ fontWeight: 500, color: "var(--gray-900)", padding: "8px 12px", background: "var(--gray-50)", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-200)" }}>{DEFAULT_PROFILE.phone}</div>
+                  {isEditing ? (
+                    <input 
+                      className="input" 
+                      value={formData.phone} 
+                      onChange={(e) => setFormData({...formData, phone: e.target.value})} 
+                      style={{ width: "100%", padding: "8px 12px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)" }}
+                    />
+                  ) : (
+                    <div style={{ fontWeight: 500, color: "var(--gray-900)", padding: "8px 12px", background: "var(--gray-50)", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-200)" }}>{profile?.phone || DEFAULT_PROFILE.phone || "-"}</div>
+                  )}
                 </div>
               </div>
             </div>
