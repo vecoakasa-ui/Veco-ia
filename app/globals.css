@@ -2182,3 +2182,42 @@ select.input {
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================
+   Profile Section Responsive
+   ============================================ */
+.profile-card-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+  border-bottom: 1px solid var(--gray-200);
+  padding-bottom: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.profile-card-body {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.profile-card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+@media (max-width: 640px) {
+  .profile-card-body {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .profile-card-grid {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+}

@@ -73,7 +73,7 @@ export default function SettingsPage() {
         
         {/* Section Profil */}
         <div className="card">
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)", marginBottom: "var(--space-6)", borderBottom: "1px solid var(--gray-200)", paddingBottom: "var(--space-4)" }}>
+          <div className="profile-card-header">
             <div className="avatar avatar-sm" style={{ background: "var(--primary-lightest)", color: "var(--primary)" }}>
               <User size={20} />
             </div>
@@ -95,7 +95,7 @@ export default function SettingsPage() {
             </div>
           </div>
           
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--space-6)" }}>
+          <div className="profile-card-body">
             <div style={{ position: "relative" }}>
               <div style={{ width: "100px", height: "100px", borderRadius: "50%", background: "var(--primary-lightest)", overflow: "hidden", border: "4px solid var(--white)", boxShadow: "var(--shadow-md)", flexShrink: 0 }}>
                 {avatarUrl ? (
@@ -124,8 +124,8 @@ export default function SettingsPage() {
                 style={{ display: "none" }} 
               />
             </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-4)" }}>
+            <div style={{ flex: 1, width: "100%" }}>
+              <div className="profile-card-grid">
                 <div>
                   <label style={{ display: "block", marginBottom: "4px", fontSize: "12px", color: "var(--gray-500)", fontWeight: 600, textTransform: "uppercase" }}>Nom complet</label>
                   {isEditing ? (
