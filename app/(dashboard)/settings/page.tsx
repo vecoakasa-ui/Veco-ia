@@ -4,12 +4,17 @@ import { useState, useEffect, useRef } from "react";
 import { Moon, Sun, Monitor, User, Camera } from "lucide-react";
 import { useTheme } from "../../../components/ThemeProvider";
 import { DEFAULT_PROFILE } from "../../../lib/store";
+import ConfirmModal from "@/components/ConfirmModal";
+import AlertModal from "@/components/AlertModal";
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
   
   const [avatarUrl, setAvatarUrl] = useState<string | null>(DEFAULT_PROFILE.avatar_url);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [confirmModal, setConfirmModal] = useState<{isOpen: boolean, title: string, message: string, type: "danger"|"warning", action: () => void}>({isOpen: false, title: "", message: "", type: "warning", action: () => {}});
+  const [alertModal, setAlertModal] = useState<{isOpen: boolean, title: string, message: string, type: "error"|"success"|"info"}>({isOpen: false, title: "", message: "", type: "error"});
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -235,15 +240,26 @@ export default function SettingsPage() {
                       reader.onload = (event) => {
                         try {
                           const data = JSON.parse(event.target?.result as string);
-                          if (window.confirm("Êtes-vous sûr de vouloir écraser vos données actuelles avec cette sauvegarde ?")) {
-                            localStorage.clear();
-                            Object.keys(data).forEach(key => {
-                              localStorage.setItem(key, data[key]);
-                            });
-                            window.location.reload();
-                          }
+                          setConfirmModal({
+                            isOpen: true,
+                            title: "Restaurer les données",
+                            message: "Êtes-vous sûr de vouloir écraser vos données actuelles avec cette sauvegarde ? Cette action est irréversible.",
+                            type: "warning",
+                            action: () => {
+                              localStorage.clear();
+                              Object.keys(data).forEach(key => {
+                                localStorage.setItem(key, data[key]);
+                              });
+                              window.location.reload();
+                            }
+                          });
                         } catch {
-                          alert("Le fichier de sauvegarde est invalide.");
+                          setAlertModal({
+                            isOpen: true,
+                            title: "Erreur de fichier",
+                            message: "Le fichier de sauvegarde est invalide.",
+                            type: "error"
+                          });
                         }
                       };
                       reader.readAsText(file);
@@ -256,16 +272,22 @@ export default function SettingsPage() {
             {/* Vider */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <div>
-                <p style={{ fontWeight: 600, color: "var(--gray-900)", margin: "0 0 4px 0" }}>Vider les données</p>
-                <p style={{ color: "var(--danger-dark)", fontSize: "12px", margin: 0, maxWidth: "400px" }}>Cette action supprimera toutes les données locales. Pensez à faire une sauvegarde avant !</p>
+                <p style={{ fontWeight: 600, color: "var(--gray-900)", margin: "0 0 4px 0" }}>Vider le cache local</p>
+                <p style={{ color: "var(--danger-dark)", fontSize: "12px", margin: 0, maxWidth: "400px" }}>Cette action réinitialisera l'état de votre navigateur (préférences locales). Vos vraies données resteront intactes et sécurisées dans la base de données (Supabase).</p>
               </div>
               <button 
                 className="btn"
                 onClick={() => {
-                  if (window.confirm("Avez-vous fait une sauvegarde ? Cette action est irréversible. Voulez-vous vraiment vider toutes les données locales ?")) {
-                    localStorage.clear();
-                    window.location.reload();
-                  }
+                  setConfirmModal({
+                    isOpen: true,
+                    title: "Vider le cache local",
+                    message: "Voulez-vous vraiment vider le cache local de votre navigateur ? Cela ne supprimera PAS vos données de la base de données.",
+                    type: "danger",
+                    action: () => {
+                      localStorage.clear();
+                      window.location.reload();
+                    }
+                  });
                 }}
                 style={{ background: "var(--danger)", color: "var(--fixed-white)", border: "none", padding: "8px 16px", borderRadius: "var(--radius-md)", cursor: "pointer", fontWeight: 600 }}
               >
@@ -275,6 +297,24 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+      <ConfirmModal 
+        isOpen={confirmModal.isOpen}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        type={confirmModal.type}
+        onCancel={() => setConfirmModal(prev => ({...prev, isOpen: false}))}
+        onConfirm={() => {
+          confirmModal.action();
+          setConfirmModal(prev => ({...prev, isOpen: false}));
+        }}
+      />
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        title={alertModal.title}
+        message={alertModal.message}
+        type={alertModal.type}
+        onClose={() => setAlertModal(prev => ({...prev, isOpen: false}))}
+      />
     </div>
   );
 }
