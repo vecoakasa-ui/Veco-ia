@@ -18,8 +18,31 @@ export default function VenteDashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        const sales = await db.getSales();
+        const currentSale = sales.find(s => s.id === id);
+        
+        if (!currentSale) {
+          router.push("/ventes/acheteurs");
+          return;
+        }
+        
+        const allInstallments = await db.getSaleInstallments();
+        const saleInstallments = allInstallments.filter(i => i.sale_id === id);
+        
+        setSale(currentSale);
+        setInstallments(saleInstallments.sort((a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime()));
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
     loadData();
-  }, [id]);
+  }, [id, router]);
 
   const loadData = async () => {
     setIsLoading(true);
@@ -79,7 +102,6 @@ export default function VenteDashboard() {
     status: inst.status
   }));
 
-  const nextInstallment = installments.find(i => i.status !== 'paid');
   const lateInstallments = installments.filter(i => i.status === 'late' || (i.status === 'pending' && new Date(i.due_date) < new Date()));
 
   return (

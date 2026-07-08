@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Users, Search, Plus, X, Briefcase, DollarSign, Calendar, MapPin, User, Mail, Phone, Home, CreditCard, AlertCircle, CheckCircle } from "lucide-react";
+import { Users, Search, Plus, X, Briefcase, Calendar, MapPin, User, Mail, Phone, Home, CreditCard, AlertCircle, CheckCircle } from "lucide-react";
 import { db } from "@/lib/store";
 import { formatCurrency } from "@/lib/utils";
 import MapModuleWrapper from "@/components/MapModuleWrapper";

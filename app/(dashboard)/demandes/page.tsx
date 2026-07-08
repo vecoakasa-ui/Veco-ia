@@ -24,6 +24,34 @@ export default function DemandesPage() {
   const [filterStatus, setFilterStatus] = useState<"all" | "pending" | "accepted" | "rejected">("all");
 
   useEffect(() => {
+    const loadInquiries = async () => {
+      setLoading(true);
+      try {
+        const profile = await db.getProfile();
+        if (!profile) return;
+
+        const { data: inqData, error } = await supabase
+          .from('inquiries')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        
+        const properties = await db.getProperties();
+        
+        const combined = (inqData || []).map((inq: any) => ({
+          ...inq,
+          property: properties.find(p => p.id === inq.property_id)
+        }));
+
+        setInquiries(combined);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
     loadInquiries();
     
     // Marquer la page comme vue pour les notifications
@@ -34,34 +62,6 @@ export default function DemandesPage() {
       }
     });
   }, []);
-
-  const loadInquiries = async () => {
-    setLoading(true);
-    try {
-      const profile = await db.getProfile();
-      if (!profile) return;
-
-      const { data: inqData, error } = await supabase
-        .from('inquiries')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      
-      const properties = await db.getProperties();
-      
-      const combined = (inqData || []).map((inq: any) => ({
-        ...inq,
-        property: properties.find(p => p.id === inq.property_id)
-      }));
-
-      setInquiries(combined);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const updateStatus = async (id: string, newStatus: "accepted" | "rejected") => {
     try {

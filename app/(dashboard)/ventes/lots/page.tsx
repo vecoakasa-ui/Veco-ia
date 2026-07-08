@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { 
   Map, 
   MapPin, 
-  DollarSign, 
   Search, 
   Plus, 
   X, 
@@ -24,7 +23,7 @@ import { db } from "@/lib/store";
 import dynamic from "next/dynamic";
 const MapModuleWrapper = dynamic(() => import("@/components/MapModuleWrapper"), { ssr: false });
 import { Property, PropertyType, Landlord } from "@/lib/types";
-import { formatCurrency, getPropertyStatusClass, getPropertyStatusLabel, getPropertyTypeLabel } from "@/lib/utils";
+import { formatCurrency, getPropertyStatusClass, getPropertyTypeLabel } from "@/lib/utils";
 
 export default function LotsPage() {
   const router = useRouter();
@@ -34,9 +33,7 @@ export default function LotsPage() {
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showAddModal, setShowAddModal] = useState(false);
   const [editProperty, setEditProperty] = useState<Property | null>(null);
-  const [deleteProperty, setDeleteProperty] = useState<Property | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "grid" | "map">("grid");
-  const [landlords, setLandlords] = useState<Landlord[]>([]);
   const [sales, setSales] = useState<any[]>([]);
   const [buyers, setBuyers] = useState<any[]>([]);
   const [viewBuyer, setViewBuyer] = useState<any>(null);
@@ -65,7 +62,6 @@ export default function LotsPage() {
       // Filter only terrain and lotissement
       const lands = props.filter(p => p.type === 'terrain' || p.type === 'lotissement');
       setProperties(lands);
-      setLandlords(await db.getLandlords());
       setSales(await db.getSales());
       setBuyers(await db.getBuyers());
     } finally {
@@ -171,7 +167,6 @@ export default function LotsPage() {
 
   const handleDeleteProperty = async (id: string) => {
     await db.deleteProperty(id);
-    setDeleteProperty(null);
     await loadProperties();
     window.dispatchEvent(new Event("storage"));
   };
@@ -304,8 +299,8 @@ export default function LotsPage() {
                       <Edit3 size={14} />
                     </button>
                   )}
-                  <button className="btn btn-ghost btn-sm" style={{ color: "var(--danger)" }} onClick={() => setDeleteProperty(p)} title="Supprimer">
-                    <Trash2 size={14} />
+                  <button className="btn btn-ghost btn-sm" style={{ color: "var(--danger)" }} onClick={() => { if(confirm("Voulez-vous supprimer ce lot ?")) handleDeleteProperty(p.id) }}>
+                    <Trash2 size={16} />
                   </button>
                 </div>
               </div>
