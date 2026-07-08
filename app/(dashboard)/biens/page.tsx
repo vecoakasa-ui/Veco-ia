@@ -27,7 +27,6 @@ export default function BiensPage() {
   const router = useRouter();
   const [properties, setProperties] = useState<Property[]>([]);
   const [search, setSearch] = useState("");
-  const [propertyCategoryFilter, setPropertyCategoryFilter] = useState<"locatif" | "terrain">("locatif");
   const [typeFilter, setTypeFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [showAddModal, setShowAddModal] = useState(false);
@@ -216,10 +215,8 @@ export default function BiensPage() {
   };
 
   const filteredProperties = properties.filter((p) => {
-    const isTerrain = p.type === 'terrain' || p.type === 'lotissement';
-    
-    if (propertyCategoryFilter === "locatif" && isTerrain) return false;
-    if (propertyCategoryFilter === "terrain" && !isTerrain) return false;
+    // Exclude terrains and lotissements as they are managed in the sales module
+    if (p.type === 'terrain' || p.type === 'lotissement') return false;
 
     const safeName = p.name || "";
     const safeAddress = p.address || "";
@@ -245,37 +242,6 @@ export default function BiensPage() {
         </button>
       </div>
 
-      {/* Tabs */}
-      <div style={{ display: "flex", borderBottom: "1px solid var(--gray-200)", marginBottom: "var(--space-2)" }}>
-        <button 
-          onClick={() => setPropertyCategoryFilter("locatif")}
-          style={{ 
-            padding: "12px 24px", 
-            fontWeight: "600",
-            borderBottom: propertyCategoryFilter === "locatif" ? "2px solid var(--primary)" : "2px solid transparent",
-            color: propertyCategoryFilter === "locatif" ? "var(--primary)" : "var(--gray-500)",
-            background: "none",
-            borderTop: "none", borderLeft: "none", borderRight: "none", cursor: "pointer",
-            fontSize: "14px"
-          }}
-        >
-          Biens Locatifs
-        </button>
-        <button 
-          onClick={() => setPropertyCategoryFilter("terrain")}
-          style={{ 
-            padding: "12px 24px", 
-            fontWeight: "600",
-            borderBottom: propertyCategoryFilter === "terrain" ? "2px solid var(--primary)" : "2px solid transparent",
-            color: propertyCategoryFilter === "terrain" ? "var(--primary)" : "var(--gray-500)",
-            background: "none",
-            borderTop: "none", borderLeft: "none", borderRight: "none", cursor: "pointer",
-            fontSize: "14px"
-          }}
-        >
-          Terrains & Lotissements
-        </button>
-      </div>
 
       {/* Filter and search bar */}
       <div 

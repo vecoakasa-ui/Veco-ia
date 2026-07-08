@@ -187,6 +187,7 @@ export default function DashboardLayout({
       items: [
         { name: "Lots & Terrains", href: "/ventes/lots", icon: Map },
         { name: "Acheteurs & Ventes", href: "/ventes/acheteurs", icon: Briefcase },
+        { name: "Demandes d'Achat", href: "/ventes/demandes", icon: MessageSquare },
       ]
     },
     {

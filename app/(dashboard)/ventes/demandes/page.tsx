@@ -11,13 +11,13 @@ import {
   Phone,
   Mail,
   User,
-  Building
+  Map
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Inquiry, Property } from "@/lib/types";
 import { db } from "@/lib/store";
 
-export default function DemandesPage() {
+export default function VentesDemandesPage() {
   const [inquiries, setInquiries] = useState<(Inquiry & { property?: Property })[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -45,8 +45,8 @@ export default function DemandesPage() {
         }));
 
         const filteredCombined = combined.filter((inq: any) => {
-          if (!inq.property) return true;
-          return inq.property.type !== 'terrain' && inq.property.type !== 'lotissement';
+          if (!inq.property) return false;
+          return inq.property.type === 'terrain' || inq.property.type === 'lotissement';
         });
 
         setInquiries(filteredCombined);
@@ -59,13 +59,6 @@ export default function DemandesPage() {
     
     loadInquiries();
     
-    // Marquer la page comme vue pour les notifications
-    db.getProfile().then(p => {
-      if (p) {
-        localStorage.setItem(`last_viewed_${p.id}_demandes`, new Date().toISOString());
-        window.dispatchEvent(new CustomEvent('notificationViewed', { detail: 'demandes' }));
-      }
-    });
   }, []);
 
   const updateStatus = async (id: string, newStatus: "accepted" | "rejected") => {
@@ -109,9 +102,9 @@ export default function DemandesPage() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "var(--space-4)" }}>
         <div>
           <h1 style={{ fontSize: "var(--text-2xl)", fontWeight: 800, color: "var(--gray-900)", marginBottom: "4px" }}>
-            Demandes de Location
+            Demandes d'Achat
           </h1>
-          <p style={{ color: "var(--gray-500)", margin: 0 }}>Gérez les locataires intéressés par vos biens vacants.</p>
+          <p style={{ color: "var(--gray-500)", margin: 0 }}>Gérez les prospects intéressés par vos terrains et lotissements.</p>
         </div>
       </div>
 
@@ -123,7 +116,7 @@ export default function DemandesPage() {
             <input 
               type="text" 
               className="form-control" 
-              placeholder="Rechercher un candidat ou un bien..." 
+              placeholder="Rechercher un prospect ou un lot..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{ paddingLeft: "36px", width: "100%" }}
@@ -166,7 +159,7 @@ export default function DemandesPage() {
           <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 700, color: "var(--gray-700)", margin: "0 0 var(--space-2)" }}>
             Aucune demande trouvée
           </h3>
-          <p style={{ color: "var(--gray-500)", margin: 0 }}>Vous n'avez pas de demandes de location correspondant à ces critères.</p>
+          <p style={{ color: "var(--gray-500)", margin: 0 }}>Vous n'avez pas de demandes d'achat correspondant à ces critères.</p>
         </div>
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))", gap: "var(--space-5)" }}>
@@ -210,8 +203,8 @@ export default function DemandesPage() {
               <div style={{ padding: "var(--space-4)", flex: 1, display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-2)" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", color: "var(--gray-700)" }}>
-                    <Building size={16} style={{ color: "var(--primary)" }} />
-                    <span style={{ fontWeight: 600 }}>{inq.property?.name || "Bien inconnu"}</span>
+                    <Map size={16} style={{ color: "var(--primary)" }} />
+                    <span style={{ fontWeight: 600 }}>{inq.property?.name || "Lot inconnu"}</span>
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", color: "var(--gray-600)", fontSize: "var(--text-sm)" }}>
                     <MapPin size={16} style={{ color: "var(--gray-400)" }} />
