@@ -1189,13 +1189,13 @@ export const db = {
         if (!userId) throw new Error("User not authenticated");
 
         const [props, ten, pays, lands, leasesData, incidentsData, occupiedProps] = await Promise.all([
-          supabase.from("properties").select("id", { count: "exact", head: true }).eq("owner_id", userId),
+          supabase.from("properties").select("id", { count: "exact", head: true }).eq("owner_id", userId).neq("type", "terrain").neq("type", "lotissement"),
           supabase.from("tenants").select("id", { count: "exact", head: true }).eq("owner_id", userId),
           supabase.from("payments").select("total, status").eq("owner_id", userId),
           supabase.from("landlords").select("id", { count: "exact", head: true }).eq("owner_id", userId),
           supabase.from("leases").select("id", { count: "exact", head: true }).eq("owner_id", userId),
           supabase.from("incidents").select("id", { count: "exact", head: true }).in("status", ["open", "in_progress"]),
-          supabase.from("properties").select("id", { count: "exact", head: true }).eq("status", "occupied").eq("owner_id", userId)
+          supabase.from("properties").select("id", { count: "exact", head: true }).eq("status", "occupied").eq("owner_id", userId).neq("type", "terrain").neq("type", "lotissement")
         ]);
         
         const total_properties = props.count || 0;
@@ -1228,7 +1228,7 @@ export const db = {
       db.getIncidents()
     ]);
 
-    const total_properties = properties.length;
+    const total_properties = properties.filter(p => p.type !== 'terrain' && p.type !== 'lotissement').length;
     const total_tenants = tenants.length;
     const total_landlords = landlords.length;
     const total_leases = leases.length;
@@ -1239,7 +1239,7 @@ export const db = {
 
     const late_payments = payments.filter(p => p.status === "late").length;
 
-    const occupiedCount = properties.filter(p => p.status === "occupied").length;
+    const occupiedCount = properties.filter(p => p.status === "occupied" && p.type !== 'terrain' && p.type !== 'lotissement').length;
     const occupancy_rate = total_properties > 0 ? Math.round((occupiedCount / total_properties) * 100) : 0;
 
     const unresolved_incidents = incidents.filter(i => i.status === "open" || i.status === "in_progress").length;
@@ -1304,14 +1304,14 @@ export const db = {
     if (isSupabaseConfigured()) {
       try {
         const [props, ten, pays, lands, adminsCount] = await Promise.all([
-          supabase.from("properties").select("id, status"),
+          supabase.from("properties").select("id, status, type"),
           supabase.from("tenants").select("id", { count: "exact", head: true }),
           supabase.from("payments").select("total, status"),
           supabase.from("landlords").select("id", { count: "exact", head: true }),
           supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", "admin")
         ]);
         
-        const properties = props.data || [];
+        const properties = (props.data || []).filter((p: any) => p.type !== 'terrain' && p.type !== 'lotissement');
         const payments = pays.data || [];
         const total_properties = properties.length;
         
@@ -1466,7 +1466,7 @@ export const db = {
         
         const [users, props, ten, pays] = await Promise.all([
           supabase.from("profiles").select("id, role, subscription_status, subscription_plan"),
-          supabase.from("properties").select("id", { count: "exact", head: true }),
+          supabase.from("properties").select("id", { count: "exact", head: true }).neq("type", "terrain").neq("type", "lotissement"),
           supabase.from("tenants").select("id", { count: "exact", head: true }),
           supabase.from("payments").select("total, status")
         ]);
