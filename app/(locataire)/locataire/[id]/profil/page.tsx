@@ -9,12 +9,16 @@ export default function TenantProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({ full_name: "", phone: "" });
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
       const p = await db.getProfile();
       if (p) {
         setProfile(p);
+        setFormData({ full_name: p.full_name || "", phone: p.phone || "" });
       }
     };
     loadProfile();
@@ -41,13 +45,45 @@ export default function TenantProfilePage() {
     }
   };
 
+  const handleSaveProfile = async () => {
+    if (!profile) return;
+    setIsSaving(true);
+    try {
+      await db.updateProfile({ ...profile, full_name: formData.full_name, phone: formData.phone });
+      setProfile({ ...profile, full_name: formData.full_name, phone: formData.phone });
+      setIsEditing(false);
+      alert("Profil mis à jour avec succès !");
+    } catch (err) {
+      alert("Erreur lors de la mise à jour du profil.");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   if (!profile) return null;
 
   return (
     <div className="container animate-fade-in" style={{ maxWidth: "800px", padding: "var(--space-6) 0" }}>
-      <div style={{ marginBottom: "var(--space-6)" }}>
-        <h1 style={{ fontSize: "var(--text-2xl)", fontWeight: 800, margin: 0, color: "var(--gray-900)" }}>Mon Profil</h1>
-        <p style={{ color: "var(--gray-500)", margin: "var(--space-2) 0 0 0" }}>Gérez vos informations personnelles et votre photo de profil.</p>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-6)" }}>
+        <div>
+          <h1 style={{ fontSize: "var(--text-2xl)", fontWeight: 800, margin: 0, color: "var(--gray-900)" }}>Mon Profil</h1>
+          <p style={{ color: "var(--gray-500)", margin: "var(--space-2) 0 0 0" }}>Gérez vos informations personnelles et votre photo de profil.</p>
+        </div>
+        <div>
+          {isEditing ? (
+            <div style={{ display: "flex", gap: "8px" }}>
+              <button className="btn btn-outline" onClick={() => {
+                setIsEditing(false);
+                if (profile) setFormData({ full_name: profile.full_name || "", phone: profile.phone || "" });
+              }} disabled={isSaving}>Annuler</button>
+              <button className="btn btn-primary" onClick={handleSaveProfile} disabled={isSaving}>
+                {isSaving ? "Enregistrement..." : "Enregistrer"}
+              </button>
+            </div>
+          ) : (
+            <button className="btn btn-outline" onClick={() => setIsEditing(true)}>Modifier</button>
+          )}
+        </div>
       </div>
 
       <div className="card" style={{ padding: "var(--space-6)" }}>
@@ -91,7 +127,17 @@ export default function TenantProfilePage() {
             </div>
             <div style={{ minWidth: 0, flex: 1 }}>
               <label style={{ display: "block", fontSize: "11px", color: "var(--gray-500)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "4px" }}>Nom complet</label>
-              <div style={{ fontWeight: 700, fontSize: "15px", color: "var(--gray-900)", wordBreak: "break-word", lineHeight: 1.2 }}>{profile.full_name}</div>
+              {isEditing ? (
+                <input 
+                  type="text" 
+                  className="input" 
+                  value={formData.full_name} 
+                  onChange={(e) => setFormData({...formData, full_name: e.target.value})} 
+                  style={{ width: "100%", padding: "8px 12px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)" }}
+                />
+              ) : (
+                <div style={{ fontWeight: 700, fontSize: "15px", color: "var(--gray-900)", wordBreak: "break-word", lineHeight: 1.2 }}>{profile.full_name}</div>
+              )}
             </div>
           </div>
 
@@ -111,7 +157,17 @@ export default function TenantProfilePage() {
             </div>
             <div style={{ minWidth: 0, flex: 1 }}>
               <label style={{ display: "block", fontSize: "11px", color: "var(--gray-500)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: "4px" }}>Téléphone</label>
-              <div style={{ fontWeight: 700, fontSize: "15px", color: "var(--gray-900)", wordBreak: "break-word", lineHeight: 1.2 }}>{profile.phone || "+225 00 00 00 00 00"}</div>
+              {isEditing ? (
+                <input 
+                  type="text" 
+                  className="input" 
+                  value={formData.phone} 
+                  onChange={(e) => setFormData({...formData, phone: e.target.value})} 
+                  style={{ width: "100%", padding: "8px 12px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)" }}
+                />
+              ) : (
+                <div style={{ fontWeight: 700, fontSize: "15px", color: "var(--gray-900)", wordBreak: "break-word", lineHeight: 1.2 }}>{profile.phone || "+225 00 00 00 00 00"}</div>
+              )}
             </div>
           </div>
 
