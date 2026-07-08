@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { User, Camera, Mail, Phone, ShieldCheck } from "lucide-react";
 import { db } from "@/lib/store";
 import { Profile } from "@/lib/types";
+import AlertModal from "@/components/AlertModal";
 
 export default function TenantProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -12,6 +13,7 @@ export default function TenantProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({ full_name: "", phone: "" });
   const [isSaving, setIsSaving] = useState(false);
+  const [alertModal, setAlertModal] = useState<{isOpen: boolean, title: string, message: string, type: "error"|"success"|"info"}>({isOpen: false, title: "", message: "", type: "info"});
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -52,9 +54,9 @@ export default function TenantProfilePage() {
       await db.updateProfile({ ...profile, full_name: formData.full_name, phone: formData.phone });
       setProfile({ ...profile, full_name: formData.full_name, phone: formData.phone });
       setIsEditing(false);
-      alert("Profil mis à jour avec succès !");
+      setAlertModal({ isOpen: true, title: "Succès", message: "Profil mis à jour avec succès !", type: "success" });
     } catch (err) {
-      alert("Erreur lors de la mise à jour du profil.");
+      setAlertModal({ isOpen: true, title: "Erreur", message: "Erreur lors de la mise à jour du profil.", type: "error" });
     } finally {
       setIsSaving(false);
     }
@@ -182,6 +184,14 @@ export default function TenantProfilePage() {
           </div>
         </div>
       </div>
+
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        title={alertModal.title}
+        message={alertModal.message}
+        type={alertModal.type}
+        onClose={() => setAlertModal(prev => ({...prev, isOpen: false}))}
+      />
     </div>
   );
 }
