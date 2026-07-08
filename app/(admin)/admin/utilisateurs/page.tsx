@@ -15,6 +15,7 @@ import {
   CheckCircle,
   AlertTriangle
 } from "lucide-react";
+import AlertModal from "@/components/AlertModal";
 
 type ModalType = "Modifier" | "Changer Rôle" | "Réinitialiser MDP" | "Voir Stats" | "Suspendre" | null;
 
@@ -35,6 +36,7 @@ export default function AdminUsersPage() {
 
   const [userStats, setUserStats] = useState({ properties: 0, tenants: 0, landlords: 0, leases: 0 });
   const [loadingUserStats, setLoadingUserStats] = useState(false);
+  const [alertModal, setAlertModal] = useState<{isOpen: boolean, title: string, message: string, type: "error"|"success"|"info"}>({isOpen: false, title: "", message: "", type: "info"});
 
   useEffect(() => {
     async function fetchUsers() {
@@ -121,7 +123,7 @@ export default function AdminUsersPage() {
         // En réalité, on appellerait l'API Supabase Admin : supabase.auth.admin.resetPasswordForEmail
         // On simule avec un délai
         await new Promise(res => setTimeout(res, 1000));
-        alert(`Un email de réinitialisation a été envoyé à ${updatedUser.email}`);
+        setAlertModal({ isOpen: true, title: "Email envoyé", message: `Un email de réinitialisation a été envoyé à ${updatedUser.email}`, type: "success" });
       }
 
       // Mettre à jour l'état local si l'action n'était pas juste un envoi d'email/stats
@@ -133,7 +135,7 @@ export default function AdminUsersPage() {
       closeModal();
     } catch (error) {
       console.error("Erreur lors de la mise à jour :", error);
-      alert("Une erreur est survenue.");
+      setAlertModal({ isOpen: true, title: "Erreur", message: "Une erreur est survenue.", type: "error" });
       setIsSubmitting(false);
     }
   };
@@ -633,6 +635,14 @@ export default function AdminUsersPage() {
           color: #0f172a;
         }
       `}</style>
+      
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        title={alertModal.title}
+        message={alertModal.message}
+        type={alertModal.type as any}
+        onClose={() => setAlertModal(prev => ({...prev, isOpen: false}))}
+      />
     </>
   );
 }

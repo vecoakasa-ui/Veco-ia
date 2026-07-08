@@ -2,10 +2,14 @@
 
 import { useState } from "react";
 import { Settings, Save, AlertCircle } from "lucide-react";
+import ConfirmModal from "@/components/ConfirmModal";
+import AlertModal from "@/components/AlertModal";
 
 export default function AdminParametresPage() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [confirmModal, setConfirmModal] = useState<{isOpen: boolean, title: string, message: string, type: "danger"|"warning", action: () => void}>({isOpen: false, title: "", message: "", type: "warning", action: () => {}});
+  const [alertModal, setAlertModal] = useState<{isOpen: boolean, title: string, message: string, type: "error"|"success"|"info"}>({isOpen: false, title: "", message: "", type: "error"});
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -146,15 +150,26 @@ export default function AdminParametresPage() {
                     reader.onload = (event) => {
                       try {
                         const data = JSON.parse(event.target?.result as string);
-                        if (window.confirm("Êtes-vous sûr de vouloir écraser vos données actuelles avec cette sauvegarde ?")) {
-                          localStorage.clear();
-                          Object.keys(data).forEach(key => {
-                            localStorage.setItem(key, data[key]);
-                          });
-                          window.location.reload();
-                        }
+                        setConfirmModal({
+                          isOpen: true,
+                          title: "Restaurer les données",
+                          message: "Êtes-vous sûr de vouloir écraser vos données actuelles avec cette sauvegarde ? Cette action est irréversible.",
+                          type: "warning",
+                          action: () => {
+                            localStorage.clear();
+                            Object.keys(data).forEach(key => {
+                              localStorage.setItem(key, data[key]);
+                            });
+                            window.location.reload();
+                          }
+                        });
                       } catch {
-                        alert("Le fichier de sauvegarde est invalide.");
+                        setAlertModal({
+                          isOpen: true,
+                          title: "Erreur de fichier",
+                          message: "Le fichier de sauvegarde est invalide.",
+                          type: "error"
+                        });
                       }
                     };
                     reader.readAsText(file);
@@ -173,10 +188,16 @@ export default function AdminParametresPage() {
             <button 
               className="btn"
               onClick={() => {
-                if (window.confirm("Avez-vous fait une sauvegarde ? Cette action est irréversible. Voulez-vous vraiment vider toutes les données locales ?")) {
-                  localStorage.clear();
-                  window.location.reload();
-                }
+                setConfirmModal({
+                  isOpen: true,
+                  title: "Vider toutes les données",
+                  message: "Avez-vous fait une sauvegarde ? Cette action est irréversible. Voulez-vous vraiment vider toutes les données locales ?",
+                  type: "danger",
+                  action: () => {
+                    localStorage.clear();
+                    window.location.reload();
+                  }
+                });
               }}
               style={{ background: "var(--danger)", color: "var(--fixed-white)", border: "none", padding: "8px 16px", borderRadius: "var(--radius-md)", cursor: "pointer", fontWeight: 600 }}
             >
@@ -185,6 +206,24 @@ export default function AdminParametresPage() {
           </div>
         </div>
       </div>
+      <ConfirmModal 
+        isOpen={confirmModal.isOpen}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        type={confirmModal.type}
+        onCancel={() => setConfirmModal(prev => ({...prev, isOpen: false}))}
+        onConfirm={() => {
+          confirmModal.action();
+          setConfirmModal(prev => ({...prev, isOpen: false}));
+        }}
+      />
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        title={alertModal.title}
+        message={alertModal.message}
+        type={alertModal.type}
+        onClose={() => setAlertModal(prev => ({...prev, isOpen: false}))}
+      />
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { db } from "@/lib/store";
 import { SubscriptionRecord } from "@/lib/types";
 import { Crown, AlertTriangle, CheckCircle, Search, ShieldAlert, CreditCard, Ban, MailWarning, X, Activity } from "lucide-react";
+import AlertModal from "@/components/AlertModal";
 
 export default function AbonnementsPage() {
   const [subscriptions, setSubscriptions] = useState<SubscriptionRecord[]>([]);
@@ -17,6 +18,7 @@ export default function AbonnementsPage() {
     type: null,
     sub: null,
   });
+  const [alertModal, setAlertModal] = useState<{isOpen: boolean, title: string, message: string, type: "error"|"success"|"info"}>({isOpen: false, title: "", message: "", type: "info"});
 
   useEffect(() => {
     async function loadData() {
@@ -40,7 +42,7 @@ export default function AbonnementsPage() {
   const confirmAction = () => {
     // Dans une vraie app, ça appellerait l'API
     if (actionModal.sub) {
-      alert(`Action ${actionModal.type === 'warn' ? 'Rappel envoyé' : 'Accès suspendu'} pour ${actionModal.sub.profile?.full_name}`);
+      setAlertModal({ isOpen: true, title: "Succès", message: `Action ${actionModal.type === 'warn' ? 'Rappel envoyé' : 'Accès suspendu'} pour ${actionModal.sub.profile?.full_name}`, type: "success" });
       
       // Update local state for visual feedback
       if (actionModal.type === 'suspend') {
@@ -210,7 +212,7 @@ export default function AbonnementsPage() {
                               onClick={() => {
                                 // Simulate restore
                                 setSubscriptions(subscriptions.map(s => s.id === sub.id ? { ...s, status: 'active' } : s));
-                                alert(`Accès restauré pour ${sub.profile?.full_name}`);
+                                setAlertModal({ isOpen: true, title: "Succès", message: `Accès restauré pour ${sub.profile?.full_name}`, type: "success" });
                               }}
                             >
                               <CheckCircle size={16} /> Restaurer
@@ -472,6 +474,13 @@ export default function AbonnementsPage() {
           to { transform: translateY(0); opacity: 1; }
         }
       `}</style>
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        title={alertModal.title}
+        message={alertModal.message}
+        type={alertModal.type as any}
+        onClose={() => setAlertModal(prev => ({...prev, isOpen: false}))}
+      />
     </div>
   );
 }

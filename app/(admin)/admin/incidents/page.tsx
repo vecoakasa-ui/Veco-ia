@@ -14,6 +14,7 @@ import {
   Wrench,
   User
 } from "lucide-react";
+import AlertModal from "@/components/AlertModal";
 
 type ModalType = "Détails" | "Changer Statut" | null;
 
@@ -29,6 +30,7 @@ export default function AdminIncidentsPage() {
   const [modalType, setModalType] = useState<ModalType>(null);
   const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [alertModal, setAlertModal] = useState<{isOpen: boolean, title: string, message: string, type: "error"|"success"|"info"}>({isOpen: false, title: "", message: "", type: "info"});
 
   useEffect(() => {
     async function fetchData() {
@@ -111,7 +113,7 @@ export default function AdminIncidentsPage() {
       closeModal();
     } catch (error) {
       console.error("Erreur lors de la mise à jour :", error);
-      alert("Une erreur est survenue.");
+      setAlertModal({ isOpen: true, title: "Erreur", message: "Une erreur est survenue.", type: "error" });
       setIsSubmitting(false);
     }
   };
@@ -501,6 +503,14 @@ export default function AdminIncidentsPage() {
           color: #0f172a;
         }
       `}</style>
+      
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        title={alertModal.title}
+        message={alertModal.message}
+        type={alertModal.type as any}
+        onClose={() => setAlertModal(prev => ({...prev, isOpen: false}))}
+      />
     </>
   );
 }

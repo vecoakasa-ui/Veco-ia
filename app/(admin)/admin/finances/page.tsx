@@ -13,6 +13,7 @@ import {
   User,
   AlertCircle
 } from "lucide-react";
+import AlertModal from "@/components/AlertModal";
 
 type TabType = "payments" | "expenses";
 type ModalType = "Détails" | "Changer Statut" | "Annuler Paiement" | null;
@@ -31,6 +32,7 @@ export default function AdminFinancesPage() {
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [alertModal, setAlertModal] = useState<{isOpen: boolean, title: string, message: string, type: "error"|"success"|"info"}>({isOpen: false, title: "", message: "", type: "info"});
 
   useEffect(() => {
     async function fetchData() {
@@ -112,7 +114,7 @@ export default function AdminFinancesPage() {
       closeModal();
     } catch (error) {
       console.error("Erreur lors de la mise à jour :", error);
-      alert("Une erreur est survenue.");
+      setAlertModal({ isOpen: true, title: "Erreur", message: "Une erreur est survenue.", type: "error" });
       setIsSubmitting(false);
     }
   };
@@ -586,6 +588,14 @@ export default function AdminFinancesPage() {
           color: #0f172a;
         }
       `}</style>
+      
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        title={alertModal.title}
+        message={alertModal.message}
+        type={alertModal.type as any}
+        onClose={() => setAlertModal(prev => ({...prev, isOpen: false}))}
+      />
     </>
   );
 }
