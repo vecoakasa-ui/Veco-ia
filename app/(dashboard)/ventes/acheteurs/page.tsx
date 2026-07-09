@@ -80,9 +80,9 @@ export default function AcheteursPage() {
 
     // Validation stricte du numéro selon la Côte d'Ivoire
     if (idCardType === "cni") {
-      const cniRegex = /^([a-zA-Z][0-9]{10}|[0-9]{11})$/;
+      const cniRegex = /^[0-9]{11}$/;
       if (!cniRegex.test(idCardNumber)) {
-        setFormErrors({ idCardNumber: "Le numéro de la CNI ivoirienne doit comporter exactement 11 chiffres (ou 1 lettre et 10 chiffres)." });
+        setFormErrors({ idCardNumber: "Le numéro de la CNI ivoirienne doit comporter exactement 11 chiffres." });
         return;
       }
     } else if (idCardType === "passport") {
@@ -377,7 +377,7 @@ export default function AcheteursPage() {
                       <label className="input-label">N° Pièce d'identité <span style={{ color: "var(--danger)" }}>*</span></label>
                       <div className="input-with-icon">
                         <CreditCard className="input-icon" size={16} />
-                        <input type="text" required value={idCardNumber} onChange={(e) => { setIdCardNumber(e.target.value.toUpperCase()); setFormErrors({...formErrors, idCardNumber: undefined}); }} className="input" style={{ paddingLeft: "36px", borderColor: formErrors.idCardNumber ? "var(--danger)" : undefined }} placeholder={idCardType === 'cni' ? "C0012345678 ou 00123456789" : idCardType === 'passport' ? "PB1234567" : "Numéro"} />
+                        <input type="text" required value={idCardNumber} onChange={(e) => { setIdCardNumber(e.target.value.toUpperCase()); setFormErrors({...formErrors, idCardNumber: undefined}); }} className="input" style={{ paddingLeft: "36px", borderColor: formErrors.idCardNumber ? "var(--danger)" : undefined }} placeholder={idCardType === 'cni' ? "Ex: 11901553595 (11 chiffres)" : idCardType === 'passport' ? "Ex: PB1234567" : "Numéro"} />
                       </div>
                       {formErrors.idCardNumber && <div style={{ color: "var(--danger)", fontSize: "12px", marginTop: "4px" }}>{formErrors.idCardNumber}</div>}
                     </div>
