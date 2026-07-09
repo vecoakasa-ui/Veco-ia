@@ -162,7 +162,7 @@ export default function LocataireLayout({
     return (
       <div style={{ display: "flex", height: "100vh", alignItems: "center", justifyContent: "center", background: "var(--gray-50)", flexDirection: "column", gap: "16px" }}>
         <div className="spinner" style={{ width: "40px", height: "40px", border: "3px solid var(--gray-200)", borderTopColor: "var(--orange)", borderRadius: "50%", animation: "spin 1s linear infinite" }}></div>
-        <p style={{ color: "var(--gray-500)", fontSize: "14px", fontWeight: "600" }}>Chargement de votre espace locataire...</p>
+        <p style={{ color: "var(--gray-500)", fontSize: "14px", fontWeight: "600" }}>Chargement en cours...</p>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
@@ -192,7 +192,7 @@ export default function LocataireLayout({
         }}
       >
         <div style={{ height: "var(--topbar-height)", display: "flex", alignItems: "center", padding: "0 var(--space-6)", borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-          <Link href="/" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", textDecoration: "none" }}>
+          <Link href="/locataire/dashboard" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", textDecoration: "none" }}>
             <div className="logo-icon" style={{ background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <User size={16} className="text-orange" />
             </div>

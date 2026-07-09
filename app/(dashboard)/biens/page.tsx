@@ -489,7 +489,7 @@ export default function BiensPage() {
               </button>
             </div>
 
-            <form onSubmit={handleAddProperty} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+            <form onSubmit={handleAddProperty} autoComplete="off" style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
               {/* Image Uploader */}
               <div className="input-group">
                 <label className="input-label">Image principale du bien</label>
@@ -595,6 +595,7 @@ export default function BiensPage() {
                 <input
                   type="text"
                   required
+                  autoComplete="off"
                   placeholder="Ex: Rue des Jardins, Riviera 3..."
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
@@ -608,6 +609,7 @@ export default function BiensPage() {
                   <input
                     type="text"
                     required
+                    autoComplete="off"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                     className="input"
@@ -618,6 +620,7 @@ export default function BiensPage() {
                   <input
                     type="text"
                     required
+                    autoComplete="off"
                     value={country}
                     onChange={(e) => setCountry(e.target.value)}
                     className="input"
@@ -716,7 +719,7 @@ export default function BiensPage() {
               </button>
             </div>
 
-            <form onSubmit={handleSaveEditProperty} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+            <form onSubmit={handleSaveEditProperty} autoComplete="off" style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
               {/* Image Uploader */}
               <div className="input-group">
                 <label className="input-label">Image principale du bien</label>

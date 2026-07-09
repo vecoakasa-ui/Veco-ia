@@ -323,7 +323,7 @@ export default function LotsPage() {
               </button>
             </div>
             
-            <form onSubmit={handleAddProperty} style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "32px", padding: "24px" }}>
+            <form onSubmit={handleAddProperty} autoComplete="off" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "32px", padding: "24px" }}>
               
               {/* Left Column: Infos de base */}
               <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -370,7 +370,7 @@ export default function LotsPage() {
                   <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
                     <div className="input-with-icon" style={{ flex: 1 }}>
                       <ImageIcon className="input-icon" size={16} />
-                      <input type="text" placeholder="URL ou choisir un fichier..." value={mainImage} onChange={(e) => setMainImage(e.target.value)} className="input" style={{ paddingLeft: "36px" }} />
+                      <input type="text" autoComplete="off" placeholder="URL ou choisir un fichier..." value={mainImage.startsWith('data:image') ? 'Image locale chargée' : mainImage} onChange={(e) => { if (e.target.value !== 'Image locale chargée') setMainImage(e.target.value); }} disabled={mainImage.startsWith('data:image')} className="input" style={{ paddingLeft: "36px" }} />
                     </div>
                     <label className="btn btn-outline btn-sm" style={{ cursor: "pointer", height: "42px", display: "flex", alignItems: "center", margin: 0 }}>
                       <input type="file" accept="image/*" style={{ display: "none" }} onChange={(e) => {
@@ -402,18 +402,18 @@ export default function LotsPage() {
                     <label className="input-label">Adresse / Quartier</label>
                     <div className="input-with-icon">
                       <MapPin className="input-icon" size={16} />
-                      <input type="text" required value={address} onChange={(e) => setAddress(e.target.value)} className="input" style={{ paddingLeft: "36px" }} />
+                      <input type="text" required autoComplete="off" value={address} onChange={(e) => setAddress(e.target.value)} className="input" style={{ paddingLeft: "36px" }} />
                     </div>
                   </div>
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                     <div className="input-group">
                       <label className="input-label">Ville</label>
-                      <input type="text" required value={city} onChange={(e) => setCity(e.target.value)} className="input" />
+                      <input type="text" required autoComplete="off" value={city} onChange={(e) => setCity(e.target.value)} className="input" />
                     </div>
                     <div className="input-group">
                       <label className="input-label">Pays</label>
-                      <input type="text" required value={country} onChange={(e) => setCountry(e.target.value)} className="input" />
+                      <input type="text" required autoComplete="off" value={country} onChange={(e) => setCountry(e.target.value)} className="input" />
                     </div>
                   </div>
                 </div>

@@ -20,7 +20,7 @@ import {
 import { db } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
 import { Property, Profile } from "@/lib/types";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, getPropertyTypeLabel } from "@/lib/utils";
 import MapModuleWrapper from "@/components/MapModuleWrapper";
 
 export default function ExplorerPage() {
@@ -232,7 +232,7 @@ export default function ExplorerPage() {
 
                     <div style={{ display: "flex", gap: "var(--space-2)", marginBottom: "var(--space-4)" }}>
                       <span style={{ fontSize: "11px", fontWeight: 600, background: "var(--gray-100)", color: "var(--gray-600)", padding: "4px 8px", borderRadius: "var(--radius-sm)", textTransform: "uppercase" }}>
-                        {property.type === "apartment" ? "Appartement" : property.type === "house" ? "Maison" : property.type === "studio" ? "Studio" : "Villa"}
+                        {getPropertyTypeLabel(property.type)}
                       </span>
                     </div>
                     

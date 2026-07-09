@@ -274,7 +274,7 @@ export default function DashboardLayout({
     return (
       <div style={{ display: "flex", height: "100vh", alignItems: "center", justifyContent: "center", background: "var(--gray-50)", flexDirection: "column", gap: "16px" }}>
         <div className="spinner" style={{ width: "40px", height: "40px", border: "3px solid var(--gray-200)", borderTopColor: "var(--primary)", borderRadius: "50%", animation: "spin 1s linear infinite" }}></div>
-        <p style={{ color: "var(--gray-500)", fontSize: "14px", fontWeight: "600" }}>Chargement de votre espace sécurisé...</p>
+        <p style={{ color: "var(--gray-500)", fontSize: "14px", fontWeight: "600" }}>Chargement en cours...</p>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );

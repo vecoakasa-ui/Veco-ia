@@ -139,9 +139,9 @@ export default function PortailLocatairePage() {
 
   if (loading) {
     return (
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "50vh", flexDirection: "column", gap: "16px" }} className="animate-fade-in">
-        <Loader2 size={48} className="animate-spin" style={{ color: "var(--primary)" }} />
-        <h3 style={{ color: "var(--gray-600)" }}>Chargement de votre espace...</h3>
+      <div style={{ display: "flex", height: "100%", alignItems: "center", justifyContent: "center", flexDirection: "column", gap: "16px" }}>
+        <div className="spinner" style={{ width: "40px", height: "40px", border: "3px solid var(--gray-200)", borderTopColor: "var(--orange)", borderRadius: "50%", animation: "spin 1s linear infinite" }}></div>
+        <h3 style={{ color: "var(--gray-600)" }}>Chargement en cours...</h3>
       </div>
     );
   }
