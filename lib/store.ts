@@ -1681,3 +1681,55 @@ export const db = {
     }
   }
 };
+
+// ============================================
+// GLOBAL CACHE SYSTEM
+// ============================================
+interface CacheEntry<T> {
+  data: T;
+  timestamp: number;
+}
+const globalCache: Record<string, CacheEntry<any>> = {};
+const CACHE_TTL_MS = 60000; // 60 seconds
+
+export const clearCache = (keyPattern?: string) => {
+  if (!keyPattern) {
+    for (const k in globalCache) delete globalCache[k];
+  } else {
+    for (const k in globalCache) {
+      if (k.includes(keyPattern)) delete globalCache[k];
+    }
+  }
+};
+
+// Wrap all getters with cache
+const getters = Object.keys(db).filter(key => key.startsWith("get"));
+getters.forEach(methodName => {
+  const originalMethod = (db as any)[methodName];
+  (db as any)[methodName] = async (...args: any[]) => {
+    // Ne mettre en cache que si les arguments sont simples
+    if (args.length > 0 && typeof args[0] === 'object') {
+       return originalMethod.apply(db, args);
+    }
+    const cacheKey = `${methodName}_${JSON.stringify(args)}`;
+    if (globalCache[cacheKey] && Date.now() - globalCache[cacheKey].timestamp < CACHE_TTL_MS) {
+      return globalCache[cacheKey].data;
+    }
+    const result = await originalMethod.apply(db, args);
+    if (result) {
+      globalCache[cacheKey] = { data: result, timestamp: Date.now() };
+    }
+    return result;
+  };
+});
+
+// Invalidate cache on mutations
+const mutators = Object.keys(db).filter(key => key.startsWith("add") || key.startsWith("update") || key.startsWith("delete") || key.startsWith("pay") || key.startsWith("cancel"));
+mutators.forEach(methodName => {
+  const originalMethod = (db as any)[methodName];
+  (db as any)[methodName] = async (...args: any[]) => {
+    const result = await originalMethod.apply(db, args);
+    clearCache(); // Invalider tout le cache pour garantir la cohérence
+    return result;
+  };
+});
