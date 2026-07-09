@@ -514,7 +514,6 @@ export default function AcheteursPage() {
             </form>
           </div>
         </div>
-        </div>
       )}
 
       {/* Delete Confirmation Modal */}
