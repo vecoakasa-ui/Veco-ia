@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Users, Search, Plus, X, Briefcase, Calendar, MapPin, User, Mail, Phone, Home, CreditCard, AlertCircle, CheckCircle } from "lucide-react";
+import { Users, Search, Plus, X, Briefcase, Calendar, MapPin, User, Mail, Phone, Home, CreditCard, AlertCircle, CheckCircle, Trash2 } from "lucide-react";
 import { db } from "@/lib/store";
 import { formatCurrency } from "@/lib/utils";
 import MapModuleWrapper from "@/components/MapModuleWrapper";
@@ -175,8 +175,21 @@ export default function AcheteursPage() {
       showToast("La vente a été enregistrée avec succès !", "success");
     } catch (error: any) {
       console.error("Error creating sale:", error);
-      alert("ERREUR SUPABASE: " + (error.message || JSON.stringify(error)));
       showToast(error.message || "Une erreur est survenue lors de l'enregistrement de la vente.", "error");
+    }
+  };
+
+  const handleDeleteSale = async (e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (confirm("Êtes-vous sûr de vouloir supprimer cette vente ? Cette action est irréversible.")) {
+      try {
+        await db.deleteSale(id);
+        showToast("Vente supprimée avec succès.", "success");
+        loadData();
+      } catch (error) {
+        showToast("Erreur lors de la suppression.", "error");
+      }
     }
   };
 
@@ -248,17 +261,34 @@ export default function AcheteursPage() {
             <Link key={sale.id} href={`/ventes/acheteurs/${sale.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
               <div className="card card-interactive" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "var(--space-4)" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                <div style={{ width: "48px", height: "48px", borderRadius: "50%", background: "var(--primary-lighter)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-                  <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(sale.buyer_name || "A")}&backgroundColor=e25822`} alt={sale.buyer_name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <div style={{ width: "48px", height: "48px", borderRadius: "8px", background: "var(--gray-200)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+                  {(() => {
+                    const prop = lots.find(l => l.id === sale.property_id);
+                    if (prop && prop.images?.[0]) {
+                      return <img src={prop.images[0]} alt={sale.property_name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />;
+                    }
+                    return <Home size={24} style={{ color: "var(--gray-400)" }} />;
+                  })()}
                 </div>
                 <div>
                   <h3 style={{ fontSize: "16px", fontWeight: "bold", margin: 0 }}>{sale.buyer_name}</h3>
                   <p style={{ fontSize: "13px", color: "var(--gray-500)", margin: 0 }}>{sale.property_name}</p>
                 </div>
               </div>
-              <div style={{ textAlign: "right" }}>
-                <div style={{ fontSize: "16px", fontWeight: "bold", color: "var(--primary-dark)" }}>{formatCurrency(sale.total_price)}</div>
-                <div style={{ fontSize: "12px", color: "var(--gray-500)" }}>Reste à payer: {formatCurrency(sale.remaining_balance)}</div>
+              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{ fontSize: "16px", fontWeight: "bold", color: "var(--primary-dark)" }}>{formatCurrency(sale.total_price)}</div>
+                  <div style={{ fontSize: "12px", color: "var(--gray-500)" }}>Reste à payer: {formatCurrency(sale.remaining_balance)}</div>
+                </div>
+                <button 
+                  onClick={(e) => handleDeleteSale(e, sale.id)} 
+                  style={{ background: "none", border: "none", cursor: "pointer", color: "var(--danger)", padding: "8px", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", transition: "background 0.2s" }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = "#fee2e2"}
+                  onMouseLeave={(e) => e.currentTarget.style.background = "none"}
+                  title="Supprimer cette vente"
+                >
+                  <Trash2 size={18} />
+                </button>
               </div>
               </div>
             </Link>

@@ -1611,6 +1611,18 @@ export const db = {
     }
   },
 
+  deleteSale: async (id: string): Promise<void> => {
+    if (isSupabaseConfigured()) {
+      await supabase.from("sales").delete().eq("id", id);
+    } else {
+      const items = getFromStorage<any[]>("sales", []);
+      setToStorage("sales", items.filter((i: any) => i.id !== id));
+      
+      const installments = getFromStorage<any[]>("sale_installments", []);
+      setToStorage("sale_installments", installments.filter((i: any) => i.sale_id !== id));
+    }
+  },
+
   getSaleInstallments: async (): Promise<any[]> => {
     if (isSupabaseConfigured()) {
       try {
