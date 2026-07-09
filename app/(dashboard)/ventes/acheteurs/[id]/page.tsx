@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, User, MapPin, Phone, Mail, Calendar, CheckCircle, AlertCircle, CreditCard, TrendingUp, Download, Plus, X } from "lucide-react";
+import { ArrowLeft, User, MapPin, Phone, Mail, Calendar, CheckCircle, AlertCircle, CreditCard, TrendingUp, Download, Plus, X, Smartphone, Lock, ArrowRight, ShieldCheck, Check } from "lucide-react";
 import { db } from "@/lib/store";
 import { formatCurrency } from "@/lib/utils";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
@@ -20,8 +20,21 @@ export default function VenteDashboard() {
   
   // Nouveau state pour la modale d'encaissement
   const [installmentToPay, setInstallmentToPay] = useState<any>(null);
-  const [paymentMethodToUse, setPaymentMethodToUse] = useState<string>('cash');
+  const [paymentMethodToUse, setPaymentMethodToUse] = useState<string>('credit_card'); // Default to credit card for better demo
   const [isPaying, setIsPaying] = useState(false);
+  
+  // Checkout flow states
+  const [paymentStep, setPaymentStep] = useState<number>(1);
+  const [paymentDetails, setPaymentDetails] = useState<any>({
+    cardNumber: "",
+    cardName: "",
+    cardExpiry: "",
+    cardCvv: "",
+    phoneNumber: "",
+    operator: "wave"
+  });
+  const [otpCode, setOtpCode] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -88,13 +101,57 @@ export default function VenteDashboard() {
       }
       
       await loadData();
-      setInstallmentToPay(null); // Fermer la modale
+      
+      // Go to success step
+      setPaymentStep(4);
     } catch (error) {
       console.error(error);
       alert("Erreur lors du paiement");
     } finally {
       setIsPaying(false);
     }
+  };
+
+  const handleNextStep = () => {
+    if (paymentStep === 1) {
+      if (paymentMethodToUse === 'cash') {
+        // Cash can go straight to processing/validation
+        simulateProcessingAndPay();
+      } else {
+        setPaymentStep(2);
+      }
+    } else if (paymentStep === 2) {
+      if (paymentMethodToUse === 'mobile_money') {
+        // Go to OTP step
+        setPaymentStep(3);
+      } else {
+        // Credit card, Bank transfer, Cheque -> Validate directly
+        simulateProcessingAndPay();
+      }
+    } else if (paymentStep === 3) {
+      // Validate OTP
+      simulateProcessingAndPay();
+    }
+  };
+
+  const simulateProcessingAndPay = () => {
+    setIsProcessing(true);
+    setTimeout(() => {
+      setIsProcessing(false);
+      if (installmentToPay) {
+        handlePayInstallment(installmentToPay.id, paymentMethodToUse);
+      }
+    }, 1500);
+  };
+
+  const closePaymentModal = () => {
+    if (isPaying || isProcessing) return;
+    setInstallmentToPay(null);
+    setTimeout(() => {
+      setPaymentStep(1);
+      setOtpCode("");
+      setPaymentMethodToUse('credit_card');
+    }, 300);
   };
 
   if (isLoading || !sale) return <div style={{ padding: "32px", textAlign: "center" }}>Chargement...</div>;
@@ -358,60 +415,242 @@ export default function VenteDashboard() {
         </div>
       )}
 
-      {/* Record Payment Modal */}
+      {/* Multi-Step Payment Modal */}
       {installmentToPay && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.5)", zIndex: 999, display: "flex", alignItems: "center", justifyContent: "center" }} onClick={() => !isPaying && setInstallmentToPay(null)}>
-          <div style={{ background: "white", padding: "24px", borderRadius: "16px", width: "400px", maxWidth: "90%", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }} onClick={e => e.stopPropagation()}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-              <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "800", display: "flex", alignItems: "center", gap: "8px" }}>
-                Encaisser un paiement
-              </h3>
-              <button onClick={() => !isPaying && setInstallmentToPay(null)} style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--gray-500)" }}><X size={20} /></button>
-            </div>
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)", zIndex: 999, display: "flex", alignItems: "center", justifyContent: "center" }} onClick={closePaymentModal}>
+          <div className="animate-fade-in" style={{ background: "white", padding: "0", borderRadius: "20px", width: "450px", maxWidth: "95%", boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)", overflow: "hidden" }} onClick={e => e.stopPropagation()}>
             
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              <div style={{ background: "var(--primary-lighter)", padding: "16px", borderRadius: "8px", border: "1px solid var(--primary-light)" }}>
-                <div style={{ fontSize: "13px", color: "var(--primary-dark)", marginBottom: "4px" }}>Montant à encaisser</div>
-                <div style={{ fontSize: "24px", fontWeight: "900", color: "var(--primary)" }}>{formatCurrency(installmentToPay.amount)}</div>
+            {paymentStep !== 4 && (
+              <div style={{ padding: "20px 24px", borderBottom: "1px solid var(--gray-100)", display: "flex", justifyContent: "space-between", alignItems: "center", background: "var(--gray-50)" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                  {paymentStep > 1 && !isProcessing && (
+                    <button onClick={() => setPaymentStep(paymentStep - 1)} style={{ background: "white", border: "1px solid var(--gray-200)", borderRadius: "8px", width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
+                      <ArrowLeft size={16} color="var(--gray-700)" />
+                    </button>
+                  )}
+                  <div>
+                    <h3 style={{ margin: 0, fontSize: "16px", fontWeight: "800", color: "var(--gray-900)" }}>
+                      Encaisser un paiement
+                    </h3>
+                    <p style={{ margin: "2px 0 0 0", fontSize: "12px", color: "var(--gray-500)" }}>Étape {paymentStep} sur {paymentMethodToUse === 'mobile_money' ? '3' : '2'}</p>
+                  </div>
+                </div>
+                <button onClick={closePaymentModal} disabled={isProcessing} style={{ background: "transparent", border: "none", cursor: isProcessing ? "not-allowed" : "pointer", color: "var(--gray-400)" }}>
+                  <X size={20} />
+                </button>
               </div>
+            )}
 
-              <div>
-                <label style={{ display: "block", fontSize: "14px", fontWeight: "600", marginBottom: "8px", color: "var(--gray-700)" }}>
-                  Mode de paiement
-                </label>
-                <select 
-                  className="input" 
-                  value={paymentMethodToUse} 
-                  onChange={(e) => setPaymentMethodToUse(e.target.value)}
-                  style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid var(--gray-300)" }}
-                  disabled={isPaying}
-                >
-                  <option value="cash">Espèces</option>
-                  <option value="mobile_money">Mobile Money (Wave, MTN, Moov...)</option>
-                  <option value="bank_transfer">Virement Bancaire</option>
-                  <option value="cheque">Chèque</option>
-                </select>
-              </div>
-            </div>
+            <div style={{ padding: "24px" }}>
+              {isProcessing ? (
+                <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 0" }}>
+                  <div style={{ width: "60px", height: "60px", borderRadius: "50%", border: "4px solid rgba(0, 154, 68, 0.1)", borderTopColor: "var(--primary)", animation: "spin 1s linear infinite", marginBottom: "24px" }}></div>
+                  <h3 style={{ margin: "0 0 8px 0", fontSize: "18px", fontWeight: "700", color: "var(--gray-900)" }}>Traitement en cours...</h3>
+                  <p style={{ margin: 0, color: "var(--gray-500)", fontSize: "14px", textAlign: "center" }}>
+                    Veuillez patienter pendant que nous communiquons<br />avec l'opérateur financier.
+                  </p>
+                  <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+                </div>
+              ) : paymentStep === 1 ? (
+                <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                  <div style={{ background: "var(--primary-lighter)", padding: "20px", borderRadius: "12px", border: "1px dashed var(--primary-light)", textAlign: "center" }}>
+                    <div style={{ fontSize: "13px", color: "var(--primary-dark)", marginBottom: "4px", fontWeight: "600", textTransform: "uppercase", letterSpacing: "0.5px" }}>Montant à encaisser</div>
+                    <div style={{ fontSize: "28px", fontWeight: "900", color: "var(--primary)" }}>{formatCurrency(installmentToPay.amount)}</div>
+                  </div>
 
-            <div style={{ display: "flex", gap: "12px", marginTop: "24px" }}>
-              <button 
-                className="btn btn-ghost" 
-                style={{ flex: 1 }} 
-                onClick={() => setInstallmentToPay(null)}
-                disabled={isPaying}
-              >
-                Annuler
-              </button>
-              <button 
-                className="btn btn-primary" 
-                style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", gap: "8px" }} 
-                onClick={() => handlePayInstallment(installmentToPay.id, paymentMethodToUse)}
-                disabled={isPaying}
-              >
-                {isPaying ? 'Encaissement...' : 'Valider le paiement'}
-                {!isPaying && <CheckCircle size={18} />}
-              </button>
+                  <div>
+                    <label style={{ display: "block", fontSize: "14px", fontWeight: "700", marginBottom: "12px", color: "var(--gray-800)" }}>
+                      Choisissez un mode de paiement
+                    </label>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                      {[
+                        { id: 'credit_card', label: 'Carte Bancaire', icon: CreditCard, color: '#3b82f6' },
+                        { id: 'mobile_money', label: 'Mobile Money (Wave, MTN, Moov)', icon: Smartphone, color: '#FF8200' },
+                        { id: 'cash', label: 'Espèces', icon: CheckCircle, color: '#10b981' }
+                      ].map(method => (
+                        <div 
+                          key={method.id}
+                          onClick={() => setPaymentMethodToUse(method.id)}
+                          style={{ 
+                            display: "flex", alignItems: "center", gap: "12px", padding: "16px", borderRadius: "12px", 
+                            border: paymentMethodToUse === method.id ? `2px solid ${method.color}` : "1px solid var(--gray-200)",
+                            background: paymentMethodToUse === method.id ? `${method.color}08` : "white",
+                            cursor: "pointer", transition: "all 0.2s"
+                          }}
+                        >
+                          <div style={{ width: "40px", height: "40px", borderRadius: "10px", background: `${method.color}15`, display: "flex", alignItems: "center", justifyContent: "center", color: method.color }}>
+                            <method.icon size={20} />
+                          </div>
+                          <div style={{ flex: 1, fontWeight: "600", color: paymentMethodToUse === method.id ? "var(--gray-900)" : "var(--gray-600)" }}>
+                            {method.label}
+                          </div>
+                          <div style={{ width: "20px", height: "20px", borderRadius: "50%", border: paymentMethodToUse === method.id ? `6px solid ${method.color}` : "2px solid var(--gray-300)" }}></div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button 
+                    className="btn btn-primary" 
+                    style={{ width: "100%", padding: "14px", marginTop: "8px", fontSize: "16px", fontWeight: "700", display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", borderRadius: "12px" }}
+                    onClick={handleNextStep}
+                  >
+                    Continuer <ArrowRight size={18} />
+                  </button>
+                </div>
+              ) : paymentStep === 2 ? (
+                <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                  
+                  {paymentMethodToUse === 'credit_card' && (
+                    <>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
+                        <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "rgba(59, 130, 246, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "#3b82f6" }}>
+                          <CreditCard size={24} />
+                        </div>
+                        <div>
+                          <h4 style={{ margin: 0, fontSize: "16px", fontWeight: "700", color: "var(--gray-900)" }}>Paiement Sécurisé</h4>
+                          <p style={{ margin: 0, fontSize: "13px", color: "var(--gray-500)" }}>Entrez les détails de votre carte bancaire.</p>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px", color: "var(--gray-700)" }}>Titulaire de la carte</label>
+                        <input type="text" className="input" placeholder="Ex: Jean Dupont" value={paymentDetails.cardName} onChange={e => setPaymentDetails({...paymentDetails, cardName: e.target.value})} style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid var(--gray-300)" }} />
+                      </div>
+                      <div>
+                        <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px", color: "var(--gray-700)" }}>Numéro de carte</label>
+                        <div style={{ position: "relative" }}>
+                          <input type="text" className="input" placeholder="0000 0000 0000 0000" maxLength={19} value={paymentDetails.cardNumber} onChange={e => setPaymentDetails({...paymentDetails, cardNumber: e.target.value.replace(/\\W/gi, '').replace(/(.{4})/g, '$1 ').trim()})} style={{ width: "100%", padding: "12px", paddingLeft: "40px", borderRadius: "8px", border: "1px solid var(--gray-300)", fontFamily: "monospace", fontSize: "16px" }} />
+                          <CreditCard size={18} color="var(--gray-400)" style={{ position: "absolute", left: "12px", top: "14px" }} />
+                        </div>
+                      </div>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                        <div>
+                          <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px", color: "var(--gray-700)" }}>Date d'exp. (MM/AA)</label>
+                          <input type="text" className="input" placeholder="MM/AA" maxLength={5} value={paymentDetails.cardExpiry} onChange={e => setPaymentDetails({...paymentDetails, cardExpiry: e.target.value.replace(/[^0-9]/g, '').replace(/^([2-9])$/g, '0$1').replace(/^(1{1})([3-9]{1})$/g, '0$1/$2').replace(/^0{0,1}[0-9]{1}[0-9]{0,1}/g, (v) => v.length === 2 ? v + '/' : v)})} style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid var(--gray-300)" }} />
+                        </div>
+                        <div>
+                          <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px", color: "var(--gray-700)" }}>CVC / CVV</label>
+                          <div style={{ position: "relative" }}>
+                            <input type="password" className="input" placeholder="123" maxLength={3} value={paymentDetails.cardCvv} onChange={e => setPaymentDetails({...paymentDetails, cardCvv: e.target.value.replace(/\\D/g, '')})} style={{ width: "100%", padding: "12px", paddingRight: "40px", borderRadius: "8px", border: "1px solid var(--gray-300)" }} />
+                            <Lock size={16} color="var(--gray-400)" style={{ position: "absolute", right: "12px", top: "15px" }} />
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {paymentMethodToUse === 'mobile_money' && (
+                    <>
+                      <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
+                        <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "rgba(255, 130, 0, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "#FF8200" }}>
+                          <Smartphone size={24} />
+                        </div>
+                        <div>
+                          <h4 style={{ margin: 0, fontSize: "16px", fontWeight: "700", color: "var(--gray-900)" }}>Paiement Mobile</h4>
+                          <p style={{ margin: 0, fontSize: "13px", color: "var(--gray-500)" }}>Entrez votre numéro pour recevoir le code.</p>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px", color: "var(--gray-700)" }}>Opérateur</label>
+                        <select className="input" value={paymentDetails.operator} onChange={e => setPaymentDetails({...paymentDetails, operator: e.target.value})} style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid var(--gray-300)" }}>
+                          <option value="wave">Wave</option>
+                          <option value="orange">Orange Money</option>
+                          <option value="mtn">MTN Mobile Money</option>
+                          <option value="moov">Moov Money</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px", color: "var(--gray-700)" }}>Numéro de téléphone</label>
+                        <div style={{ position: "relative" }}>
+                          <input type="text" className="input" placeholder="01 23 45 67 89" value={paymentDetails.phoneNumber} onChange={e => setPaymentDetails({...paymentDetails, phoneNumber: e.target.value.replace(/\\D/g, '')})} style={{ width: "100%", padding: "12px", paddingLeft: "60px", borderRadius: "8px", border: "1px solid var(--gray-300)", fontSize: "16px" }} />
+                          <div style={{ position: "absolute", left: "1px", top: "1px", bottom: "1px", width: "48px", background: "var(--gray-100)", borderRight: "1px solid var(--gray-300)", borderTopLeftRadius: "7px", borderBottomLeftRadius: "7px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", fontWeight: "600", color: "var(--gray-600)" }}>
+                            +225
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  <button 
+                    className="btn btn-primary" 
+                    style={{ width: "100%", padding: "14px", marginTop: "16px", fontSize: "16px", fontWeight: "700", display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", borderRadius: "12px", background: paymentMethodToUse === 'credit_card' ? "var(--primary)" : "#FF8200" }}
+                    onClick={handleNextStep}
+                  >
+                    {paymentMethodToUse === 'credit_card' ? `Payer ${formatCurrency(installmentToPay.amount)}` : 'Recevoir le code OTP'}
+                    {paymentMethodToUse === 'credit_card' ? <Lock size={18} /> : <ArrowRight size={18} />}
+                  </button>
+                  <div style={{ textAlign: "center", fontSize: "12px", color: "var(--gray-400)", display: "flex", alignItems: "center", justifyContent: "center", gap: "4px" }}>
+                    <ShieldCheck size={14} /> Transactions sécurisées et chiffrées de bout en bout
+                  </div>
+                </div>
+              ) : paymentStep === 3 ? (
+                <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "24px", alignItems: "center", textAlign: "center", padding: "16px 0" }}>
+                  <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "rgba(255, 130, 0, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "#FF8200" }}>
+                    <Smartphone size={32} />
+                  </div>
+                  
+                  <div>
+                    <h3 style={{ margin: "0 0 8px 0", fontSize: "20px", fontWeight: "800", color: "var(--gray-900)" }}>Vérification OTP</h3>
+                    <p style={{ margin: 0, color: "var(--gray-500)", fontSize: "14px", lineHeight: "1.5" }}>
+                      Un code à 4 chiffres a été envoyé au <br />
+                      <strong style={{ color: "var(--gray-800)" }}>+225 {paymentDetails.phoneNumber}</strong> par SMS.
+                    </p>
+                  </div>
+
+                  <div style={{ display: "flex", gap: "12px", justifyContent: "center", margin: "16px 0" }}>
+                    <input 
+                      type="text" 
+                      maxLength={4} 
+                      placeholder="••••"
+                      value={otpCode}
+                      onChange={e => setOtpCode(e.target.value.replace(/\\D/g, ''))}
+                      style={{ 
+                        width: "120px", height: "56px", fontSize: "32px", letterSpacing: "8px", 
+                        textAlign: "center", borderRadius: "12px", border: "2px solid var(--gray-300)", 
+                        fontFamily: "monospace", outline: "none", transition: "border-color 0.2s",
+                        borderColor: otpCode.length === 4 ? "var(--primary)" : "var(--gray-300)"
+                      }} 
+                    />
+                  </div>
+
+                  <button 
+                    className="btn btn-primary" 
+                    disabled={otpCode.length < 4}
+                    style={{ width: "100%", padding: "14px", fontSize: "16px", fontWeight: "700", display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", borderRadius: "12px", opacity: otpCode.length < 4 ? 0.5 : 1 }}
+                    onClick={handleNextStep}
+                  >
+                    Confirmer et Payer
+                  </button>
+                  
+                  <button style={{ background: "transparent", border: "none", color: "var(--gray-500)", fontSize: "13px", cursor: "pointer", textDecoration: "underline" }}>
+                    Renvoyer le code
+                  </button>
+                </div>
+              ) : paymentStep === 4 ? (
+                <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "16px", alignItems: "center", textAlign: "center", padding: "24px 0" }}>
+                  <div style={{ width: "80px", height: "80px", borderRadius: "50%", background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center", color: "white", marginBottom: "8px" }}>
+                    <Check size={40} strokeWidth={3} />
+                  </div>
+                  
+                  <div>
+                    <h3 style={{ margin: "0 0 8px 0", fontSize: "24px", fontWeight: "900", color: "var(--gray-900)" }}>Paiement Réussi !</h3>
+                    <p style={{ margin: 0, color: "var(--gray-500)", fontSize: "15px", lineHeight: "1.5" }}>
+                      Votre encaissement de <strong style={{ color: "var(--gray-800)" }}>{formatCurrency(installmentToPay.amount)}</strong><br />a été validé avec succès.
+                    </p>
+                  </div>
+
+                  <button 
+                    className="btn btn-primary" 
+                    style={{ width: "100%", padding: "14px", marginTop: "24px", fontSize: "16px", fontWeight: "700", borderRadius: "12px" }}
+                    onClick={closePaymentModal}
+                  >
+                    Terminer
+                  </button>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
