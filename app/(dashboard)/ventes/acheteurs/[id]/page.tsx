@@ -17,6 +17,11 @@ export default function VenteDashboard() {
   const [installments, setInstallments] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedPaymentInfo, setSelectedPaymentInfo] = useState<any>(null);
+  
+  // Nouveau state pour la modale d'encaissement
+  const [installmentToPay, setInstallmentToPay] = useState<any>(null);
+  const [paymentMethodToUse, setPaymentMethodToUse] = useState<string>('cash');
+  const [isPaying, setIsPaying] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -68,25 +73,27 @@ export default function VenteDashboard() {
     }
   };
 
-  const handlePayInstallment = async (instId: string) => {
-    if (confirm("Voulez-vous marquer cette échéance comme payée ?")) {
-      try {
-        await db.payInstallment(instId, 'cash');
-        
-        // If it's paid, we need to update the sale's remaining balance
-        const inst = installments.find(i => i.id === instId);
-        if (inst && sale) {
-          const newBalance = Math.max(0, sale.remaining_balance - inst.amount);
-          await db.updateSale(sale.id, {
-            remaining_balance: newBalance
-          });
-        }
-        
-        await loadData();
-      } catch (error) {
-        console.error(error);
-        alert("Erreur lors du paiement");
+  const handlePayInstallment = async (instId: string, method: string) => {
+    setIsPaying(true);
+    try {
+      await db.payInstallment(instId, method);
+      
+      // If it's paid, we need to update the sale's remaining balance
+      const inst = installments.find(i => i.id === instId);
+      if (inst && sale) {
+        const newBalance = Math.max(0, sale.remaining_balance - inst.amount);
+        await db.updateSale(sale.id, {
+          remaining_balance: newBalance
+        });
       }
+      
+      await loadData();
+      setInstallmentToPay(null); // Fermer la modale
+    } catch (error) {
+      console.error(error);
+      alert("Erreur lors du paiement");
+    } finally {
+      setIsPaying(false);
     }
   };
 
@@ -276,9 +283,12 @@ export default function VenteDashboard() {
                       <td style={{ padding: "16px 24px", textAlign: "right" }}>
                         {inst.status !== 'paid' ? (
                           <button 
-                            className="btn btn-primary btn-sm"
-                            onClick={() => handlePayInstallment(inst.id)}
-                            style={{ padding: "4px 12px", fontSize: "13px" }}
+                            className="btn btn-primary btn-sm" 
+                            style={{ padding: "6px 12px", fontSize: "12px", borderRadius: "6px" }}
+                            onClick={() => {
+                              setInstallmentToPay(inst);
+                              setPaymentMethodToUse('cash');
+                            }}
                           >
                             Encaisser
                           </button>
@@ -344,6 +354,65 @@ export default function VenteDashboard() {
             </div>
 
             <button className="btn btn-primary" style={{ width: "100%", marginTop: "24px" }} onClick={() => setSelectedPaymentInfo(null)}>Fermer</button>
+          </div>
+        </div>
+      )}
+
+      {/* Record Payment Modal */}
+      {installmentToPay && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.5)", zIndex: 999, display: "flex", alignItems: "center", justifyContent: "center" }} onClick={() => !isPaying && setInstallmentToPay(null)}>
+          <div style={{ background: "white", padding: "24px", borderRadius: "16px", width: "400px", maxWidth: "90%", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+              <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "800", display: "flex", alignItems: "center", gap: "8px" }}>
+                Encaisser un paiement
+              </h3>
+              <button onClick={() => !isPaying && setInstallmentToPay(null)} style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--gray-500)" }}><X size={20} /></button>
+            </div>
+            
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div style={{ background: "var(--primary-lighter)", padding: "16px", borderRadius: "8px", border: "1px solid var(--primary-light)" }}>
+                <div style={{ fontSize: "13px", color: "var(--primary-dark)", marginBottom: "4px" }}>Montant à encaisser</div>
+                <div style={{ fontSize: "24px", fontWeight: "900", color: "var(--primary)" }}>{formatCurrency(installmentToPay.amount)}</div>
+              </div>
+
+              <div>
+                <label style={{ display: "block", fontSize: "14px", fontWeight: "600", marginBottom: "8px", color: "var(--gray-700)" }}>
+                  Mode de paiement
+                </label>
+                <select 
+                  className="input" 
+                  value={paymentMethodToUse} 
+                  onChange={(e) => setPaymentMethodToUse(e.target.value)}
+                  style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid var(--gray-300)" }}
+                  disabled={isPaying}
+                >
+                  <option value="cash">Espèces</option>
+                  <option value="mobile_money">Mobile Money (Wave, MTN, Moov...)</option>
+                  <option value="bank_transfer">Virement Bancaire</option>
+                  <option value="cheque">Chèque</option>
+                </select>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", gap: "12px", marginTop: "24px" }}>
+              <button 
+                className="btn btn-ghost" 
+                style={{ flex: 1 }} 
+                onClick={() => setInstallmentToPay(null)}
+                disabled={isPaying}
+              >
+                Annuler
+              </button>
+              <button 
+                className="btn btn-primary" 
+                style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", gap: "8px" }} 
+                onClick={() => handlePayInstallment(installmentToPay.id, paymentMethodToUse)}
+                disabled={isPaying}
+              >
+                {isPaying ? 'Encaissement...' : 'Valider le paiement'}
+                {!isPaying && <CheckCircle size={18} />}
+              </button>
+            </div>
           </div>
         </div>
       )}
