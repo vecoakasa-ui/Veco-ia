@@ -59,6 +59,13 @@ export default function VentesDemandesPage() {
     
     loadInquiries();
     
+    // Marquer la page comme vue pour les notifications
+    db.getProfile().then(p => {
+      if (p) {
+        localStorage.setItem(`last_viewed_${p.id}_demandes_achat`, new Date().toISOString());
+        window.dispatchEvent(new CustomEvent('notificationViewed', { detail: 'demandes_achat' }));
+      }
+    });
   }, []);
 
   const updateStatus = async (id: string, newStatus: "accepted" | "rejected") => {

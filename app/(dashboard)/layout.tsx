@@ -214,6 +214,7 @@ export default function DashboardLayout({
   // Super Admin Navigation removed to keep it completely invisible from the dashboard
 
   const [hasNewDemandes, setHasNewDemandes] = useState(false);
+  const [hasNewDemandesAchat, setHasNewDemandesAchat] = useState(false);
   const [hasNewIncidents, setHasNewIncidents] = useState(false);
 
   useEffect(() => {
@@ -222,20 +223,39 @@ export default function DashboardLayout({
     const checkNotifications = async () => {
       try {
         const lastViewedDemandes = localStorage.getItem(`last_viewed_${profile.id}_demandes`);
+        const lastViewedDemandesAchat = localStorage.getItem(`last_viewed_${profile.id}_demandes_achat`);
         const lastViewedIncidents = localStorage.getItem(`last_viewed_${profile.id}_incidents`);
 
         // Get properties
-        const { data: props } = await supabase.from('properties').select('id').eq('owner_id', profile.id);
+        const { data: props } = await supabase.from('properties').select('id, type').eq('owner_id', profile.id);
         const propIds = props?.map((p: any) => p.id) || [];
+        const locPropIds = props?.filter((p: any) => p.type !== 'terrain' && p.type !== 'lotissement').map((p: any) => p.id) || [];
+        const achatPropIds = props?.filter((p: any) => p.type === 'terrain' || p.type === 'lotissement').map((p: any) => p.id) || [];
 
         if (propIds.length > 0) {
-          // Check demandes
-          let inqQuery = supabase.from('inquiries').select('id', { count: 'exact', head: true }).in('property_id', propIds).eq('status', 'pending');
-          if (lastViewedDemandes) {
-            inqQuery = inqQuery.gt('created_at', lastViewedDemandes);
+          // Check demandes (Location)
+          if (locPropIds.length > 0) {
+            let inqQuery = supabase.from('inquiries').select('id', { count: 'exact', head: true }).in('property_id', locPropIds).eq('status', 'pending');
+            if (lastViewedDemandes) {
+              inqQuery = inqQuery.gt('created_at', lastViewedDemandes);
+            }
+            const { count: inqCount } = await inqQuery;
+            setHasNewDemandes((inqCount || 0) > 0);
+          } else {
+            setHasNewDemandes(false);
           }
-          const { count: inqCount } = await inqQuery;
-          setHasNewDemandes((inqCount || 0) > 0);
+
+          // Check demandes (Achat)
+          if (achatPropIds.length > 0) {
+            let inqAchatQuery = supabase.from('inquiries').select('id', { count: 'exact', head: true }).in('property_id', achatPropIds).eq('status', 'pending');
+            if (lastViewedDemandesAchat) {
+              inqAchatQuery = inqAchatQuery.gt('created_at', lastViewedDemandesAchat);
+            }
+            const { count: inqAchatCount } = await inqAchatQuery;
+            setHasNewDemandesAchat((inqAchatCount || 0) > 0);
+          } else {
+            setHasNewDemandesAchat(false);
+          }
 
           // Check incidents
           let incQuery = supabase.from('incidents').select('id', { count: 'exact', head: true }).in('property_id', propIds).eq('status', 'open');
@@ -255,6 +275,7 @@ export default function DashboardLayout({
     const handleViewed = (e: Event) => {
       const customEvent = e as CustomEvent;
       if (customEvent.detail === 'demandes') setHasNewDemandes(false);
+      if (customEvent.detail === 'demandes_achat') setHasNewDemandesAchat(false);
       if (customEvent.detail === 'incidents') setHasNewIncidents(false);
     };
     window.addEventListener('notificationViewed', handleViewed);
@@ -266,6 +287,7 @@ export default function DashboardLayout({
 
   const hasBadge = (itemName: string) => {
     if (itemName === "Demandes") return hasNewDemandes;
+    if (itemName === "Demandes d'Achat") return hasNewDemandesAchat;
     if (itemName === "Incidents") return hasNewIncidents;
     return false;
   };
