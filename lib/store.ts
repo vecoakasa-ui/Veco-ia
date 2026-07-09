@@ -574,7 +574,7 @@ export const db = {
         const { data, error } = await supabase
           .from("landlords")
           .select("*")
-          .order("created_at", { ascending: true });
+          .order("full_name", { ascending: true });
         if (error) throw error;
         if (data) return data as Landlord[];
       } catch (err) {
@@ -625,7 +625,7 @@ export const db = {
         let query = supabase
           .from("properties")
           .select("*")
-          .order("created_at", { ascending: true });
+          .order("name", { ascending: true });
           
         const { data: profile } = await supabase.from('profiles').select('role').eq('id', ownerId).single();
         if (profile?.role === 'owner') {
@@ -743,7 +743,8 @@ export const db = {
           .select(`
             *,
             properties:property_id (*)
-          `);
+          `)
+          .order("full_name", { ascending: true });
         if (error) throw error;
         
         if (data) {
@@ -1519,7 +1520,7 @@ export const db = {
   getBuyers: async (): Promise<any[]> => {
     if (isSupabaseConfigured()) {
       try {
-        const { data, error } = await supabase.from("buyers").select("*").order("created_at", { ascending: false });
+        const { data, error } = await supabase.from("buyers").select("*").order("full_name", { ascending: true });
         if (!error && data) return data;
       } catch (err) {
         console.error(err);
