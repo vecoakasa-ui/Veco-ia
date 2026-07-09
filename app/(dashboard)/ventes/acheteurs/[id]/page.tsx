@@ -3,10 +3,10 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, User, MapPin, Phone, Mail, Calendar, CheckCircle, AlertCircle, CreditCard, TrendingUp, Download, Plus } from "lucide-react";
+import { ArrowLeft, User, MapPin, Phone, Mail, Calendar, CheckCircle, AlertCircle, CreditCard, TrendingUp, Download, Plus, X } from "lucide-react";
 import { db } from "@/lib/store";
 import { formatCurrency } from "@/lib/utils";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
 export default function VenteDashboard() {
   const params = useParams();
@@ -16,6 +16,7 @@ export default function VenteDashboard() {
   const [sale, setSale] = useState<any>(null);
   const [installments, setInstallments] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedPaymentInfo, setSelectedPaymentInfo] = useState<any>(null);
 
   useEffect(() => {
     const loadData = async () => {
@@ -95,14 +96,18 @@ export default function VenteDashboard() {
   const totalPaid = sale.total_price - sale.remaining_balance;
   const progressPercent = Math.min(100, Math.round((totalPaid / sale.total_price) * 100));
 
-  // Calculate Chart Data
-  const chartData = installments.map(inst => ({
-    name: new Date(inst.due_date).toLocaleDateString('fr-FR', { month: 'short', year: '2-digit' }),
-    amount: inst.amount,
-    status: inst.status
-  }));
+  // Calculate Pie Chart Data
+  const amountPaid = installments.filter(i => i.status === 'paid').reduce((acc, curr) => acc + curr.amount, 0);
+  const amountLate = installments.filter(i => i.status !== 'paid' && new Date(i.due_date) < new Date()).reduce((acc, curr) => acc + curr.amount, 0);
+  const amountPending = installments.filter(i => i.status !== 'paid' && new Date(i.due_date) >= new Date()).reduce((acc, curr) => acc + curr.amount, 0);
 
-  const lateInstallments = installments.filter(i => i.status === 'late' || (i.status === 'pending' && new Date(i.due_date) < new Date()));
+  const chartData = [
+    { name: 'Payé', value: amountPaid, color: '#009A44' },
+    { name: 'En retard', value: amountLate, color: '#FF8200' },
+    { name: 'À venir', value: amountPending, color: '#e2e8f0' }
+  ].filter(d => d.value > 0);
+
+  const lateInstallments = installments.filter(i => i.status !== 'paid' && new Date(i.due_date) < new Date());
 
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
@@ -120,7 +125,7 @@ export default function VenteDashboard() {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "var(--space-6)" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "var(--space-6)", marginBottom: "var(--space-6)" }}>
         {/* Buyer & Property Info */}
         <div className="card" style={{ padding: "16px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "16px" }}>
@@ -196,37 +201,34 @@ export default function VenteDashboard() {
             </div>
           )}
         </div>
-      </div>
-
-      {/* Chart and Installments */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "var(--space-6)" }}>
-        
         {/* Payment Chart */}
-        <div className="card" style={{ padding: "16px" }}>
+        <div className="card" style={{ padding: "16px", display: "flex", flexDirection: "column" }}>
           <h3 style={{ fontSize: "18px", fontWeight: "800", margin: "0 0 16px 0" }}>Évolution des paiements</h3>
-          <div style={{ height: "180px", width: "100%" }}>
+          <div style={{ height: "160px", width: "100%", flex: 1 }}>
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData} margin={{ top: 20, right: 30, left: 10, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#64748b" }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#64748b" }} tickFormatter={(value) => value >= 1000000 ? `${value / 1000000}M` : `${value / 1000}k`} />
-                <Tooltip cursor={{ fill: 'rgba(255, 130, 0, 0.1)' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
-                <Bar dataKey="amount" radius={[4, 4, 0, 0]} maxBarSize={32}>
+              <PieChart>
+                <Pie data={chartData} cx="50%" cy="50%" innerRadius={50} outerRadius={70} paddingAngle={2} dataKey="value" stroke="none">
                   {chartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.status === 'paid' ? '#009A44' : entry.status === 'late' || (entry.status === 'pending' && new Date(installments[index].due_date) < new Date()) ? '#FF8200' : '#e2e8f0'} />
+                    <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
-                </Bar>
-              </BarChart>
+                </Pie>
+                <Tooltip 
+                  formatter={(value: number) => formatCurrency(value)} 
+                  contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} 
+                />
+              </PieChart>
             </ResponsiveContainer>
           </div>
-          <div style={{ display: "flex", justifyContent: "center", gap: "24px", marginTop: "16px", fontSize: "13px", color: "var(--gray-600)" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}><span style={{ width: "12px", height: "12px", borderRadius: "2px", background: "#009A44" }}></span> Payé</div>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}><span style={{ width: "12px", height: "12px", borderRadius: "2px", background: "#FF8200" }}></span> En retard</div>
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}><span style={{ width: "12px", height: "12px", borderRadius: "2px", background: "#e2e8f0" }}></span> À venir</div>
+          <div style={{ display: "flex", justifyContent: "center", gap: "16px", marginTop: "8px", fontSize: "12px", color: "var(--gray-600)" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}><span style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#009A44" }}></span> Payé</div>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}><span style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#FF8200" }}></span> En retard</div>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}><span style={{ width: "10px", height: "10px", borderRadius: "50%", background: "#e2e8f0" }}></span> À venir</div>
           </div>
         </div>
+      </div>
 
-        {/* Installments List */}
+      {/* Installments List */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "var(--space-6)" }}>
         <div className="card" style={{ padding: "0" }}>
           <div style={{ padding: "16px", borderBottom: "1px solid var(--gray-200)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <h3 style={{ fontSize: "18px", fontWeight: "800", margin: 0 }}>Plan de paiement (Échéancier)</h3>
@@ -284,7 +286,7 @@ export default function VenteDashboard() {
                           <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
                             <button 
                               className="btn btn-ghost"
-                              onClick={() => alert(`Ce paiement a été effectué via : ${inst.payment_method === 'cash' ? 'Espèces' : inst.payment_method === 'bank_transfer' ? 'Virement Bancaire' : inst.payment_method === 'mobile_money' ? 'Mobile Money' : inst.payment_method || 'Mode non renseigné'}`)}
+                              onClick={() => setSelectedPaymentInfo(inst)}
                               style={{ padding: "4px 8px", color: "var(--success)", background: "transparent", border: "none" }}
                               title="Voir le mode de paiement"
                             >
@@ -302,6 +304,49 @@ export default function VenteDashboard() {
         </div>
         
       </div>
+
+      {/* Payment Details Modal */}
+      {selectedPaymentInfo && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.5)", zIndex: 999, display: "flex", alignItems: "center", justifyContent: "center" }} onClick={() => setSelectedPaymentInfo(null)}>
+          <div style={{ background: "white", padding: "24px", borderRadius: "16px", width: "400px", maxWidth: "90%", boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+              <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "800", display: "flex", alignItems: "center", gap: "8px" }}>
+                <CheckCircle size={20} color="var(--success)" />
+                Détails du Paiement
+              </h3>
+              <button onClick={() => setSelectedPaymentInfo(null)} style={{ background: "transparent", border: "none", cursor: "pointer", color: "var(--gray-500)" }}><X size={20} /></button>
+            </div>
+            
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div style={{ background: "var(--gray-50)", padding: "16px", borderRadius: "8px" }}>
+                <div style={{ fontSize: "13px", color: "var(--gray-500)", marginBottom: "4px" }}>Montant réglé</div>
+                <div style={{ fontSize: "20px", fontWeight: "900", color: "var(--gray-900)" }}>{formatCurrency(selectedPaymentInfo.amount)}</div>
+              </div>
+
+              <div>
+                <div style={{ fontSize: "13px", color: "var(--gray-500)", marginBottom: "4px" }}>Mode de paiement</div>
+                <div style={{ fontSize: "15px", fontWeight: "600", display: "flex", alignItems: "center", gap: "8px" }}>
+                  <CreditCard size={16} />
+                  {selectedPaymentInfo.payment_method === 'cash' ? 'Espèces' : 
+                   selectedPaymentInfo.payment_method === 'bank_transfer' ? 'Virement Bancaire' : 
+                   selectedPaymentInfo.payment_method === 'mobile_money' ? 'Mobile Money' : 
+                   selectedPaymentInfo.payment_method || 'Mode non renseigné'}
+                </div>
+              </div>
+
+              <div>
+                <div style={{ fontSize: "13px", color: "var(--gray-500)", marginBottom: "4px" }}>Date de paiement</div>
+                <div style={{ fontSize: "15px", fontWeight: "600", display: "flex", alignItems: "center", gap: "8px" }}>
+                  <Calendar size={16} />
+                  {selectedPaymentInfo.payment_date ? new Date(selectedPaymentInfo.payment_date).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) : 'Date non renseignée'}
+                </div>
+              </div>
+            </div>
+
+            <button className="btn btn-primary" style={{ width: "100%", marginTop: "24px" }} onClick={() => setSelectedPaymentInfo(null)}>Fermer</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
