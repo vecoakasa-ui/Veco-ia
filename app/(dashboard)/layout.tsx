@@ -177,6 +177,7 @@ export default function DashboardLayout({
       groupName: "Ma Gestion",
       items: [
         { name: "Tableau de bord", href: "/dashboard", icon: LayoutDashboard },
+        { name: "Propriétaires", href: "/proprietaires", icon: Users },
         { name: "Mes Biens", href: "/biens", icon: Building2 },
         { name: "Mes Locataires", href: "/locataires", icon: Users },
         { name: "Mes Contrats", href: "/contrats", icon: FolderLock },
