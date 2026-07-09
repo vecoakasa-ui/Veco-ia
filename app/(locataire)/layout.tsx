@@ -48,15 +48,26 @@ export default function LocataireLayout({
   const tenantId = (params?.id as string) || (pathname.match(/\/locataire\/([^\/]+)/)?.[1]) || null;
 
   useEffect(() => {
-    const handleAvatarUpdate = () => {
-      const customAvatar = localStorage.getItem("V_CUSTOM_AVATAR");
-      if (customAvatar) {
-        setProfile(prev => ({ ...prev, avatar_url: customAvatar }));
+    const handleAvatarUpdate = (e: any) => {
+      if (e && e.detail) {
+        setProfile(prev => prev ? { ...prev, avatar_url: e.detail } : prev);
+      } else {
+        const customAvatar = localStorage.getItem("V_CUSTOM_AVATAR");
+        if (customAvatar) {
+          setProfile(prev => prev ? { ...prev, avatar_url: customAvatar } : prev);
+        }
+      }
+    };
+
+    const handleProfileUpdate = (e: any) => {
+      if (e && e.detail) {
+        setProfile(prev => prev ? { ...prev, full_name: e.detail.full_name, phone: e.detail.phone } : prev);
       }
     };
     
-    window.addEventListener("avatarUpdate", handleAvatarUpdate);
-    handleAvatarUpdate();
+    window.addEventListener("avatarUpdate", handleAvatarUpdate as EventListener);
+    window.addEventListener("profileUpdate", handleProfileUpdate as EventListener);
+    handleAvatarUpdate(null);
 
     const loadProfile = async () => {
       const p = await db.getProfile();
@@ -112,7 +123,8 @@ export default function LocataireLayout({
     window.addEventListener("storage", handleStorage);
     return () => {
       window.removeEventListener("storage", handleStorage);
-      window.removeEventListener("avatarUpdate", handleAvatarUpdate);
+      window.removeEventListener("avatarUpdate", handleAvatarUpdate as EventListener);
+      window.removeEventListener("profileUpdate", handleProfileUpdate as EventListener);
     };
   }, [router]);
 

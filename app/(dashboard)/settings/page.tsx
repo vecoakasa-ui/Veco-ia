@@ -29,8 +29,12 @@ export default function SettingsPage() {
         if (event.target?.result) {
           const newAvatar = event.target.result as string;
           setAvatarUrl(newAvatar);
-          localStorage.setItem("V_CUSTOM_AVATAR", newAvatar);
-          window.dispatchEvent(new Event("avatarUpdate"));
+          try {
+            localStorage.setItem("V_CUSTOM_AVATAR", newAvatar);
+          } catch(e) {
+            console.error("Impossible de sauvegarder l'avatar localement", e);
+          }
+          window.dispatchEvent(new CustomEvent("avatarUpdate", { detail: newAvatar }));
         }
       };
       reader.readAsDataURL(file);
@@ -58,6 +62,7 @@ export default function SettingsPage() {
       await db.updateProfile({ ...profile, full_name: formData.full_name, phone: formData.phone });
       setProfile({ ...profile, full_name: formData.full_name, phone: formData.phone });
       setIsEditing(false);
+      window.dispatchEvent(new CustomEvent("profileUpdate", { detail: { full_name: formData.full_name, phone: formData.phone } }));
       setAlertModal({ isOpen: true, title: "Succès", message: "Profil mis à jour avec succès", type: "success" });
     } catch (err) {
       setAlertModal({ isOpen: true, title: "Erreur", message: "Impossible de mettre à jour le profil", type: "error" });
