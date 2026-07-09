@@ -28,6 +28,7 @@ export default function AcheteursPage() {
   const [monthlyPayment, setMonthlyPayment] = useState<number>(0);
   const [startDate, setStartDate] = useState("");
   const [formErrors, setFormErrors] = useState<{ idCardNumber?: string, idCardExpiration?: string }>({});
+  const [saleToDelete, setSaleToDelete] = useState<string | null>(null);
 
   const showToast = (message: string, type: 'success' | 'error') => {
     setToast({ message, type });
@@ -179,17 +180,22 @@ export default function AcheteursPage() {
     }
   };
 
-  const handleDeleteSale = async (e: React.MouseEvent, id: string) => {
+  const handleDeleteSale = (e: React.MouseEvent, id: string) => {
     e.preventDefault();
     e.stopPropagation();
-    if (confirm("Êtes-vous sûr de vouloir supprimer cette vente ? Cette action est irréversible.")) {
-      try {
-        await db.deleteSale(id);
-        showToast("Vente supprimée avec succès.", "success");
-        loadData();
-      } catch (error) {
-        showToast("Erreur lors de la suppression.", "error");
-      }
+    setSaleToDelete(id);
+  };
+
+  const confirmDeleteSale = async () => {
+    if (!saleToDelete) return;
+    try {
+      await db.deleteSale(saleToDelete);
+      showToast("Vente supprimée avec succès.", "success");
+      loadData();
+    } catch (error) {
+      showToast("Erreur lors de la suppression.", "error");
+    } finally {
+      setSaleToDelete(null);
     }
   };
 
@@ -506,6 +512,26 @@ export default function AcheteursPage() {
                 </div>
               </div>
             </form>
+          </div>
+        </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {saleToDelete && (
+        <div className="modal-overlay">
+          <div className="modal-content animate-fade-in" style={{ maxWidth: "400px", textAlign: "center" }}>
+            <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "#fee2e2", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px auto", color: "#991b1b" }}>
+              <AlertCircle size={32} />
+            </div>
+            <h3 style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "12px", color: "var(--gray-900)" }}>Supprimer la vente ?</h3>
+            <p style={{ color: "var(--gray-500)", marginBottom: "24px", fontSize: "14px", lineHeight: "1.5" }}>
+              Êtes-vous sûr de vouloir supprimer cette vente ? Toutes les échéances liées seront également supprimées. Cette action est irréversible.
+            </p>
+            <div style={{ display: "flex", gap: "12px" }}>
+              <button className="btn btn-outline" style={{ flex: 1 }} onClick={() => setSaleToDelete(null)}>Annuler</button>
+              <button className="btn btn-primary" style={{ flex: 1, background: "var(--danger)", border: "none" }} onClick={confirmDeleteSale}>Supprimer</button>
+            </div>
           </div>
         </div>
       )}
