@@ -1199,12 +1199,12 @@ export const db = {
         ]);
         
         const allProps = props.data || [];
-        const parentIds = new Set(allProps.map(p => p.parent_id).filter(Boolean));
-        const rentableProps = allProps.filter(p => !parentIds.has(p.id));
+        const parentIds = new Set(allProps.map((p: any) => p.parent_id).filter(Boolean));
+        const rentableProps = allProps.filter((p: any) => !parentIds.has(p.id));
         const total_properties = rentableProps.length;
 
         const allOccupiedProps = occupiedProps.data || [];
-        const rentableOccupiedProps = allOccupiedProps.filter(p => !parentIds.has(p.id));
+        const rentableOccupiedProps = allOccupiedProps.filter((p: any) => !parentIds.has(p.id));
 
         const payments = pays.data || [];
         
