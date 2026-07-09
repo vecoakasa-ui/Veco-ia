@@ -2,7 +2,7 @@
 // Vision Immo 2.0 — TypeScript Type Definitions
 // ============================================
 
-export type UserRole = 'owner' | 'tenant' | 'admin';
+export type UserRole = 'owner' | 'tenant' | 'admin' | 'buyer';
 export type SubscriptionPlan = 'free' | 'pro' | 'business';
 export type SubscriptionStatus = 'trialing' | 'active' | 'past_due' | 'canceled' | 'expired';
 
