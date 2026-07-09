@@ -56,7 +56,8 @@ export default function ProprietairesPage() {
       setLandlords(freshData);
       
       const freshProps = await db.getProperties();
-      setProperties(freshProps);
+      const parentIds = new Set(freshProps.map(p => p.parent_id).filter(Boolean));
+      setProperties(freshProps.filter(p => !parentIds.has(p.id)));
     } finally {
       setIsLoading(false);
     }
