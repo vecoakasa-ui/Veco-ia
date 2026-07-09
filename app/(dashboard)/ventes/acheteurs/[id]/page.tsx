@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, User, MapPin, Phone, Mail, Calendar, CheckCircle, AlertCircle, CreditCard, TrendingUp, Download, Plus, X, Smartphone, Lock, ArrowRight, ShieldCheck, Check } from "lucide-react";
+import { ArrowLeft, User, MapPin, Phone, Mail, Calendar, CheckCircle, AlertCircle, CreditCard, TrendingUp, Download, Plus, X, Smartphone, Lock, ArrowRight, ShieldCheck, Check, QrCode } from "lucide-react";
 import { db } from "@/lib/store";
 import { formatCurrency } from "@/lib/utils";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
@@ -35,6 +35,15 @@ export default function VenteDashboard() {
   });
   const [otpCode, setOtpCode] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  
+  // Validation and UX states
+  const [mobileMoneyMethod, setMobileMoneyMethod] = useState<'phone' | 'qr'>('phone');
+  const [showOtpToast, setShowOtpToast] = useState(false);
+  const [generatedOtp, setGeneratedOtp] = useState("4321");
+
+  const isCardValid = paymentDetails.cardName.length > 2 && paymentDetails.cardNumber.length >= 19 && paymentDetails.cardExpiry.length === 5 && paymentDetails.cardCvv.length >= 3;
+  const isMobileValid = mobileMoneyMethod === 'qr' || (paymentDetails.phoneNumber.length >= 8);
+
 
   useEffect(() => {
     const loadData = async () => {
@@ -122,14 +131,27 @@ export default function VenteDashboard() {
       }
     } else if (paymentStep === 2) {
       if (paymentMethodToUse === 'mobile_money') {
-        // Go to OTP step
-        setPaymentStep(3);
+        if (mobileMoneyMethod === 'qr') {
+          // If they scan QR, simulate external payment success directly
+          simulateProcessingAndPay();
+        } else {
+          // Go to OTP step
+          setPaymentStep(3);
+          const newOtp = Math.floor(1000 + Math.random() * 9000).toString();
+          setGeneratedOtp(newOtp);
+          setShowOtpToast(true);
+          setTimeout(() => setShowOtpToast(false), 8000);
+        }
       } else {
         // Credit card, Bank transfer, Cheque -> Validate directly
         simulateProcessingAndPay();
       }
     } else if (paymentStep === 3) {
       // Validate OTP
+      if (otpCode !== generatedOtp) {
+        alert("Le code OTP est incorrect.");
+        return;
+      }
       simulateProcessingAndPay();
     }
   };
@@ -150,6 +172,8 @@ export default function VenteDashboard() {
     setTimeout(() => {
       setPaymentStep(1);
       setOtpCode("");
+      setShowOtpToast(false);
+      setMobileMoneyMethod('phone');
       setPaymentMethodToUse('credit_card');
     }, 300);
   };
@@ -537,10 +561,7 @@ export default function VenteDashboard() {
                           </div>
                         </div>
                       </div>
-                    </>
-                  )}
-
-                  {paymentMethodToUse === 'mobile_money' && (
+                                 {paymentMethodToUse === 'mobile_money' && (
                     <>
                       <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
                         <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "rgba(255, 130, 0, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "#FF8200" }}>
@@ -548,39 +569,68 @@ export default function VenteDashboard() {
                         </div>
                         <div>
                           <h4 style={{ margin: 0, fontSize: "16px", fontWeight: "700", color: "var(--gray-900)" }}>Paiement Mobile</h4>
-                          <p style={{ margin: 0, fontSize: "13px", color: "var(--gray-500)" }}>Entrez votre numéro pour recevoir le code.</p>
+                          <p style={{ margin: 0, fontSize: "13px", color: "var(--gray-500)" }}>Choisissez comment vous souhaitez payer.</p>
                         </div>
                       </div>
 
-                      <div>
-                        <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px", color: "var(--gray-700)" }}>Opérateur</label>
-                        <select className="input" value={paymentDetails.operator} onChange={e => setPaymentDetails({...paymentDetails, operator: e.target.value})} style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid var(--gray-300)" }}>
-                          <option value="wave">Wave</option>
-                          <option value="orange">Orange Money</option>
-                          <option value="mtn">MTN Mobile Money</option>
-                          <option value="moov">Moov Money</option>
-                        </select>
+                      <div style={{ display: "flex", background: "var(--gray-100)", borderRadius: "8px", padding: "4px" }}>
+                        <button 
+                          onClick={() => setMobileMoneyMethod('phone')}
+                          style={{ flex: 1, padding: "8px", border: "none", borderRadius: "6px", background: mobileMoneyMethod === 'phone' ? "white" : "transparent", boxShadow: mobileMoneyMethod === 'phone' ? "0 1px 3px rgba(0,0,0,0.1)" : "none", fontSize: "13px", fontWeight: "600", color: mobileMoneyMethod === 'phone' ? "var(--gray-900)" : "var(--gray-500)", cursor: "pointer", transition: "all 0.2s" }}
+                        >
+                          Saisir le numéro
+                        </button>
+                        <button 
+                          onClick={() => setMobileMoneyMethod('qr')}
+                          style={{ flex: 1, padding: "8px", border: "none", borderRadius: "6px", background: mobileMoneyMethod === 'qr' ? "white" : "transparent", boxShadow: mobileMoneyMethod === 'qr' ? "0 1px 3px rgba(0,0,0,0.1)" : "none", fontSize: "13px", fontWeight: "600", color: mobileMoneyMethod === 'qr' ? "var(--gray-900)" : "var(--gray-500)", cursor: "pointer", transition: "all 0.2s" }}
+                        >
+                          Scanner QR Code
+                        </button>
                       </div>
 
-                      <div>
-                        <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px", color: "var(--gray-700)" }}>Numéro de téléphone</label>
-                        <div style={{ position: "relative" }}>
-                          <input type="text" className="input" placeholder="01 23 45 67 89" value={paymentDetails.phoneNumber} onChange={e => setPaymentDetails({...paymentDetails, phoneNumber: e.target.value.replace(/\\D/g, '')})} style={{ width: "100%", padding: "12px", paddingLeft: "60px", borderRadius: "8px", border: "1px solid var(--gray-300)", fontSize: "16px" }} />
-                          <div style={{ position: "absolute", left: "1px", top: "1px", bottom: "1px", width: "48px", background: "var(--gray-100)", borderRight: "1px solid var(--gray-300)", borderTopLeftRadius: "7px", borderBottomLeftRadius: "7px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", fontWeight: "600", color: "var(--gray-600)" }}>
-                            +225
+                      {mobileMoneyMethod === 'phone' ? (
+                        <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                          <div>
+                            <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px", color: "var(--gray-700)" }}>Opérateur</label>
+                            <select className="input" value={paymentDetails.operator} onChange={e => setPaymentDetails({...paymentDetails, operator: e.target.value})} style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid var(--gray-300)" }}>
+                              <option value="wave">Wave</option>
+                              <option value="orange">Orange Money</option>
+                              <option value="mtn">MTN Mobile Money</option>
+                              <option value="moov">Moov Money</option>
+                            </select>
+                          </div>
+
+                          <div>
+                            <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px", color: "var(--gray-700)" }}>Numéro de téléphone</label>
+                            <div style={{ position: "relative" }}>
+                              <input type="text" className="input" placeholder="01 23 45 67 89" value={paymentDetails.phoneNumber} onChange={e => setPaymentDetails({...paymentDetails, phoneNumber: e.target.value.replace(/\D/g, '')})} style={{ width: "100%", padding: "12px", paddingLeft: "60px", borderRadius: "8px", border: "1px solid var(--gray-300)", fontSize: "16px" }} />
+                              <div style={{ position: "absolute", left: "1px", top: "1px", bottom: "1px", width: "48px", background: "var(--gray-100)", borderRight: "1px solid var(--gray-300)", borderTopLeftRadius: "7px", borderBottomLeftRadius: "7px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", fontWeight: "600", color: "var(--gray-600)" }}>
+                                +225
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      ) : (
+                        <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "16px 0", gap: "16px" }}>
+                          <div style={{ background: "white", padding: "12px", borderRadius: "12px", border: "1px solid var(--gray-200)", display: "inline-block" }}>
+                            <QrCode size={160} strokeWidth={1.5} color="var(--gray-800)" />
+                          </div>
+                          <p style={{ margin: 0, fontSize: "13px", color: "var(--gray-500)", textAlign: "center" }}>
+                            Scannez ce code depuis votre application<br/>pour valider le paiement.
+                          </p>
+                        </div>
+                      )}
                     </>
                   )}
 
                   <button 
                     className="btn btn-primary" 
-                    style={{ width: "100%", padding: "14px", marginTop: "16px", fontSize: "16px", fontWeight: "700", display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", borderRadius: "12px", background: paymentMethodToUse === 'credit_card' ? "var(--primary)" : "#FF8200" }}
+                    disabled={paymentMethodToUse === 'credit_card' ? !isCardValid : !isMobileValid}
+                    style={{ width: "100%", padding: "14px", marginTop: "16px", fontSize: "16px", fontWeight: "700", display: "flex", justifyContent: "center", alignItems: "center", gap: "8px", borderRadius: "12px", background: paymentMethodToUse === 'credit_card' ? "var(--primary)" : "#FF8200", opacity: (paymentMethodToUse === 'credit_card' ? !isCardValid : !isMobileValid) ? 0.5 : 1 }}
                     onClick={handleNextStep}
                   >
-                    {paymentMethodToUse === 'credit_card' ? `Payer ${formatCurrency(installmentToPay.amount)}` : 'Recevoir le code OTP'}
-                    {paymentMethodToUse === 'credit_card' ? <Lock size={18} /> : <ArrowRight size={18} />}
+                    {paymentMethodToUse === 'credit_card' ? `Payer ${formatCurrency(installmentToPay.amount)}` : mobileMoneyMethod === 'qr' ? 'Paiement effectué' : 'Recevoir le code OTP'}
+                    {paymentMethodToUse === 'credit_card' ? <Lock size={18} /> : mobileMoneyMethod === 'qr' ? <CheckCircle size={18} /> : <ArrowRight size={18} />}
                   </button>
                   <div style={{ textAlign: "center", fontSize: "12px", color: "var(--gray-400)", display: "flex", alignItems: "center", justifyContent: "center", gap: "4px" }}>
                     <ShieldCheck size={14} /> Transactions sécurisées et chiffrées de bout en bout
@@ -606,7 +656,7 @@ export default function VenteDashboard() {
                       maxLength={4} 
                       placeholder="••••"
                       value={otpCode}
-                      onChange={e => setOtpCode(e.target.value.replace(/\\D/g, ''))}
+                      onChange={e => setOtpCode(e.target.value.replace(/\D/g, ''))}
                       style={{ 
                         width: "120px", height: "56px", fontSize: "32px", letterSpacing: "8px", 
                         textAlign: "center", borderRadius: "12px", border: "2px solid var(--gray-300)", 
@@ -615,6 +665,16 @@ export default function VenteDashboard() {
                       }} 
                     />
                   </div>
+                  
+                  {/* Toast Notification Simulation pour l'OTP */}
+                  {showOtpToast && (
+                    <div className="animate-slide-up" style={{ background: "var(--gray-900)", color: "white", padding: "12px 16px", borderRadius: "8px", fontSize: "13px", display: "flex", alignItems: "center", gap: "8px", boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)", marginBottom: "8px" }}>
+                      <Smartphone size={16} color="#FF8200" />
+                      <div>
+                        Nouveau SMS reçu : "Votre code de validation est le <strong>{generatedOtp}</strong>. Ne le partagez avec personne."
+                      </div>
+                    </div>
+                  )}
 
                   <button 
                     className="btn btn-primary" 
