@@ -23,6 +23,7 @@ export default function AcheteursPage() {
   const [propertyId, setPropertyId] = useState("");
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [advance, setAdvance] = useState<number>(0);
+  const [monthlyPayment, setMonthlyPayment] = useState<number>(0);
   const [startDate, setStartDate] = useState("");
 
   const showToast = (message: string, type: 'success' | 'error') => {
@@ -91,6 +92,29 @@ export default function AcheteursPage() {
           due_date: startDate
         });
         await db.payInstallment(inst.id, 'cash');
+      }
+
+      // 3.5 Generate future installments based on monthly payment
+      const balanceToPay = totalPrice - advance;
+      if (balanceToPay > 0 && monthlyPayment > 0) {
+        const numMonths = Math.ceil(balanceToPay / monthlyPayment);
+        let currentBalance = balanceToPay;
+        let currentDate = new Date(startDate);
+        
+        for (let i = 1; i <= numMonths; i++) {
+          // Increment month
+          currentDate.setMonth(currentDate.getMonth() + 1);
+          
+          const amountForMonth = currentBalance >= monthlyPayment ? monthlyPayment : currentBalance;
+          
+          await db.addSaleInstallment({
+            sale_id: sale.id,
+            amount: amountForMonth,
+            due_date: currentDate.toISOString().split('T')[0]
+          });
+          
+          currentBalance -= amountForMonth;
+        }
       }
 
       // 4. Update property status to occupied
@@ -334,19 +358,32 @@ export default function AcheteursPage() {
                     </div>
                   </div>
 
-                  <div className="input-group">
-                    <label className="input-label">Avance Payée (FCFA)</label>
-                    <input 
-                      type="number" 
-                      required 
-                      value={advance} 
-                      onChange={(e) => {
-                        const val = Number(e.target.value);
-                        if (val <= totalPrice) setAdvance(val);
-                      }} 
-                      className="input" 
-                      style={{ borderColor: advance > 0 ? "var(--primary)" : "" }} 
-                    />
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                    <div className="input-group">
+                      <label className="input-label">Avance Payée (FCFA)</label>
+                      <input 
+                        type="number" 
+                        required 
+                        value={advance} 
+                        onChange={(e) => {
+                          const val = Number(e.target.value);
+                          if (val <= totalPrice) setAdvance(val);
+                        }} 
+                        className="input" 
+                        style={{ borderColor: advance > 0 ? "var(--primary)" : "" }} 
+                      />
+                    </div>
+
+                    <div className="input-group">
+                      <label className="input-label">Mensualité souhaitée (FCFA)</label>
+                      <input 
+                        type="number" 
+                        required 
+                        value={monthlyPayment} 
+                        onChange={(e) => setMonthlyPayment(Number(e.target.value))} 
+                        className="input" 
+                      />
+                    </div>
                   </div>
 
                   {/* Summary Box */}
@@ -355,9 +392,17 @@ export default function AcheteursPage() {
                       <span style={{ color: "var(--gray-600)", fontSize: "14px" }}>Prix Total</span>
                       <span style={{ fontWeight: "600" }}>{formatCurrency(totalPrice)}</span>
                     </div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
                       <span style={{ color: "var(--gray-600)", fontSize: "14px" }}>Avance</span>
                       <span style={{ fontWeight: "600", color: "var(--primary)" }}>- {formatCurrency(advance)}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "12px" }}>
+                      <span style={{ color: "var(--gray-600)", fontSize: "14px" }}>Échéancier</span>
+                      <span style={{ fontWeight: "500", fontSize: "14px", color: "var(--gray-700)" }}>
+                        {monthlyPayment > 0 && (totalPrice - advance) > 0 
+                          ? `${Math.ceil((totalPrice - advance) / monthlyPayment)} mois à ${formatCurrency(monthlyPayment)}/mois` 
+                          : 'À définir'}
+                      </span>
                     </div>
                     <div style={{ height: "1px", background: "rgba(0,0,0,0.05)", margin: "0 -16px 12px -16px" }}></div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
