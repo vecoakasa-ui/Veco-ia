@@ -1189,16 +1189,23 @@ export const db = {
         if (!userId) throw new Error("User not authenticated");
 
         const [props, ten, pays, lands, leasesData, incidentsData, occupiedProps] = await Promise.all([
-          supabase.from("properties").select("id", { count: "exact", head: true }).eq("owner_id", userId).neq("type", "terrain").neq("type", "lotissement"),
+          supabase.from("properties").select("id, parent_id").eq("owner_id", userId).neq("type", "terrain").neq("type", "lotissement"),
           supabase.from("tenants").select("id", { count: "exact", head: true }).eq("owner_id", userId),
           supabase.from("payments").select("total, status").eq("owner_id", userId),
           supabase.from("landlords").select("id", { count: "exact", head: true }).eq("owner_id", userId),
           supabase.from("leases").select("id", { count: "exact", head: true }).eq("owner_id", userId),
           supabase.from("incidents").select("id", { count: "exact", head: true }).in("status", ["open", "in_progress"]),
-          supabase.from("properties").select("id", { count: "exact", head: true }).eq("status", "occupied").eq("owner_id", userId).neq("type", "terrain").neq("type", "lotissement")
+          supabase.from("properties").select("id, parent_id").eq("status", "occupied").eq("owner_id", userId).neq("type", "terrain").neq("type", "lotissement")
         ]);
         
-        const total_properties = props.count || 0;
+        const allProps = props.data || [];
+        const parentIds = new Set(allProps.map(p => p.parent_id).filter(Boolean));
+        const rentableProps = allProps.filter(p => !parentIds.has(p.id));
+        const total_properties = rentableProps.length;
+
+        const allOccupiedProps = occupiedProps.data || [];
+        const rentableOccupiedProps = allOccupiedProps.filter(p => !parentIds.has(p.id));
+
         const payments = pays.data || [];
         
         return {
@@ -1208,7 +1215,7 @@ export const db = {
           total_revenue: payments.filter((p: any) => p.status === "paid").reduce((sum: number, p: any) => sum + p.total, 0),
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           late_payments: payments.filter((p: any) => p.status === "late").length,
-          occupancy_rate: total_properties > 0 ? Math.round(((occupiedProps.count || 0) / total_properties) * 100) : 0,
+          occupancy_rate: total_properties > 0 ? Math.round((rentableOccupiedProps.length / total_properties) * 100) : 0,
           total_landlords: lands.count || 0,
           total_leases: leasesData.count || 0,
           unresolved_incidents: incidentsData.count || 0
@@ -1228,7 +1235,10 @@ export const db = {
       db.getIncidents()
     ]);
 
-    const total_properties = properties.filter(p => p.type !== 'terrain' && p.type !== 'lotissement').length;
+    const parentIds = new Set(properties.map(p => p.parent_id).filter(Boolean));
+    const rentableProps = properties.filter(p => p.type !== 'terrain' && p.type !== 'lotissement' && !parentIds.has(p.id));
+    const total_properties = rentableProps.length;
+    
     const total_tenants = tenants.length;
     const total_landlords = landlords.length;
     const total_leases = leases.length;
@@ -1239,7 +1249,7 @@ export const db = {
 
     const late_payments = payments.filter(p => p.status === "late").length;
 
-    const occupiedCount = properties.filter(p => p.status === "occupied" && p.type !== 'terrain' && p.type !== 'lotissement').length;
+    const occupiedCount = rentableProps.filter(p => p.status === "occupied").length;
     const occupancy_rate = total_properties > 0 ? Math.round((occupiedCount / total_properties) * 100) : 0;
 
     const unresolved_incidents = incidents.filter(i => i.status === "open" || i.status === "in_progress").length;
@@ -1304,14 +1314,16 @@ export const db = {
     if (isSupabaseConfigured()) {
       try {
         const [props, ten, pays, lands, adminsCount] = await Promise.all([
-          supabase.from("properties").select("id, status, type"),
+          supabase.from("properties").select("id, status, type, parent_id"),
           supabase.from("tenants").select("id", { count: "exact", head: true }),
           supabase.from("payments").select("total, status"),
           supabase.from("landlords").select("id", { count: "exact", head: true }),
           supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", "admin")
         ]);
         
-        const properties = (props.data || []).filter((p: any) => p.type !== 'terrain' && p.type !== 'lotissement');
+        const allProps = props.data || [];
+        const parentIds = new Set(allProps.map((p: any) => p.parent_id).filter(Boolean));
+        const properties = allProps.filter((p: any) => p.type !== 'terrain' && p.type !== 'lotissement' && !parentIds.has(p.id));
         const payments = pays.data || [];
         const total_properties = properties.length;
         

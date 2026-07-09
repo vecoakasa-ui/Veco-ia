@@ -223,9 +223,10 @@ export default function BiensPage() {
     const matchesSearch = 
       safeName.toLowerCase().includes(search.toLowerCase()) || 
       safeAddress.toLowerCase().includes(search.toLowerCase());
-    const matchesType = typeFilter === "all" || p.type === typeFilter;
-    const matchesStatus = statusFilter === "all" || p.status === statusFilter;
-    
+    // Exclude properties that act as parents (containers)
+    const hasChildren = properties.some(child => child.parent_id === p.id);
+    if (hasChildren) return false;
+
     return matchesSearch && matchesType && matchesStatus;
   });
 
