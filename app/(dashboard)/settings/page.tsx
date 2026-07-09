@@ -59,8 +59,8 @@ export default function SettingsPage() {
   const handleSaveProfile = async () => {
     if (!profile) return;
     try {
-      await db.updateProfile({ ...profile, full_name: formData.full_name, phone: formData.phone });
-      setProfile({ ...profile, full_name: formData.full_name, phone: formData.phone });
+      await db.updateProfile({ ...profile, full_name: formData.full_name, phone: formData.phone, avatar_url: avatarUrl || profile.avatar_url });
+      setProfile({ ...profile, full_name: formData.full_name, phone: formData.phone, avatar_url: avatarUrl || profile.avatar_url });
       setIsEditing(false);
       window.dispatchEvent(new CustomEvent("profileUpdate", { detail: { full_name: formData.full_name, phone: formData.phone } }));
       setAlertModal({ isOpen: true, title: "Succès", message: "Profil mis à jour avec succès", type: "success" });
