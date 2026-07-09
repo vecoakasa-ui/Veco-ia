@@ -27,6 +27,7 @@ export default function AcheteursPage() {
   const [advance, setAdvance] = useState<number>(0);
   const [monthlyPayment, setMonthlyPayment] = useState<number>(0);
   const [startDate, setStartDate] = useState("");
+  const [formErrors, setFormErrors] = useState<{ idCardNumber?: string, idCardExpiration?: string }>({});
 
   const showToast = (message: string, type: 'success' | 'error') => {
     setToast({ message, type });
@@ -66,12 +67,14 @@ export default function AcheteursPage() {
     e.preventDefault();
     if (!propertyId || !fullName || !startDate || !idCardNumber || !idCardExpiration) return;
 
+    setFormErrors({});
+
     // Validation date d'expiration
     const expirationDate = new Date(idCardExpiration);
     const today = new Date();
     today.setHours(0,0,0,0);
     if (expirationDate <= today) {
-      showToast("La pièce d'identité est expirée ou la date n'est pas valide.", "error");
+      setFormErrors({ idCardExpiration: "La pièce d'identité est expirée ou la date n'est pas valide." });
       return;
     }
 
@@ -79,18 +82,18 @@ export default function AcheteursPage() {
     if (idCardType === "cni") {
       const cniRegex = /^([a-zA-Z][0-9]{10}|[0-9]{11})$/;
       if (!cniRegex.test(idCardNumber)) {
-        showToast("Le numéro de la CNI ivoirienne doit comporter exactement 11 chiffres (ou 1 lettre et 10 chiffres).", "error");
+        setFormErrors({ idCardNumber: "Le numéro de la CNI ivoirienne doit comporter exactement 11 chiffres (ou 1 lettre et 10 chiffres)." });
         return;
       }
     } else if (idCardType === "passport") {
       const passportRegex = /^[a-zA-Z]{2}[0-9]{7}$/;
       if (!passportRegex.test(idCardNumber)) {
-        showToast("Le passeport ivoirien doit comporter 2 lettres suivies de 7 chiffres (ex: PB1234567).", "error");
+        setFormErrors({ idCardNumber: "Le passeport ivoirien doit comporter 2 lettres suivies de 7 chiffres (ex: PB1234567)." });
         return;
       }
     } else {
       if (idCardNumber.length < 6) {
-        showToast("Le numéro de la pièce doit comporter au moins 6 caractères.", "error");
+        setFormErrors({ idCardNumber: "Le numéro de la pièce doit comporter au moins 6 caractères." });
         return;
       }
     }
@@ -164,6 +167,7 @@ export default function AcheteursPage() {
       setTotalPrice(0);
       setAdvance(0);
       setStartDate("");
+      setFormErrors({});
       setShowAddModal(false);
 
       await loadData();
@@ -373,8 +377,9 @@ export default function AcheteursPage() {
                       <label className="input-label">N° Pièce d'identité <span style={{ color: "var(--danger)" }}>*</span></label>
                       <div className="input-with-icon">
                         <CreditCard className="input-icon" size={16} />
-                        <input type="text" required value={idCardNumber} onChange={(e) => setIdCardNumber(e.target.value.toUpperCase())} className="input" style={{ paddingLeft: "36px" }} placeholder={idCardType === 'cni' ? "C0012345678 ou 00123456789" : idCardType === 'passport' ? "PB1234567" : "Numéro"} />
+                        <input type="text" required value={idCardNumber} onChange={(e) => { setIdCardNumber(e.target.value.toUpperCase()); setFormErrors({...formErrors, idCardNumber: undefined}); }} className="input" style={{ paddingLeft: "36px", borderColor: formErrors.idCardNumber ? "var(--danger)" : undefined }} placeholder={idCardType === 'cni' ? "C0012345678 ou 00123456789" : idCardType === 'passport' ? "PB1234567" : "Numéro"} />
                       </div>
+                      {formErrors.idCardNumber && <div style={{ color: "var(--danger)", fontSize: "12px", marginTop: "4px" }}>{formErrors.idCardNumber}</div>}
                     </div>
                   </div>
                   
@@ -382,8 +387,9 @@ export default function AcheteursPage() {
                     <label className="input-label">Date d'expiration de la pièce <span style={{ color: "var(--danger)" }}>*</span></label>
                     <div className="input-with-icon">
                       <Calendar className="input-icon" size={16} />
-                      <input type="date" required value={idCardExpiration} onChange={(e) => setIdCardExpiration(e.target.value)} className="input" style={{ paddingLeft: "36px" }} />
+                      <input type="date" required value={idCardExpiration} onChange={(e) => { setIdCardExpiration(e.target.value); setFormErrors({...formErrors, idCardExpiration: undefined}); }} className="input" style={{ paddingLeft: "36px", borderColor: formErrors.idCardExpiration ? "var(--danger)" : undefined }} />
                     </div>
+                    {formErrors.idCardExpiration && <div style={{ color: "var(--danger)", fontSize: "12px", marginTop: "4px" }}>{formErrors.idCardExpiration}</div>}
                   </div>
                 </div>
 
