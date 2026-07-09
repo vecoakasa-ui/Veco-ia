@@ -375,11 +375,12 @@ export default function AcheteursPage() {
                     </div>
 
                     <div className="input-group">
-                      <label className="input-label">Mensualité souhaitée (FCFA)</label>
+                      <label className="input-label">Mensualité souhaitée (FCFA) <span style={{ color: "var(--danger)" }}>*</span></label>
                       <input 
                         type="number" 
                         required 
-                        value={monthlyPayment} 
+                        min="1"
+                        value={monthlyPayment || ''} 
                         onChange={(e) => setMonthlyPayment(Number(e.target.value))} 
                         className="input" 
                       />
