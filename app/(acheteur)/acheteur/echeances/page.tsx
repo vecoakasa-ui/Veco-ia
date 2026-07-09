@@ -82,7 +82,7 @@ export default function AcheteurEcheances() {
     setIsProcessingPayment(true);
     // Simulation of payment interface redirection (PayDunya/Stripe)
     setTimeout(() => {
-      alert(\`Redirection vers l'interface de paiement pour le montant de \${formatCurrency(inst.amount)}...\`);
+      alert(`Redirection vers l'interface de paiement pour le montant de ${formatCurrency(inst.amount)}...`);
       
       // MOCK: Auto update to paid for demo purposes
       setInstallments(prev => prev.map(i => {
@@ -167,7 +167,7 @@ export default function AcheteurEcheances() {
                         {new Date(inst.due_date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
                       </td>
                       <td style={{ padding: "16px 24px" }}>
-                        <div style={{ fontWeight: "500", color: "var(--gray-900)", marginBottom: "4px" }}>Mensualité {index === 0 ? "(Avance initiale)" : \`n°\${index}\`}</div>
+                        <div style={{ fontWeight: "500", color: "var(--gray-900)", marginBottom: "4px" }}>Mensualité {index === 0 ? "(Avance initiale)" : `n°${index}`}</div>
                         <div style={{ fontSize: "13px", color: "var(--gray-500)" }}>Pour: {prop?.name || 'Bien inconnu'}</div>
                       </td>
                       <td style={{ padding: "16px 24px", fontWeight: "700", color: "var(--gray-900)" }}>

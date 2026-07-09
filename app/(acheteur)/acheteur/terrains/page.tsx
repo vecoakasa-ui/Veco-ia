@@ -154,7 +154,7 @@ export default function AcheteurTerrains() {
                     <span style={{ fontSize: "12px", fontWeight: "700", color: "var(--primary)" }}>{progress}%</span>
                   </div>
                   <div style={{ width: "100%", height: "8px", background: "var(--gray-200)", borderRadius: "4px", overflow: "hidden" }}>
-                    <div style={{ width: \`\${progress}%\`, height: "100%", background: isSold ? "var(--success)" : "var(--primary)" }}></div>
+                    <div style={{ width: `${progress}%`, height: "100%", background: isSold ? "var(--success)" : "var(--primary)" }}></div>
                   </div>
                 </div>
                 

@@ -333,7 +333,7 @@ export default function AcheteurLayout({
         </div>
       </main>
 
-      <style jsx global>{\`
+      <style jsx global>{`
         @media (max-width: 1024px) {
           .acheteur-sidebar {
             transform: translateX(-100%);
@@ -342,7 +342,7 @@ export default function AcheteurLayout({
             marginLeft: 0 !important;
           }
         }
-      \`}</style>
+      `}</style>
     </div>
   );
 }

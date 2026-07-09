@@ -112,7 +112,7 @@ export default function AcheteurDashboard() {
             {formatCurrency(totalPaid)}
           </p>
           <div style={{ marginTop: "12px", background: "var(--gray-100)", height: "6px", borderRadius: "3px", overflow: "hidden" }}>
-            <div style={{ width: \`\${progressPercent}%\`, height: "100%", background: "var(--success)", borderRadius: "3px" }}></div>
+            <div style={{ width: `${progressPercent}%`, height: "100%", background: "var(--success)", borderRadius: "3px" }}></div>
           </div>
         </div>
 
@@ -142,7 +142,7 @@ export default function AcheteurDashboard() {
           {sales.length === 0 ? (
             <div style={{ textAlign: "center", padding: "40px 0", color: "var(--gray-500)" }}>
               <Home size={48} style={{ margin: "0 auto 16px auto", opacity: 0.2 }} />
-              <p>Vous n'avez pas encore d'acquisitions.</p>
+              <p>Vous n&apos;avez pas encore d&apos;acquisitions.</p>
             </div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
