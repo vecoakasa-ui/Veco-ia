@@ -122,8 +122,8 @@ export default function VenteDashboard() {
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "var(--space-6)" }}>
         {/* Buyer & Property Info */}
-        <div className="card" style={{ padding: "24px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "24px" }}>
+        <div className="card" style={{ padding: "16px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "16px" }}>
             <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "var(--primary-lighter)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
               <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(sale.buyer_name || "A")}&backgroundColor=e25822`} alt={sale.buyer_name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
@@ -142,8 +142,8 @@ export default function VenteDashboard() {
             </div>
           </div>
 
-          <div style={{ borderTop: "1px solid var(--gray-200)", margin: "24px 0", paddingTop: "24px" }}>
-            <h4 style={{ fontSize: "14px", fontWeight: "700", color: "var(--gray-500)", textTransform: "uppercase", marginBottom: "16px" }}>Bien Acquis</h4>
+          <div style={{ borderTop: "1px solid var(--gray-200)", margin: "16px 0", paddingTop: "16px" }}>
+            <h4 style={{ fontSize: "14px", fontWeight: "700", color: "var(--gray-500)", textTransform: "uppercase", marginBottom: "12px" }}>Bien Acquis</h4>
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
               <div style={{ width: "48px", height: "48px", borderRadius: "8px", background: "var(--primary-lighter)", color: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <MapPin size={24} />
@@ -157,10 +157,10 @@ export default function VenteDashboard() {
         </div>
 
         {/* Financial Summary & Progress */}
-        <div className="card" style={{ padding: "24px", display: "flex", flexDirection: "column" }}>
-          <h3 style={{ fontSize: "18px", fontWeight: "800", margin: "0 0 24px 0" }}>Bilan Financier</h3>
+        <div className="card" style={{ padding: "16px", display: "flex", flexDirection: "column" }}>
+          <h3 style={{ fontSize: "18px", fontWeight: "800", margin: "0 0 16px 0" }}>Bilan Financier</h3>
           
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "32px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "16px" }}>
             <div style={{ background: "var(--gray-50)", padding: "16px", borderRadius: "12px" }}>
               <div style={{ fontSize: "12px", color: "var(--gray-500)", fontWeight: "600", textTransform: "uppercase" }}>Total Payé</div>
               <div style={{ fontSize: "24px", fontWeight: "900", color: "var(--success)", marginTop: "4px" }}>{formatCurrency(totalPaid)}</div>
@@ -202,9 +202,9 @@ export default function VenteDashboard() {
       <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "var(--space-6)" }}>
         
         {/* Payment Chart */}
-        <div className="card" style={{ padding: "24px" }}>
-          <h3 style={{ fontSize: "18px", fontWeight: "800", margin: "0 0 24px 0" }}>Évolution des paiements</h3>
-          <div style={{ height: "250px", width: "100%" }}>
+        <div className="card" style={{ padding: "16px" }}>
+          <h3 style={{ fontSize: "18px", fontWeight: "800", margin: "0 0 16px 0" }}>Évolution des paiements</h3>
+          <div style={{ height: "180px", width: "100%" }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={chartData} margin={{ top: 20, right: 30, left: 10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
@@ -228,7 +228,7 @@ export default function VenteDashboard() {
 
         {/* Installments List */}
         <div className="card" style={{ padding: "0" }}>
-          <div style={{ padding: "24px", borderBottom: "1px solid var(--gray-200)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ padding: "16px", borderBottom: "1px solid var(--gray-200)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <h3 style={{ fontSize: "18px", fontWeight: "800", margin: 0 }}>Plan de paiement (Échéancier)</h3>
           </div>
           <div style={{ overflowX: "auto" }}>
@@ -281,8 +281,15 @@ export default function VenteDashboard() {
                             Encaisser
                           </button>
                         ) : (
-                          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", color: "var(--success)" }}>
-                            <CheckCircle size={20} />
+                          <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
+                            <button 
+                              className="btn btn-ghost"
+                              onClick={() => alert(`Ce paiement a été effectué via : ${inst.payment_method === 'cash' ? 'Espèces' : inst.payment_method === 'bank_transfer' ? 'Virement Bancaire' : inst.payment_method === 'mobile_money' ? 'Mobile Money' : inst.payment_method || 'Mode non renseigné'}`)}
+                              style={{ padding: "4px 8px", color: "var(--success)", background: "transparent", border: "none" }}
+                              title="Voir le mode de paiement"
+                            >
+                              <CheckCircle size={20} />
+                            </button>
                           </div>
                         )}
                       </td>
