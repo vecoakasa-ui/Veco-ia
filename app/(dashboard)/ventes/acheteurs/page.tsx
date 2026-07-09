@@ -19,7 +19,9 @@ export default function AcheteursPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [idCardType, setIdCardType] = useState("cni");
   const [idCardNumber, setIdCardNumber] = useState("");
+  const [idCardExpiration, setIdCardExpiration] = useState("");
   const [propertyId, setPropertyId] = useState("");
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [advance, setAdvance] = useState<number>(0);
@@ -62,7 +64,36 @@ export default function AcheteursPage() {
 
   const handleAddSale = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!propertyId || !fullName || !startDate) return;
+    if (!propertyId || !fullName || !startDate || !idCardNumber || !idCardExpiration) return;
+
+    // Validation date d'expiration
+    const expirationDate = new Date(idCardExpiration);
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    if (expirationDate <= today) {
+      showToast("La pièce d'identité est expirée ou la date n'est pas valide.", "error");
+      return;
+    }
+
+    // Validation stricte du numéro selon la Côte d'Ivoire
+    if (idCardType === "cni") {
+      const cniRegex = /^([a-zA-Z][0-9]{10}|[0-9]{11})$/;
+      if (!cniRegex.test(idCardNumber)) {
+        showToast("Le numéro de la CNI ivoirienne doit comporter exactement 11 chiffres (ou 1 lettre et 10 chiffres).", "error");
+        return;
+      }
+    } else if (idCardType === "passport") {
+      const passportRegex = /^[a-zA-Z]{2}[0-9]{7}$/;
+      if (!passportRegex.test(idCardNumber)) {
+        showToast("Le passeport ivoirien doit comporter 2 lettres suivies de 7 chiffres (ex: PB1234567).", "error");
+        return;
+      }
+    } else {
+      if (idCardNumber.length < 6) {
+        showToast("Le numéro de la pièce doit comporter au moins 6 caractères.", "error");
+        return;
+      }
+    }
 
     try {
       // 1. Create Buyer
@@ -128,6 +159,7 @@ export default function AcheteursPage() {
       setEmail("");
       setPhone("");
       setIdCardNumber("");
+      setIdCardExpiration("");
       setPropertyId("");
       setTotalPrice(0);
       setAdvance(0);
@@ -328,11 +360,29 @@ export default function AcheteursPage() {
                     </div>
                   </div>
                   
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1.5fr", gap: "16px" }}>
+                    <div className="input-group">
+                      <label className="input-label">Type de pièce <span style={{ color: "var(--danger)" }}>*</span></label>
+                      <select required value={idCardType} onChange={(e) => setIdCardType(e.target.value)} className="input" style={{ appearance: "auto" }}>
+                        <option value="cni">CNI</option>
+                        <option value="passport">Passeport</option>
+                        <option value="attestation">Attestation / Autre</option>
+                      </select>
+                    </div>
+                    <div className="input-group">
+                      <label className="input-label">N° Pièce d'identité <span style={{ color: "var(--danger)" }}>*</span></label>
+                      <div className="input-with-icon">
+                        <CreditCard className="input-icon" size={16} />
+                        <input type="text" required value={idCardNumber} onChange={(e) => setIdCardNumber(e.target.value.toUpperCase())} className="input" style={{ paddingLeft: "36px" }} placeholder={idCardType === 'cni' ? "C0012345678 ou 00123456789" : idCardType === 'passport' ? "PB1234567" : "Numéro"} />
+                      </div>
+                    </div>
+                  </div>
+                  
                   <div className="input-group">
-                    <label className="input-label">N° Pièce d'identité <span style={{ color: "var(--danger)" }}>*</span></label>
+                    <label className="input-label">Date d'expiration de la pièce <span style={{ color: "var(--danger)" }}>*</span></label>
                     <div className="input-with-icon">
-                      <CreditCard className="input-icon" size={16} />
-                      <input type="text" required value={idCardNumber} onChange={(e) => setIdCardNumber(e.target.value)} className="input" style={{ paddingLeft: "36px" }} placeholder="Ex: C001234567" />
+                      <Calendar className="input-icon" size={16} />
+                      <input type="date" required value={idCardExpiration} onChange={(e) => setIdCardExpiration(e.target.value)} className="input" style={{ paddingLeft: "36px" }} />
                     </div>
                   </div>
                 </div>
