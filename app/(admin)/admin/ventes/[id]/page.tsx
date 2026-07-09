@@ -17,10 +17,6 @@ export default function AdminVenteDashboard() {
   const [installments, setInstallments] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    loadData();
-  }, [id]);
-
   const loadData = async () => {
     setIsLoading(true);
     try {
@@ -43,6 +39,10 @@ export default function AdminVenteDashboard() {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    loadData();
+  }, [id]);
 
   if (isLoading || !sale) return <div style={{ padding: "32px", textAlign: "center" }}>Chargement...</div>;
 

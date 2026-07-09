@@ -137,6 +137,7 @@ export default function VenteDashboard() {
         } else {
           // Go to OTP step
           setPaymentStep(3);
+          // eslint-disable-next-line react-hooks/purity
           const newOtp = Math.floor(1000 + Math.random() * 9000).toString();
           setGeneratedOtp(newOtp);
           setShowOtpToast(true);
@@ -561,7 +562,10 @@ export default function VenteDashboard() {
                           </div>
                         </div>
                       </div>
-                                 {paymentMethodToUse === 'mobile_money' && (
+                    </>
+                  )}
+
+                  {paymentMethodToUse === 'mobile_money' && (
                     <>
                       <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
                         <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "rgba(255, 130, 0, 0.1)", display: "flex", alignItems: "center", justifyContent: "center", color: "#FF8200" }}>
