@@ -1613,7 +1613,12 @@ export const db = {
 
   deleteSale: async (id: string): Promise<void> => {
     if (isSupabaseConfigured()) {
-      await supabase.from("sales").delete().eq("id", id);
+      // Supprimer d'abord les échéances liées pour éviter l'erreur de clé étrangère
+      const { error: errInstallments } = await supabase.from("sale_installments").delete().eq("sale_id", id);
+      if (errInstallments) throw errInstallments;
+      
+      const { error } = await supabase.from("sales").delete().eq("id", id);
+      if (error) throw error;
     } else {
       const items = getFromStorage<any[]>("sales", []);
       setToStorage("sales", items.filter((i: any) => i.id !== id));
