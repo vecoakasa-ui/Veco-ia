@@ -17,7 +17,11 @@ export default function AdminVenteDashboard() {
   const [installments, setInstallments] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const loadData = async () => {
+  useEffect(() => {
+    loadData();
+  }, [id]);
+
+  async function loadData() {
     setIsLoading(true);
     try {
       const sales = await db.getSales();
@@ -39,10 +43,6 @@ export default function AdminVenteDashboard() {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    loadData();
-  }, [id]);
 
   if (isLoading || !sale) return <div style={{ padding: "32px", textAlign: "center" }}>Chargement...</div>;
 

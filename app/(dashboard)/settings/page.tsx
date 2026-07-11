@@ -112,16 +112,17 @@ export default function SettingsPage() {
                 )}
               </div>
               
-              <button 
-                onClick={() => fileInputRef.current?.click()}
+              <label 
+                htmlFor="avatar-upload-settings"
                 style={{ position: "absolute", bottom: "0", right: "0", background: "var(--primary)", color: "var(--fixed-white)", border: "none", borderRadius: "50%", width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "var(--shadow-sm)", transition: "transform 0.2s" }}
                 onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.1)"}
                 onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
                 title="Modifier la photo"
               >
                 <Camera size={16} />
-              </button>
+              </label>
               <input 
+                id="avatar-upload-settings"
                 type="file" 
                 ref={fileInputRef} 
                 onChange={handleFileChange} 

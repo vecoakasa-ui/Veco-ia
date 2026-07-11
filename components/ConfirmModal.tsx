@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AlertTriangle, Info, CheckCircle2, X } from "lucide-react";
+import { AlertTriangle, Info, X } from "lucide-react";
 
 export type ConfirmModalType = "danger" | "warning" | "info";
 

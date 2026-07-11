@@ -134,7 +134,7 @@ export default function AcheteursPage() {
       if (balanceToPay > 0 && monthlyPayment > 0) {
         const numMonths = Math.ceil(balanceToPay / monthlyPayment);
         let currentBalance = balanceToPay;
-        const currentDate = new Date(startDate);
+        let currentDate = new Date(startDate);
         
         for (let i = 1; i <= numMonths; i++) {
           // Increment month

@@ -106,16 +106,17 @@ export default function TenantProfilePage() {
               )}
             </div>
             
-            <button 
-              onClick={() => fileInputRef.current?.click()}
+            <label 
+              htmlFor="avatar-upload-locataire"
               style={{ position: "absolute", bottom: "4px", right: "4px", background: "var(--primary)", color: "var(--fixed-white)", border: "none", borderRadius: "50%", width: "36px", height: "36px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "var(--shadow-sm)", transition: "transform 0.2s" }}
               onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.1)"}
               onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
               title="Modifier la photo"
             >
               <Camera size={18} />
-            </button>
+            </label>
             <input 
+              id="avatar-upload-locataire"
               type="file" 
               ref={fileInputRef} 
               onChange={handleFileChange} 

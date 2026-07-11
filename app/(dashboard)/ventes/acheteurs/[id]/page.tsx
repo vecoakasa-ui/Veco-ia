@@ -540,19 +540,24 @@ export default function VenteDashboard() {
                       
                       <div>
                         <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px", color: "var(--gray-700)" }}>Titulaire de la carte</label>
-                        <input type="text" className="input" placeholder="Ex: Jean Dupont" value={paymentDetails.cardName} onChange={e => setPaymentDetails({...paymentDetails, cardName: e.target.value})} style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid var(--gray-300)" }} />
-                      </div>
-                      <div>
+                        <input type="text" className="input" placeholder="Ex: Jean Dupont" value={paymentDetails.cardName} onChange={e => setPaymentDetails({...paymentDetails, cardName: e.target.value})} style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid var(--gray-300)" }} />                      <div>
                         <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px", color: "var(--gray-700)" }}>Numéro de carte</label>
                         <div style={{ position: "relative" }}>
-                          <input type="text" className="input" placeholder="0000 0000 0000 0000" maxLength={19} value={paymentDetails.cardNumber} onChange={e => setPaymentDetails({...paymentDetails, cardNumber: e.target.value.replace(/\\W/gi, '').replace(/(.{4})/g, '$1 ').trim()})} style={{ width: "100%", padding: "12px", paddingLeft: "40px", borderRadius: "8px", border: "1px solid var(--gray-300)", fontFamily: "monospace", fontSize: "16px" }} />
+                          <input type="text" className="input" placeholder="0000 0000 0000 0000" maxLength={19} value={paymentDetails.cardNumber} onChange={e => setPaymentDetails({...paymentDetails, cardNumber: (e.target.value.replace(/\D/g, '').match(/.{1,4}/g) || []).join(' ')})} style={{ width: "100%", padding: "12px", paddingLeft: "40px", borderRadius: "8px", border: "1px solid var(--gray-300)", fontFamily: "monospace", fontSize: "16px" }} />
                           <CreditCard size={18} color="var(--gray-400)" style={{ position: "absolute", left: "12px", top: "14px" }} />
                         </div>
                       </div>
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
                         <div>
                           <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px", color: "var(--gray-700)" }}>Date d'exp. (MM/AA)</label>
-                          <input type="text" className="input" placeholder="MM/AA" maxLength={5} value={paymentDetails.cardExpiry} onChange={e => setPaymentDetails({...paymentDetails, cardExpiry: e.target.value.replace(/[^0-9]/g, '').replace(/^([2-9])$/g, '0$1').replace(/^(1{1})([3-9]{1})$/g, '0$1/$2').replace(/^0{0,1}[0-9]{1}[0-9]{0,1}/g, (v) => v.length === 2 ? v + '/' : v)})} style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid var(--gray-300)" }} />
+                          <input type="text" className="input" placeholder="MM/AA" maxLength={5} value={paymentDetails.cardExpiry} onChange={e => {
+                            let v = e.target.value.replace(/\D/g, '');
+                            if (v.length > 2) {
+                              v = v.substring(0, 2) + '/' + v.substring(2, 4);
+                            }
+                            setPaymentDetails({...paymentDetails, cardExpiry: v});
+                          }} style={{ width: "100%", padding: "12px", borderRadius: "8px", border: "1px solid var(--gray-300)" }} />
+                        </div>
                         </div>
                         <div>
                           <label style={{ display: "block", fontSize: "13px", fontWeight: "600", marginBottom: "6px", color: "var(--gray-700)" }}>CVC / CVV</label>
