@@ -42,8 +42,9 @@ export default function AcheteursPage() {
       setSales(allSales);
 
       const allProps = await db.getProperties();
-      // Only vacant terrains/lots
-      const availableLots = allProps.filter(p => (p.type === 'terrain' || p.type === 'lotissement') && p.status === 'vacant');
+      const parentIds = new Set(allProps.map(p => p.parent_id).filter(Boolean));
+      // Only vacant terrains/lots, exclude parents
+      const availableLots = allProps.filter(p => (p.type === 'terrain' || p.type === 'lotissement') && p.status === 'vacant' && !parentIds.has(p.id));
       setLots(availableLots);
     } finally {
       setIsLoading(false);

@@ -59,8 +59,9 @@ export default function LotsPage() {
     setIsLoading(true);
     try {
       const props = await db.getProperties();
-      // Filter only terrain and lotissement
-      const lands = props.filter(p => p.type === 'terrain' || p.type === 'lotissement');
+      const parentIds = new Set(props.map(p => p.parent_id).filter(Boolean));
+      // Filter only terrain and lotissement, and exclude parents
+      const lands = props.filter(p => (p.type === 'terrain' || p.type === 'lotissement') && !parentIds.has(p.id));
       setProperties(lands);
       setSales(await db.getSales());
       setBuyers(await db.getBuyers());
