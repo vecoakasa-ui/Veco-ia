@@ -1520,7 +1520,15 @@ export const db = {
   getBuyers: async (): Promise<any[]> => {
     if (isSupabaseConfigured()) {
       try {
-        const { data, error } = await supabase.from("buyers").select("*").order("full_name", { ascending: true });
+        const ownerId = await getOwnerId();
+        let query = supabase.from("buyers").select("*").order("full_name", { ascending: true });
+        
+        const { data: profile } = await supabase.from('profiles').select('role').eq('id', ownerId).single();
+        if (profile?.role === 'owner') {
+          query = query.eq('owner_id', ownerId);
+        }
+
+        const { data, error } = await query;
         if (!error && data) return data;
       } catch (err) {
         console.error(err);
@@ -1554,7 +1562,8 @@ export const db = {
   getSales: async (): Promise<any[]> => {
     if (isSupabaseConfigured()) {
       try {
-        const { data, error } = await supabase
+        const ownerId = await getOwnerId();
+        let query = supabase
           .from("sales")
           .select(`
             *,
@@ -1562,6 +1571,13 @@ export const db = {
             properties ( name )
           `)
           .order("created_at", { ascending: false });
+          
+        const { data: profile } = await supabase.from('profiles').select('role').eq('id', ownerId).single();
+        if (profile?.role === 'owner') {
+          query = query.eq('owner_id', ownerId);
+        }
+
+        const { data, error } = await query;
         if (!error && data) {
           return data.map((s: any) => ({
             ...s,
@@ -1631,7 +1647,15 @@ export const db = {
   getSaleInstallments: async (): Promise<any[]> => {
     if (isSupabaseConfigured()) {
       try {
-        const { data, error } = await supabase.from("sale_installments").select("*").order("due_date", { ascending: true });
+        const ownerId = await getOwnerId();
+        let query = supabase.from("sale_installments").select("*").order("due_date", { ascending: true });
+        
+        const { data: profile } = await supabase.from('profiles').select('role').eq('id', ownerId).single();
+        if (profile?.role === 'owner') {
+          query = query.eq('owner_id', ownerId);
+        }
+
+        const { data, error } = await query;
         if (!error && data) return data;
       } catch (err) {
         console.error(err);
