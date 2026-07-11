@@ -56,8 +56,13 @@ export default function MapModule({ properties, height = "400px" }: MapModulePro
                 <div style={{ minWidth: "160px", color: "var(--gray-900)" }}>
                   <h4 style={{ margin: "0 0 4px 0", fontSize: "14px", fontWeight: "bold" }}>{property.name}</h4>
                   <p style={{ margin: "0 0 8px 0", fontSize: "12px", color: "var(--gray-600)" }}>{property.address}, {property.city}</p>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontWeight: "bold", color: "var(--primary)" }}>{formatCurrency(property.monthly_rent)}</span>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                    <span style={{ fontWeight: "bold", color: "var(--primary)" }}>
+                      {property.type === 'terrain' || property.type === 'lotissement' ? `Prix : ${formatCurrency(property.sale_price || 0)}` : `Loyer : ${formatCurrency(property.monthly_rent || 0)}`}
+                    </span>
+                    <span style={{ fontSize: "11px", color: "var(--gray-500)" }}>
+                      GPS: {property.lat?.toFixed(5)}, {property.lng?.toFixed(5)}
+                    </span>
                   </div>
                 </div>
               </Popup>
