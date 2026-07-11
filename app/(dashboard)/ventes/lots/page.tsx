@@ -235,7 +235,7 @@ export default function LotsPage() {
 
       {/* Properties List */}
       {isLoading ? (
-        <div style={{ display: "grid", gridTemplateColumns: viewMode === "grid" ? "repeat(auto-fill, minmax(250px, 1fr))" : "1fr", gap: "var(--space-6)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: viewMode === "grid" ? "repeat(auto-fill, minmax(200px, 1fr))" : "1fr", gap: "var(--space-6)" }}>
            {[1, 2, 3].map((i) => (
              <div key={i} className="card skeleton" style={{ height: 200 }}></div>
            ))}
@@ -250,7 +250,7 @@ export default function LotsPage() {
           <MapModuleWrapper properties={filteredProperties} height="100%" />
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: viewMode === "grid" ? "repeat(auto-fill, minmax(250px, 1fr))" : "1fr", gap: "var(--space-6)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: viewMode === "grid" ? "repeat(auto-fill, minmax(200px, 1fr))" : "1fr", gap: "var(--space-6)" }}>
           {filteredProperties.map((p) => (
             <div key={p.id} className="card card-interactive" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: viewMode === "grid" ? "column" : "row", height: "100%" }}>
               <div className="card-image-container" style={{ height: viewMode === "grid" ? "180px" : "auto", width: viewMode === "list" ? "250px" : "auto", position: "relative" }}>
