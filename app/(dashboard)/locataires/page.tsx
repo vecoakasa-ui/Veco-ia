@@ -17,6 +17,7 @@ import {
 import { db } from "@/lib/store";
 import { Tenant, Property } from "@/lib/types";
 import { formatDate, getPropertyTypeLabel } from "@/lib/utils";
+import { supabase } from "@/lib/supabase";
 
 export default function LocatairesPage() {
   return (
@@ -120,8 +121,16 @@ function LocatairesContent() {
     e.preventDefault();
     if (!fullName || !email || !phone || !propertyId || !leaseStart || !leaseEnd) return;
 
+    let finalProfileId = "tp-" + Math.random().toString(36).substring(2, 9);
+    try {
+      const { data } = await supabase.from("profiles").select("id").eq("email", email).maybeSingle();
+      if (data && data.id) {
+        finalProfileId = data.id;
+      }
+    } catch (e) {}
+
     await db.addTenant({
-      profile_id: "tp-" + Math.random().toString(36).substring(2, 9),
+      profile_id: finalProfileId,
       property_id: propertyId,
       lease_start: leaseStart,
       lease_end: leaseEnd,
