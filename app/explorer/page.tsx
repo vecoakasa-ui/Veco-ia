@@ -386,6 +386,7 @@ export default function PublicExplorerPage() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
