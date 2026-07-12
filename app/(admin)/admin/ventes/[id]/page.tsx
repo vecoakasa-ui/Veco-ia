@@ -18,31 +18,31 @@ export default function AdminVenteDashboard() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    loadData();
-  }, [id]);
-
-  async function loadData() {
-    setIsLoading(true);
-    try {
-      const sales = await db.getSales();
-      const currentSale = sales.find(s => s.id === id);
-      
-      if (!currentSale) {
-        router.push("/admin/ventes");
-        return;
+    async function loadData() {
+      setIsLoading(true);
+      try {
+        const sales = await db.getSales();
+        const currentSale = sales.find((s: any) => s.id === id);
+        
+        if (!currentSale) {
+          router.push("/admin/ventes");
+          return;
+        }
+        
+        const allInstallments = await db.getSaleInstallments();
+        const saleInstallments = allInstallments.filter((i: any) => i.sale_id === id);
+        
+        setSale(currentSale);
+        setInstallments(saleInstallments.sort((a: any, b: any) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime()));
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsLoading(false);
       }
-      
-      const allInstallments = await db.getSaleInstallments();
-      const saleInstallments = allInstallments.filter(i => i.sale_id === id);
-      
-      setSale(currentSale);
-      setInstallments(saleInstallments.sort((a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime()));
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
     }
-  };
+
+    loadData();
+  }, [id, router]);
 
   if (isLoading || !sale) return <div style={{ padding: "32px", textAlign: "center" }}>Chargement...</div>;
 
