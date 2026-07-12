@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { 
-  DollarSign, 
+  Banknote,
   Search, 
   X, 
   CheckCircle, 
@@ -220,7 +220,7 @@ export default function PaiementsPage() {
                           {p.payment_method === 'mtn' && <Smartphone size={12} style={{ color: "var(--info-dark)" }} />}
                           {p.payment_method === 'wave' && <Smartphone size={12} style={{ color: "#00A3E0" }} />}
                           {p.payment_method === 'paydunya' && <Smartphone size={12} style={{ color: "var(--primary)" }} />}
-                          {p.payment_method === 'cash' && <DollarSign size={12} style={{ color: "var(--success-dark)" }} />}
+                          {p.payment_method === 'cash' && <Banknote size={12} style={{ color: "var(--success-dark)" }} />}
                           {p.payment_method?.replace("_", " ")}
                         </span>
                       ) : "—"}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Search, MapPin, DollarSign, Calendar, Eye, AlertCircle, CheckCircle, Briefcase, ChevronRight } from "lucide-react";
+import { Search, MapPin, Banknote, Calendar, Eye, AlertCircle, CheckCircle, Briefcase, ChevronRight } from "lucide-react";
 import { db } from "@/lib/store";
 import { formatCurrency } from "@/lib/utils";
 import Link from "next/link";
@@ -52,7 +52,7 @@ export default function AdminVentesPage() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "var(--space-4)" }}>
         <div className="card" style={{ display: "flex", alignItems: "center", gap: "16px", padding: "24px" }}>
           <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "rgba(16, 185, 129, 0.1)", color: "#10b981", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <DollarSign size={24} />
+            <Banknote size={24} />
           </div>
           <div>
             <p style={{ margin: 0, fontSize: "14px", color: "var(--gray-500)", fontWeight: "600" }}>Volume total des ventes</p>

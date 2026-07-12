@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { 
   Building2, 
   MapPin, 
-  DollarSign, 
+  Banknote,
   Search, 
   Plus, 
   X, 
@@ -403,9 +403,11 @@ export default function BiensPage() {
                     </h3>
                   </div>
                   {viewMode === "list" && (
-                     <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "var(--text-base)", fontWeight: 700, color: "var(--primary-dark)" }}>
-                       <DollarSign size={18} style={{ color: "var(--primary)", flexShrink: 0 }} />
-                       <span>{formatCurrency(p.monthly_rent)} <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", fontWeight: 400 }}>/ mois</span></span>
+                     <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "var(--primary-lightest)", padding: "12px", borderRadius: "8px" }}>
+                       <Banknote size={18} style={{ color: "var(--primary)", flexShrink: 0 }} />
+                       <div style={{ display: "flex", flexDirection: "column" }}>
+                         <span style={{ fontSize: "var(--text-base)", fontWeight: 700, color: "var(--primary-dark)" }}>{formatCurrency(p.monthly_rent)} <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", fontWeight: 400 }}>/ mois</span></span>
+                       </div>
                      </div>
                   )}
                 </div>
@@ -419,7 +421,7 @@ export default function BiensPage() {
                   </div>
                   {viewMode === "grid" && (
                     <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "var(--text-base)", fontWeight: 700, color: "var(--primary-dark)" }}>
-                      <DollarSign size={18} style={{ color: "var(--primary)", flexShrink: 0 }} />
+                      <Banknote size={18} style={{ color: "var(--primary)", flexShrink: 0 }} />
                       <span>{formatCurrency(p.monthly_rent)} <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", fontWeight: 400 }}>/ mois</span></span>
                     </div>
                   )}
