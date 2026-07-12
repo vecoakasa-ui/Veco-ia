@@ -94,7 +94,7 @@ export default function PublicExplorerPage() {
   if (loading) {
     return (
       <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "50vh", flexDirection: "column", gap: "16px" }} className="animate-fade-in">
-        <Loader2 size={48} className="animate-spin" style={{ color: "var(--primary)" }} />
+        <Loader2 size={48} className="spin" style={{ color: "var(--primary)" }} />
         <h3 style={{ color: "var(--gray-600)" }}>Recherche des biens disponibles...</h3>
       </div>
     );
@@ -107,7 +107,9 @@ export default function PublicExplorerPage() {
         <Link href="/" className="btn btn-ghost" style={{ display: "flex", alignItems: "center", gap: "8px", textDecoration: "none", color: "var(--gray-700)" }}>
           <ArrowLeft size={20} /> Retour
         </Link>
-        <h1 style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "var(--gray-900)" }}>Vision Immo 2.0 <span style={{ color: "var(--orange)" }}>Explorer</span></h1>
+        <Link href="/" style={{ textDecoration: "none" }}>
+          <h1 style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "var(--gray-900)" }}>Vision Immo 2.0 <span style={{ color: "var(--orange)" }}>Explorer</span></h1>
+        </Link>
       </header>
 
       <div style={{ padding: "var(--space-6)", display: "flex", flexDirection: "column", gap: "var(--space-6)", flex: 1, maxWidth: "1200px", margin: "0 auto", width: "100%" }}>
