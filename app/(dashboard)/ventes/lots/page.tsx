@@ -64,8 +64,9 @@ export default function LotsPage() {
         db.getBuyers()
       ]);
       const parentIds = new Set(props.map(p => p.parent_id).filter(Boolean));
-      // Filter only terrain and lotissement, and exclude parents
-      const lands = props.filter(p => (p.type === 'terrain' || p.type === 'lotissement') && !parentIds.has(p.id));
+      // Masquer à vie les structures parentes (lotissement) sur le visuel
+      // On ne garde que les terrains (lots) finaux
+      const lands = props.filter(p => p.type === 'terrain' && !parentIds.has(p.id));
       setProperties(lands);
       setSales(allSales);
       setBuyers(allBuyers);

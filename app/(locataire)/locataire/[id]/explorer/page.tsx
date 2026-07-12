@@ -41,8 +41,9 @@ export default function ExplorerPage() {
     const loadData = async () => {
       setLoading(true);
       const allProperties = await db.getProperties();
-      // Filter for vacant properties only
-      const vacantProperties = allProperties.filter(p => p.status === "vacant");
+      // Filter for vacant properties only and exclude parent structures
+      const parentTypes = ['building', 'cour_commune', 'residence', 'lotissement'];
+      const vacantProperties = allProperties.filter(p => p.status === "vacant" && !parentTypes.includes(p.type));
       setProperties(vacantProperties);
 
       const profile = await db.getProfile();

@@ -33,8 +33,12 @@ export default function AdminBiensPage() {
     async function fetchProperties() {
       try {
         const data = await db.getProperties();
-        setProperties(data);
-        setFilteredProperties(data);
+        // Masquer à vie les structures parentes (demande utilisateur)
+        const parentTypes = ['building', 'cour_commune', 'residence', 'lotissement'];
+        const filteredData = data.filter(p => !parentTypes.includes(p.type));
+        
+        setProperties(filteredData);
+        setFilteredProperties(filteredData);
       } catch (error) {
         console.error("Erreur lors du chargement des biens", error);
       } finally {

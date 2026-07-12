@@ -56,8 +56,9 @@ export default function ProprietairesPage() {
       setLandlords(freshData);
       
       const freshProps = await db.getProperties();
-      const parentIds = new Set(freshProps.map(p => p.parent_id).filter(Boolean));
-      setProperties(freshProps.filter(p => !parentIds.has(p.id)));
+      // Masquer à vie les structures parentes (demande utilisateur)
+      const parentTypes = ['building', 'cour_commune', 'residence', 'lotissement'];
+      setProperties(freshProps.filter(p => !parentTypes.includes(p.type)));
     } finally {
       setIsLoading(false);
     }

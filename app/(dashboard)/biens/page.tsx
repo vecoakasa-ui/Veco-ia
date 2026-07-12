@@ -218,6 +218,9 @@ export default function BiensPage() {
     // Exclude terrains and lotissements as they are managed in the sales module
     if (p.type === 'terrain' || p.type === 'lotissement') return false;
 
+    // Masquer à vie les structures parentes sur le visuel (demande utilisateur)
+    if (p.type === 'building' || p.type === 'cour_commune' || p.type === 'residence') return false;
+
     const safeName = p.name || "";
     const safeAddress = p.address || "";
     const matchesSearch = 
@@ -227,7 +230,7 @@ export default function BiensPage() {
     const matchesType = typeFilter === "all" || p.type === typeFilter;
     const matchesStatus = statusFilter === "all" || p.status === statusFilter;
 
-    // Exclude properties that act as parents (containers)
+    // Exclude properties that act as parents (containers) - kept as fallback
     const hasChildren = properties.some(child => child.parent_id === p.id);
     if (hasChildren) return false;
 
