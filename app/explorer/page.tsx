@@ -110,6 +110,11 @@ export default function PublicExplorerPage() {
         <Link href="/" style={{ textDecoration: "none" }}>
           <h1 style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "var(--gray-900)" }}>Vision Immo 2.0 <span style={{ color: "var(--orange)" }}>Explorer</span></h1>
         </Link>
+        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "12px" }}>
+          <Link href="/login" className="btn btn-outline" style={{ display: "flex", alignItems: "center", gap: "8px", padding: "8px 16px", fontSize: "14px", fontWeight: "600", textDecoration: "none" }}>
+            <User size={16} /> <span className="hide-mobile">Se connecter</span>
+          </Link>
+        </div>
       </header>
 
       <div style={{ padding: "var(--space-6)", display: "flex", flexDirection: "column", gap: "var(--space-6)", flex: 1, maxWidth: "1200px", margin: "0 auto", width: "100%" }}>
