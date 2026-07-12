@@ -184,7 +184,7 @@ export default function PublicExplorerPage() {
             transition: "all 0.2s"
           }}
         >
-          À Acheter (Terrains & Lots)
+          À Acheter <span style={{ color: "var(--orange)", fontWeight: "bold" }}>(Terrains & Lots)</span>
         </button>
       </div>
 
