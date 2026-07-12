@@ -223,7 +223,10 @@ export default function ExplorerPage() {
                   <div style={{ padding: "var(--space-5)", display: "flex", flexDirection: "column", flex: 1 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-2)" }}>
                       <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 700, margin: 0, color: "var(--gray-900)" }}>{property.name}</h3>
-                      <span style={{ fontSize: "var(--text-lg)", fontWeight: 800, color: "var(--primary)" }}>{formatCurrency(property.monthly_rent)}<span style={{ fontSize: "12px", fontWeight: 500, color: "var(--gray-500)" }}>/mois</span></span>
+                      <span style={{ fontSize: "var(--text-lg)", fontWeight: 800, color: "var(--primary)" }}>
+                        {activeTab === 'achat' ? formatCurrency(property.sale_price || 0) : formatCurrency(property.monthly_rent)}
+                        {activeTab === 'location' && <span style={{ fontSize: "12px", fontWeight: 500, color: "var(--gray-500)" }}>/mois</span>}
+                      </span>
                     </div>
                     
                     <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-600)", display: "flex", alignItems: "center", gap: "6px", margin: "0 0 var(--space-4)" }}>
@@ -293,7 +296,7 @@ export default function ExplorerPage() {
                   <div style={{ display: "flex", gap: "var(--space-3)", padding: "var(--space-3)", background: "var(--primary-lightest)", borderRadius: "var(--radius-md)", marginBottom: "var(--space-5)" }}>
                     <Info size={20} style={{ color: "var(--primary)", flexShrink: 0 }} />
                     <p style={{ margin: 0, fontSize: "var(--text-sm)", color: "var(--primary-dark)" }}>
-                      Vous êtes sur le point d'envoyer une demande {selectedProperty.type === 'terrain' || selectedProperty.type === 'lotissement' ? "d'achat" : "de location"} pour <strong>{selectedProperty.name}</strong> au {selectedProperty.type === 'terrain' || selectedProperty.type === 'lotissement' ? "prix" : "loyer"} de <strong>{formatCurrency(selectedProperty.monthly_rent)}</strong>.
+                      Vous êtes sur le point d'envoyer une demande {selectedProperty.type === 'terrain' || selectedProperty.type === 'lotissement' ? "d'achat" : "de location"} pour <strong>{selectedProperty.name}</strong> au {selectedProperty.type === 'terrain' || selectedProperty.type === 'lotissement' ? "prix" : "loyer"} de <strong>{formatCurrency(selectedProperty.type === 'terrain' || selectedProperty.type === 'lotissement' ? (selectedProperty.sale_price || 0) : selectedProperty.monthly_rent)}</strong>.
                     </p>
                   </div>
 
