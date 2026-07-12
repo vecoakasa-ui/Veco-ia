@@ -59,8 +59,11 @@ export default function VenteDashboard() {
         
         const allInstallments = await db.getSaleInstallments();
         const saleInstallments = allInstallments.filter(i => i.sale_id === id);
+        const allProperties = await db.getProperties();
+        const currentProperty = allProperties.find(p => p.id === currentSale.property_id);
+        const propertyImage = currentProperty?.images?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(currentSale.buyer_name || "A")}&backgroundColor=e25822`;
         
-        setSale(currentSale);
+        setSale({...currentSale, property_image: propertyImage});
         setInstallments(saleInstallments.sort((a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime()));
       } catch (error) {
         console.error(error);
@@ -85,8 +88,11 @@ export default function VenteDashboard() {
       
       const allInstallments = await db.getSaleInstallments();
       const saleInstallments = allInstallments.filter(i => i.sale_id === id);
+      const allProperties = await db.getProperties();
+      const currentProperty = allProperties.find(p => p.id === currentSale.property_id);
+      const propertyImage = currentProperty?.images?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(currentSale.buyer_name || "A")}&backgroundColor=e25822`;
       
-      setSale(currentSale);
+      setSale({...currentSale, property_image: propertyImage});
       setInstallments(saleInstallments.sort((a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime()));
     } catch (error) {
       console.error(error);
@@ -218,8 +224,8 @@ export default function VenteDashboard() {
         {/* Buyer & Property Info */}
         <div className="card" style={{ padding: "16px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "16px" }}>
-            <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "var(--primary-lighter)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-              <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(sale.buyer_name || "A")}&backgroundColor=e25822`} alt={sale.buyer_name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <div style={{ width: "64px", height: "64px", borderRadius: "16px", background: "var(--primary-lighter)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+              <img src={sale.property_image} alt={sale.property_name || sale.buyer_name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             </div>
             <div>
               <h3 style={{ fontSize: "20px", fontWeight: "900", margin: 0 }}>{sale.buyer_name}</h3>
