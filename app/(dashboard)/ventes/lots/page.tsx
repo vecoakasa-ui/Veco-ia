@@ -293,7 +293,7 @@ export default function LotsPage() {
                       onClick={() => {
                          const sale = sales.find(s => s.property_id === p.id);
                          const buyer = sale ? buyers.find(b => b.id === sale.buyer_id) : null;
-                         if (buyer) setViewBuyer(buyer);
+                         if (buyer) setViewBuyer({ ...buyer, property_image: p.images?.[0] });
                          else alert("Acheteur introuvable pour ce terrain.");
                       }}
                       title="Voir l'acheteur"
@@ -516,8 +516,8 @@ export default function LotsPage() {
           <div className="card animate-scale-in" style={{ width: "100%", maxWidth: "500px", background: 'white', padding: "0", overflow: "hidden" }}>
             <div style={{ background: "var(--primary)", padding: "24px", color: "white", display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
               <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                <div style={{ width: "64px", height: "64px", borderRadius: "50%", background: "var(--primary-lighter)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-                  <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(viewBuyer.full_name || "A")}&backgroundColor=e25822`} alt={viewBuyer.full_name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <div style={{ width: "64px", height: "64px", borderRadius: "16px", background: "var(--primary-lighter)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+                  <img src={viewBuyer.property_image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(viewBuyer.full_name || "A")}&backgroundColor=e25822`} alt={viewBuyer.full_name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 </div>
                 <div>
                   <h3 style={{ margin: 0, fontSize: "24px", fontWeight: "900", color: "var(--orange)" }}>{viewBuyer.full_name}</h3>
