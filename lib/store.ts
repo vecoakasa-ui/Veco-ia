@@ -918,13 +918,12 @@ export const db = {
       try {
         const { data, error } = await supabase
           .from("payments")
-          .select(`
-            *,
-            tenants:tenant_id (*),
-            properties:property_id (*)
-          `)
+          .select(`*`)
           .order("created_at", { ascending: false });
-        if (error) throw error;
+        if (error) {
+          console.error("Supabase getPayments error:", error);
+          throw error;
+        }
         if (data) {
           const rows = data as unknown as DBPaymentRow[];
           return rows.map((p) => {
@@ -991,7 +990,9 @@ export const db = {
         payment_method: newPayment.payment_method,
         stripe_payment_id: newPayment.stripe_payment_id,
         payment_date: newPayment.payment_date,
-        due_date: newPayment.due_date
+        due_date: newPayment.due_date,
+        tenant_name: newPayment.tenant_name,
+        property_name: newPayment.property_name
       });
       if (error) throw error;
     }
