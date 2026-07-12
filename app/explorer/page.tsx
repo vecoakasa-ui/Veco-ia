@@ -40,7 +40,7 @@ export default function PublicExplorerPage() {
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
-      const allProperties = await db.getProperties();
+      const allProperties = await db.getPublicProperties();
       // Filter for vacant properties only and exclude parent structures
       const parentTypes = ['building', 'cour_commune', 'residence', 'lotissement'];
       const vacantProperties = allProperties.filter(p => p.status === "vacant" && !parentTypes.includes(p.type));

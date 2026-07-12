@@ -618,6 +618,22 @@ export const db = {
   },
 
   // Properties
+  getPublicProperties: async (): Promise<Property[]> => {
+    if (isSupabaseConfigured()) {
+      try {
+        const { data, error } = await supabase
+          .from("properties")
+          .select("*")
+          .order("name", { ascending: true });
+          
+        if (error) throw error;
+        if (data) return data as Property[];
+      } catch (err) {
+        console.error("Error fetching public properties from Supabase:", err);
+      }
+    }
+    return [];
+  },
   getProperties: async (): Promise<Property[]> => {
     if (isSupabaseConfigured()) {
       try {
