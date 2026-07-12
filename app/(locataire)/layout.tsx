@@ -139,7 +139,6 @@ export default function LocataireLayout({
       groupName: "Mon Espace",
       items: [
         { name: "Accueil", href: tenantId ? `/locataire/${tenantId}` : "#", icon: LayoutDashboard },
-        { name: "Explorer", href: tenantId ? `/locataire/${tenantId}/explorer` : "#", icon: Home },
         { name: "Mes Paiements", href: tenantId ? `/locataire/${tenantId}/paiements` : "#", icon: Wallet },
         { name: "Mes Quittances", href: tenantId ? `/locataire/${tenantId}/quittances` : "#", icon: FileText },
         { name: "Mes Incidents", href: tenantId ? `/locataire/${tenantId}/incidents` : "#", icon: AlertTriangle },

@@ -222,6 +222,7 @@ function HomeContent() {
 
           {/* Desktop Menu */}
           <nav className="navbar-menu hide-mobile">
+            <Link href="/explorer" className="navbar-link" style={{ fontWeight: 'bold', color: 'var(--orange)' }}>Biens Disponibles</Link>
             <a href="#about" className="navbar-link">À propos</a>
             <a href="#services" className="navbar-link">Nos services</a>
             <a href="#why-us" className="navbar-link">Pourquoi nous choisir</a>
@@ -268,6 +269,14 @@ function HomeContent() {
               zIndex: 99
             }}
           >
+            <Link 
+              href="/explorer" 
+              className="navbar-link" 
+              onClick={() => setMobileMenuOpen(false)}
+              style={{ fontSize: 'var(--text-lg)', padding: 'var(--space-2) 0', fontWeight: 'bold', color: 'var(--orange)' }}
+            >
+              Biens Disponibles
+            </Link>
             <a 
               href="#about" 
               className="navbar-link" 
