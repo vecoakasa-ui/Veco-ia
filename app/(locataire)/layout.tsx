@@ -191,7 +191,7 @@ export default function LocataireLayout({
         }}
       >
         <div style={{ height: "var(--topbar-height)", display: "flex", alignItems: "center", padding: "0 var(--space-6)", borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-          <Link href="/locataire/dashboard" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", textDecoration: "none" }}>
+          <Link href="/" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", textDecoration: "none" }} title="Retour à l'accueil du site">
             <div className="logo-icon" style={{ background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <User size={16} className="text-orange" />
             </div>
@@ -317,7 +317,7 @@ export default function LocataireLayout({
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ height: "var(--topbar-height)", display: "flex", alignItems: "center", padding: "0 var(--space-6)", borderBottom: '1px solid rgba(255,255,255,0.05)', justifyContent: 'space-between' }}>
-              <Link href="/" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", textDecoration: "none" }}>
+              <Link href="/" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", textDecoration: "none" }} title="Retour à l'accueil du site">
                 <div className="logo-icon" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "var(--primary)" }}>
                   <User size={16} className="text-orange" />
                 </div>
