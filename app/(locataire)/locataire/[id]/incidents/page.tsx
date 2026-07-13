@@ -75,7 +75,7 @@ export default function IncidentsLocatairePage() {
     }
 
     const allTenants = await db.getTenants();
-    let currentTenant = allTenants.find(t => t.profile_id === profile.id);
+    let currentTenant = allTenants.find(t => t.profile_id === profile.id || (t.email && profile.email && t.email.toLowerCase() === profile.email.toLowerCase()));
     
     if (!currentTenant) {
       currentTenant = {

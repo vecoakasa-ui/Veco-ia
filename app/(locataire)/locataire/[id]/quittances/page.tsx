@@ -33,7 +33,7 @@ export default function TenantQuittancesPage() {
     }
 
     const allTenants = await db.getTenants();
-    const currentTenant = allTenants.find(t => t.profile_id === profile.id);
+    const currentTenant = allTenants.find(t => t.profile_id === profile.id || (t.email && profile.email && t.email.toLowerCase() === profile.email.toLowerCase()));
     setTenant(currentTenant || null);
 
     if (currentTenant && currentTenant.id) {

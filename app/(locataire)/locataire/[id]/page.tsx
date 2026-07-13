@@ -55,7 +55,7 @@ export default function PortailLocatairePage() {
     
     // If the logged-in user is a tenant, they can only see their own space
     if (profile.role === "tenant") {
-      currentTenant = allTenants.find(t => t.profile_id === profile.id);
+      currentTenant = allTenants.find(t => t.profile_id === profile.id || (t.email && profile.email && t.email.toLowerCase() === profile.email.toLowerCase()));
     } else {
       // If the user is an owner or admin, they can view the tenant specified in the URL
       currentTenant = allTenants.find(t => t.id === tenantId);
