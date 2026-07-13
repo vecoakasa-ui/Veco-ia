@@ -155,7 +155,7 @@ export default function PortailLocatairePage() {
     );
   }
 
-  const upcomingPayment = payments.find(p => p.status === "upcoming" || p.status === "late");
+  const upcomingPayment = payments.find(p => p.status === "upcoming" || p.status === "late" || p.status === "pending");
 
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
@@ -221,7 +221,7 @@ export default function PortailLocatairePage() {
                 </div>
               </div>
               <span className={`badge ${upcomingPayment.status === 'late' ? 'badge-danger' : 'badge-warning'}`} style={{ border: "none", fontWeight: 800 }}>
-                {upcomingPayment.status === 'late' ? 'En retard' : 'À venir'}
+                {upcomingPayment.status === 'late' ? 'En retard' : upcomingPayment.status === 'pending' ? 'En attente' : 'À venir'}
               </span>
             </div>
             

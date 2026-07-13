@@ -103,7 +103,7 @@ export default function PaiementsLocatairePage() {
     return payments.filter(p => p.status === statusFilter);
   }, [payments, statusFilter]);
 
-  const upcomingPayments = payments.filter(p => p.status === "upcoming" || p.status === "late");
+  const upcomingPayments = payments.filter(p => p.status === "upcoming" || p.status === "late" || p.status === "pending");
   const upcomingTotal = upcomingPayments.reduce((sum, p) => sum + p.total, 0);
   
   const latePayments = payments.filter(p => p.status === "late");
@@ -315,7 +315,7 @@ export default function PaiementsLocatairePage() {
                   </div>
                   
                   <div style={{ display: "flex", gap: "var(--space-2)" }}>
-                    {(payment.status === "upcoming" || payment.status === "late") && (
+                    {(payment.status === "upcoming" || payment.status === "late" || payment.status === "pending") && (
                       <Link href={`/pay/${payment.id}`} className="btn btn-primary btn-sm" style={{ padding: "8px 16px", borderRadius: "var(--radius-lg)" }}>
                         Payer
                       </Link>
