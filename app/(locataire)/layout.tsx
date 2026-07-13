@@ -192,7 +192,7 @@ export default function LocataireLayout({
               <User size={16} className="text-orange" />
             </div>
             <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--fixed-white)" }}>
-              Espace Locataire
+              Espace Client
             </span>
           </Link>
         </div>
@@ -249,7 +249,7 @@ export default function LocataireLayout({
             <div style={{ overflow: "hidden" }}>
               <h5 style={{ fontSize: "var(--text-sm)", fontWeight: "600", color: "var(--fixed-white)", margin: 0 }}>{profile.full_name}</h5>
               <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", display: "flex", alignItems: "center", gap: "2px", textTransform: "uppercase" }}>
-                Locataire
+                Utilisateur
               </span>
             </div>
           </div>
@@ -318,7 +318,7 @@ export default function LocataireLayout({
                   <User size={16} className="text-orange" />
                 </div>
                 <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--fixed-white)" }}>
-                  Espace Locataire
+                  Espace Client
                 </span>
               </Link>
               <button onClick={() => setMobileOpen(false)} style={{ color: "var(--fixed-white)" }}>
@@ -376,7 +376,7 @@ export default function LocataireLayout({
                 </div>
                 <div>
                   <h5 style={{ fontSize: "var(--text-sm)", fontWeight: "600", margin: 0 }}>{profile.full_name}</h5>
-                  <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", textTransform: "uppercase" }}>Locataire</span>
+                  <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", textTransform: "uppercase" }}>Utilisateur</span>
                 </div>
               </div>
 
