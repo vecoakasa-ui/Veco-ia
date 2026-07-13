@@ -28,6 +28,60 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
   const [viewMode, setViewMode] = useState<"grid" | "map">("grid");
   const [activeTab, setActiveTab] = useState<"location" | "achat">("location");
   const [properties, setProperties] = useState<Property[]>(initialProperties);
+  
+  // Pagination State
+  const [hasMoreLocation, setHasMoreLocation] = useState(true);
+  const [hasMoreAchat, setHasMoreAchat] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const ITEMS_PER_PAGE = 12;
+
+  const loadMoreProperties = async () => {
+    setIsLoadingMore(true);
+    try {
+      const isLocation = activeTab === 'location';
+      const currentCount = properties.filter(p => isLocation ? p.type !== 'terrain' && p.type !== 'lotissement' : p.type === 'terrain' || p.type === 'lotissement').length;
+      
+      const start = currentCount;
+      const end = currentCount + ITEMS_PER_PAGE - 1;
+
+      let query = supabase
+        .from('properties')
+        .select('*')
+        .eq('status', 'vacant')
+        .order('name', { ascending: true })
+        .range(start, end);
+
+      if (isLocation) {
+        query = query.not('type', 'in', "('building', 'cour_commune', 'residence', 'lotissement', 'terrain')");
+      } else {
+        query = query.in('type', ['terrain', 'lotissement']);
+      }
+
+      const { data, error } = await query;
+      if (error) throw error;
+
+      if (data) {
+        setProperties(prev => {
+          const newProps = [...prev];
+          data.forEach((p: any) => {
+            if (!newProps.find(existing => existing.id === p.id)) {
+              newProps.push(p as Property);
+            }
+          });
+          return newProps;
+        });
+
+        if (data.length < ITEMS_PER_PAGE) {
+          if (isLocation) setHasMoreLocation(false);
+          else setHasMoreAchat(false);
+        }
+      }
+    } catch (error) {
+      console.error("Error loading more properties:", error);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  };
 
   // Modal State
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
@@ -188,7 +242,8 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
               <p style={{ color: "var(--gray-500)", margin: 0 }}>Il n'y a actuellement aucun bien vacant dans cette catégorie. Revenez plus tard !</p>
             </div>
           ) : (
-            <div className="grid-explorer animate-fade-in">
+            <>
+              <div className="grid-explorer animate-fade-in">
               {properties.filter(p => activeTab === 'location' ? p.type !== 'terrain' && p.type !== 'lotissement' : p.type === 'terrain' || p.type === 'lotissement').map((property) => (
                 <div key={property.id} className="card" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}>
                   {/* Image Header */}
@@ -249,6 +304,26 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
                 </div>
               ))}
             </div>
+            
+            {((activeTab === 'location' && hasMoreLocation) || (activeTab === 'achat' && hasMoreAchat)) && (
+              <div style={{ display: "flex", justifyContent: "center", marginTop: "var(--space-8)" }}>
+                <button 
+                  onClick={loadMoreProperties}
+                  disabled={isLoadingMore}
+                  className="btn btn-outline"
+                  style={{ padding: "12px 32px", fontWeight: 600, fontSize: "15px", display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                  {isLoadingMore ? (
+                    <>
+                      <Loader2 size={18} className="animate-spin" /> Chargement...
+                    </>
+                  ) : (
+                    "Charger plus de biens"
+                  )}
+                </button>
+              </div>
+            )}
+            </>
           )}
         </>
       )}

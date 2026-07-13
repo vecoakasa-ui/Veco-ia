@@ -15,13 +15,12 @@ export default async function PublicExplorerPage() {
   const { data } = await supabase
     .from("properties")
     .select("*")
-    .order("name", { ascending: true });
+    .eq("status", "vacant")
+    .not("type", "in", "('building','cour_commune','residence','lotissement')")
+    .order("name", { ascending: true })
+    .limit(24);
     
-  const allProperties = (data || []) as Property[];
-  
-  // Filter for vacant properties only and exclude parent structures
-  const parentTypes = ['building', 'cour_commune', 'residence', 'lotissement'];
-  const vacantProperties = allProperties.filter(p => p.status === "vacant" && !parentTypes.includes(p.type));
+  const vacantProperties = (data || []) as Property[];
 
   return <PublicExplorerClient initialProperties={vacantProperties} />;
 }
