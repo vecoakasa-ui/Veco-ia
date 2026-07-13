@@ -30,7 +30,7 @@ export default function DemandesPage() {
   const [acceptingInquiry, setAcceptingInquiry] = useState<(Inquiry & { property?: Property }) | null>(null);
   const [leaseStart, setLeaseStart] = useState("");
   const [leaseEnd, setLeaseEnd] = useState("");
-  const [leaseType, setLeaseType] = useState("residential");
+  const [leaseType, setLeaseType] = useState<"residential" | "commercial">("residential");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleOpenAcceptModal = (inq: Inquiry & { property?: Property }) => {
