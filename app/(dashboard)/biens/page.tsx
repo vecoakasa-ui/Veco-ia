@@ -17,8 +17,8 @@ import {
   Image as ImageIcon,
   Trash2,
   Mail
-} from "lucide-react";
 import { db } from "@/lib/store";
+import { supabase } from "@/lib/supabase";
 import dynamic from "next/dynamic";
 const MapModuleWrapper = dynamic(() => import("@/components/MapModuleWrapper"), { ssr: false });
 import { Property, PropertyType, Landlord } from "@/lib/types";
@@ -35,6 +35,7 @@ export default function BiensPage() {
   const [deleteProperty, setDeleteProperty] = useState<Property | null>(null);
   const [viewMode, setViewMode] = useState<"list" | "grid" | "map">("grid");
   const [landlords, setLandlords] = useState<Landlord[]>([]);
+  const [ownerEmails, setOwnerEmails] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(true);
 
   // Form states
@@ -60,6 +61,14 @@ export default function BiensPage() {
       const props = await db.getProperties();
       setProperties(props);
       setLandlords(await db.getLandlords());
+      
+      // Fetch owner emails
+      const { data: profiles } = await supabase.from('profiles').select('id, email');
+      if (profiles) {
+        const emailsMap: Record<string, string> = {};
+        profiles.forEach(p => emailsMap[p.id] = p.email);
+        setOwnerEmails(emailsMap);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -433,10 +442,15 @@ export default function BiensPage() {
                   )}
                   {viewMode === "list" && (
                      <span style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", display: "flex", alignItems: "center", position: "relative", zIndex: 10 }}>
+                      {ownerEmails[p.owner_id] && (
+                        <span style={{ display: "flex", alignItems: "center", gap: "4px", color: "var(--primary)", marginRight: "8px" }}>
+                          <Mail size={14} /> {ownerEmails[p.owner_id]} &bull;
+                        </span>
+                      )}
                       {p.landlord_name && <span style={{color: "var(--gray-700)", fontWeight: 600, marginRight: "8px"}}>{p.landlord_name} &bull;</span>}
                       {p.landlord_id && landlords.find(l => l.id === p.landlord_id)?.email && (
                         <span style={{ display: "flex", alignItems: "center", gap: "4px", color: "var(--gray-500)", marginRight: "8px" }}>
-                          <Mail size={14} /> {landlords.find(l => l.id === p.landlord_id)?.email} &bull;
+                          <Mail size={14} /> {landlords.find(l => l.id === p.landlord_id)?.email}
                         </span>
                       )}
                     </span>
@@ -446,6 +460,11 @@ export default function BiensPage() {
                 <div style={{ borderTop: viewMode === "grid" ? "1px solid var(--gray-100)" : "none", paddingTop: viewMode === "grid" ? "var(--space-2)" : 0, marginTop: "auto", display: "flex", justifyContent: viewMode === "grid" ? "space-between" : "flex-end", alignItems: "center" }}>
                   {viewMode === "grid" && (
                      <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", position: "relative", zIndex: 10 }}>
+                      {ownerEmails[p.owner_id] && (
+                        <span style={{ display: "flex", alignItems: "center", gap: "4px", color: "var(--primary)", marginBottom: "2px", fontWeight: 600 }}>
+                          <Mail size={12} /> {ownerEmails[p.owner_id]}
+                        </span>
+                      )}
                       {p.landlord_name && <span style={{display: "block", color: "var(--gray-700)", fontWeight: 600, marginBottom: "2px"}}>{p.landlord_name}</span>}
                       {p.landlord_id && landlords.find(l => l.id === p.landlord_id)?.email && (
                         <span style={{ display: "flex", alignItems: "center", gap: "4px", color: "var(--gray-500)" }}>
