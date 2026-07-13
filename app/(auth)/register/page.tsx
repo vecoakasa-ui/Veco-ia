@@ -167,7 +167,7 @@ export default function RegisterPage({ searchParams }: PageProps) {
                     onClick={() => setRole('tenant')}
                     style={{ flex: 1, borderRadius: 'var(--radius-md)', padding: '6px' }}
                   >
-                    Locataire
+                    Utilisateur simple
                   </button>
                 </div>
               </div>
