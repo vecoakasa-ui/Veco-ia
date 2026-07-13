@@ -67,7 +67,7 @@ export default function BiensPage() {
       const { data: profiles } = await supabase.from('profiles').select('id, email');
       if (profiles) {
         const emailsMap: Record<string, string> = {};
-        profiles.forEach(p => emailsMap[p.id] = p.email);
+        profiles.forEach((p: any) => emailsMap[p.id] = p.email);
         setOwnerEmails(emailsMap);
       }
     } finally {
