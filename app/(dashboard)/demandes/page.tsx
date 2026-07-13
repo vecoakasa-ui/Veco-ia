@@ -11,7 +11,10 @@ import {
   Phone,
   Mail,
   User,
-  Building
+  Building,
+  X,
+  Loader2,
+  Calendar
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Inquiry, Property } from "@/lib/types";
@@ -22,6 +25,62 @@ export default function DemandesPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<"all" | "pending" | "accepted" | "rejected">("all");
+
+  // Modal states
+  const [acceptingInquiry, setAcceptingInquiry] = useState<(Inquiry & { property?: Property }) | null>(null);
+  const [leaseStart, setLeaseStart] = useState("");
+  const [leaseEnd, setLeaseEnd] = useState("");
+  const [leaseType, setLeaseType] = useState("residential");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleOpenAcceptModal = (inq: Inquiry & { property?: Property }) => {
+    setAcceptingInquiry(inq);
+    const today = new Date().toISOString().split('T')[0];
+    setLeaseStart(today);
+    
+    const nextYear = new Date();
+    nextYear.setFullYear(nextYear.getFullYear() + 1);
+    setLeaseEnd(nextYear.toISOString().split('T')[0]);
+    setLeaseType("residential");
+  };
+
+  const handleAcceptInquiry = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!acceptingInquiry || !leaseStart || !leaseEnd) return;
+    
+    setIsSubmitting(true);
+    try {
+      const normalizedEmail = acceptingInquiry.tenant_email.trim().toLowerCase();
+      let finalProfileId = "tp-" + Math.random().toString(36).substring(2, 9);
+      try {
+        const { data } = await supabase.from("profiles").select("id").eq("email", normalizedEmail).maybeSingle();
+        if (data && data.id) {
+          finalProfileId = data.id;
+        }
+      } catch (err) {}
+
+      await db.addTenant({
+        profile_id: finalProfileId,
+        property_id: acceptingInquiry.property_id,
+        lease_start: leaseStart,
+        lease_end: leaseEnd,
+        lease_type: leaseType,
+        status: "active",
+        full_name: acceptingInquiry.tenant_name,
+        email: normalizedEmail,
+        phone: acceptingInquiry.tenant_phone,
+        avatar_url: ""
+      });
+
+      await updateStatus(acceptingInquiry.id, "accepted");
+      setAcceptingInquiry(null);
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de l'acceptation de la demande.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   useEffect(() => {
     const loadInquiries = async () => {
@@ -243,13 +302,94 @@ export default function DemandesPage() {
                   <button onClick={() => updateStatus(inq.id, "rejected")} className="btn btn-outline" style={{ flex: 1, justifyContent: "center", color: "var(--danger)", borderColor: "var(--danger)" }}>
                     Refuser
                   </button>
-                  <button onClick={() => updateStatus(inq.id, "accepted")} className="btn btn-primary" style={{ flex: 1, justifyContent: "center" }}>
+                  <button onClick={() => handleOpenAcceptModal(inq)} className="btn btn-primary" style={{ flex: 1, justifyContent: "center" }}>
                     Accepter
                   </button>
                 </div>
               )}
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Accept Modal */}
+      {acceptingInquiry && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+          background: "rgba(0,0,0,0.5)", backdropFilter: "blur(4px)",
+          zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center",
+          padding: "var(--space-4)"
+        }}>
+          <div className="card animate-fade-in" style={{ width: "100%", maxWidth: "500px", padding: 0, overflow: "hidden" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "var(--space-4)", borderBottom: "1px solid var(--gray-200)", background: "var(--gray-50)" }}>
+              <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 700, margin: 0 }}>Accepter la demande</h3>
+              <button onClick={() => setAcceptingInquiry(null)} style={{ color: "var(--gray-500)", background: "none", border: "none", cursor: "pointer" }}>
+                <X size={20} />
+              </button>
+            </div>
+            
+            <form onSubmit={handleAcceptInquiry} style={{ padding: "var(--space-5)", display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+              <div style={{ background: "var(--primary-lightest)", padding: "var(--space-3)", borderRadius: "var(--radius-md)" }}>
+                <p style={{ margin: 0, fontSize: "var(--text-sm)", color: "var(--primary-dark)" }}>
+                  En acceptant cette demande, un locataire et un contrat de bail seront automatiquement créés pour <strong>{acceptingInquiry.tenant_name}</strong> sur le bien <strong>{acceptingInquiry.property?.name}</strong>.
+                </p>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Type de bail</label>
+                <select 
+                  value={leaseType} 
+                  onChange={(e) => setLeaseType(e.target.value)}
+                  className="form-control"
+                  style={{ width: "100%", padding: "12px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)" }}
+                >
+                  <option value="residential">Résidentiel</option>
+                  <option value="commercial">Commercial</option>
+                </select>
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-4)" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Début du bail</label>
+                  <div style={{ position: "relative" }}>
+                    <Calendar size={18} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--gray-400)" }} />
+                    <input 
+                      type="date" 
+                      value={leaseStart}
+                      onChange={(e) => setLeaseStart(e.target.value)}
+                      className="form-control" 
+                      required 
+                      style={{ paddingLeft: "36px", width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)" }}
+                    />
+                  </div>
+                </div>
+                
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Fin du bail</label>
+                  <div style={{ position: "relative" }}>
+                    <Calendar size={18} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--gray-400)" }} />
+                    <input 
+                      type="date" 
+                      value={leaseEnd}
+                      onChange={(e) => setLeaseEnd(e.target.value)}
+                      className="form-control" 
+                      required 
+                      style={{ paddingLeft: "36px", width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)" }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ marginTop: "var(--space-2)", paddingTop: "var(--space-4)", borderTop: "1px solid var(--gray-200)", display: "flex", gap: "var(--space-3)" }}>
+                <button type="button" onClick={() => setAcceptingInquiry(null)} className="btn btn-outline" style={{ flex: 1, justifyContent: "center" }}>
+                  Annuler
+                </button>
+                <button type="submit" disabled={isSubmitting} className="btn btn-primary" style={{ flex: 2, justifyContent: "center" }}>
+                  {isSubmitting ? <Loader2 size={20} className="animate-spin" /> : "Créer le contrat & Accepter"}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </div>

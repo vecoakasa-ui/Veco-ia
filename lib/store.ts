@@ -790,7 +790,22 @@ export const db = {
           const temps = rows.filter(r => r.profile_id && r.profile_id.startsWith("tp-") && r.email);
           for (const temp of temps) {
              const normalizedEmail = temp.email!.toLowerCase();
-             // Look for a real authenticated profile with this email
+             
+             // 1. FORCE CLEANUP OF FAKE PROFILES
+             // The fake profile occupies the email and blocks the real tenant from registering correctly.
+             // Since the landlord is running this, they can delete the fake profile they created.
+             const { data: fakeProfile } = await supabase.from("profiles")
+               .select("id")
+               .eq("email", normalizedEmail)
+               .like("id", "tp-%")
+               .maybeSingle();
+               
+             if (fakeProfile) {
+                // Delete the fake profile so the tenant can finally register their real account without conflict!
+                await supabase.from("profiles").delete().eq("id", fakeProfile.id);
+             }
+
+             // 2. Look for a real authenticated profile with this email (if they already registered)
              const { data: realProfile } = await supabase
                .from("profiles")
                .select("id")
@@ -848,18 +863,6 @@ export const db = {
     };
 
     if (isSupabaseConfigured()) {
-      const { error: profileError } = await supabase.from("profiles").upsert({
-        id: tenant.profile_id,
-        full_name: tenant.full_name || "",
-        email: tenant.email || "",
-        phone: tenant.phone || "",
-        role: "tenant",
-        avatar_url: tenant.avatar_url || ""
-      });
-      if (profileError) {
-        console.warn("Could not create profile (likely RLS), proceeding to create tenant record:", profileError);
-      }
-
       const { error } = await supabase.from("tenants").insert({
         id: newTenant.id,
         profile_id: tenant.profile_id,
