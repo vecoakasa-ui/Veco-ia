@@ -1,6 +1,6 @@
 "use client";
 
-import { Property, Tenant, Payment, Lease, Incident, Profile, DashboardStats, PaymentStatus, PaymentMethod, Landlord, Expense, SubscriptionRecord } from "./types";
+import { Property, Tenant, Payment, Lease, Incident, Profile, DashboardStats, PaymentStatus, PaymentMethod, Landlord, Expense, SubscriptionRecord, Sale, SaleInstallment } from "./types";
 import { generateId } from "./utils";
 import { supabase, isSupabaseConfigured } from "./supabase";
 
@@ -1603,11 +1603,23 @@ export const db = {
 
   addBuyer: async (buyer: any): Promise<any> => {
     const ownerId = await getOwnerId();
+    
+    // Auto-link profile if email exists
+    let profileId = null;
+    if (buyer.email && isSupabaseConfigured()) {
+      try {
+        const { data } = await supabase.from('profiles').select('id').ilike('email', buyer.email.trim()).maybeSingle();
+        if (data) profileId = data.id;
+      } catch (e) {
+        console.error("Error auto-linking buyer profile", e);
+      }
+    }
+
     const newBuyer = {
       ...buyer,
       id: "buyer-" + generateId(),
       owner_id: ownerId,
-      profile_id: null,
+      profile_id: profileId,
       created_at: new Date().toISOString()
     };
     if (isSupabaseConfigured()) {
@@ -1654,6 +1666,67 @@ export const db = {
       }
     }
     return getFromStorage<any[]>("sales", []);
+  },
+
+  getAcheteurDashboardData: async (): Promise<{ sales: Sale[], properties: Record<string, Property>, installments: SaleInstallment[] }> => {
+    if (!isSupabaseConfigured()) return { sales: [], properties: {}, installments: [] };
+    
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const userEmail = session?.user?.email;
+      if (!userEmail) throw new Error("Non authentifié");
+
+      // 1. Find buyer accounts by email
+      const { data: buyers } = await supabase.from("buyers").select("id").ilike("email", userEmail.trim());
+      if (!buyers || buyers.length === 0) return { sales: [], properties: {}, installments: [] };
+      
+      const buyerIds = buyers.map((b: any) => b.id);
+
+      // 2. Fetch sales for these buyer IDs
+      const { data: salesData, error: salesError } = await supabase
+        .from("sales")
+        .select(`
+          *,
+          buyers ( full_name ),
+          properties ( name )
+        `)
+        .in("buyer_id", buyerIds);
+
+      if (salesError) throw salesError;
+      
+      const sales = (salesData || []).map((s: any) => ({
+        ...s,
+        buyer_name: s.buyers?.full_name,
+        property_name: s.properties?.name
+      })) as Sale[];
+
+      if (sales.length === 0) return { sales: [], properties: {}, installments: [] };
+
+      const saleIds = sales.map(s => s.id);
+      const propertyIds = sales.map(s => s.property_id);
+
+      // 3. Fetch related properties
+      const { data: propsData } = await supabase.from("properties").select("*").in("id", propertyIds);
+      const propertiesMap: Record<string, Property> = {};
+      (propsData || []).forEach((p: any) => {
+        propertiesMap[p.id] = p as Property;
+      });
+
+      // 4. Fetch installments
+      const { data: instData } = await supabase
+        .from("sale_installments")
+        .select("*")
+        .in("sale_id", saleIds)
+        .order("due_date", { ascending: true });
+        
+      const installments = (instData || []) as SaleInstallment[];
+
+      return { sales, properties: propertiesMap, installments };
+
+    } catch (error) {
+      console.error("Error in getAcheteurDashboardData:", error);
+      return { sales: [], properties: {}, installments: [] };
+    }
   },
 
   addSale: async (sale: any): Promise<any> => {

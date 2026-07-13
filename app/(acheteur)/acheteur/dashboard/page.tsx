@@ -27,32 +27,14 @@ export default function AcheteurDashboard() {
     const loadData = async () => {
       setIsLoading(true);
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session?.user) return;
+        const { sales, properties, installments } = await db.getAcheteurDashboardData();
+        setSales(sales);
+        setProperties(properties);
+        setInstallments(installments);
         
-        // In a real app we'd fetch the buyer linked to the profile, here we mock it
-        setBuyerId("buyer-mock");
-        
-        const allSales = await db.getSales();
-        // MOCK: filter for the current buyer or just show all for demo
-        const mySales = allSales; // allSales.filter(s => s.buyer_id === buyerId);
-        setSales(mySales);
-
-        const allProps = await db.getProperties();
-        const propsMap: Record<string, Property> = {};
-        allProps.forEach(p => propsMap[p.id] = p);
-        setProperties(propsMap);
-        
-        // Mock installments
-        setInstallments([
-          {
-            id: "inst-1",
-            sale_id: "sale-1",
-            amount: 500000,
-            due_date: "2026-08-01",
-            status: "pending"
-          }
-        ]);
+        if (sales.length > 0) {
+          setBuyerId(sales[0].buyer_id);
+        }
       } catch (error) {
         console.error("Error loading dashboard data:", error);
       } finally {
@@ -182,11 +164,11 @@ export default function AcheteurDashboard() {
             <Calendar size={18} color="var(--primary)" /> Prochaine échéance
           </h2>
 
-          {installments.length === 0 ? (
+          {installments.filter(i => i.status === 'pending').length === 0 ? (
             <p style={{ color: "var(--gray-500)", fontSize: "14px", margin: 0, textAlign: "center", padding: "20px 0" }}>Aucune échéance à venir.</p>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              {installments.map((inst) => (
+              {installments.filter(i => i.status === 'pending').slice(0, 2).map((inst) => (
                 <div key={inst.id} style={{ background: "var(--gray-50)", padding: "16px", borderRadius: "12px", border: "1px solid var(--gray-200)" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px" }}>
                     <span style={{ fontSize: "14px", fontWeight: "600", color: "var(--gray-700)" }}>Échéance</span>
