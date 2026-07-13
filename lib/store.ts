@@ -36,7 +36,6 @@ interface DBPaymentRow {
   property_id: string;
   owner_id: string;
   amount: number;
-  charges: number;
   total: number;
   month: string;
   year: number;
@@ -243,7 +242,6 @@ export const DEFAULT_PAYMENTS: Payment[] = [
     property_id: "prop-1",
     owner_id: "owner-1",
     amount: 450000,
-    charges: 30000,
     total: 480000,
     month: "Jun",
     year: 2026,
@@ -262,7 +260,6 @@ export const DEFAULT_PAYMENTS: Payment[] = [
     property_id: "prop-2",
     owner_id: "owner-1",
     amount: 250000,
-    charges: 15000,
     total: 265000,
     month: "Jun",
     year: 2026,
@@ -281,7 +278,6 @@ export const DEFAULT_PAYMENTS: Payment[] = [
     property_id: "prop-1",
     owner_id: "owner-1",
     amount: 450000,
-    charges: 30000,
     total: 480000,
     month: "May",
     year: 2026,
@@ -300,7 +296,6 @@ export const DEFAULT_PAYMENTS: Payment[] = [
     property_id: "prop-2",
     owner_id: "owner-1",
     amount: 250000,
-    charges: 15000,
     total: 265000,
     month: "May",
     year: 2026,
@@ -319,7 +314,6 @@ export const DEFAULT_PAYMENTS: Payment[] = [
     property_id: "prop-2",
     owner_id: "owner-1",
     amount: 250000,
-    charges: 15000,
     total: 265000,
     month: "Jul",
     year: 2026,
@@ -890,7 +884,6 @@ export const db = {
         tenant_id: newTenant.id,
         property_id: newTenant.property_id,
         amount: targetProp ? targetProp.monthly_rent : 100000,
-        charges: 15000,
         month: "Jun",
         year: 2026,
         status: "pending",
@@ -980,8 +973,7 @@ export const db = {
               property_id: p.property_id,
               owner_id: p.owner_id,
               amount: Number(p.amount),
-              charges: Number(p.charges),
-              total: Number(p.total),
+              total: Number(p.amount),
               month: p.month,
               year: p.year,
               status: p.status as unknown as PaymentStatus,
@@ -1014,7 +1006,7 @@ export const db = {
       ...payment,
       id: "pay-" + generateId(),
       owner_id: ownerId,
-      total: payment.amount + payment.charges,
+      total: payment.amount,
       stripe_payment_id: null,
       payment_date: payment.status === "paid" ? new Date().toISOString().split('T')[0] : null,
       created_at: new Date().toISOString(),
@@ -1029,7 +1021,6 @@ export const db = {
         property_id: newPayment.property_id,
         owner_id: ownerId,
         amount: newPayment.amount,
-        charges: newPayment.charges,
         total: newPayment.total,
         month: newPayment.month,
         year: newPayment.year,
@@ -1056,8 +1047,7 @@ export const db = {
           stripe_payment_id: payment.stripe_payment_id,
           payment_date: payment.payment_date,
           amount: payment.amount,
-          charges: payment.charges,
-          total: payment.total
+          total: payment.amount
         })
         .eq("id", payment.id);
       if (error) throw error;

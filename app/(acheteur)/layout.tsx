@@ -44,11 +44,6 @@ export default function AcheteurLayout({
     const handleAvatarUpdate = (e: any) => {
       if (e && e.detail) {
         setProfile(prev => prev ? { ...prev, avatar_url: e.detail } : prev);
-      } else {
-        const customAvatar = localStorage.getItem("V_CUSTOM_AVATAR");
-        if (customAvatar) {
-          setProfile(prev => prev ? { ...prev, avatar_url: customAvatar } : prev);
-        }
       }
     };
 
@@ -65,10 +60,6 @@ export default function AcheteurLayout({
     const loadProfile = async () => {
       const p = await db.getProfile();
       if (p) {
-        const customAvatar = localStorage.getItem("V_CUSTOM_AVATAR");
-        if (customAvatar) {
-          p.avatar_url = customAvatar;
-        }
         setProfile(p);
       }
     };

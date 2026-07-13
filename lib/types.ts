@@ -88,7 +88,6 @@ export interface Payment {
   property_id: string;
   owner_id: string;
   amount: number;
-  charges: number;
   total: number;
   month: string;
   year: number;

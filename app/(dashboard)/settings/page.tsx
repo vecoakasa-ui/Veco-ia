@@ -25,33 +25,47 @@ export default function SettingsPage() {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (event) => {
-        if (event.target?.result) {
-          const newAvatar = event.target.result as string;
-          setAvatarUrl(newAvatar);
-          try {
-            localStorage.setItem("V_CUSTOM_AVATAR", newAvatar);
-          } catch(e) {
-            console.error("Impossible de sauvegarder l'avatar localement", e);
+      reader.onloadend = () => {
+        const img = new Image();
+        img.src = reader.result as string;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const MAX_SIZE = 200;
+          let width = img.width;
+          let height = img.height;
+          
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height *= MAX_SIZE / width;
+              width = MAX_SIZE;
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width *= MAX_SIZE / height;
+              height = MAX_SIZE;
+            }
           }
+          
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          const newAvatar = canvas.toDataURL("image/jpeg", 0.8);
+          setAvatarUrl(newAvatar);
           window.dispatchEvent(new CustomEvent("avatarUpdate", { detail: newAvatar }));
-        }
+        };
       };
       reader.readAsDataURL(file);
     }
   };
 
   useEffect(() => {
-    const customAvatar = localStorage.getItem("V_CUSTOM_AVATAR");
-    if (customAvatar) {
-      setAvatarUrl(customAvatar);
-    }
-    
     db.getProfile().then(p => {
       if (p) {
         setProfile(p);
         setFormData({ full_name: p.full_name || "", phone: p.phone || "" });
-        if (!customAvatar && p.avatar_url) setAvatarUrl(p.avatar_url);
+        if (p.avatar_url) setAvatarUrl(p.avatar_url);
       }
     });
   }, []);

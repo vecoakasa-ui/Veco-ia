@@ -54,7 +54,6 @@ export default function TenantPaymentPage({ params }: PageProps) {
           property_id: "prop-mock",
           owner_id: "owner-1",
           amount: 250000,
-          charges: 0,
           total: 250000,
           month: "Juin",
           year: 2026,

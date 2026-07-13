@@ -307,11 +307,6 @@ export default function PaiementsLocatairePage() {
                     <div style={{ fontWeight: 800, fontSize: "var(--text-lg)", color: "var(--orange)" }}>
                       {formatCurrency(payment.total)}
                     </div>
-                    {payment.charges > 0 && (
-                      <div style={{ fontSize: "12px", color: "var(--gray-400)" }}>
-                        dont {formatCurrency(payment.charges)} de charges
-                      </div>
-                    )}
                   </div>
                   
                   <div style={{ display: "flex", gap: "var(--space-2)" }}>
@@ -447,13 +442,6 @@ export default function PaiementsLocatairePage() {
                       <td style={{ padding: "16px", borderBottom: "1px solid #eee", color: "#333", textTransform: "capitalize" }}>{selectedPayment.month} {selectedPayment.year}</td>
                       <td style={{ padding: "16px", borderBottom: "1px solid #eee", textAlign: "right", color: "#333" }}>{formatCurrency(selectedPayment.amount)}</td>
                     </tr>
-                    {selectedPayment.charges > 0 && (
-                      <tr>
-                        <td style={{ padding: "16px", borderBottom: "1px solid #eee", color: "#333" }}>Charges récupérables</td>
-                        <td style={{ padding: "16px", borderBottom: "1px solid #eee", color: "#333", textTransform: "capitalize" }}>{selectedPayment.month} {selectedPayment.year}</td>
-                        <td style={{ padding: "16px", borderBottom: "1px solid #eee", textAlign: "right", color: "#333" }}>{formatCurrency(selectedPayment.charges)}</td>
-                      </tr>
-                    )}
                     <tr>
                       <td colSpan={2} style={{ padding: "16px", textAlign: "right", fontWeight: "bold", fontSize: "16px", color: "#111" }}>TOTAL PAYÉ</td>
                       <td style={{ padding: "16px", textAlign: "right", fontWeight: "bold", fontSize: "18px", color: "var(--primary-dark)" }}>{formatCurrency(selectedPayment.total)}</td>

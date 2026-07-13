@@ -16,7 +16,7 @@ export default async function PublicExplorerPage() {
     .from("properties")
     .select("*")
     .eq("status", "vacant")
-    .not("type", "in", "('building','cour_commune','residence','lotissement')")
+    .in("type", ['apartment', 'studio', 'villa', 'house', 'terrain'])
     .order("name", { ascending: true })
     .limit(24);
     

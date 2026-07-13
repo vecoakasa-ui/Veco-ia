@@ -51,11 +51,6 @@ export default function LocataireLayout({
     const handleAvatarUpdate = (e: any) => {
       if (e && e.detail) {
         setProfile(prev => prev ? { ...prev, avatar_url: e.detail } : prev);
-      } else {
-        const customAvatar = localStorage.getItem("V_CUSTOM_AVATAR");
-        if (customAvatar) {
-          setProfile(prev => prev ? { ...prev, avatar_url: customAvatar } : prev);
-        }
       }
     };
 
@@ -72,10 +67,6 @@ export default function LocataireLayout({
     const loadProfile = async () => {
       const p = await db.getProfile();
       if (p) {
-        const customAvatar = localStorage.getItem("V_CUSTOM_AVATAR");
-        if (customAvatar) {
-          p.avatar_url = customAvatar;
-        }
         setProfile(p);
       }
     };
@@ -100,10 +91,6 @@ export default function LocataireLayout({
           return;
         }
 
-        const customAvatar = localStorage.getItem("V_CUSTOM_AVATAR");
-        if (customAvatar) {
-          p.avatar_url = customAvatar;
-        }
         setProfile(p);
         setIsAuthorized(true);
       } else {
@@ -148,7 +135,6 @@ export default function LocataireLayout({
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      localStorage.removeItem("V_CUSTOM_AVATAR");
       window.location.href = "/login";
     }
   };

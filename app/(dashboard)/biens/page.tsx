@@ -15,7 +15,8 @@ import {
   List,
   Grid,
   Image as ImageIcon,
-  Trash2
+  Trash2,
+  Mail
 } from "lucide-react";
 import { db } from "@/lib/store";
 import dynamic from "next/dynamic";
@@ -433,7 +434,11 @@ export default function BiensPage() {
                   {viewMode === "list" && (
                      <span style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", display: "flex", alignItems: "center", position: "relative", zIndex: 10 }}>
                       {p.landlord_name && <span style={{color: "var(--gray-700)", fontWeight: 600, marginRight: "8px"}}>{p.landlord_name} &bull;</span>}
-                      {/* Tenant count hidden as requested */}
+                      {p.landlord_id && landlords.find(l => l.id === p.landlord_id)?.email && (
+                        <span style={{ display: "flex", alignItems: "center", gap: "4px", color: "var(--gray-500)", marginRight: "8px" }}>
+                          <Mail size={14} /> {landlords.find(l => l.id === p.landlord_id)?.email} &bull;
+                        </span>
+                      )}
                     </span>
                   )}
                 </div>
@@ -442,7 +447,11 @@ export default function BiensPage() {
                   {viewMode === "grid" && (
                      <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", position: "relative", zIndex: 10 }}>
                       {p.landlord_name && <span style={{display: "block", color: "var(--gray-700)", fontWeight: 600, marginBottom: "2px"}}>{p.landlord_name}</span>}
-                      {/* Tenant count hidden as requested */}
+                      {p.landlord_id && landlords.find(l => l.id === p.landlord_id)?.email && (
+                        <span style={{ display: "flex", alignItems: "center", gap: "4px", color: "var(--gray-500)" }}>
+                          <Mail size={12} /> {landlords.find(l => l.id === p.landlord_id)?.email}
+                        </span>
+                      )}
                     </span>
                   )}
                   <div style={{ display: "flex", gap: "var(--space-2)" }}>

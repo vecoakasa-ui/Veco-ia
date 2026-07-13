@@ -57,7 +57,7 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
     setIsLoadingMore(true);
     try {
       const isLocation = activeTab === 'location';
-      const currentCount = properties.filter(p => isLocation ? p.type !== 'terrain' && p.type !== 'lotissement' : p.type === 'terrain' || p.type === 'lotissement').length;
+      const currentCount = properties.filter(p => isLocation ? p.type !== 'terrain' && !['building', 'cour_commune', 'residence', 'lotissement'].includes(p.type) : p.type === 'terrain').length;
       
       const start = currentCount;
       const end = currentCount + ITEMS_PER_PAGE - 1;
@@ -70,9 +70,9 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
         .range(start, end);
 
       if (isLocation) {
-        query = query.not('type', 'in', "('building', 'cour_commune', 'residence', 'lotissement', 'terrain')");
+        query = query.in('type', ['apartment', 'studio', 'villa', 'house']);
       } else {
-        query = query.in('type', ['terrain', 'lotissement']);
+        query = query.in('type', ['terrain']);
       }
 
       const { data, error } = await query;
@@ -149,7 +149,9 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
     }
   };
 
-
+  const filteredProperties = properties
+    .filter(p => !['building', 'cour_commune', 'residence', 'lotissement'].includes(p.type))
+    .filter(p => activeTab === 'location' ? p.type !== 'terrain' : p.type === 'terrain');
 
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", minHeight: "100vh", background: "var(--gray-50)" }}>
@@ -247,11 +249,11 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
       {/* Content View */}
       {viewMode === 'map' ? (
         <div className="card animate-fade-in" style={{ padding: "0", overflow: "hidden", marginBottom: "var(--space-2)" }}>
-          <MapModuleWrapper properties={properties.filter(p => activeTab === 'location' ? p.type !== 'terrain' && p.type !== 'lotissement' : p.type === 'terrain' || p.type === 'lotissement')} />
+          <MapModuleWrapper properties={filteredProperties} />
         </div>
       ) : (
         <>
-          {properties.filter(p => activeTab === 'location' ? p.type !== 'terrain' && p.type !== 'lotissement' : p.type === 'terrain' || p.type === 'lotissement').length === 0 ? (
+          {filteredProperties.length === 0 ? (
             <div className="card animate-fade-in" style={{ padding: "var(--space-8)", textAlign: "center", background: "var(--white)" }}>
               <Building size={48} style={{ color: "var(--gray-300)", margin: "0 auto var(--space-4)" }} />
               <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 700, color: "var(--gray-700)", margin: "0 0 var(--space-2)" }}>
@@ -262,14 +264,17 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
           ) : (
             <>
               <div className="grid-explorer animate-fade-in">
-              {properties.filter(p => activeTab === 'location' ? p.type !== 'terrain' && p.type !== 'lotissement' : p.type === 'terrain' || p.type === 'lotissement').map((property) => (
-                <div key={property.id} className="card" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+              {filteredProperties.map((property) => (
+                <div key={property.id} className="card card-interactive" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column", cursor: "pointer" }}>
                   {/* Image Header */}
-                  <div style={{ 
+                  <div className="card-image-container" style={{ 
                     height: "200px", 
-                    background: property.images && property.images.length > 0 ? `url(${property.images[0]}) center/cover` : "var(--gray-200)",
                     position: "relative"
                   }}>
+                    <div className="card-image-zoom" style={{
+                      position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
+                      background: property.images && property.images.length > 0 ? `url(${property.images[0]}) center/cover` : "var(--gray-200)"
+                    }}></div>
                     {(!property.images || property.images.length === 0) && (
                       <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", color: "var(--gray-400)" }}>
                         <Home size={48} />
