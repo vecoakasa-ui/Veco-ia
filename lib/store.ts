@@ -539,8 +539,27 @@ export const db = {
             trial_end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
           });
           
-          if (!insertError) {
+          if (!insertError || (insertError && insertError.code === '23505')) {
              if (!newProfile.avatar_url) newProfile.avatar_url = "/owner_avatar.png";
+
+             // FUSION AUTOMATIQUE (Mise à jour du lien propriétaire-locataire)
+             // Si le propriétaire a créé le locataire AVANT que celui-ci ne s'inscrive,
+             // on remplace l'ID temporaire par le VRAI ID Supabase du locataire.
+             if (newProfile.email) {
+                const normalizedEmail = newProfile.email.toLowerCase();
+                
+                // Mettre à jour la table tenants pour lier le tableau de bord
+                await supabase.from("tenants")
+                  .update({ profile_id: ownerId })
+                  .eq("email", normalizedEmail);
+                  
+                // S'il existait un faux profil "tp-...", on peut le nettoyer (optionnel)
+                await supabase.from("profiles")
+                  .delete()
+                  .like("id", "tp-%")
+                  .eq("email", normalizedEmail);
+             }
+
              return newProfile as Profile;
           } else {
              console.error("Failed to auto-create profile:", insertError);
