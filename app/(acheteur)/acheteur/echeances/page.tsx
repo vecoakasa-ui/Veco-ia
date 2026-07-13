@@ -27,47 +27,17 @@ export default function AcheteurEcheances() {
     const loadData = async () => {
       setIsLoading(true);
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session?.user) return;
+        const { sales, properties, installments } = await db.getAcheteurDashboardData();
         
-        // Mock data loading
-        const allProps = await db.getProperties();
         const pMap: Record<string, Property> = {};
-        allProps.forEach(p => pMap[p.id] = p);
+        Object.values(properties).forEach(p => pMap[p.id] = p);
         setPropsMap(pMap);
 
-        const allSales = await db.getSales();
         const sMap: Record<string, Sale> = {};
-        allSales.forEach(s => sMap[s.id] = s);
+        sales.forEach(s => sMap[s.id] = s);
         setSalesMap(sMap);
         
-        // Mock installments
-        setInstallments([
-          {
-            id: "inst-0",
-            sale_id: "sale-1",
-            amount: 1500000,
-            due_date: "2026-06-01",
-            status: "paid",
-            payment_method: "cash",
-            payment_date: "2026-06-01"
-          },
-          {
-            id: "inst-1",
-            sale_id: "sale-1",
-            amount: 500000,
-            due_date: "2026-08-01",
-            status: "pending"
-          },
-          {
-            id: "inst-2",
-            sale_id: "sale-1",
-            amount: 500000,
-            due_date: "2026-09-01",
-            status: "pending"
-          }
-        ]);
-        
+        setInstallments(installments);
       } catch (error) {
         console.error("Error loading installments:", error);
       } finally {
@@ -80,19 +50,40 @@ export default function AcheteurEcheances() {
 
   const handlePay = async (inst: SaleInstallment) => {
     setIsProcessingPayment(true);
-    // Simulation of payment interface redirection (PayDunya/Stripe)
-    setTimeout(() => {
-      alert(`Redirection vers l'interface de paiement pour le montant de ${formatCurrency(inst.amount)}...`);
+    
+    try {
+      const sale = salesMap[inst.sale_id];
+      const propertyName = propsMap?.[sale?.property_id]?.name || "Acquisition immobilière";
       
-      // MOCK: Auto update to paid for demo purposes
-      setInstallments(prev => prev.map(i => {
-        if (i.id === inst.id) {
-          return { ...i, status: 'paid', payment_date: new Date().toISOString(), payment_method: 'paydunya' };
-        }
-        return i;
-      }));
+      const res = await fetch("/api/paydunya/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          paymentId: inst.id,
+          tenantName: sale?.buyer_name || "Acheteur", // Reusing field for buyer
+          propertyName: propertyName,
+          month: "Échéance",
+          year: new Date(inst.due_date).getFullYear(),
+          amount: inst.amount
+        })
+      });
+
+      const data = await res.json();
+      
+      if (!res.ok) {
+        throw new Error(data.error || "Erreur d'initialisation du paiement");
+      }
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Une erreur est survenue lors de la création du lien de paiement.");
+        setIsProcessingPayment(false);
+      }
+    } catch (error: any) {
+      alert(error.message);
       setIsProcessingPayment(false);
-    }, 1500);
+    }
   };
 
   if (isLoading) {

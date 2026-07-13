@@ -11,7 +11,9 @@ import {
   Phone,
   Mail,
   User,
-  Map
+  Map,
+  X,
+  Loader2
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Inquiry, Property } from "@/lib/types";
@@ -22,6 +24,80 @@ export default function VentesDemandesPage() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<"all" | "pending" | "accepted" | "rejected">("all");
+
+  // Modal states for Conclure la Vente
+  const [acceptingInquiry, setAcceptingInquiry] = useState<(Inquiry & { property?: Property }) | null>(null);
+  const [totalPrice, setTotalPrice] = useState<string>("");
+  const [advancePayment, setAdvancePayment] = useState<string>("");
+  const [startDate, setStartDate] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleOpenAcceptModal = (inq: Inquiry & { property?: Property }) => {
+    setAcceptingInquiry(inq);
+    const today = new Date().toISOString().split('T')[0];
+    setStartDate(today);
+    setTotalPrice("");
+    setAdvancePayment("");
+  };
+
+  const handleAcceptInquiry = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!acceptingInquiry || !startDate) return;
+    
+    setIsSubmitting(true);
+    try {
+      const normalizedEmail = acceptingInquiry.tenant_email.trim().toLowerCase();
+      let finalProfileId = null;
+      try {
+        const { data } = await supabase.from("profiles").select("id").eq("email", normalizedEmail).maybeSingle();
+        if (data && data.id) {
+          finalProfileId = data.id;
+        }
+      } catch (err) {}
+
+      // Create the buyer
+      const newBuyer = await db.addBuyer({
+        full_name: acceptingInquiry.tenant_name,
+        email: normalizedEmail,
+        phone: acceptingInquiry.tenant_phone,
+        profile_id: finalProfileId
+      });
+
+      // Create the sale
+      const price = parseFloat(totalPrice) || 0;
+      const advance = parseFloat(advancePayment) || 0;
+      
+      const newSale = await db.addSale({
+        property_id: acceptingInquiry.property_id,
+        buyer_id: newBuyer.id,
+        total_price: price,
+        advance_payment: advance,
+        remaining_balance: price - advance,
+        start_date: startDate
+      });
+
+      // If advance payment exists, create a paid installment for it
+      if (advance > 0) {
+        await supabase.from("sale_installments").insert({
+          id: "inst-" + Math.random().toString(36).substring(2, 9),
+          sale_id: newSale.id,
+          amount: advance,
+          due_date: startDate,
+          status: 'paid',
+          payment_method: 'cash',
+          payment_date: new Date().toISOString()
+        });
+      }
+
+      await updateStatus(acceptingInquiry.id, "accepted");
+      setAcceptingInquiry(null);
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de l'acceptation de la demande d'achat.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   useEffect(() => {
     const loadInquiries = async () => {
@@ -243,13 +319,82 @@ export default function VentesDemandesPage() {
                   <button onClick={() => updateStatus(inq.id, "rejected")} className="btn btn-outline" style={{ flex: 1, justifyContent: "center", color: "var(--danger)", borderColor: "var(--danger)" }}>
                     Refuser
                   </button>
-                  <button onClick={() => updateStatus(inq.id, "accepted")} className="btn btn-primary" style={{ flex: 1, justifyContent: "center" }}>
+                  <button onClick={() => handleOpenAcceptModal(inq)} className="btn btn-primary" style={{ flex: 1, justifyContent: "center" }}>
                     Accepter
                   </button>
                 </div>
               )}
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Modal Conclure la Vente */}
+      {acceptingInquiry && (
+        <div className="modal-overlay">
+          <div className="modal-content animate-fade-in" style={{ maxWidth: "500px" }}>
+            <div className="modal-header">
+              <h2>Conclure la vente</h2>
+              <button className="btn-icon" onClick={() => setAcceptingInquiry(null)}>
+                <X size={20} />
+              </button>
+            </div>
+            <div className="modal-body">
+              <p style={{ color: "var(--gray-600)", marginBottom: "var(--space-4)" }}>
+                Vous êtes sur le point d'accepter la demande de <strong>{acceptingInquiry.tenant_name}</strong> pour <strong>{acceptingInquiry.property?.name}</strong>. Renseignez les détails de la vente.
+              </p>
+              
+              <form onSubmit={handleAcceptInquiry} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+                
+                <div>
+                  <label className="form-label">Prix Total Convenu (FCFA)</label>
+                  <input 
+                    type="number" 
+                    className="form-control" 
+                    required 
+                    value={totalPrice}
+                    onChange={e => setTotalPrice(e.target.value)}
+                    placeholder="Ex: 5000000"
+                  />
+                </div>
+
+                <div>
+                  <label className="form-label">Avance Versée (FCFA) - Optionnel</label>
+                  <input 
+                    type="number" 
+                    className="form-control" 
+                    value={advancePayment}
+                    onChange={e => setAdvancePayment(e.target.value)}
+                    placeholder="Ex: 1000000"
+                  />
+                </div>
+
+                <div>
+                  <label className="form-label">Date de début / Signature</label>
+                  <input 
+                    type="date" 
+                    className="form-control" 
+                    required 
+                    value={startDate}
+                    onChange={e => setStartDate(e.target.value)}
+                  />
+                </div>
+
+                <div className="modal-footer" style={{ marginTop: "var(--space-2)" }}>
+                  <button type="button" className="btn btn-outline" onClick={() => setAcceptingInquiry(null)}>
+                    Annuler
+                  </button>
+                  <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <Loader2 size={16} className="spinner" /> Validation...
+                      </span>
+                    ) : "Valider la Vente"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       )}
     </div>

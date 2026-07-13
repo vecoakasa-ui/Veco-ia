@@ -6,6 +6,7 @@ import { CheckCircle2, Printer, Smartphone, ArrowLeft } from "lucide-react";
 import { db } from "@/lib/store";
 import { Payment, PaymentMethod } from "@/lib/types";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import { supabase } from "@/lib/supabase";
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -27,63 +28,116 @@ export default function PaymentSuccessPage({ params, searchParams }: PageProps) 
     // Perform verification and state update
     const verifyAndSettle = async () => {
       try {
-        const list = await db.getPayments();
-        let found = list.find(p => p.id === id);
+        let isInstallment = id.startsWith("inst-");
+        let found: any = null;
 
-        // Fallback mock payment if opened in a different browser/session
-        if (!found) {
-          found = {
-            id: id,
-            tenant_id: "tenant-mock",
-            property_id: "prop-mock",
-            owner_id: "owner-1",
-            amount: 250000,
-            charges: 15000,
-            total: 265000,
-            month: "Juin",
-            year: 2026,
-            status: "pending",
-            payment_method: "paydunya",
-            stripe_payment_id: null,
-            payment_date: null,
-            due_date: "2026-06-15",
-            created_at: new Date().toISOString(),
-            tenant_name: "Koffi Kouassi (Locataire Démo)",
-            property_name: "Villa Hibiscus"
-          };
-        }
+        if (isInstallment) {
+          // Verify with API route for token
+          let isSuccess = false;
+          let finalMethod = queryMethod;
 
-        let isSuccess = false;
-        let finalMethod = queryMethod;
-
-        if (token.startsWith("mock_tok_")) {
-          isSuccess = true;
-        } else if (token) {
-          // Verify with API route
-          const response = await fetch(`/api/paydunya/verify?token=${token}`);
-          if (response.ok) {
-            const data = await response.json();
-            if (data.status === "completed") {
-              isSuccess = true;
-              if (data.paymentMethod) {
-                finalMethod = data.paymentMethod;
+          if (token.startsWith("mock_tok_")) {
+            isSuccess = true;
+          } else if (token) {
+            const response = await fetch(`/api/paydunya/verify?token=${token}`);
+            if (response.ok) {
+              const data = await response.json();
+              if (data.status === "completed") {
+                isSuccess = true;
+                if (data.paymentMethod) finalMethod = data.paymentMethod;
               }
+            }
+          } else {
+            isSuccess = true;
+          }
+
+          if (isSuccess) {
+            const { error } = await supabase
+              .from('sale_installments')
+              .update({
+                status: 'paid',
+                payment_method: finalMethod,
+                payment_date: new Date().toISOString()
+              })
+              .eq('id', id);
+            
+            if (!error) {
+               // Re-fetch installment for display
+               const { data } = await supabase.from('sale_installments').select('*').eq('id', id).single();
+               if (data) {
+                 found = {
+                   id: data.id,
+                   amount: data.amount,
+                   total: data.amount,
+                   status: 'paid',
+                   month: 'Échéance',
+                   year: new Date(data.due_date).getFullYear(),
+                   payment_date: data.payment_date,
+                   payment_method: data.payment_method,
+                   tenant_name: "Acheteur",
+                   property_name: "Acquisition",
+                   due_date: data.due_date
+                 };
+               }
             }
           }
         } else {
-          // If no token, we fallback to success in demo mode
-          isSuccess = true;
+          // Normal rental payment flow
+          const list = await db.getPayments();
+          found = list.find(p => p.id === id);
+
+          // Fallback mock payment if opened in a different browser/session
+          if (!found) {
+            found = {
+              id: id,
+              tenant_id: "tenant-mock",
+              property_id: "prop-mock",
+              owner_id: "owner-1",
+              amount: 250000,
+              charges: 15000,
+              total: 265000,
+              month: "Juin",
+              year: 2026,
+              status: "pending",
+              payment_method: "paydunya",
+              stripe_payment_id: null,
+              payment_date: null,
+              due_date: "2026-06-15",
+              created_at: new Date().toISOString(),
+              tenant_name: "Koffi Kouassi (Locataire Démo)",
+              property_name: "Villa Hibiscus"
+            };
+          }
+
+          let isSuccess = false;
+          let finalMethod = queryMethod;
+
+          if (token.startsWith("mock_tok_")) {
+            isSuccess = true;
+          } else if (token) {
+            const response = await fetch(`/api/paydunya/verify?token=${token}`);
+            if (response.ok) {
+              const data = await response.json();
+              if (data.status === "completed") {
+                isSuccess = true;
+                if (data.paymentMethod) {
+                  finalMethod = data.paymentMethod;
+                }
+              }
+            }
+          } else {
+            isSuccess = true;
+          }
+
+          if (isSuccess && found) {
+            found.status = "paid";
+            found.payment_method = finalMethod as PaymentMethod;
+            found.payment_date = new Date().toISOString().split('T')[0];
+            await db.updatePayment(found);
+            window.dispatchEvent(new Event("storage"));
+          }
         }
 
-        if (isSuccess && found) {
-          // Update DB state
-          found.status = "paid";
-          found.payment_method = finalMethod as PaymentMethod;
-          found.payment_date = new Date().toISOString().split('T')[0];
-          await db.updatePayment(found);
-          // Sync storage across pages
-          window.dispatchEvent(new Event("storage"));
-        }
         
         setPayment(found);
       } catch (error) {
