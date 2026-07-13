@@ -25,6 +25,24 @@ import MapModuleWrapper from "@/components/MapModuleWrapper";
 import { ArrowLeft } from "lucide-react";
 
 export default function PublicExplorerClient({ initialProperties }: { initialProperties: Property[] }) {
+  const [sessionUser, setSessionUser] = useState<any>(null);
+  const [dashboardLink, setDashboardLink] = useState("/login");
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        setSessionUser(session.user);
+        const p = await db.getProfile();
+        if (p) {
+          if (p.role === "admin") setDashboardLink("/admin/dashboard");
+          else if (p.role === "owner") setDashboardLink("/dashboard");
+          else setDashboardLink("/locataire/dashboard"); // For simple users (tenant), we send them to their Espace Client. If they are buyers, their dashboard redirect handles it (or we can just use /locataire/dashboard which is the Espace Client)
+        }
+      }
+    };
+    checkAuth();
+  }, []);
   const [viewMode, setViewMode] = useState<"grid" | "map">("grid");
   const [activeTab, setActiveTab] = useState<"location" | "achat">("location");
   const [properties, setProperties] = useState<Property[]>(initialProperties);
@@ -144,8 +162,8 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
           <h1 style={{ margin: 0, fontSize: "18px", fontWeight: "800", color: "var(--gray-900)" }}>Vision Immo 2.0 <span style={{ color: "var(--orange)" }}>Explorer</span></h1>
         </Link>
         <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "12px" }}>
-          <Link href="/login" className="btn btn-orange" style={{ display: "flex", alignItems: "center", gap: "8px", padding: "8px 16px", fontSize: "14px", fontWeight: "600", textDecoration: "none" }}>
-            <User size={16} /> <span className="hide-mobile">Se connecter</span>
+          <Link href={sessionUser ? dashboardLink : "/login"} className={sessionUser ? "btn btn-primary" : "btn btn-orange"} style={{ display: "flex", alignItems: "center", gap: "8px", padding: "8px 16px", fontSize: "14px", fontWeight: "600", textDecoration: "none" }}>
+            <User size={16} /> <span className="hide-mobile">{sessionUser ? "Mon Espace" : "Se connecter"}</span>
           </Link>
         </div>
       </header>
