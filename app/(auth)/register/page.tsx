@@ -87,7 +87,7 @@ export default function RegisterPage({ searchParams }: PageProps) {
       if (data?.session) {
         // Inscription réussie avec connexion immédiate
         if (role === "tenant") {
-          router.push("/locataire/dashboard");
+          router.push("/explorer");
         } else {
           router.push("/dashboard");
         }
