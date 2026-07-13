@@ -66,7 +66,7 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
         .from('properties')
         .select('*')
         .eq('status', 'vacant')
-        .order('name', { ascending: true })
+        .order('created_at', { ascending: false })
         .range(start, end);
 
       if (isLocation) {
@@ -262,8 +262,7 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
               <p style={{ color: "var(--gray-500)", margin: 0 }}>Il n'y a actuellement aucun bien vacant dans cette catégorie. Revenez plus tard !</p>
             </div>
           ) : (
-            <>
-              <div className="grid-explorer animate-fade-in">
+            <div className="grid-explorer animate-fade-in">
               {filteredProperties.map((property) => (
                 <div key={property.id} className="card card-interactive" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column", cursor: "pointer" }}>
                   {/* Image Header */}
@@ -327,8 +326,9 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
                 </div>
               ))}
             </div>
+          )}
             
-            {((activeTab === 'location' && hasMoreLocation) || (activeTab === 'achat' && hasMoreAchat)) && (
+          {((activeTab === 'location' && hasMoreLocation) || (activeTab === 'achat' && hasMoreAchat)) && (
               <div style={{ display: "flex", justifyContent: "center", marginTop: "var(--space-8)" }}>
                 <button 
                   onClick={loadMoreProperties}
@@ -346,8 +346,6 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
                 </button>
               </div>
             )}
-            </>
-          )}
         </>
       )}
 

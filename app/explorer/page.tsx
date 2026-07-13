@@ -17,7 +17,7 @@ export default async function PublicExplorerPage() {
     .select("*")
     .eq("status", "vacant")
     .in("type", ['apartment', 'studio', 'villa', 'house', 'terrain'])
-    .order("name", { ascending: true })
+    .order("created_at", { ascending: false })
     .limit(24);
     
   const vacantProperties = (data || []) as Property[];
