@@ -261,6 +261,14 @@ function LocatairesContent() {
 
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
+      {/* Hidden file input for tenant photo upload */}
+      <input 
+        type="file" 
+        ref={fileInputRef} 
+        style={{ display: 'none' }} 
+        accept="image/*" 
+        onChange={handlePhotoUpload} 
+      />
       {/* Header section */}
       <div className="page-header">
         <div>
