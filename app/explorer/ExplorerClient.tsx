@@ -125,7 +125,7 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
         id: crypto.randomUUID(),
         property_id: selectedProperty.id,
         owner_id: selectedProperty.owner_id,
-        tenant_id: null,
+        tenant_id: sessionUser?.id || null,
         tenant_name: name || '',
         tenant_phone: phone || '',
         tenant_email: email || '',

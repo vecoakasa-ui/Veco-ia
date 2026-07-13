@@ -51,13 +51,15 @@ export default function DemandesPage() {
     setIsSubmitting(true);
     try {
       const normalizedEmail = acceptingInquiry.tenant_email.trim().toLowerCase();
-      let finalProfileId = "tp-" + Math.random().toString(36).substring(2, 9);
-      try {
-        const { data } = await supabase.from("profiles").select("id").eq("email", normalizedEmail).maybeSingle();
-        if (data && data.id) {
-          finalProfileId = data.id;
-        }
-      } catch (err) {}
+      let finalProfileId = acceptingInquiry.tenant_id || ("tp-" + Math.random().toString(36).substring(2, 9));
+      if (!acceptingInquiry.tenant_id) {
+        try {
+          const { data } = await supabase.from("profiles").select("id").eq("email", normalizedEmail).maybeSingle();
+          if (data && data.id) {
+            finalProfileId = data.id;
+          }
+        } catch (err) {}
+      }
 
       await db.addTenant({
         profile_id: finalProfileId,
