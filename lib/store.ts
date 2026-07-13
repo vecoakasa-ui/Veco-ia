@@ -784,6 +784,31 @@ export const db = {
         
         if (data) {
           const rows = data as unknown as (DBTenantRow & { avatar_url?: string })[];
+          
+          // AUTO-HEALING BY LANDLORD (Bypasses Tenant RLS limits)
+          // Identify any tenants that still have a temporary profile ID
+          const temps = rows.filter(r => r.profile_id && r.profile_id.startsWith("tp-") && r.email);
+          for (const temp of temps) {
+             const normalizedEmail = temp.email!.toLowerCase();
+             // Look for a real authenticated profile with this email
+             const { data: realProfile } = await supabase
+               .from("profiles")
+               .select("id")
+               .eq("email", normalizedEmail)
+               .not("id", "like", "tp-%")
+               .maybeSingle();
+               
+             if (realProfile && realProfile.id) {
+                // Heal the tenant record by linking it to the real UUID
+                await supabase.from("tenants").update({ profile_id: realProfile.id }).eq("id", temp.id);
+                temp.profile_id = realProfile.id; // update local memory so it renders correctly
+                
+                // Also update any payments/leases just in case they rely on it (optional, but tenants is the main one)
+                // We'll clean up the fake profile
+                await supabase.from("profiles").delete().like("id", "tp-%").eq("email", normalizedEmail);
+             }
+          }
+
           const parsed = rows.map((t) => ({
             id: t.id,
             profile_id: t.profile_id,
