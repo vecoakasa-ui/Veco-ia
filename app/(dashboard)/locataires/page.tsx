@@ -121,9 +121,10 @@ function LocatairesContent() {
     e.preventDefault();
     if (!fullName || !email || !phone || !propertyId || !leaseStart || !leaseEnd) return;
 
+    const normalizedEmail = email.trim().toLowerCase();
     let finalProfileId = "tp-" + Math.random().toString(36).substring(2, 9);
     try {
-      const { data } = await supabase.from("profiles").select("id").eq("email", email).maybeSingle();
+      const { data } = await supabase.from("profiles").select("id").eq("email", normalizedEmail).maybeSingle();
       if (data && data.id) {
         finalProfileId = data.id;
       }
@@ -137,7 +138,7 @@ function LocatairesContent() {
       lease_type: leaseType,
       status: "active",
       full_name: fullName,
-      email,
+      email: normalizedEmail,
       phone,
       avatar_url: avatarUrl
     });
