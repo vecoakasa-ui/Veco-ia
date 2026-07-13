@@ -17,6 +17,7 @@ import {
   Image as ImageIcon,
   Trash2,
   Mail
+} from "lucide-react";
 import { db } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
 import dynamic from "next/dynamic";
