@@ -339,7 +339,7 @@ export default function DemandesPage() {
                 <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Type de bail</label>
                 <select 
                   value={leaseType} 
-                  onChange={(e) => setLeaseType(e.target.value)}
+                  onChange={(e) => setLeaseType(e.target.value as "residential" | "commercial")}
                   className="form-control"
                   style={{ width: "100%", padding: "12px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)" }}
                 >
