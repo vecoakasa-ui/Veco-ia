@@ -84,7 +84,7 @@ export default function VentesDemandesPage() {
       // If advance payment exists, create a paid installment for it
       if (advance > 0) {
         await supabase.from("sale_installments").insert({
-          id: "inst-" + Date.now().toString(36),
+          id: "inst-" + Math.random().toString(36).substring(2, 11),
           sale_id: newSale.id,
           amount: advance,
           due_date: startDate,

@@ -224,112 +224,216 @@ export default function AcheteurEcheances() {
         </div>
       </div>
 
-      {/* MODAL REÇU ECHEANCE */}
+      {/* MODAL REÇU ECHEANCE CHIC */}
       {selectedInst && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-          <div style={{ background: 'var(--white)', borderRadius: 'var(--radius-xl)', width: '100%', maxWidth: '800px', maxHeight: '90vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--gray-200)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2 style={{ fontSize: '18px', fontWeight: '700', color: 'var(--gray-900)', margin: 0 }}>Reçu de paiement</h2>
+        <div style={{ 
+          position: 'fixed', 
+          top: 0, 
+          left: 0, 
+          right: 0, 
+          bottom: 0, 
+          background: 'rgba(15, 23, 42, 0.7)', 
+          backdropFilter: 'blur(8px)',
+          zIndex: 1000, 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          padding: '20px',
+          animation: 'fadeIn 0.3s ease-out'
+        }}>
+          <style>{`
+            @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+            @keyframes slideUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+            .glass-button {
+              background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+              backdrop-filter: blur(10px);
+              -webkit-backdrop-filter: blur(10px);
+              border: 1px solid rgba(255,255,255,0.18);
+              box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            }
+            .hover-lift:hover { transform: translateY(-2px); }
+            .hover-bg-light:hover { background: rgba(255,255,255,0.2) !important; }
+          `}</style>
+          
+          <div style={{ 
+            background: '#ffffff', 
+            borderRadius: '24px', 
+            width: '100%', 
+            maxWidth: '750px', 
+            maxHeight: '90vh', 
+            display: 'flex', 
+            flexDirection: 'column', 
+            overflow: 'hidden',
+            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
+            animation: 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+            border: '1px solid rgba(255,255,255,0.2)'
+          }}>
+            
+            {/* EN-TÊTE CHIC */}
+            <div style={{ 
+              padding: '24px 32px', 
+              background: 'linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)', 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center',
+              color: 'white'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ background: 'rgba(255,255,255,0.2)', padding: '10px', borderRadius: '12px' }}>
+                  <FileText size={24} color="white" />
+                </div>
+                <div>
+                  <h2 style={{ fontSize: '20px', fontWeight: '700', margin: 0, letterSpacing: '-0.5px' }}>Votre Reçu de Paiement</h2>
+                  <p style={{ margin: 0, fontSize: '13px', opacity: 0.8 }}>Document officiel • Vision Immo 2.0</p>
+                </div>
+              </div>
               <div style={{ display: 'flex', gap: '12px' }}>
                 <button 
+                  type="button"
                   onClick={() => generatePDF(selectedInst)}
-                  style={{ background: 'var(--primary)', border: 'none', color: 'white', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '500', fontSize: '14px' }}
+                  className="glass-button hover-lift"
+                  style={{ 
+                    color: 'white', 
+                    padding: '10px 20px', 
+                    borderRadius: '12px', 
+                    cursor: 'pointer', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '8px', 
+                    fontWeight: '600', 
+                    fontSize: '14px',
+                    transition: 'all 0.2s',
+                  }}
                 >
-                  <Download size={16} /> Télécharger PDF
+                  <Download size={18} /> Télécharger
                 </button>
                 <button 
+                  type="button"
                   onClick={() => setSelectedInst(null)}
-                  style={{ background: 'var(--gray-100)', border: 'none', color: 'var(--gray-600)', width: '36px', height: '36px', borderRadius: '8px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                  className="hover-bg-light"
+                  style={{ 
+                    background: 'rgba(255,255,255,0.1)', 
+                    border: '1px solid rgba(255,255,255,0.2)', 
+                    color: 'white', 
+                    width: '42px', 
+                    height: '42px', 
+                    borderRadius: '12px', 
+                    cursor: 'pointer', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    transition: 'all 0.2s'
+                  }}
                 >
                   <X size={20} />
                 </button>
               </div>
             </div>
 
-            <div style={{ padding: '24px', overflowY: 'auto', background: '#f5f7fa', display: 'flex', justifyContent: 'center' }}>
+            {/* CONTENU DU REÇU (Zone à imprimer) */}
+            <div style={{ padding: '32px', overflowY: 'auto', background: '#f8fafc', display: 'flex', justifyContent: 'center' }}>
               <div 
                 id={`receipt-content-${selectedInst.id}`}
                 style={{
-                  background: 'var(--white)',
-                  width: "210mm",
-                  minHeight: "297mm",
-                  padding: "40px",
-                  boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
-                  color: "#000",
-                  fontFamily: "Arial, sans-serif"
+                  background: 'white',
+                  width: "100%",
+                  maxWidth: "210mm",
+                  padding: "48px",
+                  borderRadius: "16px",
+                  boxShadow: "0 10px 40px -10px rgba(0,0,0,0.08)",
+                  color: "#1e293b",
+                  fontFamily: "'Inter', Arial, sans-serif",
+                  position: "relative",
+                  overflow: "hidden"
                 }}
               >
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "2px solid #f0f0f0", paddingBottom: "20px", marginBottom: "30px" }}>
-                  <div>
-                    <h1 style={{ fontSize: "28px", fontWeight: "800", color: "#1a1a1a", margin: "0 0 8px 0" }}>REÇU DE PAIEMENT</h1>
-                    <p style={{ margin: 0, color: "#666", fontSize: "14px" }}>Reçu généré le {new Date().toLocaleDateString('fr-FR')}</p>
-                  </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                    <div style={{ width: "40px", height: "40px", background: "var(--primary)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <FileText size={24} color="white" />
+                {/* Filigrane discret */}
+                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%) rotate(-45deg)', fontSize: '120px', fontWeight: '900', color: 'rgba(0,0,0,0.02)', whiteSpace: 'nowrap', pointerEvents: 'none', zIndex: 0 }}>
+                  PAYÉ
+                </div>
+
+                <div style={{ position: 'relative', zIndex: 1 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "2px solid #f1f5f9", paddingBottom: "32px", marginBottom: "32px" }}>
+                    <div>
+                      <h1 style={{ fontSize: "32px", fontWeight: "800", color: "#0f172a", margin: "0 0 12px 0", letterSpacing: "-1px" }}>REÇU DE PAIEMENT</h1>
+                      <div style={{ display: 'inline-block', background: '#ecfdf5', color: '#059669', padding: '6px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: '600' }}>
+                        N° R-{selectedInst.id.substring(0, 8).toUpperCase()}
+                      </div>
                     </div>
-                    <span style={{ fontSize: "20px", fontWeight: "800", color: "var(--primary)" }}>Vision Immo 2.0</span>
-                  </div>
-                </div>
-
-                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "40px" }}>
-                  <div style={{ flex: 1 }}>
-                    <h3 style={{ fontSize: "12px", textTransform: "uppercase", color: "#888", letterSpacing: "1px", marginBottom: "8px" }}>Propriétaire / Promoteur</h3>
-                    <p style={{ margin: "0 0 4px 0", fontWeight: "bold", fontSize: "16px" }}>Vision Immo 2.0</p>
-                    <p style={{ margin: 0, color: "#444", fontSize: "14px" }}>Cocody, Abidjan</p>
-                    <p style={{ margin: 0, color: "#444", fontSize: "14px" }}>contact@veco-ia.com</p>
-                  </div>
-                  <div style={{ flex: 1, textAlign: "right" }}>
-                    <h3 style={{ fontSize: "12px", textTransform: "uppercase", color: "#888", letterSpacing: "1px", marginBottom: "8px" }}>Acheteur</h3>
-                    <p style={{ margin: "0 0 4px 0", fontWeight: "bold", fontSize: "16px" }}>{salesMap[selectedInst.sale_id]?.buyers?.full_name || 'Acheteur'}</p>
-                    <p style={{ margin: 0, color: "#444", fontSize: "14px" }}>{propsMap[salesMap[selectedInst.sale_id]?.property_id]?.name || 'Bien inconnu'}</p>
-                  </div>
-                </div>
-
-                <div style={{ marginBottom: "40px" }}>
-                  <p style={{ fontSize: "15px", lineHeight: "1.6", color: "#333" }}>
-                    Nous soussignés, <strong>Vision Immo 2.0</strong>, déclarons avoir reçu de <strong>{salesMap[selectedInst.sale_id]?.buyers?.full_name || 'Acheteur'}</strong> la somme de <strong>{formatCurrency(selectedInst.amount)}</strong> au titre du paiement d'une échéance pour l'acquisition du bien <strong>{propsMap[salesMap[selectedInst.sale_id]?.property_id]?.name || 'Bien inconnu'}</strong>.
-                  </p>
-                </div>
-
-                <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "40px" }}>
-                  <thead>
-                    <tr style={{ background: "#f8f9fa" }}>
-                      <th style={{ padding: "12px 16px", textAlign: "left", borderBottom: "2px solid #ddd", color: "#555" }}>Description</th>
-                      <th style={{ padding: "12px 16px", textAlign: "left", borderBottom: "2px solid #ddd", color: "#555" }}>Date d'échéance</th>
-                      <th style={{ padding: "12px 16px", textAlign: "right", borderBottom: "2px solid #ddd", color: "#555" }}>Montant</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td style={{ padding: "16px", borderBottom: "1px solid #eee", color: "#333" }}>Échéance d'acquisition</td>
-                      <td style={{ padding: "16px", borderBottom: "1px solid #eee", color: "#333" }}>{new Date(selectedInst.due_date).toLocaleDateString('fr-FR')}</td>
-                      <td style={{ padding: "16px", borderBottom: "1px solid #eee", textAlign: "right", color: "#333" }}>{formatCurrency(selectedInst.amount)}</td>
-                    </tr>
-                    <tr>
-                      <td colSpan={2} style={{ padding: "16px", textAlign: "right", fontWeight: "bold", fontSize: "16px", color: "#111" }}>TOTAL PAYÉ</td>
-                      <td style={{ padding: "16px", textAlign: "right", fontWeight: "bold", fontSize: "18px", color: "var(--primary-dark)" }}>{formatCurrency(selectedInst.amount)}</td>
-                    </tr>
-                  </tbody>
-                </table>
-
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginTop: "60px" }}>
-                  <div>
-                    <p style={{ margin: "0 0 4px 0", fontSize: "14px", color: "#666" }}>Mode de paiement : <strong style={{ textTransform: "capitalize", color: "#333" }}>{selectedInst.payment_method?.replace("_", " ")}</strong></p>
-                    <p style={{ margin: "0", fontSize: "14px", color: "#666" }}>Date du règlement : <strong style={{ color: "#333" }}>{selectedInst.payment_date ? new Date(selectedInst.payment_date).toLocaleDateString('fr-FR') : '-'}</strong></p>
-                  </div>
-                  <div style={{ textAlign: "center" }}>
-                    <p style={{ margin: "0 0 16px 0", fontSize: "14px", color: "#333", fontWeight: "bold" }}>Le Promoteur / Le Mandataire</p>
-                    <div style={{ width: "160px", height: "60px", borderBottom: "1px dashed #ccc", margin: "0 auto", display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: "8px" }}>
-                      <span style={{ fontFamily: "cursive", fontSize: "24px", color: "var(--primary)" }}>Vision Immo 2.0</span>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "10px", marginBottom: "8px" }}>
+                        <div style={{ width: "36px", height: "36px", background: "var(--primary)", borderRadius: "10px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <Wallet size={20} color="white" />
+                        </div>
+                        <span style={{ fontSize: "22px", fontWeight: "800", color: "var(--primary)" }}>Vision Immo 2.0</span>
+                      </div>
+                      <p style={{ margin: 0, color: "#64748b", fontSize: "14px" }}>Date: {new Date().toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
                     </div>
                   </div>
-                </div>
 
-                <div style={{ marginTop: "80px", paddingTop: "20px", borderTop: "1px solid #eee", textAlign: "center" }}>
-                  <p style={{ fontSize: "11px", color: "#999", margin: 0 }}>
-                    Ce reçu atteste du paiement partiel ou total dans le cadre d'une acquisition immobilière. Il ne vaut pas titre de propriété. Le transfert de propriété définitif sera acté par-devant notaire à l'issue du paiement intégral du prix de vente.
-                  </p>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "48px", background: "#f8fafc", padding: "24px", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
+                    <div style={{ flex: 1 }}>
+                      <h3 style={{ fontSize: "12px", textTransform: "uppercase", color: "#64748b", letterSpacing: "1.2px", marginBottom: "12px", fontWeight: "700" }}>Émetteur</h3>
+                      <p style={{ margin: "0 0 6px 0", fontWeight: "700", fontSize: "16px", color: "#0f172a" }}>Vision Immo 2.0</p>
+                      <p style={{ margin: "0 0 4px 0", color: "#475569", fontSize: "14px" }}>Cocody, Abidjan</p>
+                      <p style={{ margin: 0, color: "#475569", fontSize: "14px" }}>contact@veco-ia.com</p>
+                    </div>
+                    <div style={{ width: "1px", background: "#e2e8f0", margin: "0 24px" }}></div>
+                    <div style={{ flex: 1 }}>
+                      <h3 style={{ fontSize: "12px", textTransform: "uppercase", color: "#64748b", letterSpacing: "1.2px", marginBottom: "12px", fontWeight: "700" }}>Destinataire</h3>
+                      <p style={{ margin: "0 0 6px 0", fontWeight: "700", fontSize: "16px", color: "#0f172a" }}>{(salesMap[selectedInst.sale_id] as any)?.buyers?.full_name || 'Acheteur'}</p>
+                      <p style={{ margin: 0, color: "#475569", fontSize: "14px" }}>{propsMap[salesMap[selectedInst.sale_id]?.property_id]?.name || 'Bien inconnu'}</p>
+                    </div>
+                  </div>
+
+                  <div style={{ marginBottom: "40px" }}>
+                    <p style={{ fontSize: "15px", lineHeight: "1.8", color: "#334155", background: "#f1f5f9", padding: "20px", borderRadius: "8px", borderLeft: "4px solid var(--primary)" }}>
+                      Nous soussignés, <strong>Vision Immo 2.0</strong>, déclarons avoir reçu de <strong>{(salesMap[selectedInst.sale_id] as any)?.buyers?.full_name || 'Acheteur'}</strong> la somme de <strong>{formatCurrency(selectedInst.amount)}</strong> au titre du paiement d'une échéance pour l'acquisition du bien <strong>{propsMap[salesMap[selectedInst.sale_id]?.property_id]?.name || 'Bien inconnu'}</strong>.
+                    </p>
+                  </div>
+
+                  <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 0, marginBottom: "48px" }}>
+                    <thead>
+                      <tr>
+                        <th style={{ padding: "16px", textAlign: "left", borderBottom: "2px solid #cbd5e1", color: "#475569", fontSize: "13px", textTransform: "uppercase", letterSpacing: "1px" }}>Détails</th>
+                        <th style={{ padding: "16px", textAlign: "left", borderBottom: "2px solid #cbd5e1", color: "#475569", fontSize: "13px", textTransform: "uppercase", letterSpacing: "1px" }}>Date d'échéance</th>
+                        <th style={{ padding: "16px", textAlign: "right", borderBottom: "2px solid #cbd5e1", color: "#475569", fontSize: "13px", textTransform: "uppercase", letterSpacing: "1px" }}>Montant</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style={{ padding: "20px 16px", borderBottom: "1px solid #e2e8f0", color: "#0f172a", fontWeight: "500" }}>Échéance d'acquisition</td>
+                        <td style={{ padding: "20px 16px", borderBottom: "1px solid #e2e8f0", color: "#475569" }}>{new Date(selectedInst.due_date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}</td>
+                        <td style={{ padding: "20px 16px", borderBottom: "1px solid #e2e8f0", textAlign: "right", color: "#0f172a", fontWeight: "600" }}>{formatCurrency(selectedInst.amount)}</td>
+                      </tr>
+                      <tr>
+                        <td colSpan={2} style={{ padding: "24px 16px", textAlign: "right", fontWeight: "800", fontSize: "15px", color: "#64748b", textTransform: "uppercase", letterSpacing: "1px" }}>Total Payé</td>
+                        <td style={{ padding: "24px 16px", textAlign: "right", fontWeight: "900", fontSize: "24px", color: "var(--primary-dark)" }}>{formatCurrency(selectedInst.amount)}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+                    <div style={{ background: "#f8fafc", padding: "16px", borderRadius: "8px", border: "1px solid #e2e8f0" }}>
+                      <p style={{ margin: "0 0 8px 0", fontSize: "13px", color: "#64748b" }}>Informations de paiement</p>
+                      <p style={{ margin: "0 0 4px 0", fontSize: "14px", color: "#0f172a", fontWeight: "600" }}>Mode : <span style={{ textTransform: "capitalize", fontWeight: "400" }}>{selectedInst.payment_method?.replace("_", " ") || 'Non spécifié'}</span></p>
+                      <p style={{ margin: "0", fontSize: "14px", color: "#0f172a", fontWeight: "600" }}>Réglement : <span style={{ fontWeight: "400" }}>{selectedInst.payment_date ? new Date(selectedInst.payment_date).toLocaleDateString('fr-FR') : 'Date inconnue'}</span></p>
+                    </div>
+                    
+                    <div style={{ textAlign: "center", width: "200px" }}>
+                      <p style={{ margin: "0 0 8px 0", fontSize: "14px", color: "#64748b", fontWeight: "600" }}>Signature Autorisée</p>
+                      <div style={{ height: "80px", borderBottom: "1px solid #cbd5e1", display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: "10px" }}>
+                        <span style={{ fontFamily: "'Brush Script MT', cursive, sans-serif", fontSize: "32px", color: "var(--primary)", transform: "rotate(-5deg)", opacity: 0.8 }}>Vision Immo</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style={{ marginTop: "40px", paddingTop: "24px", borderTop: "1px dashed #cbd5e1", textAlign: "center" }}>
+                    <p style={{ fontSize: "12px", color: "#94a3b8", margin: 0, lineHeight: "1.5" }}>
+                      Ce reçu électronique atteste du paiement dans le cadre d'une acquisition immobilière. 
+                      Il ne vaut pas titre de propriété définitif.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
