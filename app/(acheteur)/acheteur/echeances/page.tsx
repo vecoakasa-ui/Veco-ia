@@ -72,7 +72,7 @@ export default function AcheteurEcheances() {
     
     try {
       const sale = salesMap[inst.sale_id];
-      const propertyName = propsMap?.[sale?.property_id]?.name || "Acquisition immobilière";
+      const propertyName = sale?.property_name || propsMap?.[sale?.property_id]?.name || "Acquisition immobilière";
       
       const res = await fetch("/api/paydunya/create", {
         method: "POST",
@@ -178,7 +178,7 @@ export default function AcheteurEcheances() {
                       </td>
                       <td style={{ padding: "16px 24px" }}>
                         <div style={{ fontWeight: "500", color: "var(--gray-900)", marginBottom: "4px" }}>Mensualité {index === 0 ? "(Avance initiale)" : `n°${index}`}</div>
-                        <div style={{ fontSize: "13px", color: "var(--gray-500)" }}>Pour: {prop?.name || 'Bien inconnu'}</div>
+                        <div style={{ fontSize: "13px", color: "var(--gray-500)" }}>Pour: {sale?.property_name || prop?.name || 'Bien inconnu'}</div>
                       </td>
                       <td style={{ padding: "16px 24px", fontWeight: "700", color: "var(--gray-900)" }}>
                         {formatCurrency(inst.amount)}
@@ -382,14 +382,14 @@ export default function AcheteurEcheances() {
                     <div style={{ width: "1px", background: "#e2e8f0", margin: "0 24px" }}></div>
                     <div style={{ flex: 1 }}>
                       <h3 style={{ fontSize: "12px", textTransform: "uppercase", color: "#64748b", letterSpacing: "1.2px", marginBottom: "12px", fontWeight: "700" }}>Destinataire</h3>
-                      <p style={{ margin: "0 0 6px 0", fontWeight: "700", fontSize: "16px", color: "#0f172a" }}>{(salesMap[selectedInst.sale_id] as any)?.buyers?.full_name || 'Acheteur'}</p>
-                      <p style={{ margin: 0, color: "#475569", fontSize: "14px" }}>{propsMap[salesMap[selectedInst.sale_id]?.property_id]?.name || 'Bien inconnu'}</p>
+                      <p style={{ margin: "0 0 6px 0", fontWeight: "700", fontSize: "16px", color: "#0f172a" }}>{(salesMap[selectedInst.sale_id] as any)?.buyer_name || (salesMap[selectedInst.sale_id] as any)?.buyers?.full_name || 'Acheteur'}</p>
+                      <p style={{ margin: 0, color: "#475569", fontSize: "14px" }}>{salesMap[selectedInst.sale_id]?.property_name || propsMap[salesMap[selectedInst.sale_id]?.property_id]?.name || 'Bien inconnu'}</p>
                     </div>
                   </div>
 
                   <div style={{ marginBottom: "40px" }}>
                     <p style={{ fontSize: "15px", lineHeight: "1.8", color: "#334155", background: "#f1f5f9", padding: "20px", borderRadius: "8px", borderLeft: "4px solid var(--primary)" }}>
-                      Nous soussignés, <strong>Vision Immo 2.0</strong>, déclarons avoir reçu de <strong>{(salesMap[selectedInst.sale_id] as any)?.buyers?.full_name || 'Acheteur'}</strong> la somme de <strong>{formatCurrency(selectedInst.amount)}</strong> au titre du paiement d'une échéance pour l'acquisition du bien <strong>{propsMap[salesMap[selectedInst.sale_id]?.property_id]?.name || 'Bien inconnu'}</strong>.
+                      Nous soussignés, <strong>Vision Immo 2.0</strong>, déclarons avoir reçu de <strong>{(salesMap[selectedInst.sale_id] as any)?.buyer_name || (salesMap[selectedInst.sale_id] as any)?.buyers?.full_name || 'Acheteur'}</strong> la somme de <strong>{formatCurrency(selectedInst.amount)}</strong> au titre du paiement d'une échéance pour l'acquisition du bien <strong>{salesMap[selectedInst.sale_id]?.property_name || propsMap[salesMap[selectedInst.sale_id]?.property_id]?.name || 'Bien inconnu'}</strong>.
                     </p>
                   </div>
 
