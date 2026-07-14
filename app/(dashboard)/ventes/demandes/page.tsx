@@ -35,9 +35,9 @@ export default function VentesDemandesPage() {
   const handleOpenAcceptModal = (inq: Inquiry & { property?: Property }) => {
     setAcceptingInquiry(inq);
     const today = new Date().toISOString().split('T')[0];
-    setStartDate(today);
-    setTotalPrice("");
-    setAdvancePayment("");
+    setStartDate(inq.proposed_date || today);
+    setTotalPrice(inq.proposed_price ? inq.proposed_price.toString() : "");
+    setAdvancePayment(inq.proposed_advance ? inq.proposed_advance.toString() : "");
   };
 
   const handleAcceptInquiry = async (e: React.FormEvent) => {
@@ -60,7 +60,10 @@ export default function VentesDemandesPage() {
         full_name: acceptingInquiry.tenant_name,
         email: normalizedEmail,
         phone: acceptingInquiry.tenant_phone,
-        profile_id: finalProfileId
+        profile_id: finalProfileId,
+        id_type: acceptingInquiry.id_type || null,
+        id_number: acceptingInquiry.id_number || null,
+        id_expiry_date: acceptingInquiry.id_expiry_date || null
       });
 
       if (finalProfileId) {
@@ -313,6 +316,23 @@ export default function VentesDemandesPage() {
                     <a href={`mailto:${inq.tenant_email}`} style={{ color: "var(--primary)", textDecoration: "none", fontWeight: 500 }}>{inq.tenant_email}</a>
                   </div>
                 </div>
+
+                {inq.id_type && (
+                  <div style={{ background: "var(--gray-50)", padding: "var(--space-3)", borderRadius: "var(--radius-md)", fontSize: "var(--text-sm)", border: "1px solid var(--gray-200)" }}>
+                    <div style={{ fontWeight: 600, color: "var(--gray-900)", marginBottom: "4px" }}>Identité : {inq.id_type}</div>
+                    <div style={{ color: "var(--gray-700)" }}>N° : {inq.id_number}</div>
+                    {inq.id_expiry_date && <div style={{ color: "var(--gray-700)" }}>Expire le : {new Date(inq.id_expiry_date).toLocaleDateString()}</div>}
+                  </div>
+                )}
+                
+                {inq.proposed_price && (
+                  <div style={{ background: "rgba(249, 115, 22, 0.05)", border: "1px solid rgba(249, 115, 22, 0.2)", padding: "var(--space-3)", borderRadius: "var(--radius-md)", fontSize: "var(--text-sm)" }}>
+                    <div style={{ fontWeight: 600, color: "var(--orange)", marginBottom: "4px" }}>Offre d'Achat</div>
+                    <div style={{ color: "var(--gray-700)" }}>Prix : <strong>{new Intl.NumberFormat('fr-FR').format(inq.proposed_price)} FCFA</strong></div>
+                    {inq.proposed_advance && <div style={{ color: "var(--gray-700)" }}>Avance : <strong>{new Intl.NumberFormat('fr-FR').format(inq.proposed_advance)} FCFA</strong></div>}
+                    {inq.proposed_date && <div style={{ color: "var(--gray-700)" }}>Date souhaitée : {new Date(inq.proposed_date).toLocaleDateString()}</div>}
+                  </div>
+                )}
 
                 {inq.message && (
                   <div style={{ background: "var(--primary-lightest)", padding: "var(--space-3)", borderRadius: "var(--radius-md)", borderLeft: "4px solid var(--primary)", fontSize: "var(--text-sm)", color: "var(--gray-800)" }}>

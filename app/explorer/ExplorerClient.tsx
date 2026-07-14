@@ -131,6 +131,16 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
     const name = formData.get("name") as string;
     const phone = formData.get("phone") as string;
     const email = formData.get("email") as string;
+    
+    // Nouveaux champs d'identité
+    const id_type = formData.get("id_type") as string;
+    const id_number = formData.get("id_number") as string;
+    const id_expiry_date = formData.get("id_expiry_date") as string;
+    
+    // Nouveaux champs financiers
+    const proposed_price = formData.get("proposed_price") ? Number(formData.get("proposed_price")) : undefined;
+    const proposed_advance = formData.get("proposed_advance") ? Number(formData.get("proposed_advance")) : undefined;
+    const proposed_date = formData.get("proposed_date") as string;
 
     try {
       const { error } = await supabase.from('inquiries').insert([{
@@ -142,6 +152,12 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
         tenant_phone: phone || '',
         tenant_email: email || '',
         message: message,
+        id_type: id_type || null,
+        id_number: id_number || null,
+        id_expiry_date: id_expiry_date || null,
+        proposed_price: proposed_price || null,
+        proposed_advance: proposed_advance || null,
+        proposed_date: proposed_date || null,
         status: 'pending'
       }]);
 
@@ -456,7 +472,52 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
                       </div>
                     </div>
 
-                    <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                    {(selectedProperty?.type === 'terrain' || selectedProperty?.type === 'lotissement') && (
+                      <>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "8px", borderTop: "1px solid var(--gray-200)", paddingTop: "16px" }}>
+                          <h4 style={{ fontSize: "15px", fontWeight: 700, color: "var(--gray-900)", margin: 0 }}>Informations d'Identité</h4>
+                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-4)" }}>
+                            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                              <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Type de pièce <span style={{color: "var(--danger)"}}>*</span></label>
+                              <select name="id_type" required className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px" }}>
+                                <option value="CNI">CNI</option>
+                                <option value="Passeport">Passeport</option>
+                                <option value="Attestation">Attestation d'identité</option>
+                                <option value="Permis">Permis de conduire</option>
+                              </select>
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                              <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>N° de Pièce <span style={{color: "var(--danger)"}}>*</span></label>
+                              <input type="text" name="id_number" required placeholder="Ex: 119015..." className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px" }} />
+                            </div>
+                          </div>
+                          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                            <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Date d'expiration <span style={{color: "var(--danger)"}}>*</span></label>
+                            <input type="date" name="id_expiry_date" required className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px" }} />
+                          </div>
+                        </div>
+
+                        <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "8px", borderTop: "1px solid var(--gray-200)", paddingTop: "16px" }}>
+                          <h4 style={{ fontSize: "15px", fontWeight: 700, color: "var(--gray-900)", margin: 0 }}>Proposition Financière</h4>
+                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-4)" }}>
+                            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                              <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Prix proposé (FCFA) <span style={{color: "var(--danger)"}}>*</span></label>
+                              <input type="number" name="proposed_price" defaultValue={selectedProperty.sale_price || ""} required className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px" }} />
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                              <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Avance proposée (FCFA)</label>
+                              <input type="number" name="proposed_advance" placeholder="0" className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px" }} />
+                            </div>
+                          </div>
+                          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                            <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Date de conclusion souhaitée <span style={{color: "var(--danger)"}}>*</span></label>
+                            <input type="date" name="proposed_date" required className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px" }} />
+                          </div>
+                        </div>
+                      </>
+                    )}
+
+                    <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginTop: "8px", borderTop: "1px solid var(--gray-200)", paddingTop: "16px" }}>
                       <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Message (optionnel)</label>
                       <textarea 
                         className="form-control" 

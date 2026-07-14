@@ -173,6 +173,12 @@ export interface Inquiry {
   tenant_phone: string;
   tenant_email: string;
   message?: string;
+  id_type?: string;
+  id_number?: string;
+  id_expiry_date?: string;
+  proposed_price?: number;
+  proposed_advance?: number;
+  proposed_date?: string;
   status: 'pending' | 'accepted' | 'rejected';
   created_at: string;
 }
