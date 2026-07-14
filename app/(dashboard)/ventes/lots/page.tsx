@@ -103,68 +103,77 @@ export default function LotsPage() {
 
   const handleAddProperty = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !address) return;
-
-    const newProp = await db.addProperty({
-      name,
-      type,
-      address,
-      city,
-      country,
-      monthly_rent: 0,
-      sale_price: Number(salePrice) || 0,
-      advance_payment: advancePayment ? Number(advancePayment) : undefined,
-      installment_amount: installmentAmount ? Number(installmentAmount) : undefined,
-      status: "vacant",
-      description: desc,
-      landlord_id: landlordId || undefined,
-      images: mainImage ? [mainImage] : [],
-      lat,
-      lng
-    });
-
-    if (type === 'lotissement' && unitsCount > 0) {
-      for (let i = 1; i <= unitsCount; i++) {
-        await db.addProperty({
-          name: `${name} - Lot ${i}`,
-          type: 'terrain',
-          address,
-          city,
-          country,
-          monthly_rent: 0,
-          sale_price: Number(salePrice) || 0,
-          advance_payment: advancePayment ? Number(advancePayment) : undefined,
-          installment_amount: installmentAmount ? Number(installmentAmount) : undefined,
-          status: "vacant",
-          description: desc,
-          landlord_id: landlordId || undefined,
-          images: mainImage ? [mainImage] : [],
-          lat,
-          lng,
-          parent_id: newProp.id
-        });
-      }
+    alert("Début de l'enregistrement...");
+    if (!name || !address || !salePrice) {
+      alert("Veuillez remplir le nom, l'adresse et le prix de vente.");
+      return;
     }
 
-    setName("");
-    setType("terrain");
-    setUnitsCount(0);
-    setAddress("");
-    setCity("Abidjan");
-    setCountry("Côte d'Ivoire");
-    setSalePrice("");
-    setAdvancePayment("");
-    setInstallmentAmount("");
-    setDesc("");
-    setLandlordId("");
-    setMainImage("");
-    setLat(undefined);
-    setLng(undefined);
-    setDocuments([]);
-    setShowAddModal(false);
+    try {
+      const newProp = await db.addProperty({
+        name,
+        type,
+        address,
+        city,
+        country,
+        monthly_rent: 0,
+        sale_price: Number(salePrice) || 0,
+        advance_payment: advancePayment ? Number(advancePayment) : undefined,
+        installment_amount: installmentAmount ? Number(installmentAmount) : undefined,
+        status: "vacant",
+        description: desc,
+        landlord_id: landlordId || undefined,
+        images: mainImage ? [mainImage] : [],
+        lat,
+        lng
+      });
 
-    await loadProperties();
-    window.dispatchEvent(new Event("storage"));
+      if (type === 'lotissement' && unitsCount > 0) {
+        for (let i = 1; i <= unitsCount; i++) {
+          await db.addProperty({
+            name: `${name} - Lot ${i}`,
+            type: 'terrain',
+            address,
+            city,
+            country,
+            monthly_rent: 0,
+            sale_price: Number(salePrice) || 0,
+            advance_payment: advancePayment ? Number(advancePayment) : undefined,
+            installment_amount: installmentAmount ? Number(installmentAmount) : undefined,
+            status: "vacant",
+            description: desc,
+            landlord_id: landlordId || undefined,
+            images: mainImage ? [mainImage] : [],
+            lat,
+            lng,
+            parent_id: newProp.id
+          });
+        }
+      }
+
+      setName("");
+      setType("terrain");
+      setUnitsCount(0);
+      setAddress("");
+      setCity("Abidjan");
+      setCountry("Côte d'Ivoire");
+      setSalePrice("");
+      setAdvancePayment("");
+      setInstallmentAmount("");
+      setDesc("");
+      setLandlordId("");
+      setMainImage("");
+      setLat(undefined);
+      setLng(undefined);
+      setDocuments([]);
+      setShowAddModal(false);
+
+      await loadProperties();
+      window.dispatchEvent(new Event("storage"));
+    } catch (err: any) {
+      console.error(err);
+      alert("Erreur lors de l'enregistrement. Vérifiez que la colonne 'installment_amount' a bien été ajoutée dans Supabase. Erreur technique: " + err.message);
+    }
   };
 
   const handleSaveEditProperty = async (e: React.FormEvent) => {
