@@ -331,13 +331,14 @@ export default function AcheteurEcheances() {
             </div>
 
             {/* CONTENU DU REÇU (Zone à imprimer) */}
-            <div style={{ padding: '32px', overflowY: 'auto', background: '#f8fafc', display: 'flex', justifyContent: 'center' }}>
-              <div 
-                id={`receipt-content-${selectedInst.id}`}
-                style={{
-                  background: 'white',
-                  width: "100%",
-                  maxWidth: "210mm",
+            <div style={{ flex: 1, overflowY: 'auto', background: '#f8fafc', padding: '40px' }}>
+              <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <div 
+                  id={`receipt-content-${selectedInst.id}`}
+                  style={{
+                    background: 'white',
+                    width: "100%",
+                    maxWidth: "210mm",
                   padding: "48px",
                   borderRadius: "16px",
                   boxShadow: "0 10px 40px -10px rgba(0,0,0,0.08)",
@@ -435,6 +436,7 @@ export default function AcheteurEcheances() {
                     </p>
                   </div>
                 </div>
+              </div>
               </div>
             </div>
           </div>
