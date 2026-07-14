@@ -159,7 +159,7 @@ export default function AcheteurLayout({
         zIndex: 40,
         transition: 'transform 0.3s ease'
       }}>
-        <div style={{ padding: '24px 20px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <Link href="/" style={{ padding: '24px 20px', display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo.png" alt="Vision Immo 2.0 Logo" style={{ width: "32px", height: "32px", objectFit: "contain" }} />
@@ -167,7 +167,7 @@ export default function AcheteurLayout({
           <span style={{ fontSize: '18px', fontWeight: '700', color: 'var(--gray-900)' }}>
             Vision Immo 2.0 <span style={{ color: 'var(--primary)', fontSize: '14px', display: 'block' }}>Espace Acheteur</span>
           </span>
-        </div>
+        </Link>
 
         <nav style={{ flex: 1, padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
           {navItems.map((item) => {
