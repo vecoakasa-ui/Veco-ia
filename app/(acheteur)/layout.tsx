@@ -164,8 +164,19 @@ export default function AcheteurLayout({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo.png" alt="Vision Immo 2.0 Logo" style={{ width: "32px", height: "32px", objectFit: "contain" }} />
           </div>
-          <span style={{ fontSize: '18px', fontWeight: '700', color: 'var(--gray-900)' }}>
-            Vision Immo 2.0 <span style={{ color: 'var(--primary)', fontSize: '14px', display: 'block' }}>Espace Acheteur</span>
+          <span style={{ fontSize: '18px', fontWeight: '800', color: 'var(--gray-900)', lineHeight: '1.2' }}>
+            Vision Immo 2.0 
+            <span style={{ 
+              color: 'var(--primary)', 
+              fontSize: '12px', 
+              display: 'inline-block',
+              background: 'var(--primary-lightest)',
+              padding: '4px 8px',
+              borderRadius: '6px',
+              marginTop: '4px',
+              fontWeight: '600',
+              border: '1px solid var(--primary-lighter)'
+            }}>Espace Acheteur</span>
           </span>
         </Link>
 
