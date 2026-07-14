@@ -117,7 +117,7 @@ export default function AcheteurEcheances() {
     <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
       <div>
         <h1 style={{ fontSize: "24px", fontWeight: "700", color: "var(--gray-900)", margin: "0 0 8px 0" }}>
-          Mes Échéances
+          Paiements
         </h1>
         <p style={{ color: "var(--gray-500)", margin: 0 }}>
           Consultez et réglez vos mensualités pour vos acquisitions immobilières.

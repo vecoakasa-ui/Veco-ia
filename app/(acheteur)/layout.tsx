@@ -129,7 +129,7 @@ export default function AcheteurLayout({
   const navItems = [
     { name: "Vue d'ensemble", href: "/acheteur/dashboard", icon: LayoutDashboard },
     { name: "Mes Terrains", href: "/acheteur/terrains", icon: Home },
-    { name: "Mes Échéances", href: "/acheteur/echeances", icon: Wallet },
+    { name: "Paiements", href: "/acheteur/paiements", icon: Wallet },
   ];
 
   if (isAuthorized === null) {
