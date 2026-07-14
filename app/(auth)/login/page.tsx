@@ -85,17 +85,20 @@ export default function LoginPage({ searchParams }: PageProps) {
       // Fetch profile to redirect to the correct dashboard
       const profile = await db.getProfile();
       
-      if (profile && profile.role !== "admin" && profile.role !== "buyer" && profile.role !== role) {
+      const { data: buyers } = await supabase.from('buyers').select('id').eq('email', email.trim()).limit(1);
+      const isBuyer = buyers && buyers.length > 0;
+
+      if (profile && profile.role !== "admin" && profile.role !== "buyer" && profile.role !== role && !isBuyer) {
         await supabase.auth.signOut();
         const roleFr = profile.role === "owner" ? "Propriétaire" : "Locataire";
         const attemptFr = role === "owner" ? "Propriétaire" : "Locataire";
         throw new Error(`Ce compte est enregistré en tant que ${roleFr}. Vous ne pouvez pas vous connecter en tant que ${attemptFr}.`);
       }
 
-      if (profile?.role === "tenant") {
-        router.push("/locataire/dashboard");
-      } else if (profile?.role === "buyer") {
+      if (isBuyer || profile?.role === "buyer") {
         router.push("/acheteur/dashboard");
+      } else if (profile?.role === "tenant") {
+        router.push("/locataire/dashboard");
       } else if (profile?.role === "admin") {
         router.push("/admin/dashboard");
       } else {

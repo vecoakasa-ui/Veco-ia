@@ -74,7 +74,13 @@ export default function AcheteurLayout({
       
       const p = await db.getProfile();
       if (p) {
-        if (p.role === "owner") {
+        const { data: buyers } = await supabase.from('buyers').select('id').eq('email', p.email).limit(1);
+        const isBuyer = buyers && buyers.length > 0;
+
+        if (isBuyer || p.role === "buyer") {
+          setIsAuthorized(true);
+          loadProfile();
+        } else if (p.role === "owner") {
           setIsAuthorized(false);
           router.push("/dashboard");
           return;
@@ -86,10 +92,11 @@ export default function AcheteurLayout({
           setIsAuthorized(false);
           router.push("/locataire/dashboard");
           return;
+        } else {
+          setIsAuthorized(false);
+          router.push("/login");
+          return;
         }
-        
-        setIsAuthorized(true);
-        loadProfile();
       } else {
         setIsAuthorized(false);
         router.push("/login");
