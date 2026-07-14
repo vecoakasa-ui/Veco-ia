@@ -283,7 +283,7 @@ export default function AcheteurEcheances() {
                   <FileText size={24} color="white" />
                 </div>
                 <div>
-                  <h2 style={{ fontSize: '20px', fontWeight: '700', margin: 0, letterSpacing: '-0.5px' }}>Votre Reçu de Paiement</h2>
+                  <h2 style={{ fontSize: '20px', fontWeight: '700', margin: 0, letterSpacing: '-0.5px', color: 'var(--orange-light)' }}>Votre Reçu de Paiement</h2>
                   <p style={{ margin: 0, fontSize: '13px', opacity: 0.8 }}>Document officiel • Vision Immo 2.0</p>
                 </div>
               </div>
