@@ -385,15 +385,15 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
           justifyContent: "center",
           padding: "var(--space-4)"
         }}>
-          <div className="card animate-fade-in" style={{ width: "100%", maxWidth: "500px", padding: 0, overflow: "hidden" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "var(--space-4)", borderBottom: "1px solid var(--gray-200)", background: "var(--gray-50)" }}>
+          <div className="card animate-fade-in" style={{ width: "100%", maxWidth: "500px", padding: 0, overflow: "hidden", maxHeight: "90vh", display: "flex", flexDirection: "column" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "var(--space-4)", borderBottom: "1px solid var(--gray-200)", background: "var(--gray-50)", flexShrink: 0 }}>
               <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 700, margin: 0 }}>Signaler votre intérêt</h3>
               <button onClick={() => { setSelectedProperty(null); setShowSuccess(false); setSubmitError(null); }} style={{ color: "var(--gray-500)", background: "none", border: "none", cursor: "pointer" }}>
                 <X size={20} />
               </button>
             </div>
             
-            <div style={{ padding: "var(--space-5)" }}>
+            <div style={{ padding: "var(--space-5)", overflowY: "auto", flex: 1 }}>
               {showSuccess ? (
                 <div style={{ textAlign: "center", padding: "var(--space-6) 0" }} className="animate-fade-in">
                   <CheckCircle2 size={64} style={{ color: "var(--success)", margin: "0 auto var(--space-4)" }} />
