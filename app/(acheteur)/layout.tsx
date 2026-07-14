@@ -27,6 +27,7 @@ export default function AcheteurLayout({
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState<boolean | null>(null);
   
   const [profile, setProfile] = useState<Profile>({
@@ -248,30 +249,82 @@ export default function AcheteurLayout({
         }}>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-            <button style={{ 
-              width: '40px', 
-              height: '40px', 
-              borderRadius: '50%', 
-              background: 'var(--gray-50)', 
-              border: '1px solid var(--gray-200)', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              cursor: 'pointer',
-              position: 'relative'
-            }}>
-              <Bell size={20} color="var(--gray-600)" />
-              <span style={{ 
-                position: 'absolute', 
-                top: '0', 
-                right: '0', 
-                width: '10px', 
-                height: '10px', 
-                background: 'var(--danger)', 
-                borderRadius: '50%',
-                border: '2px solid white'
-              }}></span>
-            </button>
+            <div style={{ position: 'relative' }}>
+              <button 
+                onClick={() => setShowNotifications(!showNotifications)}
+                style={{ 
+                  width: '40px', 
+                  height: '40px', 
+                  borderRadius: '50%', 
+                  background: 'var(--gray-50)', 
+                  border: '1px solid var(--gray-200)', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  position: 'relative'
+                }}
+              >
+                <Bell size={20} color="var(--gray-600)" />
+                <span style={{ 
+                  position: 'absolute', 
+                  top: '0', 
+                  right: '0', 
+                  width: '10px', 
+                  height: '10px', 
+                  background: 'var(--danger)', 
+                  borderRadius: '50%',
+                  border: '2px solid white'
+                }}></span>
+              </button>
+
+              {showNotifications && (
+                <div style={{
+                  position: 'absolute',
+                  top: '100%',
+                  right: '-10px',
+                  marginTop: '12px',
+                  width: '320px',
+                  background: 'white',
+                  borderRadius: '16px',
+                  boxShadow: '0 10px 40px -10px rgba(0,0,0,0.15)',
+                  border: '1px solid var(--gray-200)',
+                  overflow: 'hidden',
+                  zIndex: 50
+                }}>
+                  <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--gray-100)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc' }}>
+                    <h3 style={{ fontWeight: '700', color: 'var(--gray-900)', margin: 0, fontSize: '15px' }}>Notifications</h3>
+                    <span style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: '600', background: 'var(--primary-lightest)', padding: '2px 8px', borderRadius: '12px' }}>2 nouvelles</span>
+                  </div>
+                  
+                  <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                    <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--gray-100)', display: 'flex', gap: '12px', background: 'rgba(249, 115, 22, 0.05)' }}>
+                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--orange-light)', marginTop: '6px' }}></div>
+                      <div>
+                        <p style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: '600', color: 'var(--gray-900)' }}>Nouvelle Échéance</p>
+                        <p style={{ margin: '0 0 6px 0', fontSize: '13px', color: 'var(--gray-600)', lineHeight: '1.4' }}>L'échéance de ce mois a été générée. Veuillez procéder au paiement.</p>
+                        <span style={{ fontSize: '11px', color: 'var(--gray-400)', fontWeight: '500' }}>Il y a 2 heures</span>
+                      </div>
+                    </div>
+                    
+                    <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--gray-100)', display: 'flex', gap: '12px' }}>
+                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'transparent', marginTop: '6px' }}></div>
+                      <div>
+                        <p style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: '600', color: 'var(--gray-900)' }}>Paiement validé</p>
+                        <p style={{ margin: '0 0 6px 0', fontSize: '13px', color: 'var(--gray-600)', lineHeight: '1.4' }}>Votre paiement par virement a été reçu et validé avec succès.</p>
+                        <span style={{ fontSize: '11px', color: 'var(--gray-400)', fontWeight: '500' }}>Hier</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div style={{ padding: '12px', borderTop: '1px solid var(--gray-100)', textAlign: 'center', background: '#f8fafc' }}>
+                    <button style={{ background: 'none', border: 'none', color: 'var(--primary)', fontWeight: '600', fontSize: '13px', cursor: 'pointer' }}>
+                      Marquer tout comme lu
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
 
             <div style={{ position: 'relative' }}>
               <button 
