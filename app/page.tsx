@@ -212,10 +212,11 @@ function HomeContent() {
       <header className="navbar">
         <div className="container navbar-container">
           <Link href="/" className="logo-text" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', textDecoration: 'none' }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--primary)', color: 'white', padding: '6px', borderRadius: '8px', fontWeight: 'bold' }}>
-              <Building2 size={20} className="text-orange" />
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo.png" alt="Vision Immo 2.0 Logo" style={{ width: "36px", height: "36px", objectFit: "contain" }} />
             </div>
-            <span style={{ fontSize: 'var(--text-lg)', fontWeight: '900', letterSpacing: '-0.02em' }}>
+            <span style={{ fontSize: 'var(--text-lg)', fontWeight: '900', letterSpacing: '-0.02em', color: "var(--gray-900)" }}>
               Vision Immo<span className="text-orange"> 2.0</span>
             </span>
           </Link>

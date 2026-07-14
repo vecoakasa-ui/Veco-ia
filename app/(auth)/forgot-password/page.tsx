@@ -61,7 +61,8 @@ export default function ForgotPasswordPage() {
             <ArrowLeft size={12} /> Retour à la connexion
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-            <div className="logo-icon" style={{ background: 'var(--orange)' }}>V</div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.png" alt="Vision Immo 2.0 Logo" style={{ width: "32px", height: "32px", objectFit: "contain" }} />
             <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: '800', margin: 0 }}>Mot de passe oublié</h2>
           </div>
           <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-500)', margin: 0 }}>

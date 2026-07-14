@@ -35,8 +35,16 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
         setSessionUser(session.user);
         const p = await db.getProfile();
         if (p) {
-          const { data: buyers } = await supabase.from('buyers').select('id').eq('email', p.email || "").limit(1);
-          const isBuyer = buyers && buyers.length > 0;
+          let { data: buyers } = await supabase.from('buyers').select('id').ilike('email', (p.email || "").trim()).limit(1);
+          let isBuyer = buyers && buyers.length > 0;
+
+          if (!isBuyer && p.email) {
+            const { data: acceptedInqs } = await supabase.from('inquiries').select('id').ilike('tenant_email', p.email.trim()).eq('status', 'accepted').limit(1);
+            if (acceptedInqs && acceptedInqs.length > 0) {
+              isBuyer = true;
+              await supabase.from('profiles').update({ role: 'buyer' }).eq('id', p.id);
+            }
+          }
 
           if (p.role === "admin") setDashboardLink("/admin/dashboard");
           else if (p.role === "owner") setDashboardLink("/dashboard");

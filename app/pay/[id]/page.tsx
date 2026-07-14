@@ -180,7 +180,8 @@ export default function TenantPaymentPage({ params }: PageProps) {
       {/* Top Navbar */}
       <header style={{ height: "64px", background: 'var(--white)', borderBottom: "1px solid var(--gray-200)", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 var(--space-6)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
-          <div className="logo-icon" style={{ background: "var(--primary)" }}>V</div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.png" alt="Vision Immo 2.0 Logo" style={{ width: "32px", height: "32px", objectFit: "contain" }} />
           <span style={{ fontSize: "var(--text-md)", fontWeight: "800", color: "var(--gray-900)" }}>Vision Immo 2.0</span>
         </div>
         <span style={{ fontSize: "var(--text-xs)", color: "var(--gray-500)", display: "flex", alignItems: "center", gap: "4px" }}>

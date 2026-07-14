@@ -42,8 +42,16 @@ export default function LoginPage({ searchParams }: PageProps) {
       if (session) {
         const profile = await db.getProfile();
         if (profile) {
-          const { data: buyers } = await supabase.from('buyers').select('id').eq('email', profile.email || "").limit(1);
-          const isBuyer = buyers && buyers.length > 0;
+          let { data: buyers } = await supabase.from('buyers').select('id').ilike('email', (profile.email || "").trim()).limit(1);
+          let isBuyer = buyers && buyers.length > 0;
+
+          if (!isBuyer && profile.email) {
+            const { data: acceptedInqs } = await supabase.from('inquiries').select('id').ilike('tenant_email', profile.email.trim()).eq('status', 'accepted').limit(1);
+            if (acceptedInqs && acceptedInqs.length > 0) {
+              isBuyer = true;
+              await supabase.from('profiles').update({ role: 'buyer' }).eq('id', profile.id);
+            }
+          }
 
           if (isBuyer || profile.role === "buyer") {
             router.push("/acheteur/dashboard");
@@ -88,8 +96,16 @@ export default function LoginPage({ searchParams }: PageProps) {
       // Fetch profile to redirect to the correct dashboard
       const profile = await db.getProfile();
       
-      const { data: buyers } = await supabase.from('buyers').select('id').eq('email', email.trim()).limit(1);
-      const isBuyer = buyers && buyers.length > 0;
+      let { data: buyers } = await supabase.from('buyers').select('id').ilike('email', email.trim()).limit(1);
+      let isBuyer = buyers && buyers.length > 0;
+
+      if (!isBuyer && profile && profile.email) {
+        const { data: acceptedInqs } = await supabase.from('inquiries').select('id').ilike('tenant_email', profile.email.trim()).eq('status', 'accepted').limit(1);
+        if (acceptedInqs && acceptedInqs.length > 0) {
+          isBuyer = true;
+          await supabase.from('profiles').update({ role: 'buyer' }).eq('id', profile.id);
+        }
+      }
 
       if (profile && profile.role !== "admin" && profile.role !== "buyer" && profile.role !== role && !isBuyer) {
         await supabase.auth.signOut();
@@ -136,7 +152,8 @@ export default function LoginPage({ searchParams }: PageProps) {
             <ArrowLeft size={12} /> Retour à l&apos;accueil
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-            <div className="logo-icon" style={{ background: 'var(--orange)' }}>V</div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.png" alt="Vision Immo 2.0 Logo" style={{ width: "32px", height: "32px", objectFit: "contain" }} />
             <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: '800', margin: 0 }}>Vision Immo 2.0</h2>
           </div>
           <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-500)', margin: 0 }}>

@@ -75,7 +75,7 @@ export default function AcheteurEcheances() {
       }
 
       if (data.url) {
-        window.location.href = data.url;
+        window.location.assign(data.url);
       } else {
         alert("Une erreur est survenue lors de la création du lien de paiement.");
         setIsProcessingPayment(false);

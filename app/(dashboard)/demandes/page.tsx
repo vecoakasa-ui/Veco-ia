@@ -51,7 +51,7 @@ export default function DemandesPage() {
     setIsSubmitting(true);
     try {
       const normalizedEmail = acceptingInquiry.tenant_email.trim().toLowerCase();
-      let finalProfileId = acceptingInquiry.tenant_id || ("tp-" + Math.random().toString(36).substring(2, 9));
+      let finalProfileId = acceptingInquiry.tenant_id || ("tp-" + Date.now().toString(36));
       if (!acceptingInquiry.tenant_id) {
         try {
           const { data } = await supabase.from("profiles").select("id").eq("email", normalizedEmail).maybeSingle();

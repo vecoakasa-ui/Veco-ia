@@ -81,8 +81,16 @@ export default function LocataireLayout({
       
       const p = await db.getProfile();
       if (p) {
-        const { data: buyers } = await supabase.from('buyers').select('id').eq('email', p.email || "").limit(1);
-        const isBuyer = buyers && buyers.length > 0;
+        let { data: buyers } = await supabase.from('buyers').select('id').ilike('email', (p.email || "").trim()).limit(1);
+        let isBuyer = buyers && buyers.length > 0;
+
+        if (!isBuyer && p.email) {
+          const { data: acceptedInqs } = await supabase.from('inquiries').select('id').ilike('tenant_email', p.email.trim()).eq('status', 'accepted').limit(1);
+          if (acceptedInqs && acceptedInqs.length > 0) {
+            isBuyer = true;
+            await supabase.from('profiles').update({ role: 'buyer' }).eq('id', p.id);
+          }
+        }
 
         if (isBuyer || p.role === "buyer") {
           setIsAuthorized(false);
@@ -183,11 +191,10 @@ export default function LocataireLayout({
       >
         <div style={{ height: "var(--topbar-height)", display: "flex", alignItems: "center", padding: "0 var(--space-6)", borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
           <Link href="/" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", textDecoration: "none" }} title="Retour à l'accueil du site">
-            <div className="logo-icon" style={{ background: "var(--primary)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <User size={16} className="text-orange" />
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.png" alt="Vision Immo 2.0 Logo" style={{ width: "32px", height: "32px", objectFit: "contain" }} />
             <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--fixed-white)" }}>
-              Espace Client
+              Vision Immo 2.0 <span style={{ color: "var(--orange)", fontSize: "14px", display: "block" }}>Espace Client</span>
             </span>
           </Link>
         </div>
@@ -308,12 +315,10 @@ export default function LocataireLayout({
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ height: "var(--topbar-height)", display: "flex", alignItems: "center", padding: "0 var(--space-6)", borderBottom: '1px solid rgba(255,255,255,0.05)', justifyContent: 'space-between' }}>
-              <Link href="/" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", textDecoration: "none" }} title="Retour à l'accueil du site">
-                <div className="logo-icon" style={{ display: "flex", alignItems: "center", justifyContent: "center", background: "var(--primary)" }}>
-                  <User size={16} className="text-orange" />
-                </div>
+              <Link href="/" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", textDecoration: "none" }}>
+                <img src="/logo.png" alt="Vision Immo 2.0 Logo" style={{ width: "32px", height: "32px", objectFit: "contain" }} />
                 <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--fixed-white)" }}>
-                  Espace Client
+                  Vision Immo 2.0 <span style={{ color: "var(--orange)", fontSize: "14px", display: "block" }}>Espace Client</span>
                 </span>
               </Link>
               <button onClick={() => setMobileOpen(false)} style={{ color: "var(--fixed-white)" }}>

@@ -49,7 +49,7 @@ export default function VentesDemandesPage() {
       const normalizedEmail = acceptingInquiry.tenant_email.trim().toLowerCase();
       let finalProfileId = null;
       try {
-        const { data } = await supabase.from("profiles").select("id").eq("email", normalizedEmail).maybeSingle();
+        const { data } = await supabase.from("profiles").select("id").ilike("email", normalizedEmail).maybeSingle();
         if (data && data.id) {
           finalProfileId = data.id;
         }
@@ -84,7 +84,7 @@ export default function VentesDemandesPage() {
       // If advance payment exists, create a paid installment for it
       if (advance > 0) {
         await supabase.from("sale_installments").insert({
-          id: "inst-" + Math.random().toString(36).substring(2, 9),
+          id: "inst-" + Date.now().toString(36),
           sale_id: newSale.id,
           amount: advance,
           due_date: startDate,
@@ -93,6 +93,9 @@ export default function VentesDemandesPage() {
           payment_date: new Date().toISOString()
         });
       }
+
+      // Update property status
+      await supabase.from("properties").update({ status: "sold" }).eq("id", acceptingInquiry.property_id);
 
       await updateStatus(acceptingInquiry.id, "accepted");
       setAcceptingInquiry(null);

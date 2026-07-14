@@ -177,21 +177,12 @@ export default function AdminLayout({
         overflowY: "auto"
       }}>
         <div className="sidebar-logo" style={{ marginBottom: "40px", padding: "0 12px", display: "flex", alignItems: "center", gap: "16px" }}>
-          <div className="logo-icon" style={{ 
-            background: "#009A44", // Vert Drapeau CI
-            display: "flex", 
-            alignItems: "center", 
-            justifyContent: "center",
-            borderRadius: "12px",
-            width: "48px",
-            height: "48px",
-            boxShadow: "0 8px 16px rgba(0, 154, 68, 0.2)",
-            flexShrink: 0
-          }}>
-            <ShieldAlert size={24} color="#FFFFFF" />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.png" alt="Vision Immo 2.0 Logo" style={{ width: "48px", height: "48px", objectFit: "contain" }} />
           </div>
-          <span style={{ color: "#1e293b", fontSize: "24px", fontWeight: "800", letterSpacing: "-0.5px", whiteSpace: "nowrap" }}>
-            Vision<span style={{ color: "#FF8200" }}>Admin</span>
+          <span style={{ color: "#1e293b", fontSize: "20px", fontWeight: "800", letterSpacing: "-0.5px", whiteSpace: "nowrap", display: "flex", flexDirection: "column", gap: "2px" }}>
+            Vision Immo 2.0 <span style={{ color: "#FF8200", fontSize: "14px" }}>Admin Panel</span>
           </span>
         </div>
         

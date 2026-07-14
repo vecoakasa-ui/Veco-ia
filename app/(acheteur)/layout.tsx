@@ -74,8 +74,16 @@ export default function AcheteurLayout({
       
       const p = await db.getProfile();
       if (p) {
-        const { data: buyers } = await supabase.from('buyers').select('id').eq('email', p.email).limit(1);
-        const isBuyer = buyers && buyers.length > 0;
+        let { data: buyers } = await supabase.from('buyers').select('id').ilike('email', (p.email || "").trim()).limit(1);
+        let isBuyer = buyers && buyers.length > 0;
+
+        if (!isBuyer && p.email) {
+          const { data: acceptedInqs } = await supabase.from('inquiries').select('id').ilike('tenant_email', p.email.trim()).eq('status', 'accepted').limit(1);
+          if (acceptedInqs && acceptedInqs.length > 0) {
+            isBuyer = true;
+            await supabase.from('profiles').update({ role: 'buyer' }).eq('id', p.id);
+          }
+        }
 
         if (isBuyer || p.role === "buyer") {
           setIsAuthorized(true);
@@ -152,11 +160,12 @@ export default function AcheteurLayout({
         transition: 'transform 0.3s ease'
       }}>
         <div style={{ padding: '24px 20px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{ width: '32px', height: '32px', background: 'var(--primary)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Home size={18} color="white" />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.png" alt="Vision Immo 2.0 Logo" style={{ width: "32px", height: "32px", objectFit: "contain" }} />
           </div>
           <span style={{ fontSize: '18px', fontWeight: '700', color: 'var(--gray-900)' }}>
-            Veco <span style={{ color: 'var(--primary)' }}>Espace Acheteur</span>
+            Vision Immo 2.0 <span style={{ color: 'var(--primary)', fontSize: '14px', display: 'block' }}>Espace Acheteur</span>
           </span>
         </div>
 
