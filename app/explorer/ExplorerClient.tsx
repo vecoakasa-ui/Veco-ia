@@ -35,9 +35,12 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
         setSessionUser(session.user);
         const p = await db.getProfile();
         if (p) {
+          const { data: buyers } = await supabase.from('buyers').select('id').eq('email', p.email || "").limit(1);
+          const isBuyer = buyers && buyers.length > 0;
+
           if (p.role === "admin") setDashboardLink("/admin/dashboard");
           else if (p.role === "owner") setDashboardLink("/dashboard");
-          else if (p.role === "buyer") setDashboardLink("/acheteur/dashboard");
+          else if (isBuyer || p.role === "buyer") setDashboardLink("/acheteur/dashboard");
           else setDashboardLink("/locataire/dashboard"); // For simple users (tenant)
         }
       }

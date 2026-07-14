@@ -42,10 +42,13 @@ export default function LoginPage({ searchParams }: PageProps) {
       if (session) {
         const profile = await db.getProfile();
         if (profile) {
-          if (profile.role === "tenant") {
-            router.push("/locataire/dashboard");
-          } else if (profile.role === "buyer") {
+          const { data: buyers } = await supabase.from('buyers').select('id').eq('email', profile.email || "").limit(1);
+          const isBuyer = buyers && buyers.length > 0;
+
+          if (isBuyer || profile.role === "buyer") {
             router.push("/acheteur/dashboard");
+          } else if (profile.role === "tenant") {
+            router.push("/locataire/dashboard");
           } else if (profile.role === "admin") {
             router.push("/admin/dashboard");
           } else {

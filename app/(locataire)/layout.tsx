@@ -81,6 +81,15 @@ export default function LocataireLayout({
       
       const p = await db.getProfile();
       if (p) {
+        const { data: buyers } = await supabase.from('buyers').select('id').eq('email', p.email || "").limit(1);
+        const isBuyer = buyers && buyers.length > 0;
+
+        if (isBuyer || p.role === "buyer") {
+          setIsAuthorized(false);
+          router.push("/acheteur/dashboard");
+          return;
+        }
+
         if (p.role === "admin") {
           setIsAuthorized(false);
           router.push("/admin/dashboard");
