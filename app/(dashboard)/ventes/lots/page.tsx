@@ -270,16 +270,16 @@ export default function LotsPage() {
       ) : (
         <div style={{ display: "grid", gridTemplateColumns: viewMode === "grid" ? "repeat(auto-fill, minmax(200px, 1fr))" : "1fr", gap: "var(--space-6)" }}>
           {filteredProperties.map((p) => (
-            <div key={p.id} className="card card-interactive" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: viewMode === "grid" ? "column" : "row", height: "100%" }}>
-              <div className="card-image-container" style={{ aspectRatio: viewMode === "grid" ? "1 / 1" : "auto", width: viewMode === "list" ? "250px" : "100%", position: "relative", flexShrink: 0 }}>
+            <div key={p.id} className="card card-interactive" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: viewMode === "grid" ? "column" : "row", height: "100%", aspectRatio: viewMode === "grid" ? "1 / 1" : "auto" }}>
+              <div className="card-image-container" style={{ height: viewMode === "grid" ? "45%" : "auto", width: viewMode === "list" ? "250px" : "100%", position: "relative", flexShrink: 0 }}>
                 <div className="card-image-zoom" style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: p.images?.[0] ? `url(${p.images[0]}) center/cover` : "var(--gray-200)" }}></div>
-                <span className={`badge badge-glass ${getPropertyStatusClass(p.status)}`} style={{ position: "absolute", top: "12px", right: "12px" }}>
+                <span className={`badge badge-glass ${getPropertyStatusClass(p.status)}`} style={{ position: "absolute", top: "8px", right: "8px", fontSize: "10px", padding: "2px 6px" }}>
                   {p.status === 'vacant' ? 'Disponible' : p.status === 'occupied' ? 'Vendu' : 'Indisponible'}
                 </span>
               </div>
-              <div style={{ padding: "var(--space-4)", display: "flex", flexDirection: "column", flexGrow: 1, gap: "var(--space-3)" }}>
+              <div style={{ padding: viewMode === "grid" ? "10px 12px" : "var(--space-4)", display: "flex", flexDirection: "column", flexGrow: 1, gap: viewMode === "grid" ? "4px" : "var(--space-3)", overflow: "hidden" }}>
                 <div>
-                  <span className={`badge ${p.type === 'lotissement' ? 'badge-success' : 'badge-primary'}`} style={{ textTransform: "uppercase", fontSize: "10px" }}>
+                  <span className={`badge ${p.type === 'lotissement' ? 'badge-success' : 'badge-primary'}`} style={{ textTransform: "uppercase", fontSize: "9px", padding: "2px 6px" }}>
                     {getPropertyTypeLabel(p.type)}
                   </span>
                   {p.parent_id && properties.find(parent => parent.id === p.parent_id) && (
@@ -287,19 +287,19 @@ export default function LotsPage() {
                       📍 {properties.find(parent => parent.id === p.parent_id)?.name}
                     </span>
                   )}
-                  <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--gray-900)", marginTop: "8px", marginBottom: "4px" }}>
+                  <h3 style={{ fontSize: viewMode === "grid" ? "var(--text-md)" : "var(--text-lg)", fontWeight: "800", color: "var(--gray-900)", marginTop: viewMode === "grid" ? "4px" : "8px", marginBottom: "2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                     {p.name}
                   </h3>
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "var(--text-sm)", color: "var(--gray-500)" }}>
-                    <MapPin size={14} /> {p.address}, {p.city}
+                  <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: viewMode === "grid" ? "11px" : "var(--text-sm)", color: "var(--gray-500)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    <MapPin size={12} style={{ flexShrink: 0 }} /> <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{p.address}, {p.city}</span>
                   </div>
                 </div>
                 
-                <div style={{ fontSize: "var(--text-base)", fontWeight: 800, color: "var(--primary-dark)", display: "flex", alignItems: "center", gap: "6px" }}>
+                <div style={{ fontSize: viewMode === "grid" ? "var(--text-sm)" : "var(--text-base)", fontWeight: 800, color: "var(--primary-dark)", display: "flex", alignItems: "center", gap: "6px" }}>
                   {formatCurrency(p.sale_price || 0)}
                 </div>
 
-                <div style={{ borderTop: "1px solid var(--gray-100)", paddingTop: "var(--space-3)", marginTop: "auto", display: "flex", justifyContent: "flex-end", gap: "var(--space-2)" }}>
+                <div style={{ borderTop: "1px solid var(--gray-100)", paddingTop: viewMode === "grid" ? "6px" : "var(--space-3)", marginTop: "auto", display: "flex", justifyContent: "flex-end", gap: "var(--space-2)" }}>
                   {p.status === 'occupied' ? (
                     <button 
                       className="btn btn-ghost btn-sm" 
