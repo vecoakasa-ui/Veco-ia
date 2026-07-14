@@ -13,7 +13,8 @@ import {
   User,
   Map,
   X,
-  Loader2
+  Loader2,
+  AlertTriangle
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Inquiry, Property } from "@/lib/types";
@@ -31,9 +32,12 @@ export default function VentesDemandesPage() {
   const [advancePayment, setAdvancePayment] = useState<string>("");
   const [startDate, setStartDate] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [pageError, setPageError] = useState<string | null>(null);
 
   const handleOpenAcceptModal = (inq: Inquiry & { property?: Property }) => {
     setAcceptingInquiry(inq);
+    setSubmitError(null);
     const today = new Date().toISOString().split('T')[0];
     setStartDate(inq.proposed_date || today);
     setTotalPrice(inq.proposed_price ? inq.proposed_price.toString() : "");
@@ -102,9 +106,9 @@ export default function VentesDemandesPage() {
 
       await updateStatus(acceptingInquiry.id, "accepted");
       setAcceptingInquiry(null);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("Erreur lors de l'acceptation de la demande d'achat.");
+      setSubmitError(err.message || "Erreur lors de l'acceptation de la demande d'achat.");
     } finally {
       setIsSubmitting(false);
     }
@@ -167,9 +171,9 @@ export default function VentesDemandesPage() {
       setInquiries(prev => prev.map(inq => 
         inq.id === id ? { ...inq, status: newStatus } : inq
       ));
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      alert("Erreur lors de la mise à jour de la demande.");
+      setPageError(err.message || "Erreur lors de la mise à jour de la demande.");
     }
   };
 
@@ -192,6 +196,18 @@ export default function VentesDemandesPage() {
 
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
+      {pageError && (
+        <div className="animate-fade-in" style={{ display: "flex", gap: "var(--space-3)", padding: "var(--space-4)", background: "#FEF2F2", border: "1px solid #F87171", borderRadius: "var(--radius-md)", alignItems: "center" }}>
+          <AlertTriangle size={24} style={{ color: "#EF4444", flexShrink: 0 }} />
+          <p style={{ margin: 0, fontSize: "var(--text-md)", color: "#991B1B" }}>
+            <strong>Erreur : </strong> {pageError}
+          </p>
+          <button onClick={() => setPageError(null)} style={{ background: "none", border: "none", cursor: "pointer", marginLeft: "auto", color: "#991B1B" }}>
+            <X size={20} />
+          </button>
+        </div>
+      )}
+
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: "var(--space-4)" }}>
         <div>
@@ -375,6 +391,15 @@ export default function VentesDemandesPage() {
               
               <form onSubmit={handleAcceptInquiry} style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
                 
+                {submitError && (
+                  <div className="animate-fade-in" style={{ display: "flex", gap: "var(--space-3)", padding: "var(--space-3)", background: "#FEF2F2", border: "1px solid #F87171", borderRadius: "var(--radius-md)", marginBottom: "var(--space-2)" }}>
+                    <XCircle size={20} style={{ color: "#EF4444", flexShrink: 0 }} />
+                    <p style={{ margin: 0, fontSize: "var(--text-sm)", color: "#991B1B" }}>
+                      <strong>Erreur : </strong> {submitError}
+                    </p>
+                  </div>
+                )}
+
                 <div>
                   <label className="form-label">Prix Total Convenu (FCFA)</label>
                   <input 
