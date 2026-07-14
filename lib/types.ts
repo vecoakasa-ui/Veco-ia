@@ -67,6 +67,7 @@ export interface Property {
   monthly_rent: number;
   sale_price?: number; // Added for land sales
   advance_payment?: number; // Advance payment required by owner
+  installment_amount?: number; // Fixed monthly payment for sales
   status: PropertyStatus;
   description: string;
   images: string[];
@@ -179,6 +180,7 @@ export interface Inquiry {
   id_expiry_date?: string;
   proposed_price?: number;
   proposed_advance?: number;
+  installment_amount?: number;
   proposed_date?: string;
   status: 'pending' | 'accepted' | 'rejected';
   created_at: string;

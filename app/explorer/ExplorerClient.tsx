@@ -140,6 +140,7 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
     // Nouveaux champs financiers
     const proposed_price = formData.get("proposed_price") ? Number(formData.get("proposed_price")) : undefined;
     const proposed_advance = formData.get("proposed_advance") ? Number(formData.get("proposed_advance")) : undefined;
+    const installment_amount = formData.get("installment_amount") ? Number(formData.get("installment_amount")) : undefined;
     const proposed_date = formData.get("proposed_date") as string;
 
     try {
@@ -157,6 +158,7 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
         id_expiry_date: id_expiry_date || null,
         proposed_price: proposed_price || null,
         proposed_advance: proposed_advance || null,
+        installment_amount: installment_amount || null,
         proposed_date: proposed_date || null,
         status: 'pending'
       }]);
@@ -509,9 +511,16 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
                               <input type="number" name="proposed_advance" value={(selectedProperty as any).advance_payment || ""} placeholder="-" readOnly className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px", backgroundColor: "var(--gray-100)", color: "var(--gray-500)", cursor: "not-allowed" }} />
                             </div>
                           </div>
-                          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                            <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Date de conclusion souhaitée <span style={{color: "var(--danger)"}}>*</span></label>
-                            <input type="date" name="proposed_date" required className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px" }} />
+                          
+                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-4)" }}>
+                            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                              <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Mensualité exigée (FCFA)</label>
+                              <input type="number" name="installment_amount" value={(selectedProperty as any).installment_amount || ""} placeholder="-" readOnly className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px", backgroundColor: "var(--gray-100)", color: "var(--gray-500)", cursor: "not-allowed" }} />
+                            </div>
+                            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                              <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Date de conclusion souhaitée <span style={{color: "var(--danger)"}}>*</span></label>
+                              <input type="date" name="proposed_date" required className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px" }} />
+                            </div>
                           </div>
                         </div>
                       </>

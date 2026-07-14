@@ -325,11 +325,12 @@ export default function VentesDemandesPage() {
                   </div>
                 )}
                 
-                {inq.proposed_price && (
+                {inq.proposed_price != null && (
                   <div style={{ background: "rgba(249, 115, 22, 0.05)", border: "1px solid rgba(249, 115, 22, 0.2)", padding: "var(--space-3)", borderRadius: "var(--radius-md)", fontSize: "var(--text-sm)" }}>
-                    <div style={{ fontWeight: 600, color: "var(--orange)", marginBottom: "4px" }}>Offre d'Achat</div>
+                    <div style={{ fontWeight: 600, color: "var(--orange)", marginBottom: "4px" }}>Conditions de la Vente</div>
                     <div style={{ color: "var(--gray-700)" }}>Prix : <strong>{new Intl.NumberFormat('fr-FR').format(inq.proposed_price)} FCFA</strong></div>
-                    {inq.proposed_advance && <div style={{ color: "var(--gray-700)" }}>Avance : <strong>{new Intl.NumberFormat('fr-FR').format(inq.proposed_advance)} FCFA</strong></div>}
+                    {inq.proposed_advance != null && <div style={{ color: "var(--gray-700)" }}>Avance : <strong>{new Intl.NumberFormat('fr-FR').format(inq.proposed_advance)} FCFA</strong></div>}
+                    {inq.installment_amount != null && <div style={{ color: "var(--gray-700)" }}>Mensualité : <strong>{new Intl.NumberFormat('fr-FR').format(inq.installment_amount)} FCFA</strong></div>}
                     {inq.proposed_date && <div style={{ color: "var(--gray-700)" }}>Date souhaitée : {new Date(inq.proposed_date).toLocaleDateString()}</div>}
                   </div>
                 )}

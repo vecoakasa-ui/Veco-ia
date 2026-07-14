@@ -48,6 +48,7 @@ export default function LotsPage() {
   const [country, setCountry] = useState("Côte d'Ivoire");
   const [salePrice, setSalePrice] = useState("");
   const [advancePayment, setAdvancePayment] = useState("");
+  const [installmentAmount, setInstallmentAmount] = useState("");
   const [desc, setDesc] = useState("");
   const [landlordId, setLandlordId] = useState("");
   const [mainImage, setMainImage] = useState("");
@@ -113,6 +114,7 @@ export default function LotsPage() {
       monthly_rent: 0,
       sale_price: Number(salePrice) || 0,
       advance_payment: advancePayment ? Number(advancePayment) : undefined,
+      installment_amount: installmentAmount ? Number(installmentAmount) : undefined,
       status: "vacant",
       description: desc,
       landlord_id: landlordId || undefined,
@@ -132,6 +134,7 @@ export default function LotsPage() {
           monthly_rent: 0,
           sale_price: Number(salePrice) || 0,
           advance_payment: advancePayment ? Number(advancePayment) : undefined,
+          installment_amount: installmentAmount ? Number(installmentAmount) : undefined,
           status: "vacant",
           description: desc,
           landlord_id: landlordId || undefined,
@@ -151,6 +154,7 @@ export default function LotsPage() {
     setCountry("Côte d'Ivoire");
     setSalePrice("");
     setAdvancePayment("");
+    setInstallmentAmount("");
     setDesc("");
     setLandlordId("");
     setMainImage("");
@@ -371,6 +375,12 @@ export default function LotsPage() {
                     <label className="input-label">Avance requise (FCFA)</label>
                     <input type="number" value={advancePayment} onChange={(e) => setAdvancePayment(e.target.value)} placeholder="0" className="input" />
                   </div>
+                </div>
+
+                <div className="input-group">
+                  <label className="input-label">Mensualité exigée (FCFA) - Paiement échelonné</label>
+                  <input type="number" value={installmentAmount} onChange={(e) => setInstallmentAmount(e.target.value)} placeholder="Ex: 200000" className="input" />
+                  <span style={{ fontSize: "11px", color: "var(--gray-500)", marginTop: "4px" }}>Laissez vide si le paiement au comptant est obligatoire.</span>
                 </div>
 
                 <div className="input-group">
