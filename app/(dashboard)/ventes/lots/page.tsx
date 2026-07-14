@@ -47,6 +47,7 @@ export default function LotsPage() {
   const [city, setCity] = useState("Abidjan");
   const [country, setCountry] = useState("Côte d'Ivoire");
   const [salePrice, setSalePrice] = useState("");
+  const [advancePayment, setAdvancePayment] = useState("");
   const [desc, setDesc] = useState("");
   const [landlordId, setLandlordId] = useState("");
   const [mainImage, setMainImage] = useState("");
@@ -111,6 +112,7 @@ export default function LotsPage() {
       country,
       monthly_rent: 0,
       sale_price: Number(salePrice) || 0,
+      advance_payment: advancePayment ? Number(advancePayment) : undefined,
       status: "vacant",
       description: desc,
       landlord_id: landlordId || undefined,
@@ -129,6 +131,7 @@ export default function LotsPage() {
           country,
           monthly_rent: 0,
           sale_price: Number(salePrice) || 0,
+          advance_payment: advancePayment ? Number(advancePayment) : undefined,
           status: "vacant",
           description: desc,
           landlord_id: landlordId || undefined,
@@ -147,6 +150,7 @@ export default function LotsPage() {
     setCity("Abidjan");
     setCountry("Côte d'Ivoire");
     setSalePrice("");
+    setAdvancePayment("");
     setDesc("");
     setLandlordId("");
     setMainImage("");
@@ -358,9 +362,15 @@ export default function LotsPage() {
                   </div>
                 )}
                 
-                <div className="input-group">
-                  <label className="input-label">Prix de vente (FCFA)</label>
-                  <input type="number" required value={salePrice} onChange={(e) => setSalePrice(e.target.value)} className="input" />
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+                  <div className="input-group">
+                    <label className="input-label">Prix de vente (FCFA)</label>
+                    <input type="number" required value={salePrice} onChange={(e) => setSalePrice(e.target.value)} className="input" />
+                  </div>
+                  <div className="input-group">
+                    <label className="input-label">Avance requise (FCFA)</label>
+                    <input type="number" value={advancePayment} onChange={(e) => setAdvancePayment(e.target.value)} placeholder="0" className="input" />
+                  </div>
                 </div>
 
                 <div className="input-group">

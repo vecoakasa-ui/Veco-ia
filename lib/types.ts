@@ -66,6 +66,7 @@ export interface Property {
   country: string;
   monthly_rent: number;
   sale_price?: number; // Added for land sales
+  advance_payment?: number; // Advance payment required by owner
   status: PropertyStatus;
   description: string;
   images: string[];

@@ -498,15 +498,15 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
                         </div>
 
                         <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "8px", borderTop: "1px solid var(--gray-200)", paddingTop: "16px" }}>
-                          <h4 style={{ fontSize: "15px", fontWeight: 700, color: "var(--gray-900)", margin: 0 }}>Proposition Financière</h4>
+                          <h4 style={{ fontSize: "15px", fontWeight: 700, color: "var(--gray-900)", margin: 0 }}>Conditions Financières (Fixées par le propriétaire)</h4>
                           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-4)" }}>
                             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                              <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Prix proposé (FCFA) <span style={{color: "var(--danger)"}}>*</span></label>
-                              <input type="number" name="proposed_price" defaultValue={selectedProperty.sale_price || ""} required className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px" }} />
+                              <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Prix du bien (FCFA)</label>
+                              <input type="number" name="proposed_price" value={selectedProperty.sale_price || ""} readOnly className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px", backgroundColor: "var(--gray-100)", color: "var(--gray-500)", cursor: "not-allowed" }} />
                             </div>
                             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                              <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Avance proposée (FCFA)</label>
-                              <input type="number" name="proposed_advance" placeholder="0" className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px" }} />
+                              <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Avance requise (FCFA)</label>
+                              <input type="number" name="proposed_advance" value={(selectedProperty as any).advance_payment || ""} placeholder="-" readOnly className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px", backgroundColor: "var(--gray-100)", color: "var(--gray-500)", cursor: "not-allowed" }} />
                             </div>
                           </div>
                           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
