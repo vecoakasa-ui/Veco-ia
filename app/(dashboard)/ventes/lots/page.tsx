@@ -103,11 +103,7 @@ export default function LotsPage() {
 
   const handleAddProperty = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Début de l'enregistrement...");
-    if (!name || !address || !salePrice) {
-      alert("Veuillez remplir le nom, l'adresse et le prix de vente.");
-      return;
-    }
+    if (!name || !address) return;
 
     try {
       const newProp = await db.addProperty({
