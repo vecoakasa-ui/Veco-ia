@@ -368,17 +368,18 @@ export default function BiensPage() {
           </p>
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: viewMode === "grid" ? "repeat(auto-fill, minmax(250px, 1fr))" : "1fr", gap: "var(--space-6)" }}>
+        <div style={{ display: "grid", gridTemplateColumns: viewMode === "grid" ? "repeat(auto-fill, minmax(200px, 1fr))" : "1fr", gap: "var(--space-6)" }}>
           {filteredProperties.map((p) => (
-            <div key={p.id} className="card card-interactive" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: viewMode === "grid" ? "column" : "row", height: "100%" }}>
+            <div key={p.id} className="card card-interactive" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: viewMode === "grid" ? "column" : "row", height: "100%", aspectRatio: viewMode === "grid" ? "1 / 1" : "auto" }}>
               {/* Image Banner */}
               <div className="card-image-container" style={{ 
-                height: viewMode === "grid" ? "200px" : "auto", 
+                height: viewMode === "grid" ? "45%" : "auto", 
                 width: viewMode === "list" ? "280px" : "auto",
                 minHeight: viewMode === "list" ? "100%" : "auto",
                 position: "relative",
                 borderBottom: viewMode === "grid" ? "1px solid var(--gray-200)" : "none",
-                borderRight: viewMode === "list" ? "1px solid var(--gray-200)" : "none"
+                borderRight: viewMode === "list" ? "1px solid var(--gray-200)" : "none",
+                flexShrink: 0
               }}>
                 <div className="card-image-zoom" 
                      onClick={() => { setEditProperty(p); setEditMainImage(p.images?.[0] || ""); }}
@@ -393,23 +394,23 @@ export default function BiensPage() {
                     {viewMode === "grid" && <span style={{ fontSize: "var(--text-xs)", fontWeight: 500 }}>Aucune image</span>}
                   </div>
                 )}
-                <span className={`badge badge-glass ${getPropertyStatusClass(p.status)}`} style={{ position: "absolute", top: "12px", right: "12px" }}>
+                <span className={`badge badge-glass ${getPropertyStatusClass(p.status)}`} style={{ position: "absolute", top: "8px", right: "8px", fontSize: "10px", padding: "2px 6px" }}>
                   {getPropertyStatusLabel(p.status)}
                 </span>
               </div>
 
-              <div style={{ padding: "var(--space-3)", display: "flex", flexDirection: "column", flexGrow: 1, gap: "var(--space-2)" }}>
+              <div style={{ padding: viewMode === "grid" ? "10px 12px" : "var(--space-3)", display: "flex", flexDirection: "column", flexGrow: 1, gap: viewMode === "grid" ? "4px" : "var(--space-2)", overflow: "hidden" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-                  <div>
-                    <span className={`badge ${p.type === 'villa' ? 'badge-primary' : (p.type === 'building' || p.type === 'residence' || p.type === 'cour_commune') ? 'badge-success' : 'badge-info'}`} style={{ textTransform: "uppercase", fontSize: "9px", padding: "2px 8px" }}>
+                  <div style={{ overflow: "hidden" }}>
+                    <span className={`badge ${p.type === 'villa' ? 'badge-primary' : (p.type === 'building' || p.type === 'residence' || p.type === 'cour_commune') ? 'badge-success' : 'badge-info'}`} style={{ textTransform: "uppercase", fontSize: "9px", padding: "2px 6px" }}>
                       {getPropertyTypeLabel(p.type)}
                     </span>
                     {p.parent_id && properties.find(parent => parent.id === p.parent_id) && (
-                      <span className="badge badge-glass" style={{ fontSize: "9px", padding: "2px 8px", marginLeft: "4px" }}>
+                      <span className="badge badge-glass" style={{ fontSize: "9px", padding: "2px 6px", marginLeft: "4px" }}>
                         🏢 {properties.find(parent => parent.id === p.parent_id)?.name}
                       </span>
                     )}
-                    <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--gray-900)", marginTop: "4px" }}>
+                    <h3 style={{ fontSize: viewMode === "grid" ? "var(--text-md)" : "var(--text-lg)", fontWeight: "800", color: "var(--gray-900)", marginTop: "4px", marginBottom: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
                       {p.name}
                     </h3>
                   </div>
@@ -424,8 +425,8 @@ export default function BiensPage() {
                 </div>
 
                 <div style={{ display: "flex", flexDirection: viewMode === "grid" ? "column" : "row", gap: viewMode === "grid" ? "4px" : "var(--space-6)", flexGrow: 1 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "var(--text-sm)", color: "var(--gray-600)" }}>
-                    <MapPin size={16} style={{ color: "var(--gray-400)", flexShrink: 0 }} />
+                  <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: viewMode === "grid" ? "11px" : "var(--text-sm)", color: "var(--gray-600)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    <MapPin size={12} style={{ color: "var(--gray-400)", flexShrink: 0 }} />
                     <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {p.address}, {p.city}
                     </span>

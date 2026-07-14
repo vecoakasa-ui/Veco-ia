@@ -294,11 +294,12 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
           ) : (
             <div className="grid-explorer animate-fade-in">
               {filteredProperties.map((property) => (
-                <div key={property.id} className="card card-interactive" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column", cursor: "pointer" }}>
+                <div key={property.id} className="card card-interactive" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: "column", cursor: "pointer", aspectRatio: "1 / 1" }}>
                   {/* Image Header */}
                   <div className="card-image-container" style={{ 
-                    height: "200px", 
-                    position: "relative"
+                    height: "45%", 
+                    position: "relative",
+                    flexShrink: 0
                   }}>
                     <div className="card-image-zoom" style={{
                       position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
@@ -309,45 +310,37 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
                         <Home size={48} />
                       </div>
                     )}
-                    <div style={{ position: "absolute", top: "12px", right: "12px" }}>
-                      <span className="badge badge-success" style={{ fontWeight: 700, boxShadow: "var(--shadow-sm)" }}>
+                    <div style={{ position: "absolute", top: "8px", right: "8px" }}>
+                      <span className="badge badge-success" style={{ fontWeight: 700, boxShadow: "var(--shadow-sm)", fontSize: "10px", padding: "2px 6px" }}>
                         Disponible
                       </span>
                     </div>
                   </div>
 
                   {/* Content */}
-                  <div style={{ padding: "var(--space-5)", display: "flex", flexDirection: "column", flex: 1 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-2)" }}>
-                      <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 700, margin: 0, color: "var(--gray-900)" }}>{property.name}</h3>
-                      <span style={{ fontSize: "var(--text-lg)", fontWeight: 800, color: "var(--primary)" }}>
-                        {activeTab === 'achat' ? formatCurrency(property.sale_price || 0) : formatCurrency(property.monthly_rent)}
-                        {activeTab === 'location' && <span style={{ fontSize: "12px", fontWeight: 500, color: "var(--gray-500)" }}>/mois</span>}
-                      </span>
-                    </div>
-                    
-                    <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-600)", display: "flex", alignItems: "center", gap: "6px", margin: "0 0 var(--space-4)" }}>
-                      <MapPin size={14} style={{ color: "var(--gray-400)" }} />
-                      {property.address}, {property.city}
-                    </p>
-
-                    <div style={{ display: "flex", gap: "var(--space-2)", marginBottom: "var(--space-4)" }}>
-                      <span style={{ fontSize: "11px", fontWeight: 600, background: "var(--gray-100)", color: "var(--gray-600)", padding: "4px 8px", borderRadius: "var(--radius-sm)", textTransform: "uppercase" }}>
+                  <div style={{ padding: "10px 12px", display: "flex", flexDirection: "column", flexGrow: 1, gap: "4px", overflow: "hidden" }}>
+                    <div style={{ display: "flex", gap: "var(--space-2)", marginBottom: "0" }}>
+                      <span style={{ fontSize: "9px", fontWeight: 600, background: "var(--gray-100)", color: "var(--gray-600)", padding: "2px 6px", borderRadius: "var(--radius-sm)", textTransform: "uppercase" }}>
                         {getPropertyTypeLabel(property.type)}
                       </span>
                     </div>
                     
-                    {property.description && (
-                      <p style={{ fontSize: "var(--text-sm)", color: "var(--gray-500)", marginBottom: "var(--space-6)", display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-                        {property.description}
-                      </p>
-                    )}
+                    <h3 style={{ fontSize: "var(--text-md)", fontWeight: 700, margin: "2px 0", color: "var(--gray-900)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{property.name}</h3>
+                    
+                    <p style={{ fontSize: "11px", color: "var(--gray-500)", display: "flex", alignItems: "center", gap: "4px", margin: "0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                      <MapPin size={12} style={{ color: "var(--gray-400)", flexShrink: 0 }} />
+                      <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{property.address}, {property.city}</span>
+                    </p>
 
-                    <div style={{ marginTop: "auto" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto", borderTop: "1px solid var(--gray-100)", paddingTop: "6px" }}>
+                      <span style={{ fontSize: "var(--text-sm)", fontWeight: 800, color: "var(--primary)" }}>
+                        {activeTab === 'achat' ? formatCurrency(property.sale_price || 0) : formatCurrency(property.monthly_rent)}
+                        {activeTab === 'location' && <span style={{ fontSize: "10px", fontWeight: 500, color: "var(--gray-500)" }}>/mois</span>}
+                      </span>
                       <button 
-                        onClick={() => setSelectedProperty(property)}
-                        className="btn btn-primary" 
-                        style={{ width: "100%", justifyContent: "center" }}
+                        onClick={(e) => { e.stopPropagation(); setSelectedProperty(property); }}
+                        className="btn btn-primary btn-sm" 
+                        style={{ padding: "4px 10px", fontSize: "11px" }}
                       >
                         Je suis intéressé
                       </button>

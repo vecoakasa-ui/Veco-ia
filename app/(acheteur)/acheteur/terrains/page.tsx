@@ -91,7 +91,7 @@ export default function AcheteurTerrains() {
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))", gap: "24px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "16px" }}>
         {filteredSales.map((sale) => {
           const prop = properties[sale.property_id];
           if (!prop) return null;
@@ -100,70 +100,66 @@ export default function AcheteurTerrains() {
           const isSold = sale.status === 'completed' || sale.remaining_balance <= 0;
 
           return (
-            <div key={sale.id} style={{ background: "white", borderRadius: "16px", overflow: "hidden", border: "1px solid var(--gray-200)", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)" }}>
-              <div style={{ height: "160px", background: "var(--gray-100)", position: "relative" }}>
+            <div key={sale.id} style={{ background: "white", borderRadius: "12px", overflow: "hidden", border: "1px solid var(--gray-200)", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.05)", aspectRatio: "1 / 1", display: "flex", flexDirection: "column" }}>
+              <div style={{ height: "45%", background: "var(--gray-100)", position: "relative", flexShrink: 0 }}>
                 {prop.images && prop.images[0] ? (
                   <img src={prop.images[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 ) : (
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
-                    <Map size={48} color="var(--gray-300)" />
+                    <Map size={32} color="var(--gray-300)" />
                   </div>
                 )}
                 <div style={{ 
                   position: "absolute", 
-                  top: "12px", 
-                  right: "12px", 
+                  top: "8px", 
+                  right: "8px", 
                   background: isSold ? "var(--success)" : "var(--primary)", 
                   color: "white", 
-                  padding: "4px 10px", 
+                  padding: "2px 6px", 
                   borderRadius: "20px", 
-                  fontSize: "12px", 
+                  fontSize: "10px", 
                   fontWeight: "600",
                   display: "flex",
                   alignItems: "center",
                   gap: "4px"
                 }}>
-                  {isSold ? <><CheckCircle size={14} /> Soldé</> : <><Clock size={14} /> En cours</>}
+                  {isSold ? <><CheckCircle size={12} /> Soldé</> : <><Clock size={12} /> En cours</>}
                 </div>
               </div>
               
-              <div style={{ padding: "20px" }}>
-                <h3 style={{ margin: "0 0 8px 0", fontSize: "18px", fontWeight: "700", color: "var(--gray-900)" }}>{prop.name}</h3>
-                <p style={{ margin: "0 0 16px 0", fontSize: "14px", color: "var(--gray-500)", display: "flex", alignItems: "center", gap: "6px" }}>
-                  <MapPin size={16} /> {prop.address}, {prop.city}
+              <div style={{ padding: "10px", display: "flex", flexDirection: "column", flexGrow: 1, gap: "4px", overflow: "hidden" }}>
+                <h3 style={{ margin: "0", fontSize: "14px", fontWeight: "700", color: "var(--gray-900)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{prop.name}</h3>
+                <p style={{ margin: "0", fontSize: "10px", color: "var(--gray-500)", display: "flex", alignItems: "center", gap: "4px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  <MapPin size={12} style={{ flexShrink: 0 }} /> <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{prop.address}, {prop.city}</span>
                 </p>
                 
-                <div style={{ background: "var(--gray-50)", padding: "16px", borderRadius: "8px", marginBottom: "16px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-                    <span style={{ fontSize: "13px", color: "var(--gray-500)" }}>Prix total</span>
-                    <span style={{ fontWeight: "700", color: "var(--gray-900)" }}>{formatCurrency(sale.total_price)}</span>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-                    <span style={{ fontSize: "13px", color: "var(--gray-500)" }}>Montant payé</span>
-                    <span style={{ fontWeight: "600", color: "var(--success)" }}>{formatCurrency(sale.total_price - sale.remaining_balance)}</span>
+                <div style={{ background: "var(--gray-50)", padding: "6px", borderRadius: "6px", margin: "4px 0", display: "flex", flexDirection: "column", gap: "2px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <span style={{ fontSize: "10px", color: "var(--gray-500)" }}>Total</span>
+                    <span style={{ fontSize: "11px", fontWeight: "700", color: "var(--gray-900)" }}>{formatCurrency(sale.total_price)}</span>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <span style={{ fontSize: "13px", color: "var(--gray-500)" }}>Reste à payer</span>
-                    <span style={{ fontWeight: "600", color: "var(--danger)" }}>{formatCurrency(sale.remaining_balance)}</span>
+                    <span style={{ fontSize: "10px", color: "var(--gray-500)" }}>Reste</span>
+                    <span style={{ fontSize: "11px", fontWeight: "700", color: "var(--danger)" }}>{formatCurrency(sale.remaining_balance)}</span>
                   </div>
                 </div>
 
-                <div>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-                    <span style={{ fontSize: "12px", fontWeight: "600", color: "var(--gray-700)" }}>Progression du paiement</span>
-                    <span style={{ fontSize: "12px", fontWeight: "700", color: "var(--primary)" }}>{progress}%</span>
+                <div style={{ marginBottom: "2px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "2px" }}>
+                    <span style={{ fontSize: "10px", fontWeight: "600", color: "var(--gray-700)" }}>Progression</span>
+                    <span style={{ fontSize: "10px", fontWeight: "700", color: "var(--primary)" }}>{progress}%</span>
                   </div>
-                  <div style={{ width: "100%", height: "8px", background: "var(--gray-200)", borderRadius: "4px", overflow: "hidden" }}>
+                  <div style={{ width: "100%", height: "4px", background: "var(--gray-200)", borderRadius: "2px", overflow: "hidden" }}>
                     <div style={{ width: `${progress}%`, height: "100%", background: isSold ? "var(--success)" : "var(--primary)" }}></div>
                   </div>
                 </div>
                 
-                <div style={{ marginTop: "20px", display: "flex", gap: "12px" }}>
-                  <button style={{ flex: 1, padding: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "white", border: "1px solid var(--gray-200)", borderRadius: "8px", color: "var(--gray-700)", fontWeight: "500", cursor: "pointer" }}>
-                    <FileText size={16} /> Contrat
+                <div style={{ marginTop: "auto", display: "flex", gap: "6px", paddingTop: "4px" }}>
+                  <button style={{ flex: 1, padding: "6px", display: "flex", alignItems: "center", justifyContent: "center", gap: "4px", background: "white", border: "1px solid var(--gray-200)", borderRadius: "6px", color: "var(--gray-700)", fontWeight: "500", cursor: "pointer", fontSize: "10px" }}>
+                    <FileText size={12} /> Contrat
                   </button>
-                  <button style={{ flex: 1, padding: "10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", background: "white", border: "1px solid var(--gray-200)", borderRadius: "8px", color: "var(--gray-700)", fontWeight: "500", cursor: "pointer" }}>
-                    <MapPin size={16} /> Plan
+                  <button style={{ flex: 1, padding: "6px", display: "flex", alignItems: "center", justifyContent: "center", gap: "4px", background: "white", border: "1px solid var(--gray-200)", borderRadius: "6px", color: "var(--gray-700)", fontWeight: "500", cursor: "pointer", fontSize: "10px" }}>
+                    <MapPin size={12} /> Plan
                   </button>
                 </div>
               </div>
