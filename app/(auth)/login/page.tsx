@@ -44,6 +44,8 @@ export default function LoginPage({ searchParams }: PageProps) {
         if (profile) {
           if (profile.role === "tenant") {
             router.push("/locataire/dashboard");
+          } else if (profile.role === "buyer") {
+            router.push("/acheteur/dashboard");
           } else if (profile.role === "admin") {
             router.push("/admin/dashboard");
           } else {
@@ -83,7 +85,7 @@ export default function LoginPage({ searchParams }: PageProps) {
       // Fetch profile to redirect to the correct dashboard
       const profile = await db.getProfile();
       
-      if (profile && profile.role !== "admin" && profile.role !== role) {
+      if (profile && profile.role !== "admin" && profile.role !== "buyer" && profile.role !== role) {
         await supabase.auth.signOut();
         const roleFr = profile.role === "owner" ? "Propriétaire" : "Locataire";
         const attemptFr = role === "owner" ? "Propriétaire" : "Locataire";
@@ -92,6 +94,8 @@ export default function LoginPage({ searchParams }: PageProps) {
 
       if (profile?.role === "tenant") {
         router.push("/locataire/dashboard");
+      } else if (profile?.role === "buyer") {
+        router.push("/acheteur/dashboard");
       } else if (profile?.role === "admin") {
         router.push("/admin/dashboard");
       } else {

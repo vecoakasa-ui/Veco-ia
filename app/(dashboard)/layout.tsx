@@ -103,6 +103,10 @@ export default function DashboardLayout({
           setIsAuthorized(false);
           router.push("/locataire/dashboard");
           return;
+        } else if (p.role === "buyer") {
+          setIsAuthorized(false);
+          router.push("/acheteur/dashboard");
+          return;
         } else if (p.role === "admin") {
           setIsAuthorized(false);
           router.push("/admin/dashboard");

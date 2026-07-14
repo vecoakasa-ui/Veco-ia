@@ -37,7 +37,8 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
         if (p) {
           if (p.role === "admin") setDashboardLink("/admin/dashboard");
           else if (p.role === "owner") setDashboardLink("/dashboard");
-          else setDashboardLink("/locataire/dashboard"); // For simple users (tenant), we send them to their Espace Client. If they are buyers, their dashboard redirect handles it (or we can just use /locataire/dashboard which is the Espace Client)
+          else if (p.role === "buyer") setDashboardLink("/acheteur/dashboard");
+          else setDashboardLink("/locataire/dashboard"); // For simple users (tenant)
         }
       }
     };

@@ -63,6 +63,11 @@ export default function VentesDemandesPage() {
         profile_id: finalProfileId
       });
 
+      if (finalProfileId) {
+        // Update their role to 'buyer' so they get redirected to the acheteur dashboard
+        await supabase.from("profiles").update({ role: "buyer" }).eq("id", finalProfileId);
+      }
+
       // Create the sale
       const price = parseFloat(totalPrice) || 0;
       const advance = parseFloat(advancePayment) || 0;
