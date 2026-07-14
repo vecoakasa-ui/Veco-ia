@@ -271,7 +271,7 @@ export default function LotsPage() {
         <div style={{ display: "grid", gridTemplateColumns: viewMode === "grid" ? "repeat(auto-fill, minmax(200px, 1fr))" : "1fr", gap: "var(--space-6)" }}>
           {filteredProperties.map((p) => (
             <div key={p.id} className="card card-interactive" style={{ padding: 0, overflow: "hidden", display: "flex", flexDirection: viewMode === "grid" ? "column" : "row", height: "100%" }}>
-              <div className="card-image-container" style={{ height: viewMode === "grid" ? "180px" : "auto", width: viewMode === "list" ? "250px" : "auto", position: "relative" }}>
+              <div className="card-image-container" style={{ aspectRatio: viewMode === "grid" ? "1 / 1" : "auto", width: viewMode === "list" ? "250px" : "100%", position: "relative", flexShrink: 0 }}>
                 <div className="card-image-zoom" style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, background: p.images?.[0] ? `url(${p.images[0]}) center/cover` : "var(--gray-200)" }}></div>
                 <span className={`badge badge-glass ${getPropertyStatusClass(p.status)}`} style={{ position: "absolute", top: "12px", right: "12px" }}>
                   {p.status === 'vacant' ? 'Disponible' : p.status === 'occupied' ? 'Vendu' : 'Indisponible'}
