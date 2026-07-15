@@ -38,6 +38,7 @@ export default function BiensPage() {
   const [landlords, setLandlords] = useState<Landlord[]>([]);
   const [ownerEmails, setOwnerEmails] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form states
   const [name, setName] = useState("");
@@ -101,9 +102,11 @@ export default function BiensPage() {
 
   const handleAddProperty = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !address) return;
+    if (!name || !address || isSubmitting) return;
 
-    const newProp = await db.addProperty({
+    setIsSubmitting(true);
+    try {
+      const newProp = await db.addProperty({
       name,
       type,
       address,
@@ -160,6 +163,9 @@ export default function BiensPage() {
     await loadProperties();
     // Dispatch storage event to update dashboard if open
     window.dispatchEvent(new Event("storage"));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleSaveEditProperty = async (e: React.FormEvent) => {
@@ -703,8 +709,8 @@ export default function BiensPage() {
                 <button type="button" className="btn btn-outline" style={{ flex: 1 }} onClick={() => setShowAddModal(false)}>
                   Annuler
                 </button>
-                <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
-                  Enregistrer le bien
+                <button type="submit" className="btn btn-primary" style={{ flex: 1 }} disabled={isSubmitting}>
+                  {isSubmitting ? "Enregistrement..." : "Enregistrer le bien"}
                 </button>
               </div>
             </form>
