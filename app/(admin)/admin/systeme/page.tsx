@@ -13,10 +13,11 @@ import {
   Server,
   Database,
   ShieldAlert,
-  CreditCard
+  CreditCard,
+  Trash2
 } from "lucide-react";
 
-type ModalType = "Détails" | "Marquer Traité" | null;
+type ModalType = "Détails" | "Marquer Traité" | "Supprimer" | null;
 
 // Types pour les données factices
 type Severity = "critical" | "warning" | "info";
@@ -117,6 +118,12 @@ export default function AdminSystemePage() {
     if (!selectedLog) return;
     const updatedLogs = logs.map(l => l.id === selectedLog.id ? { ...l, is_resolved: true } : l);
     setLogs(updatedLogs);
+    closeModal();
+  };
+
+  const handleDelete = () => {
+    if (!selectedLog) return;
+    setLogs(logs.filter(l => l.id !== selectedLog.id));
     closeModal();
   };
 
@@ -290,6 +297,9 @@ export default function AdminSystemePage() {
                             <CheckCircle size={16} />
                           </button>
                         )}
+                        <button className="action-btn action-btn-danger" title="Supprimer ce log" onClick={() => openModal("Supprimer", log)}>
+                          <Trash2 size={16} />
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -308,7 +318,7 @@ export default function AdminSystemePage() {
             <button className="modal-close" onClick={closeModal}><X size={20} /></button>
             
             <h3 style={{ margin: "0 0 20px 0", color: "#0f172a", fontSize: "18px" }}>
-              {modalType === "Détails" ? "Détails Techniques" : "Validation de résolution"}
+              {modalType === "Détails" ? "Détails Techniques" : modalType === "Supprimer" ? "Suppression du log" : "Validation de résolution"}
             </h3>
 
             {modalType === "Détails" && (
@@ -350,6 +360,16 @@ export default function AdminSystemePage() {
               </div>
             )}
 
+            {modalType === "Supprimer" && (
+              <div style={{ textAlign: "center", padding: "20px 0" }}>
+                <Trash2 size={48} color="#ef4444" style={{ marginBottom: "16px" }} />
+                <p style={{ margin: 0, color: "#334155" }}>
+                  Voulez-vous vraiment <strong>supprimer définitivement</strong> ce log de l'historique ?<br/>
+                  Cette action est irréversible.
+                </p>
+              </div>
+            )}
+
             <div style={{ display: "flex", gap: "12px", marginTop: "24px", justifyContent: "flex-end" }}>
               <button className="btn-secondary" onClick={closeModal}>
                 Fermer
@@ -357,6 +377,11 @@ export default function AdminSystemePage() {
               {modalType === "Marquer Traité" && (
                 <button className="btn-primary" onClick={handleResolve}>
                   Confirmer
+                </button>
+              )}
+              {modalType === "Supprimer" && (
+                <button className="btn-primary" style={{ background: "#ef4444" }} onClick={handleDelete} onMouseOver={(e) => e.currentTarget.style.background = "#dc2626"} onMouseOut={(e) => e.currentTarget.style.background = "#ef4444"}>
+                  Supprimer
                 </button>
               )}
             </div>
@@ -374,6 +399,7 @@ export default function AdminSystemePage() {
         }
         .action-btn:hover { background: #f1f5f9; color: #0f172a; border-color: #cbd5e1; }
         .action-btn-success:hover { background: #d1fae5; color: #10b981; border-color: #6ee7b7; }
+        .action-btn-danger:hover { background: #fee2e2; color: #ef4444; border-color: #fca5a5; }
         .modal-overlay {
           position: fixed; top: 0; left: 0; right: 0; bottom: 0;
           background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center;
