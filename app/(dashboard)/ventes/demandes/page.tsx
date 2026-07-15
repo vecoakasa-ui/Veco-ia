@@ -29,6 +29,7 @@ export default function VentesDemandesPage() {
 
   // Modal states for Conclure la Vente
   const [acceptingInquiry, setAcceptingInquiry] = useState<(Inquiry & { property?: Property }) | null>(null);
+  const [deletingInquiryId, setDeletingInquiryId] = useState<string | null>(null);
   const [totalPrice, setTotalPrice] = useState<string>("");
   const [advancePayment, setAdvancePayment] = useState<string>("");
   const [startDate, setStartDate] = useState<string>("");
@@ -178,23 +179,25 @@ export default function VentesDemandesPage() {
     }
   };
 
-  const handleDeleteInquiry = async (id: string) => {
-    if (!window.confirm("Êtes-vous sûr de vouloir supprimer cette demande d'achat ? Cette action est irréversible.")) {
-      return;
-    }
+  const handleDeleteInquiry = async () => {
+    if (!deletingInquiryId) return;
+    setIsSubmitting(true);
     
     try {
       const { error } = await supabase
         .from('inquiries')
         .delete()
-        .eq('id', id);
+        .eq('id', deletingInquiryId);
         
       if (error) throw error;
       
-      setInquiries(prev => prev.filter(inq => inq.id !== id));
+      setInquiries(prev => prev.filter(inq => inq.id !== deletingInquiryId));
+      setDeletingInquiryId(null);
     } catch (err: any) {
       console.error(err);
       setPageError(err.message || "Erreur lors de la suppression de la demande.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -328,7 +331,7 @@ export default function VentesDemandesPage() {
                     </span>
                   )}
                   <button 
-                    onClick={() => handleDeleteInquiry(inq.id)}
+                    onClick={() => setDeletingInquiryId(inq.id)}
                     className="btn-icon"
                     title="Supprimer la demande"
                     style={{ color: "var(--danger)" }}
@@ -476,6 +479,44 @@ export default function VentesDemandesPage() {
                   </button>
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Confirmation de Suppression */}
+      {deletingInquiryId && (
+        <div className="modal-overlay">
+          <div className="modal-content animate-fade-in" style={{ maxWidth: "400px" }}>
+            <div className="modal-header">
+              <h2>Confirmer la suppression</h2>
+              <button className="btn-icon" onClick={() => setDeletingInquiryId(null)}>
+                <X size={20} />
+              </button>
+            </div>
+            <div className="modal-body">
+              <p style={{ color: "var(--gray-600)", marginBottom: "var(--space-4)" }}>
+                Êtes-vous sûr de vouloir supprimer cette demande d'achat ? Cette action est irréversible.
+              </p>
+              
+              <div className="modal-footer" style={{ marginTop: "var(--space-4)" }}>
+                <button type="button" className="btn btn-outline" onClick={() => setDeletingInquiryId(null)} disabled={isSubmitting}>
+                  Annuler
+                </button>
+                <button 
+                  type="button" 
+                  className="btn" 
+                  onClick={handleDeleteInquiry} 
+                  disabled={isSubmitting}
+                  style={{ background: "var(--danger)", color: "white", border: "none" }}
+                >
+                  {isSubmitting ? (
+                    <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <Loader2 size={16} className="spinner" /> Suppression...
+                    </span>
+                  ) : "Supprimer"}
+                </button>
+              </div>
             </div>
           </div>
         </div>
