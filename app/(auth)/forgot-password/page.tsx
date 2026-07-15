@@ -12,6 +12,19 @@ export default function ForgotPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const [countdown, setCountdown] = useState(0);
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (countdown > 0) {
+      timer = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [countdown]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -36,7 +49,8 @@ export default function ForgotPasswordPage() {
 
       if (error) throw error;
 
-      setSuccessMsg("Un lien de réinitialisation a été envoyé à votre adresse e-mail. Veuillez vérifier votre boîte de réception.");
+      setSuccessMsg("Un lien de réinitialisation a été envoyé à votre adresse e-mail. Veuillez vérifier votre boîte de réception (et vos spams).");
+      setCountdown(60);
     } catch (err: unknown) {
       console.error("Reset password error:", err);
       const errorObj = err as Error;
@@ -77,8 +91,32 @@ export default function ForgotPasswordPage() {
         )}
 
         {successMsg ? (
-          <div style={{ background: "var(--success-lightest)", color: "var(--success)", padding: "10px 12px", borderRadius: "8px", fontSize: "13px", marginBottom: "var(--space-4)" }}>
-            {successMsg}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+            <div style={{ background: "var(--success-lightest)", color: "var(--success)", padding: "10px 12px", borderRadius: "8px", fontSize: "13px" }}>
+              {successMsg}
+            </div>
+            
+            <div style={{ textAlign: 'center', marginTop: 'var(--space-2)' }}>
+              {countdown > 0 ? (
+                <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-500)', margin: 0 }}>
+                  Vous n'avez pas reçu l'e-mail ? Vous pourrez le renvoyer dans <strong style={{ color: 'var(--primary)' }}>{countdown}s</strong>.
+                </p>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--space-3)' }}>
+                  <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-500)', margin: 0 }}>
+                    Vous n'avez toujours rien reçu ?
+                  </p>
+                  <button
+                    onClick={handleResetPassword}
+                    disabled={loading}
+                    className="btn btn-outline"
+                    style={{ width: '100%', padding: 'var(--space-2)', display: 'flex', justifyContent: 'center' }}
+                  >
+                    {loading ? "Envoi en cours..." : "Renvoyer le lien"}
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         ) : (
           <form onSubmit={handleResetPassword} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
