@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { db } from "@/lib/store";
 import { SubscriptionRecord } from "@/lib/types";
-import { Crown, AlertTriangle, CheckCircle, Search, ShieldAlert, CreditCard, Ban, MailWarning, X, Activity } from "lucide-react";
+import { Crown, AlertTriangle, CheckCircle, Search, ShieldAlert, CreditCard, Ban, MailWarning, X, Activity, Trash2 } from "lucide-react";
 import AlertModal from "@/components/AlertModal";
 
 export default function AbonnementsPage() {
@@ -13,7 +13,7 @@ export default function AbonnementsPage() {
   const [statusFilter, setStatusFilter] = useState<'active' | 'late' | 'suspended' | 'all'>('all');
 
   // Modals state
-  const [actionModal, setActionModal] = useState<{ isOpen: boolean; type: 'warn' | 'suspend' | null; sub: SubscriptionRecord | null }>({
+  const [actionModal, setActionModal] = useState<{ isOpen: boolean; type: 'warn' | 'suspend' | 'delete' | null; sub: SubscriptionRecord | null }>({
     isOpen: false,
     type: null,
     sub: null,
@@ -35,18 +35,20 @@ export default function AbonnementsPage() {
     loadData();
   }, []);
 
-  const handleAction = (sub: SubscriptionRecord, type: 'warn' | 'suspend') => {
+  const handleAction = (sub: SubscriptionRecord, type: 'warn' | 'suspend' | 'delete') => {
     setActionModal({ isOpen: true, type, sub });
   };
 
   const confirmAction = () => {
     // Dans une vraie app, ça appellerait l'API
     if (actionModal.sub) {
-      setAlertModal({ isOpen: true, title: "Succès", message: `Action ${actionModal.type === 'warn' ? 'Rappel envoyé' : 'Accès suspendu'} pour ${actionModal.sub.profile?.full_name}`, type: "success" });
+      setAlertModal({ isOpen: true, title: "Succès", message: `Action ${actionModal.type === 'warn' ? 'Rappel envoyé' : actionModal.type === 'suspend' ? 'Accès suspendu' : 'Abonnement supprimé'} pour ${actionModal.sub.profile?.full_name}`, type: "success" });
       
       // Update local state for visual feedback
       if (actionModal.type === 'suspend') {
         setSubscriptions(subscriptions.map(s => s.id === actionModal.sub?.id ? { ...s, status: 'suspended' } : s));
+      } else if (actionModal.type === 'delete') {
+        setSubscriptions(subscriptions.filter(s => s.id !== actionModal.sub?.id));
       }
     }
     setActionModal({ isOpen: false, type: null, sub: null });
@@ -218,6 +220,13 @@ export default function AbonnementsPage() {
                               <CheckCircle size={16} /> Restaurer
                             </button>
                           )}
+                          <button 
+                            onClick={() => handleAction(sub, 'delete')}
+                            className="action-btn delete-btn"
+                            title="Supprimer l'abonnement"
+                          >
+                            <Trash2 size={16} />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -237,10 +246,12 @@ export default function AbonnementsPage() {
               <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                 {actionModal.type === 'suspend' ? 
                   <ShieldAlert size={24} className="text-danger" /> : 
+                 actionModal.type === 'delete' ? 
+                  <Trash2 size={24} className="text-danger" /> :
                   <MailWarning size={24} className="text-warning" />
                 }
                 <h3 style={{ margin: 0, fontSize: "18px", fontWeight: "700" }}>
-                  {actionModal.type === 'suspend' ? "Suspension de compte" : "Rappel de paiement"}
+                  {actionModal.type === 'suspend' ? "Suspension de compte" : actionModal.type === 'delete' ? "Suppression d'abonnement" : "Rappel de paiement"}
                 </h3>
               </div>
               <button className="close-btn" onClick={() => setActionModal({ isOpen: false, type: null, sub: null })}>
@@ -252,6 +263,8 @@ export default function AbonnementsPage() {
               <p style={{ fontSize: "15px", color: "#475569", lineHeight: "1.6" }}>
                 {actionModal.type === 'suspend' ? (
                   <>Voulez-vous vraiment suspendre l'accès de <strong>{actionModal.sub.profile?.full_name}</strong> ? Cette action l'empêchera de se connecter à la plateforme jusqu'à la régularisation de sa situation.</>
+                ) : actionModal.type === 'delete' ? (
+                  <>Voulez-vous vraiment <strong>supprimer définitivement</strong> l'abonnement de <strong>{actionModal.sub.profile?.full_name}</strong> ? Cette action est irréversible.</>
                 ) : (
                   <>Un email de rappel sera envoyé à <strong>{actionModal.sub.profile?.email}</strong> pour l'informer de son retard de paiement de {actionModal.sub.amount.toLocaleString()} FCFA.</>
                 )}
@@ -260,10 +273,10 @@ export default function AbonnementsPage() {
               <div style={{ marginTop: "24px", display: "flex", justifyContent: "flex-end", gap: "12px" }}>
                 <button className="btn-secondary" onClick={() => setActionModal({ isOpen: false, type: null, sub: null })}>Annuler</button>
                 <button 
-                  className={`btn-primary ${actionModal.type === 'suspend' ? 'btn-danger' : 'btn-warning'}`}
+                  className={`btn-primary ${actionModal.type === 'warn' ? 'btn-warning' : 'btn-danger'}`}
                   onClick={confirmAction}
                 >
-                  {actionModal.type === 'suspend' ? "Confirmer la suspension" : "Envoyer le rappel"}
+                  {actionModal.type === 'suspend' ? "Confirmer la suspension" : actionModal.type === 'delete' ? "Confirmer la suppression" : "Envoyer le rappel"}
                 </button>
               </div>
             </div>
@@ -369,10 +382,18 @@ export default function AbonnementsPage() {
           border-color: #fde68a;
         }
         .suspend-btn {
+          color: #d97706;
+          background: #fef3c7;
+        }
+        .suspend-btn:hover {
+          background: #fde68a;
+          border-color: #fcd34d;
+        }
+        .delete-btn {
           color: #dc2626;
           background: #fef2f2;
         }
-        .suspend-btn:hover {
+        .delete-btn:hover {
           background: #fee2e2;
           border-color: #fca5a5;
         }
