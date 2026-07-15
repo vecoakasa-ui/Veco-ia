@@ -1085,7 +1085,7 @@ function HomeContent() {
                 <div className="form-row-2col">
                   <div className="input-group">
                     <label className="input-label">Nom complet</label>
-                    <input type="text" placeholder="Ex: Jean Koffi" required className="input" />
+                    <input type="text" placeholder="" required className="input" />
                   </div>
                   <div className="input-group">
                     <label className="input-label">E-mail</label>

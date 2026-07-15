@@ -103,7 +103,7 @@ export default function ResetPasswordPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Minimum 6 caractères"
+                placeholder="••••••••"
                 className="input"
                 style={{ paddingRight: '40px' }}
               />
