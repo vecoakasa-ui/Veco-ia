@@ -14,7 +14,8 @@ import {
   Map,
   X,
   Loader2,
-  AlertTriangle
+  AlertTriangle,
+  Trash2
 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Inquiry, Property } from "@/lib/types";
@@ -177,6 +178,26 @@ export default function VentesDemandesPage() {
     }
   };
 
+  const handleDeleteInquiry = async (id: string) => {
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer cette demande d'achat ? Cette action est irréversible.")) {
+      return;
+    }
+    
+    try {
+      const { error } = await supabase
+        .from('inquiries')
+        .delete()
+        .eq('id', id);
+        
+      if (error) throw error;
+      
+      setInquiries(prev => prev.filter(inq => inq.id !== id));
+    } catch (err: any) {
+      console.error(err);
+      setPageError(err.message || "Erreur lors de la suppression de la demande.");
+    }
+  };
+
   const filteredInquiries = inquiries.filter(inq => {
     const matchesSearch = 
       inq.tenant_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -290,7 +311,7 @@ export default function VentesDemandesPage() {
                     </span>
                   </div>
                 </div>
-                <div>
+                <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
                   {inq.status === "pending" && (
                     <span className="badge badge-warning" style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                       <Clock size={12} /> En attente
@@ -306,6 +327,14 @@ export default function VentesDemandesPage() {
                       <XCircle size={12} /> Refusée
                     </span>
                   )}
+                  <button 
+                    onClick={() => handleDeleteInquiry(inq.id)}
+                    className="btn-icon"
+                    title="Supprimer la demande"
+                    style={{ color: "var(--danger)" }}
+                  >
+                    <Trash2 size={18} />
+                  </button>
                 </div>
               </div>
 
