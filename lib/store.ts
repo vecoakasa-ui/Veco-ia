@@ -1756,12 +1756,27 @@ export const db = {
 
   deleteSale: async (id: string): Promise<void> => {
     if (isSupabaseConfigured()) {
-      // Supprimer d'abord les échéances liées pour éviter l'erreur de clé étrangère
+      // 1. Get the property_id to restore its status later
+      const { data: saleData } = await supabase.from("sales").select("property_id").eq("id", id).maybeSingle();
+
+      // 2. Supprimer d'abord les échéances liées pour éviter l'erreur de clé étrangère
       const { error: errInstallments } = await supabase.from("sale_installments").delete().eq("sale_id", id);
-      if (errInstallments) throw errInstallments;
+      if (errInstallments) {
+        console.error("Erreur suppression sale_installments:", errInstallments);
+        throw new Error(errInstallments.message || "Impossible de supprimer les échéances.");
+      }
       
+      // 3. Supprimer la vente
       const { error } = await supabase.from("sales").delete().eq("id", id);
-      if (error) throw error;
+      if (error) {
+        console.error("Erreur suppression sales:", error);
+        throw new Error(error.message || "Impossible de supprimer la vente.");
+      }
+
+      // 4. Restaurer le bien (terrain/lot) au statut 'vacant'
+      if (saleData?.property_id) {
+        await supabase.from("properties").update({ status: 'vacant' }).eq("id", saleData.property_id);
+      }
     } else {
       const items = getFromStorage<any[]>("sales", []);
       setToStorage("sales", items.filter((i: any) => i.id !== id));

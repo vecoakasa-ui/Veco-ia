@@ -193,8 +193,9 @@ export default function AcheteursPage() {
       await db.deleteSale(saleToDelete);
       showToast("Vente supprimée avec succès.", "success");
       loadData();
-    } catch (error) {
-      showToast("Erreur lors de la suppression.", "error");
+    } catch (error: any) {
+      console.error("Delete Error:", error);
+      showToast(error.message || "Erreur lors de la suppression.", "error");
     } finally {
       setSaleToDelete(null);
     }
