@@ -1758,15 +1758,9 @@ export const db = {
     if (isSupabaseConfigured()) {
       // 1. Get the property_id to restore its status later
       const { data: saleData } = await supabase.from("sales").select("property_id").eq("id", id).maybeSingle();
-
-      // 2. Supprimer d'abord les échéances liées pour éviter l'erreur de clé étrangère
-      const { error: errInstallments } = await supabase.from("sale_installments").delete().eq("sale_id", id);
-      if (errInstallments) {
-        console.error("Erreur suppression sale_installments:", errInstallments);
-        throw new Error(errInstallments.message || "Impossible de supprimer les échéances.");
-      }
       
-      // 3. Supprimer la vente
+      // 2. Supprimer la vente (si ON DELETE CASCADE est configuré, les échéances seront supprimées automatiquement)
+      // Si on essaie de supprimer manuellement les échéances sans RLS approprié, ça peut bloquer.
       const { error } = await supabase.from("sales").delete().eq("id", id);
       if (error) {
         console.error("Erreur suppression sales:", error);
