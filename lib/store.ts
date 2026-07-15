@@ -579,6 +579,12 @@ export const db = {
     }
     setToStorage("profile", profile);
   },
+  deleteProfile: async (id: string): Promise<void> => {
+    if (isSupabaseConfigured()) {
+      const { error } = await supabase.from("profiles").delete().eq("id", id);
+      if (error) throw error;
+    }
+  },
 
   // Landlords
   getLandlords: async (): Promise<Landlord[]> => {

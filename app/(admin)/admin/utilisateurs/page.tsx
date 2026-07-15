@@ -13,11 +13,12 @@ import {
   Ban, 
   X,
   CheckCircle,
-  AlertTriangle
+  AlertTriangle,
+  Trash2
 } from "lucide-react";
 import AlertModal from "@/components/AlertModal";
 
-type ModalType = "Modifier" | "Changer Rôle" | "Réinitialiser MDP" | "Voir Stats" | "Suspendre" | null;
+type ModalType = "Modifier" | "Changer Rôle" | "Réinitialiser MDP" | "Voir Stats" | "Suspendre" | "Supprimer" | null;
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<Profile[]>([]);
@@ -119,6 +120,9 @@ export default function AdminUsersPage() {
         updatedUser.is_suspended = !updatedUser.is_suspended;
         await db.updateProfile(updatedUser);
       }
+      else if (modalType === "Supprimer") {
+        await db.deleteProfile(updatedUser.id);
+      }
       else if (modalType === "Réinitialiser MDP") {
         // En réalité, on appellerait l'API Supabase Admin : supabase.auth.admin.resetPasswordForEmail
         // On simule avec un délai
@@ -128,8 +132,12 @@ export default function AdminUsersPage() {
 
       // Mettre à jour l'état local si l'action n'était pas juste un envoi d'email/stats
       if (modalType !== "Réinitialiser MDP" && modalType !== "Voir Stats") {
-        const updatedUsers = users.map(u => u.id === updatedUser.id ? updatedUser : u);
-        setUsers(updatedUsers);
+        if (modalType === "Supprimer") {
+          setUsers(users.filter(u => u.id !== updatedUser.id));
+        } else {
+          const updatedUsers = users.map(u => u.id === updatedUser.id ? updatedUser : u);
+          setUsers(updatedUsers);
+        }
       }
       
       closeModal();
@@ -261,8 +269,11 @@ export default function AdminUsersPage() {
                         <button className="action-btn" title="Statistiques" onClick={() => openModal("Voir Stats", user)}>
                           <BarChart2 size={16} />
                         </button>
-                        <button className={`action-btn ${user.is_suspended ? 'action-btn-success' : 'action-btn-danger'}`} title={user.is_suspended ? "Réactiver" : "Suspendre/Bannir"} onClick={() => openModal("Suspendre", user)}>
+                        <button className={`action-btn ${user.is_suspended ? 'action-btn-success' : 'action-btn-warning'}`} title={user.is_suspended ? "Réactiver" : "Suspendre"} onClick={() => openModal("Suspendre", user)}>
                           {user.is_suspended ? <CheckCircle size={16} /> : <Ban size={16} />}
+                        </button>
+                        <button className="action-btn action-btn-danger" title="Supprimer Définitivement" onClick={() => openModal("Supprimer", user)}>
+                          <Trash2 size={16} />
                         </button>
                       </div>
                     </td>
@@ -351,6 +362,15 @@ export default function AdminUsersPage() {
               </div>
             )}
 
+            {modalType === "Supprimer" && (
+              <div style={{ textAlign: "center", padding: "20px 0" }}>
+                <Trash2 size={48} color="#ef4444" style={{ marginBottom: "16px" }} />
+                <p style={{ margin: 0, color: "#334155" }}>
+                  Voulez-vous vraiment <strong>supprimer définitivement</strong> le compte de <strong>{selectedUser.full_name}</strong> ? Cette action est irréversible et supprimera toutes ses données associées (biens, baux, paiements, etc.).
+                </p>
+              </div>
+            )}
+
             {modalType === "Voir Stats" && (
               <>
               <div className="stats-grid">
@@ -416,7 +436,7 @@ export default function AdminUsersPage() {
               </button>
               {modalType !== "Voir Stats" && (
                 <button 
-                  className={`btn-primary ${modalType === 'Suspendre' && !selectedUser.is_suspended ? 'btn-danger' : ''}`} 
+                  className={`btn-primary ${modalType === 'Suspendre' && !selectedUser.is_suspended ? 'btn-warning' : ''} ${modalType === 'Supprimer' ? 'btn-danger' : ''}`} 
                   onClick={handleModalSubmit}
                   disabled={isSubmitting}
                 >
@@ -520,6 +540,12 @@ export default function AdminUsersPage() {
           border-color: #cbd5e1;
         }
         
+        .action-btn-warning:hover {
+          background: #fef3c7;
+          color: #d97706;
+          border-color: #fcd34d;
+        }
+        
         .action-btn-danger:hover {
           background: #fee2e2;
           color: #ef4444;
@@ -605,6 +631,11 @@ export default function AdminUsersPage() {
           cursor: pointer;
         }
         .btn-primary:hover { background: #059669; }
+
+        .btn-warning {
+          background: #f59e0b;
+        }
+        .btn-warning:hover { background: #d97706; }
 
         .btn-danger {
           background: #ef4444;
