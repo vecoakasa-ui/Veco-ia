@@ -227,7 +227,7 @@ function HomeContent() {
             <a href="#about" className="navbar-link">À propos</a>
             <a href="#services" className="navbar-link">Nos services</a>
             <a href="#why-us" className="navbar-link">Pourquoi nous choisir</a>
-            <Link href="/abonnement" className="navbar-link">Tarifs</Link>
+            <Link href="/tarifs" className="navbar-link">Tarifs</Link>
             <a href="#contact" className="navbar-link">Contact</a>
           </nav>
 
@@ -303,7 +303,7 @@ function HomeContent() {
               Pourquoi nous choisir
             </a>
             <Link 
-              href="/abonnement" 
+              href="/tarifs" 
               className="navbar-link" 
               onClick={() => setMobileMenuOpen(false)}
               style={{ fontSize: 'var(--text-lg)', padding: 'var(--space-2) 0' }}
@@ -909,8 +909,7 @@ function HomeContent() {
           }
         `}} />
       </section>
-
-
+      {/* ============================================
          CTA Banner Section
          ============================================ */}
       <section className="container section">
@@ -1169,7 +1168,7 @@ function HomeContent() {
               <a href="#about" className="footer-link">À propos</a>
               <a href="#services" className="footer-link">Nos services</a>
               <a href="#why-us" className="footer-link">Pourquoi nous choisir</a>
-              <Link href="/abonnement" className="footer-link">Tarifs</Link>
+              <Link href="/tarifs" className="footer-link">Tarifs</Link>
               <Link href="/marketing" className="footer-link">Stratégie Pitch</Link>
               <a href="#contact" className="footer-link">Contact</a>
             </div>
