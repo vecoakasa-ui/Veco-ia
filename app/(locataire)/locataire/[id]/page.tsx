@@ -214,7 +214,7 @@ export default function PortailLocatairePage() {
           Vue d'ensemble
         </Link>
         <Link 
-          href={`/locataire/${tenantId}/explorer`}
+          href={`/explorer`}
           style={{ padding: "8px 16px", borderRadius: "var(--radius-md)", fontWeight: 600, border: "none", cursor: "pointer", background: "transparent", color: "var(--gray-600)", transition: "all 0.2s", textDecoration: "none", whiteSpace: "nowrap" }}
         >
           Trouver un logement
@@ -294,7 +294,7 @@ export default function PortailLocatairePage() {
               Envie de déménager ou de découvrir de nouveaux biens ? Explorez notre catalogue exclusif de logements actuellement vacants.
             </p>
           </div>
-          <Link href={`/locataire/${tenantId}/explorer`} className="btn btn-outline" style={{ width: "100%", justifyContent: "space-between", padding: "12px 16px", fontSize: "16px", borderRadius: "var(--radius-lg)", border: "2px solid var(--gray-200)" }}>
+          <Link href={`/explorer`} className="btn btn-outline" style={{ width: "100%", justifyContent: "space-between", padding: "12px 16px", fontSize: "16px", borderRadius: "var(--radius-lg)", border: "2px solid var(--gray-200)" }}>
             Explorer les biens <ArrowRight size={18} />
           </Link>
         </div>
