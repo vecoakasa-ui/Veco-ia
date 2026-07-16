@@ -152,7 +152,7 @@ export default function LoginPage({ searchParams }: PageProps) {
             <ArrowLeft size={12} /> Retour à l&apos;accueil
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)' }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+            { }
             <img src="/logo.png" alt="Vision Immo 2.0 Logo" style={{ width: "32px", height: "32px", objectFit: "contain" }} />
             <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: '800', margin: 0 }}>Vision Immo 2.0</h2>
           </div>

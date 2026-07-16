@@ -191,7 +191,7 @@ export default function LocataireLayout({
       >
         <div style={{ height: "var(--topbar-height)", display: "flex", alignItems: "center", padding: "0 var(--space-6)", borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
           <Link href="/" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", textDecoration: "none" }} title="Retour à l'accueil du site">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+            { }
             <img src="/logo.png" alt="Vision Immo 2.0 Logo" style={{ width: "32px", height: "32px", objectFit: "contain" }} />
             <span style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--fixed-white)" }}>
               Vision Immo 2.0 <span style={{ color: "var(--orange)", fontSize: "14px", display: "block" }}>Espace Client</span>

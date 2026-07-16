@@ -35,6 +35,8 @@ export default function PortailLocatairePage() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [incidents, setIncidents] = useState<Incident[]>([]);
 
+  const [activeTab, setActiveTab] = useState<"overview"|"explore"|"property"|"payments"|"incidents">("overview");
+
   // Incident Modal
   const [showIncidentModal, setShowIncidentModal] = useState(false);
   const [incidentTitle, setIncidentTitle] = useState("");
@@ -205,74 +207,130 @@ export default function PortailLocatairePage() {
         </p>
       </div>
 
-      {/* Quick Actions & Main Overview Grid */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "var(--space-6)", marginTop: "var(--space-2)" }}>
+      {/* Tabs Navigation */}
+      <div style={{ display: "flex", gap: "var(--space-3)", borderBottom: "2px solid var(--gray-200)", paddingBottom: "var(--space-2)", overflowX: "auto", marginTop: "var(--space-2)" }}>
+        <button 
+          onClick={() => setActiveTab("overview")} 
+          style={{ padding: "8px 16px", borderRadius: "var(--radius-md)", fontWeight: 600, border: "none", cursor: "pointer", background: activeTab === "overview" ? "var(--primary)" : "transparent", color: activeTab === "overview" ? "var(--white)" : "var(--gray-600)", transition: "all 0.2s" }}
+        >
+          Vue d'ensemble
+        </button>
+        <button 
+          onClick={() => setActiveTab("explore")} 
+          style={{ padding: "8px 16px", borderRadius: "var(--radius-md)", fontWeight: 600, border: "none", cursor: "pointer", background: activeTab === "explore" ? "var(--primary)" : "transparent", color: activeTab === "explore" ? "var(--white)" : "var(--gray-600)", transition: "all 0.2s" }}
+        >
+          Trouver un logement
+        </button>
+        <button 
+          onClick={() => setActiveTab("property")} 
+          style={{ padding: "8px 16px", borderRadius: "var(--radius-md)", fontWeight: 600, border: "none", cursor: "pointer", background: activeTab === "property" ? "var(--primary)" : "transparent", color: activeTab === "property" ? "var(--white)" : "var(--gray-600)", transition: "all 0.2s" }}
+        >
+          Mon logement
+        </button>
+        <button 
+          onClick={() => setActiveTab("payments")} 
+          style={{ padding: "8px 16px", borderRadius: "var(--radius-md)", fontWeight: 600, border: "none", cursor: "pointer", background: activeTab === "payments" ? "var(--primary)" : "transparent", color: activeTab === "payments" ? "var(--white)" : "var(--gray-600)", transition: "all 0.2s" }}
+        >
+          Paiements
+        </button>
+        <button 
+          onClick={() => setActiveTab("incidents")} 
+          style={{ padding: "8px 16px", borderRadius: "var(--radius-md)", fontWeight: 600, border: "none", cursor: "pointer", background: activeTab === "incidents" ? "var(--primary)" : "transparent", color: activeTab === "incidents" ? "var(--white)" : "var(--gray-600)", transition: "all 0.2s" }}
+        >
+          Signalements
+        </button>
+      </div>
+
+      {/* Tab Content */}
+      <div style={{ marginTop: "var(--space-2)" }}>
         
-        {/* Financial Status Card */}
-        {upcomingPayment ? (
-          <div className="card hover-scale" style={{ background: "linear-gradient(135deg, #009E60 0%, #007A4B 100%)", color: "white", padding: "var(--space-6)", border: "none", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "0 10px 25px -5px rgba(0, 158, 96, 0.3)" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-4)" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <div style={{ background: "rgba(255,255,255,0.2)", padding: "10px", borderRadius: "var(--radius-md)" }}>
-                  <Wallet size={24} style={{ color: "var(--white)" }} />
+        {/* OVERVIEW TAB */}
+        {activeTab === "overview" && (
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "var(--space-6)" }}>
+            {/* Financial Status Card */}
+            {upcomingPayment ? (
+              <div className="card hover-scale" style={{ background: "linear-gradient(135deg, #009E60 0%, #007A4B 100%)", color: "white", padding: "var(--space-6)", border: "none", display: "flex", flexDirection: "column", justifyContent: "space-between", boxShadow: "0 10px 25px -5px rgba(0, 158, 96, 0.3)" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "var(--space-4)" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                    <div style={{ background: "rgba(255,255,255,0.2)", padding: "10px", borderRadius: "var(--radius-md)" }}>
+                      <Wallet size={24} style={{ color: "var(--white)" }} />
+                    </div>
+                    <div>
+                      <span style={{ fontSize: "var(--text-sm)", fontWeight: 600, color: "rgba(255,255,255,0.6)", display: "block", textTransform: "uppercase", letterSpacing: "1px" }}>Prochain Loyer</span>
+                    </div>
+                  </div>
+                  <span className={`badge ${upcomingPayment.status === 'late' ? 'badge-danger' : 'badge-warning'}`} style={{ border: "none", fontWeight: 800 }}>
+                    {upcomingPayment.status === 'late' ? 'En retard' : upcomingPayment.status === 'pending' ? 'En attente' : 'À venir'}
+                  </span>
                 </div>
+                
                 <div>
-                  <span style={{ fontSize: "var(--text-sm)", fontWeight: 600, color: "rgba(255,255,255,0.6)", display: "block", textTransform: "uppercase", letterSpacing: "1px" }}>Prochain Loyer</span>
+                  <h2 style={{ fontSize: "42px", fontWeight: 800, margin: "0 0 4px 0", letterSpacing: "-1px" }}>{formatCurrency(upcomingPayment.total)}</h2>
+                  <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "var(--text-sm)", margin: "0 0 var(--space-6) 0", display: "flex", alignItems: "center", gap: "6px" }}>
+                    <CalendarClock size={14} /> Échéance le {formatDate(upcomingPayment.due_date)}
+                  </p>
+                  <a href={`/pay/${upcomingPayment.id}`} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ width: "100%", justifyContent: "center", padding: "12px", fontSize: "16px", borderRadius: "var(--radius-lg)" }}>
+                    Payer maintenant
+                  </a>
                 </div>
               </div>
-              <span className={`badge ${upcomingPayment.status === 'late' ? 'badge-danger' : 'badge-warning'}`} style={{ border: "none", fontWeight: 800 }}>
-                {upcomingPayment.status === 'late' ? 'En retard' : upcomingPayment.status === 'pending' ? 'En attente' : 'À venir'}
-              </span>
-            </div>
-            
-            <div>
-              <h2 style={{ fontSize: "42px", fontWeight: 800, margin: "0 0 4px 0", letterSpacing: "-1px" }}>{formatCurrency(upcomingPayment.total)}</h2>
-              <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "var(--text-sm)", margin: "0 0 var(--space-6) 0", display: "flex", alignItems: "center", gap: "6px" }}>
-                <CalendarClock size={14} /> Échéance le {formatDate(upcomingPayment.due_date)}
-              </p>
-              <a href={`/pay/${upcomingPayment.id}`} target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={{ width: "100%", justifyContent: "center", padding: "12px", fontSize: "16px", borderRadius: "var(--radius-lg)" }}>
-                Payer maintenant
-              </a>
-            </div>
-          </div>
-        ) : (
-          <div className="card hover-scale" style={{ background: "var(--success-lightest)", border: "2px solid var(--success-light)", padding: "var(--space-6)", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center", gap: "var(--space-4)" }}>
-            <div style={{ background: "var(--white)", borderRadius: "50%", padding: "16px", boxShadow: "var(--shadow-sm)" }}>
-              <CheckCircle2 size={40} style={{ color: "var(--success)" }} />
-            </div>
-            <div>
-              <h3 style={{ fontSize: "var(--text-xl)", fontWeight: 800, color: "var(--success-dark)", margin: "0 0 8px 0" }}>À jour !</h3>
-              <p style={{ color: "var(--gray-700)", fontSize: "var(--text-md)", margin: 0 }}>Aucun loyer n'est en attente de paiement. Merci pour votre ponctualité.</p>
+            ) : (
+              <div className="card hover-scale" style={{ background: "var(--success-lightest)", border: "2px solid var(--success-light)", padding: "var(--space-6)", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center", gap: "var(--space-4)" }}>
+                <div style={{ background: "var(--white)", borderRadius: "50%", padding: "16px", boxShadow: "var(--shadow-sm)" }}>
+                  <CheckCircle2 size={40} style={{ color: "var(--success)" }} />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: "var(--text-xl)", fontWeight: 800, color: "var(--success-dark)", margin: "0 0 8px 0" }}>À jour !</h3>
+                  <p style={{ color: "var(--gray-700)", fontSize: "var(--text-md)", margin: 0 }}>Aucun loyer n'est en attente de paiement. Merci pour votre ponctualité.</p>
+                </div>
+              </div>
+            )}
+
+            {/* Quick Summary Card */}
+            <div className="card hover-scale" style={{ padding: "var(--space-6)", display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+              <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 800, color: "var(--gray-900)", margin: 0 }}>Résumé Rapide</h3>
+              
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "var(--space-3)", background: "var(--gray-50)", borderRadius: "var(--radius-md)" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <Home size={18} style={{ color: "var(--primary)" }} />
+                  <span style={{ fontWeight: 600 }}>Logement</span>
+                </div>
+                <span style={{ fontSize: "var(--text-sm)", color: "var(--gray-600)" }}>{tenant.property_name !== "Aucun logement assigné" ? "Assigné" : "Non assigné"}</span>
+              </div>
+
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "var(--space-3)", background: "var(--gray-50)", borderRadius: "var(--radius-md)" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  <Wrench size={18} style={{ color: "var(--warning)" }} />
+                  <span style={{ fontWeight: 600 }}>Signalements en cours</span>
+                </div>
+                <span style={{ fontWeight: 800 }}>{incidents.filter(i => i.status !== 'resolved').length}</span>
+              </div>
             </div>
           </div>
         )}
 
-        {/* Explore Card */}
-        <div className="card hover-scale" style={{ padding: "var(--space-6)", display: "flex", flexDirection: "column", justifyContent: "space-between", background: "linear-gradient(to bottom right, var(--white), var(--gray-50))" }}>
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "var(--space-4)" }}>
-              <div style={{ background: "var(--primary-lightest)", padding: "10px", borderRadius: "var(--radius-md)" }}>
-                <Search size={24} style={{ color: "var(--primary)" }} />
+        {/* EXPLORE TAB */}
+        {activeTab === "explore" && (
+          <div className="card hover-scale" style={{ padding: "var(--space-6)", display: "flex", flexDirection: "column", justifyContent: "space-between", background: "linear-gradient(to bottom right, var(--white), var(--gray-50))" }}>
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "var(--space-4)" }}>
+                <div style={{ background: "var(--primary-lightest)", padding: "10px", borderRadius: "var(--radius-md)" }}>
+                  <Search size={24} style={{ color: "var(--primary)" }} />
+                </div>
+                <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 800, color: "var(--gray-900)", margin: 0 }}>Trouver un Logement</h3>
               </div>
-              <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 800, color: "var(--gray-900)", margin: 0 }}>Trouver un Logement</h3>
+              <p style={{ color: "var(--gray-600)", fontSize: "var(--text-md)", margin: "0 0 var(--space-6) 0", lineHeight: 1.5 }}>
+                Envie de déménager ou de découvrir de nouveaux biens ? Explorez notre catalogue exclusif de logements actuellement vacants.
+              </p>
             </div>
-            <p style={{ color: "var(--gray-600)", fontSize: "var(--text-md)", margin: "0 0 var(--space-6) 0", lineHeight: 1.5 }}>
-              Envie de déménager ou de découvrir de nouveaux biens ? Explorez notre catalogue exclusif de logements actuellement vacants.
-            </p>
+            <Link href={`/locataire/${tenantId}/explorer`} className="btn btn-outline" style={{ width: "100%", justifyContent: "space-between", padding: "12px 16px", fontSize: "16px", borderRadius: "var(--radius-lg)", border: "2px solid var(--gray-200)" }}>
+              Explorer les biens <ArrowRight size={18} />
+            </Link>
           </div>
-          <Link href={`/locataire/${tenantId}/explorer`} className="btn btn-outline" style={{ width: "100%", justifyContent: "space-between", padding: "12px 16px", fontSize: "16px", borderRadius: "var(--radius-lg)", border: "2px solid var(--gray-200)" }}>
-            Explorer les biens <ArrowRight size={18} />
-          </Link>
-        </div>
+        )}
 
-      </div>
-
-      {/* Two Column Layout for Details */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-6)", marginTop: "var(--space-4)" }}>
-        
-        {/* Left Column: Lease & Payments */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
-          {/* Mon Logement */}
+        {/* PROPERTY TAB */}
+        {activeTab === "property" && (
           <section className="card" style={{ padding: "var(--space-5)" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-5)" }}>
               <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 800, margin: 0, display: "flex", alignItems: "center", gap: "10px" }}>
@@ -303,19 +361,23 @@ export default function PortailLocatairePage() {
               </div>
             )}
           </section>
+        )}
 
-          {/* Payments History */}
+        {/* PAYMENTS TAB */}
+        {activeTab === "payments" && (
           <section id="paiements" className="card" style={{ padding: "var(--space-5)" }}>
-            <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 800, marginBottom: "var(--space-5)", display: "flex", alignItems: "center", gap: "10px" }}>
-              <FileText size={20} style={{ color: "var(--primary)" }} /> Historique des Paiements
-            </h3>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-5)" }}>
+              <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 800, margin: 0, display: "flex", alignItems: "center", gap: "10px" }}>
+                <FileText size={20} style={{ color: "var(--primary)" }} /> Historique des Paiements
+              </h3>
+            </div>
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
               {payments.length === 0 ? (
                 <div style={{ textAlign: "center", padding: "var(--space-6)", color: "var(--gray-500)", background: "var(--gray-50)", borderRadius: "var(--radius-md)" }}>
                   Aucun historique de paiement.
                 </div>
               ) : (
-                payments.slice(0, 4).map(p => (
+                payments.map(p => (
                   <div key={p.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "var(--space-3)", borderBottom: "1px solid var(--gray-100)" }}>
                     <div>
                       <h4 style={{ fontWeight: 700, margin: "0 0 4px 0", fontSize: "var(--text-md)", color: "var(--gray-800)" }}>{p.month} {p.year}</h4>
@@ -338,23 +400,18 @@ export default function PortailLocatairePage() {
                 ))
               )}
             </div>
-            {payments.length > 4 && (
-              <Link href={`/locataire/${tenantId}/paiements`} className="btn btn-ghost" style={{ width: "100%", marginTop: "var(--space-4)", color: "var(--primary)", fontSize: "var(--text-sm)", fontWeight: 600, display: "flex", justifyContent: "center" }}>
-                Voir tout l'historique
-              </Link>
-            )}
           </section>
-        </div>
+        )}
 
-        {/* Right Column: Incidents */}
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <section id="incidents" className="card" style={{ padding: "var(--space-5)", height: "100%", display: "flex", flexDirection: "column" }}>
+        {/* INCIDENTS TAB */}
+        {activeTab === "incidents" && (
+          <section id="incidents" className="card" style={{ padding: "var(--space-5)", display: "flex", flexDirection: "column" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-5)" }}>
               <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 800, display: "flex", alignItems: "center", gap: "10px", margin: 0 }}>
                 <Wrench size={20} style={{ color: "var(--primary)" }} /> Mes Signalements
               </h3>
               <button className="btn btn-primary btn-sm" onClick={() => setShowIncidentModal(true)} style={{ borderRadius: "var(--radius-full)" }}>
-                Signaler
+                Nouveau Signalement
               </button>
             </div>
 
@@ -385,7 +442,8 @@ export default function PortailLocatairePage() {
               )}
             </div>
           </section>
-        </div>
+        )}
+
       </div>
 
       {/* Global Style overrides for responsive columns */}

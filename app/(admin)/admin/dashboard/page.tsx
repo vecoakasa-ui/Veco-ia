@@ -12,7 +12,7 @@ export default function AdminDashboardPage() {
   // Modal states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const [modalData, setModalData] = useState<any[]>([]);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [modalType, setModalType] = useState<string>("");

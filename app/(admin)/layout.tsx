@@ -178,7 +178,7 @@ export default function AdminLayout({
       }}>
         <div className="sidebar-logo" style={{ marginBottom: "40px", padding: "0 12px", display: "flex", alignItems: "center", gap: "16px" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+            { }
             <img src="/logo.png" alt="Vision Immo 2.0 Logo" style={{ width: "48px", height: "48px", objectFit: "contain" }} />
           </div>
           <span style={{ color: "#1e293b", fontSize: "20px", fontWeight: "800", letterSpacing: "-0.5px", whiteSpace: "nowrap", display: "flex", flexDirection: "column", gap: "2px" }}>

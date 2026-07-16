@@ -432,7 +432,7 @@ export const getOwnerId = async (): Promise<string> => {
 };
 
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 const checkAuthError = (err: any) => {
   if (err && (err.code === 'PGRST303' || (err.message && err.message.includes('JWT expire')) || err.name === 'AuthSessionMissingError')) {
     console.error('Session expirée, déconnexion forcée...');
@@ -1272,9 +1272,9 @@ export const db = {
         return {
           total_properties,
           total_tenants: ten.count || 0,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+           
           total_revenue: payments.filter((p: any) => p.status === "paid").reduce((sum: number, p: any) => sum + p.total, 0),
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+           
           late_payments: payments.filter((p: any) => p.status === "late").length,
           occupancy_rate: total_properties > 0 ? Math.round((rentableOccupiedProps.length / total_properties) * 100) : 0,
           total_landlords: lands.count || 0,
@@ -1391,11 +1391,11 @@ export const db = {
         return {
           total_properties,
           total_tenants: ten.count || 0,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+           
           total_revenue: payments.filter((p: any) => p.status === "paid").reduce((sum: number, p: any) => sum + p.total, 0),
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+           
           late_payments: payments.filter((p: any) => p.status === "late").length,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+           
           occupancy_rate: total_properties > 0 ? Math.round((properties.filter((p: any) => p.status === "occupied").length / total_properties) * 100) : 0,
           total_landlords: lands.count || 0,
           total_leases: 0,

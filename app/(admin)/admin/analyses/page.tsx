@@ -6,7 +6,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { TrendingUp, Users, Activity, CreditCard } from "lucide-react";
 
 export default function AdminAnalysesPage() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   const [data, setData] = useState<{ revenueData: any[], usersData: any[] } | null>(null);
 
   useEffect(() => {

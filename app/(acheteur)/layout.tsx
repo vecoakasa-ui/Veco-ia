@@ -162,7 +162,7 @@ export default function AcheteurLayout({
       }}>
         <Link href="/" style={{ padding: '24px 20px', display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+            { }
             <img src="/logo.png" alt="Vision Immo 2.0 Logo" style={{ width: "32px", height: "32px", objectFit: "contain" }} />
           </div>
           <span style={{ fontSize: '18px', fontWeight: '800', color: 'var(--gray-900)', lineHeight: '1.2' }}>

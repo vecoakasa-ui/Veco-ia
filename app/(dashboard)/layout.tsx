@@ -341,7 +341,7 @@ export default function DashboardLayout({
         {/* Logo */}
         <div style={{ height: "var(--topbar-height)", display: "flex", alignItems: "center", padding: "0 var(--space-6)", borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
           <Link href="/" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", textDecoration: "none" }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+            { }
             <img src="/logo.png" alt="Vision Immo 2.0 Logo" style={{ width: "32px", height: "32px", objectFit: "contain" }} />
             <span style={{ fontSize: "20px", fontWeight: "900", color: "var(--fixed-white)", letterSpacing: "-0.5px" }}>
               Vision Immo <span style={{ color: "var(--orange)" }}>2.0</span>
@@ -473,7 +473,7 @@ export default function DashboardLayout({
             {/* Logo and close */}
             <div style={{ height: "var(--topbar-height)", display: "flex", alignItems: "center", padding: "0 var(--space-6)", borderBottom: '1px solid rgba(255,255,255,0.05)', justifyContent: 'space-between' }}>
               <Link href="/" style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", textDecoration: "none" }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
+                { }
             <img src="/logo.png" alt="Vision Immo 2.0 Logo" style={{ width: "32px", height: "32px", objectFit: "contain" }} />
                 <span style={{ fontSize: "20px", fontWeight: "900", color: "var(--fixed-white)", letterSpacing: "-0.5px" }}>
                   Vision Immo <span style={{ color: "var(--orange)" }}>2.0</span>
