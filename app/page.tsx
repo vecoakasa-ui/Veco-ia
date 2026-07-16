@@ -361,23 +361,23 @@ function HomeContent() {
 
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'var(--white)', padding: '6px 14px', borderRadius: 'var(--radius-full)', color: 'var(--gray-900)', fontSize: 'var(--text-xs)', fontWeight: '700', marginBottom: 'var(--space-6)', border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-sm)' }}>
               <span style={{ display: 'inline-flex', width: '16px', height: '12px', background: 'linear-gradient(to right, #E25822 33.3%, white 33.3%, white 66.6%, #0A3D2A 66.6%)', borderRadius: '1px' }}></span>
-              Solution N°1 en Afrique
+              🚀 Plateforme N°1 de Gestion Nouvelle Génération
             </div>
             
             <h1 className="hero-title" style={{ color: 'var(--gray-900)', fontSize: 'calc(var(--text-4xl) + 1vw)', fontWeight: '900', lineHeight: 1.15, marginBottom: 'var(--space-6)', letterSpacing: '-0.03em' }}>
-              Concentrez-vous sur vos revenus. <span style={{ color: 'var(--orange)' }}>Nous gérons le reste.</span>
+              Ne courez plus après vos loyers. <span style={{ color: 'var(--orange)' }}>Automatisez tout.</span>
             </h1>
             
-            <p style={{ fontSize: 'var(--text-lg)', color: 'var(--gray-600)', lineHeight: 1.65, marginBottom: 'var(--space-8)' }}>
-              La plateforme SaaS premium pour automatiser la gestion immobilière. Multipliez vos revenus, éliminez les impayés et sécurisez vos investissements grâce aux paiements Mobile Money et à notre intelligence artificielle.
+            <p style={{ fontSize: 'var(--text-lg)', color: 'var(--gray-600)', lineHeight: 1.65, marginBottom: 'var(--space-8)', maxWidth: '90%' }}>
+              Dites adieu aux impayés et à la paperasse. Centralisez vos biens, automatisez l'envoi de vos quittances et encaissez vos paiements instantanément via Mobile Money. La sérénité n'a jamais été aussi accessible.
             </p>
             
             <div className="hero-buttons hide-mobile" style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
               <a href="/register" className="btn btn-orange pulse-btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', transition: 'transform 0.2s, box-shadow 0.2s', display: 'flex', alignItems: 'center', gap: '8px', background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', borderRadius: 'var(--radius-lg)' }}>
-                <Calendar size={18} /> Demander une démo
+                Créer mon compte gratuit
               </a>
               <a href="#services" className="btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', background: 'var(--white)', color: 'var(--gray-900)', border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-sm)', transition: 'transform 0.2s, box-shadow 0.2s' }}>
-                Commencer gratuitement
+                Voir comment ça marche
               </a>
             </div>
           </div>
@@ -418,10 +418,10 @@ function HomeContent() {
           {/* Mobile Buttons : Shown only on mobile below the image */}
           <div className="hero-buttons hide-desktop" style={{ display: 'none', gap: 'var(--space-4)', flexWrap: 'wrap', justifyContent: 'center', marginTop: 'var(--space-4)' }}>
             <a href="/register" className="btn btn-orange pulse-btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', transition: 'transform 0.2s, box-shadow 0.2s', display: 'flex', alignItems: 'center', gap: '8px', background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', borderRadius: 'var(--radius-lg)' }}>
-              <Calendar size={18} /> Demander une démo
+              Créer mon compte gratuit
             </a>
             <a href="#services" className="btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', background: 'var(--white)', color: 'var(--gray-900)', border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-sm)', transition: 'transform 0.2s, box-shadow 0.2s' }}>
-              Commencer gratuitement
+              Voir comment ça marche
             </a>
           </div>
 
