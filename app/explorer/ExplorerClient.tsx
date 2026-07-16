@@ -78,7 +78,7 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
         .from('properties')
         .select('*')
         .eq('status', 'vacant')
-        .order('created_at', { ascending: false })
+        .order('name', { ascending: true })
         .range(start, end);
 
       if (isLocation) {
