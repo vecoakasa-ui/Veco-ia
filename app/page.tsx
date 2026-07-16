@@ -227,7 +227,7 @@ function HomeContent() {
             <a href="#about" className="navbar-link">À propos</a>
             <a href="#services" className="navbar-link">Nos services</a>
             <a href="#why-us" className="navbar-link">Pourquoi nous choisir</a>
-            <a href="#pricing" className="navbar-link">Tarifs</a>
+            <Link href="/abonnement" className="navbar-link">Tarifs</Link>
             <a href="#contact" className="navbar-link">Contact</a>
           </nav>
 
@@ -302,14 +302,14 @@ function HomeContent() {
             >
               Pourquoi nous choisir
             </a>
-            <a 
-              href="#pricing" 
+            <Link 
+              href="/abonnement" 
               className="navbar-link" 
               onClick={() => setMobileMenuOpen(false)}
               style={{ fontSize: 'var(--text-lg)', padding: 'var(--space-2) 0' }}
             >
               Tarifs
-            </a>
+            </Link>
             <a 
               href="#contact" 
               className="navbar-link" 
@@ -910,82 +910,7 @@ function HomeContent() {
         `}} />
       </section>
 
-      {/* ============================================
-         Pricing Section (SaaS Integration)
-         ============================================ */}
-      <section id="pricing" className="section" style={{ background: 'var(--gray-50)' }}>
-        <div className="container" style={{ textAlign: 'center', marginBottom: 'var(--space-10)' }}>
-          <span className="section-label">Tarifs</span>
-          <h2 className="section-title">Choisissez le plan adapté à vos besoins</h2>
-          <p className="section-subtitle" style={{ margin: '0 auto' }}>
-            Tous nos plans incluent les fonctionnalités fondamentales de gestion. Sans engagement de durée.
-          </p>
-        </div>
 
-        {/* Pricing Toggle Billing Period */}
-        <div className="pricing-toggle-container">
-          <span style={{ fontSize: 'var(--text-sm)', fontWeight: isYearly ? 500 : 700, color: isYearly ? 'var(--gray-500)' : 'var(--gray-900)' }}>Mensuel</span>
-          <div 
-            className={`toggle-switch ${isYearly ? 'annual-active' : ''}`}
-            onClick={() => setIsYearly(!isYearly)}
-          >
-            <div className="toggle-slider"></div>
-            <div className={`toggle-option ${!isYearly ? 'active' : ''}`}>Facturé au mois</div>
-            <div className={`toggle-option ${isYearly ? 'active' : ''}`}>Annuel (-20%)</div>
-          </div>
-          <span style={{ fontSize: 'var(--text-sm)', fontWeight: isYearly ? 700 : 500, color: isYearly ? 'var(--gray-900)' : 'var(--gray-500)', display: 'flex', alignItems: 'center', gap: '4px' }}>
-            Annuel <span className="badge badge-success" style={{ fontSize: '9px', padding: '2px 6px' }}>Économie</span>
-          </span>
-        </div>
-
-        <div className="container grid-3">
-          {plans.map((plan, index) => (
-            <div key={index} className={`card pricing-card ${plan.popular ? 'popular' : ''}`} style={plan.popular ? { borderColor: 'var(--orange)', boxShadow: 'var(--shadow-lg)' } : {}}>
-              {plan.popular && <span className="pricing-badge" style={{ background: 'var(--orange)' }}>Populaire</span>}
-              <h3 style={{ fontSize: 'var(--text-xl)', fontWeight: '700', marginBottom: 'var(--space-2)' }}>{plan.name}</h3>
-              <p style={{ fontSize: 'var(--text-sm)', color: 'var(--gray-500)', marginBottom: 'var(--space-4)' }}>{plan.desc}</p>
-              
-              <div className="price-box">
-                <span className="price-amount">
-                  {plan.price === 0 ? "0" : plan.price.toLocaleString("fr-FR")}
-                </span>
-                <span style={{ fontSize: 'var(--text-lg)', fontWeight: '700', color: 'var(--gray-900)', marginLeft: '2px' }}>
-                  {plan.price > 0 && " FCFA"}
-                </span>
-                <span className="price-period">/mois</span>
-              </div>
-
-              <div className="pricing-features">
-                {plan.features.map((feature, fIndex) => (
-                  <div key={fIndex} className="pricing-feature-item">
-                    <Check size={16} className="pricing-feature-icon" style={{ color: 'var(--primary)' }} />
-                    <span>{feature}</span>
-                  </div>
-                ))}
-              </div>
-
-              <button 
-                type="button"
-                className={`btn ${plan.popular ? 'btn-orange' : 'btn-outline'}`}
-                style={{ width: '100%', marginTop: 'auto', display: 'flex', justifyContent: 'center' }}
-                onClick={() => handlePlanClick(plan.key, plan.price)}
-                disabled={isApiLoading !== null}
-              >
-                {isApiLoading === plan.key ? (
-                  <>
-                    <Loader2 className="animate-spin" size={16} />
-                    <span>Redirection...</span>
-                  </>
-                ) : (
-                  <span>{plan.cta}</span>
-                )}
-              </button>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ============================================
          CTA Banner Section
          ============================================ */}
       <section className="container section">
@@ -1244,7 +1169,7 @@ function HomeContent() {
               <a href="#about" className="footer-link">À propos</a>
               <a href="#services" className="footer-link">Nos services</a>
               <a href="#why-us" className="footer-link">Pourquoi nous choisir</a>
-              <a href="#pricing" className="footer-link">Tarifs</a>
+              <Link href="/abonnement" className="footer-link">Tarifs</Link>
               <Link href="/marketing" className="footer-link">Stratégie Pitch</Link>
               <a href="#contact" className="footer-link">Contact</a>
             </div>
