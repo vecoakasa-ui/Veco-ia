@@ -1079,7 +1079,7 @@ function HomeContent() {
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
             {[
-              { q: "Comment fonctionne la période d'essai gratuit ?", a: "Vous disposez de 14 jours pour tester l'intégralité de la plateforme sans aucun engagement. Aucune carte bancaire n'est requise lors de l'inscription." },
+              { q: "Comment fonctionne la période d'essai gratuit ?", a: "Vous disposez de 30 jours pour tester l'intégralité de la plateforme sans aucun engagement. Aucune carte bancaire n'est requise lors de l'inscription." },
               { q: "Mes données sont-elles sécurisées ?", a: "Absolument. Nous utilisons des protocoles de chiffrement de niveau bancaire. Vos données et celles de vos locataires sont stockées de manière ultra-sécurisée et sauvegardées quotidiennement." },
               { q: "Puis-je gérer plusieurs propriétés à la fois ?", a: "Oui, Vision Immo 2.0 est conçu pour s'adapter à votre portefeuille. Que vous ayez 1 ou 100 biens, notre interface vous permet de tout piloter depuis un seul et même tableau de bord avec une vue d'ensemble claire." },
               { q: "Proposez-vous une assistance en cas de problème ?", a: "Notre équipe support est disponible 7j/7 par chat, WhatsApp et email pour vous accompagner à chaque étape de votre gestion. Un centre d'aide détaillé est également à votre disposition." },
