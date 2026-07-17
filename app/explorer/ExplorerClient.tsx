@@ -337,13 +337,19 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
                         {activeTab === 'achat' ? formatCurrency(property.sale_price || 0) : formatCurrency(property.monthly_rent)}
                         {activeTab === 'location' && <span style={{ fontSize: "10px", fontWeight: 500, color: "var(--gray-500)" }}>/mois</span>}
                       </span>
-                      <button 
-                        onClick={(e) => { e.stopPropagation(); setSelectedProperty(property); }}
-                        className="btn btn-primary btn-sm" 
-                        style={{ padding: "4px 10px", fontSize: "11px" }}
-                      >
-                        Je suis intéressé
-                      </button>
+                      {sessionUser?.id === property.owner_id ? (
+                        <span style={{ padding: "4px 10px", fontSize: "11px", fontWeight: 600, background: "var(--gray-200)", color: "var(--gray-600)", borderRadius: "var(--radius-md)" }}>
+                          C'est votre bien
+                        </span>
+                      ) : (
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); setSelectedProperty(property); }}
+                          className="btn btn-primary btn-sm" 
+                          style={{ padding: "4px 10px", fontSize: "11px" }}
+                        >
+                          Je suis intéressé
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
