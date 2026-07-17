@@ -48,9 +48,9 @@ export default function CursorFollowing3D() {
     setDomBody(document.body);
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setScale(0.5);
+        setScale(0.25);
       } else {
-        setScale(1);
+        setScale(0.5);
       }
     };
     handleResize();
