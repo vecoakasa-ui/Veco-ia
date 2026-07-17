@@ -355,7 +355,7 @@ function HomeContent() {
         }}
       >
         {/* Full-screen 3D overlay following cursor */}
-        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 10, pointerEvents: 'none' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 99, pointerEvents: 'none' }}>
           <Hero3DScene />
         </div>
         <div className="container" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-12)', alignItems: 'center', position: 'relative', zIndex: 1 }}>

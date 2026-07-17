@@ -42,9 +42,20 @@ function FloatingLogo() {
 
 export default function CursorFollowing3D() {
   const [domBody, setDomBody] = useState<HTMLElement | null>(null);
+  const [scale, setScale] = useState(1);
 
   useEffect(() => {
     setDomBody(document.body);
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setScale(0.5);
+      } else {
+        setScale(1);
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   return (
@@ -58,7 +69,9 @@ export default function CursorFollowing3D() {
           <ambientLight intensity={0.7} />
           <directionalLight position={[10, 10, 5]} intensity={1.5} />
           <Float speed={2} rotationIntensity={0.2} floatIntensity={0.5}>
-            <FloatingLogo />
+            <group scale={[scale, scale, scale]}>
+              <FloatingLogo />
+            </group>
           </Float>
           <Environment preset="city" />
         </Canvas>
