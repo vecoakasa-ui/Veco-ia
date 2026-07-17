@@ -616,10 +616,10 @@ export const db = {
           .order("full_name", { ascending: true });
         if (error) throw error;
         if (data) {
-          return data.map((l) => ({
+          return (data as Landlord[]).map((l) => ({
             ...l,
             avatar_url: l.avatar_url || getAvatarLocal(l.id) || ""
-          })) as Landlord[];
+          }));
         }
       } catch (err) {
         console.error("Error fetching landlords from Supabase:", err);
