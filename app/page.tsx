@@ -355,13 +355,13 @@ function HomeContent() {
         }}
       >
         {/* Full-screen 3D overlay following cursor */}
-        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 99, pointerEvents: 'none' }}>
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 1, pointerEvents: 'none' }}>
           <Hero3DScene />
         </div>
         <div className="container" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-12)', alignItems: 'center', position: 'relative', zIndex: 1 }}>
           
           {/* Left Column : Text */}
-          <div className="hero-content animate-fade-in-up" style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left' }}>
+          <div className="hero-content animate-fade-in-up" style={{ position: 'relative', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left' }}>
             {/* Dotted pattern behind "Solution N°1" */}
             <div style={{ position: 'absolute', top: '-30px', left: '-20px', width: '120px', height: '120px', backgroundImage: 'radial-gradient(var(--gray-400) 2px, transparent 2px)', backgroundSize: '16px 16px', opacity: 0.3, zIndex: -1, borderRadius: '50%' }}></div>
 
@@ -397,14 +397,14 @@ function HomeContent() {
           </div>
 
           {/* Right Column : Image with animations */}
-          <div className="hero-image-wrapper" style={{ position: 'relative', display: 'flex', justifyContent: 'center', animation: 'float 6s ease-in-out infinite' }}>
+          <div className="hero-image-wrapper" style={{ position: 'relative', display: 'flex', justifyContent: 'center' }}>
             <img 
               src="/hero-immo-mockup.png" 
               alt="Vision Immo 2.0 Mockup" 
-              style={{ width: '100%', maxWidth: '380px', height: 'auto', filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.25))', borderRadius: '24px', zIndex: 2, position: 'relative' }} 
+              style={{ width: '100%', maxWidth: '380px', height: 'auto', filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.25))', borderRadius: '24px', zIndex: 0, position: 'relative', animation: 'float 6s ease-in-out infinite' }} 
             />
             {/* Floating badges for extra animation */}
-            <div className="floating-badge badge-left" style={{ position: 'absolute', top: '10%', left: '-15%', background: 'var(--white)', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 5s ease-in-out infinite reverse', zIndex: 3 }}>
+            <div className="floating-badge badge-left" style={{ position: 'absolute', top: '10%', left: '-15%', background: 'var(--white)', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 5s ease-in-out infinite reverse', zIndex: 10 }}>
               <div style={{ background: '#dcfce7', color: '#16a34a', padding: '8px', borderRadius: '50%' }}><Check size={20} /></div>
               <div>
                 <p style={{ margin: 0, fontSize: '12px', color: 'var(--gray-500)', fontWeight: 600 }}>Paiement reçu</p>
@@ -412,7 +412,7 @@ function HomeContent() {
               </div>
             </div>
             
-            <div className="floating-badge badge-right" style={{ position: 'absolute', bottom: '15%', right: '-15%', background: 'var(--white)', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 7s ease-in-out infinite', zIndex: 3 }}>
+            <div className="floating-badge badge-right" style={{ position: 'absolute', bottom: '15%', right: '-15%', background: 'var(--white)', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 7s ease-in-out infinite', zIndex: 10 }}>
               <div style={{ background: '#fef3c7', color: '#d97706', padding: '8px', borderRadius: '50%' }}><Sparkles size={20} /></div>
               <div>
                 <p style={{ margin: 0, fontSize: '12px', color: 'var(--gray-500)', fontWeight: 600 }}>Locataire satisfait</p>
@@ -421,10 +421,10 @@ function HomeContent() {
             </div>
 
             {/* Location pins */}
-            <div className="floating-pin" style={{ position: 'absolute', top: '30%', right: '5%', background: '#16a34a', color: 'white', padding: '6px', borderRadius: '50%', boxShadow: '0 4px 10px rgba(22, 163, 74, 0.4)', animation: 'float 4s ease-in-out infinite', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 4 }}>
+            <div className="floating-pin" style={{ position: 'absolute', top: '30%', right: '5%', background: '#16a34a', color: 'white', padding: '6px', borderRadius: '50%', boxShadow: '0 4px 10px rgba(22, 163, 74, 0.4)', animation: 'float 4s ease-in-out infinite', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
               <MapPin size={16} fill="white" />
             </div>
-            <div className="floating-pin" style={{ position: 'absolute', bottom: '35%', left: '0%', background: '#f97316', color: 'white', padding: '6px', borderRadius: '50%', boxShadow: '0 4px 10px rgba(249, 115, 22, 0.4)', animation: 'float 5s ease-in-out infinite reverse', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 4 }}>
+            <div className="floating-pin" style={{ position: 'absolute', bottom: '35%', left: '0%', background: '#f97316', color: 'white', padding: '6px', borderRadius: '50%', boxShadow: '0 4px 10px rgba(249, 115, 22, 0.4)', animation: 'float 5s ease-in-out infinite reverse', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 }}>
               <MapPin size={16} fill="white" />
             </div>
           </div>
@@ -606,7 +606,7 @@ function HomeContent() {
          ============================================ */}
       <section id="about" className="section" style={{ background: 'var(--white)', paddingTop: 'var(--space-24)' }}>
         <div className="container about-grid">
-          <div className="animate-slide-in-left">
+          <div className="animate-slide-in-left" style={{ position: 'relative', zIndex: 10 }}>
             <span className="section-label" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
               <Sparkles size={14} className="text-orange" /> FINI LES IMPAYÉS ET LE PAPIER
             </span>
@@ -624,15 +624,16 @@ function HomeContent() {
             </a>
           </div>
 
-          <div className="animate-scale-in" style={{ position: 'relative', width: '100%', height: 'auto', display: 'flex', justifyContent: 'center' }}>
+          <div style={{ position: 'relative', width: '100%', height: 'auto', display: 'flex', justifyContent: 'center' }}>
             { }
             <img 
               src="/gestimmo_about_img.png" 
               alt="Salon chic Gestimmo" 
-              className="about-image-3d"
+              className="about-image-3d animate-scale-in"
+              style={{ position: 'relative', zIndex: 0 }}
             />
             {/* Floating badge on image */}
-            <div className="about-badge-floating hide-mobile">
+            <div className="about-badge-floating hide-mobile animate-scale-in" style={{ zIndex: 10, animationDelay: '0.2s' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.2)', borderRadius: '50%', padding: '8px' }}>
                 <Users size={20} />
               </div>
@@ -649,14 +650,14 @@ function HomeContent() {
          Services Section
          ============================================ */}
       <section id="services" className="section" style={{ background: 'var(--gray-50)' }}>
-        <div className="container" style={{ textAlign: 'center', marginBottom: 'var(--space-16)' }}>
+        <div className="container" style={{ textAlign: 'center', marginBottom: 'var(--space-16)', position: 'relative', zIndex: 10 }}>
           <span className="section-label">Fonctionnalités Clés</span>
           <h2 className="section-title">
             Tout ce dont vous avez besoin, dans un seul <span className="text-orange underline-green">logiciel</span>
           </h2>
         </div>
 
-        <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--space-6)' }}>
+        <div className="container" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--space-6)', position: 'relative', zIndex: 10 }}>
           {/* Card 1 */}
           <div className="service-card">
             <div className="service-icon-wrapper">
@@ -734,7 +735,7 @@ function HomeContent() {
          ============================================ */}
       <section id="why-us" className="section" style={{ background: 'var(--white)' }}>
         <div className="container about-grid">
-          <div className="animate-slide-in-left">
+          <div className="animate-slide-in-left" style={{ position: 'relative', zIndex: 10 }}>
             <span className="section-label">Pourquoi nous choisir ?</span>
             <h2 style={{ fontSize: 'var(--text-4xl)', fontWeight: '800', margin: 'var(--space-3) 0 var(--space-6) 0', color: 'var(--gray-900)' }}>
               L&apos;expertise locale, la performance au cœur de notre <span className="text-orange underline-green">engagement.</span>
@@ -757,18 +758,18 @@ function HomeContent() {
             </ul>
           </div>
 
-          <div className="why-us-image-wrapper" style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', animation: 'float 6s ease-in-out infinite', padding: 'var(--space-8) 0' }}>
+          <div className="why-us-image-wrapper" style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: 'var(--space-8) 0' }}>
             {/* Background decorative shape */}
             <div style={{ position: 'absolute', width: '350px', height: '350px', background: 'linear-gradient(135deg, #f9731633 0%, #16a34a33 100%)', borderRadius: '50%', filter: 'blur(50px)', zIndex: 0 }}></div>
             
             <img 
               src="/dashboard-mockup.png" 
               alt="Vision Immo 2.0 Dashboard" 
-              style={{ width: '100%', maxWidth: '440px', height: 'auto', borderRadius: '24px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', zIndex: 1, position: 'relative', border: '6px solid var(--white)' }}
+              style={{ width: '100%', maxWidth: '440px', height: 'auto', borderRadius: '24px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', zIndex: 0, position: 'relative', border: '6px solid var(--white)', animation: 'float 6s ease-in-out infinite' }}
             />
             
             {/* Floating Stat 1 */}
-            <div className="floating-stat-card" style={{ position: 'absolute', top: '5%', right: '-5%', background: 'var(--white)', padding: '12px 16px', borderRadius: '16px', boxShadow: 'var(--shadow-xl)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 5s ease-in-out infinite reverse', zIndex: 2 }}>
+            <div className="floating-stat-card" style={{ position: 'absolute', top: '5%', right: '-5%', background: 'var(--white)', padding: '12px 16px', borderRadius: '16px', boxShadow: 'var(--shadow-xl)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 5s ease-in-out infinite reverse', zIndex: 10 }}>
               <div style={{ background: '#ffedd5', color: '#ea580c', padding: '10px', borderRadius: '50%' }}><Building2 size={24} /></div>
               <div>
                 <p style={{ margin: 0, fontSize: '18px', color: 'var(--gray-900)', fontWeight: 900 }}>+100</p>
@@ -777,7 +778,7 @@ function HomeContent() {
             </div>
 
             {/* Floating Stat 2 */}
-            <div className="floating-stat-card" style={{ position: 'absolute', bottom: '25%', left: '-10%', background: 'var(--white)', padding: '12px 16px', borderRadius: '16px', boxShadow: 'var(--shadow-xl)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 7s ease-in-out infinite', zIndex: 2 }}>
+            <div className="floating-stat-card" style={{ position: 'absolute', bottom: '25%', left: '-10%', background: 'var(--white)', padding: '12px 16px', borderRadius: '16px', boxShadow: 'var(--shadow-xl)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 7s ease-in-out infinite', zIndex: 10 }}>
               <div style={{ background: '#dcfce7', color: '#16a34a', padding: '10px', borderRadius: '50%' }}><Users size={24} /></div>
               <div>
                 <p style={{ margin: 0, fontSize: '18px', color: 'var(--gray-900)', fontWeight: 900 }}>+80</p>
@@ -786,7 +787,7 @@ function HomeContent() {
             </div>
             
             {/* Floating Stat 3 */}
-            <div className="floating-stat-card" style={{ position: 'absolute', bottom: '-5%', right: '15%', background: 'var(--white)', padding: '12px 16px', borderRadius: '16px', boxShadow: 'var(--shadow-xl)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 4s ease-in-out infinite reverse', zIndex: 2 }}>
+            <div className="floating-stat-card" style={{ position: 'absolute', bottom: '-5%', right: '15%', background: 'var(--white)', padding: '12px 16px', borderRadius: '16px', boxShadow: 'var(--shadow-xl)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 4s ease-in-out infinite reverse', zIndex: 10 }}>
               <div style={{ background: '#fef3c7', color: '#d97706', padding: '10px', borderRadius: '50%' }}><Clock size={24} /></div>
               <div>
                 <p style={{ margin: 0, fontSize: '18px', color: 'var(--gray-900)', fontWeight: 900 }}>+5 Ans</p>
@@ -818,7 +819,7 @@ function HomeContent() {
          ============================================ */}
       <section id="testimonials" className="section" style={{ background: 'var(--white)', overflow: 'hidden' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: 'var(--space-12)' }}>
+          <div style={{ textAlign: 'center', marginBottom: 'var(--space-12)', position: 'relative', zIndex: 10 }}>
             <span className="section-label">Avis Clients</span>
             <h2 className="section-title">Ce qu'ils pensent de Vision Immo 2.0</h2>
             <p className="section-subtitle" style={{ margin: '0 auto' }}>
@@ -826,7 +827,7 @@ function HomeContent() {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--space-8)', position: 'relative' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--space-8)', position: 'relative', zIndex: 10 }}>
             {/* Background decorative element */}
             <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(22,163,74,0.1) 0%, transparent 60%)', zIndex: 0, animation: 'float 8s ease-in-out infinite' }}></div>
             
@@ -982,7 +983,7 @@ function HomeContent() {
          ============================================ */}
       <section id="contact" className="section" style={{ background: 'var(--gray-50)' }}>
         <div className="container">
-          <div style={{ textAlign: 'center', marginBottom: 'var(--space-12)' }}>
+          <div style={{ textAlign: 'center', marginBottom: 'var(--space-12)', position: 'relative', zIndex: 10 }}>
             <span className="section-label">Contactez-nous</span>
             <h2 className="section-title">Une question ? Notre équipe vous répond</h2>
             <p className="section-subtitle" style={{ margin: '0 auto' }}>
@@ -990,7 +991,7 @@ function HomeContent() {
             </p>
           </div>
 
-          <div className="contact-grid">
+          <div className="contact-grid" style={{ position: 'relative', zIndex: 10 }}>
             {/* Info */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
               <div className="card" style={{ background: 'var(--white)' }}>
@@ -1065,7 +1066,7 @@ function HomeContent() {
          FAQ Section
          ============================================ */}
       <section id="faq" className="section" style={{ background: 'var(--white)' }}>
-        <div className="container" style={{ maxWidth: '800px' }}>
+        <div className="container" style={{ maxWidth: '800px', position: 'relative', zIndex: 10 }}>
           <div style={{ textAlign: 'center', marginBottom: 'var(--space-12)' }}>
             <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: 'var(--primary-lighter)', color: 'var(--primary)', padding: '16px', borderRadius: '50%', marginBottom: 'var(--space-4)', animation: 'float 4s ease-in-out infinite', boxShadow: 'var(--shadow-md)' }}>
               <HelpCircle size={36} />
@@ -1161,7 +1162,7 @@ function HomeContent() {
       {/* ============================================
          Footer Section
          ============================================ */}
-      <footer className="gestimmo-footer">
+      <footer className="gestimmo-footer" style={{ position: 'relative', zIndex: 10 }}>
         <div className="container footer-grid">
           <div>
             <div className="gestimmo-footer-logo-title">Vision Immo 2.0</div>
