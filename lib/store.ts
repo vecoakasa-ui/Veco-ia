@@ -417,6 +417,17 @@ export function setToStorage<T>(key: string, value: T): void {
   }
 }
 
+export function saveAvatarLocal(id: string, url: string) {
+  const avatars = getFromStorage<Record<string, string>>("local_avatars", {});
+  avatars[id] = url;
+  setToStorage("local_avatars", avatars);
+}
+
+export function getAvatarLocal(id: string): string | null {
+  const avatars = getFromStorage<Record<string, string>>("local_avatars", {});
+  return avatars[id] || null;
+}
+
 let cachedOwnerId: string | null = null;
 
 export const getOwnerId = async (): Promise<string> => {
@@ -500,6 +511,12 @@ export const db = {
             }).eq("id", ownerId).then();
           }
 
+          // Restore avatar from local storage if supabase doesn't have it
+          const localAvatar = getAvatarLocal(ownerId);
+          if (localAvatar) {
+            data.avatar_url = localAvatar;
+          }
+
           return data as Profile;
         } else {
           // Si le profil n'existe pas (ex: connexion Google), on le crée
@@ -567,6 +584,9 @@ export const db = {
     return null;
   },
   updateProfile: async (profile: Profile): Promise<void> => {
+    if (profile.avatar_url) {
+      saveAvatarLocal(profile.id, profile.avatar_url);
+    }
     if (isSupabaseConfigured()) {
       try {
         const { error } = await supabase
@@ -595,7 +615,12 @@ export const db = {
           .select("*")
           .order("full_name", { ascending: true });
         if (error) throw error;
-        if (data) return data as Landlord[];
+        if (data) {
+          return data.map((l) => ({
+            ...l,
+            avatar_url: l.avatar_url || getAvatarLocal(l.id) || ""
+          })) as Landlord[];
+        }
       } catch (err) {
         console.error("Error fetching landlords from Supabase:", err);
         checkAuthError(err);
@@ -621,12 +646,19 @@ export const db = {
     return newLandlord;
   },
   updateLandlord: async (landlord: Landlord): Promise<void> => {
+    if (landlord.avatar_url) {
+      saveAvatarLocal(landlord.id, landlord.avatar_url);
+    }
     if (isSupabaseConfigured()) {
+      // Remove avatar_url before updating supabase to prevent column not found errors
+      const { avatar_url, ...landlordData } = landlord;
       const { error } = await supabase
         .from("landlords")
-        .update(landlord)
+        .update(landlordData)
         .eq("id", landlord.id);
-      if (error) throw error;
+      if (error) {
+        console.warn("Error updating landlord in Supabase:", error);
+      }
     }
   },
   deleteLandlord: async (id: string): Promise<void> => {
@@ -837,7 +869,7 @@ export const db = {
             full_name: t.full_name || "",
             email: t.email || "",
             phone: t.phone || "",
-            avatar_url: t.avatar_url || "",
+            avatar_url: t.avatar_url || getAvatarLocal(t.id) || "",
             property_name: t.property_name || t.properties?.name || ""
           }));
           return parsed;
@@ -915,6 +947,9 @@ export const db = {
     return newTenant;
   },
   updateTenant: async (tenant: Tenant): Promise<void> => {
+    if (tenant.avatar_url) {
+      saveAvatarLocal(tenant.id, tenant.avatar_url);
+    }
     if (isSupabaseConfigured()) {
       if (tenant.profile_id) {
         const { error: profileError } = await supabase.from("profiles").update({
@@ -928,13 +963,13 @@ export const db = {
         }
       }
 
+      const { avatar_url, ...tenantData } = tenant;
       const { error } = await supabase.from("tenants").update({
-        property_id: tenant.property_id,
-        lease_start: tenant.lease_start,
-        lease_end: tenant.lease_end,
-        lease_type: tenant.lease_type,
-        status: tenant.status,
-        avatar_url: tenant.avatar_url
+        property_id: tenantData.property_id,
+        lease_start: tenantData.lease_start,
+        lease_end: tenantData.lease_end,
+        lease_type: tenantData.lease_type,
+        status: tenantData.status
       }).eq("id", tenant.id);
       if (error) throw error;
       
