@@ -354,7 +354,11 @@ function HomeContent() {
           overflow: 'hidden'
         }}
       >
-        <div className="container" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-12)', alignItems: 'center' }}>
+        {/* Full-screen 3D overlay following cursor */}
+        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 10, pointerEvents: 'none' }}>
+          <Hero3DScene />
+        </div>
+        <div className="container" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-12)', alignItems: 'center', position: 'relative', zIndex: 1 }}>
           
           {/* Left Column : Text */}
           <div className="hero-content animate-fade-in-up" style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left' }}>
@@ -392,14 +396,15 @@ function HomeContent() {
             </div>
           </div>
 
-          {/* Right Column : 3D Scene with animations */}
-          <div className="hero-image-wrapper" style={{ position: 'relative', display: 'flex', justifyContent: 'center', height: '100%', minHeight: '400px', alignItems: 'center' }}>
-            <div style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0, zIndex: 2 }}>
-              <Hero3DScene />
-            </div>
-            
-            {/* Floating badges for extra context on top of 3D scene */}
-            <div className="floating-badge badge-left" style={{ position: 'absolute', top: '10%', left: '-10%', background: 'var(--white)', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 5s ease-in-out infinite reverse', zIndex: 3 }}>
+          {/* Right Column : Image with animations */}
+          <div className="hero-image-wrapper" style={{ position: 'relative', display: 'flex', justifyContent: 'center', animation: 'float 6s ease-in-out infinite' }}>
+            <img 
+              src="/hero-immo-mockup.png" 
+              alt="Vision Immo 2.0 Mockup" 
+              style={{ width: '100%', maxWidth: '380px', height: 'auto', filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.25))', borderRadius: '24px', zIndex: 2, position: 'relative' }} 
+            />
+            {/* Floating badges for extra animation */}
+            <div className="floating-badge badge-left" style={{ position: 'absolute', top: '10%', left: '-15%', background: 'var(--white)', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 5s ease-in-out infinite reverse', zIndex: 3 }}>
               <div style={{ background: '#dcfce7', color: '#16a34a', padding: '8px', borderRadius: '50%' }}><Check size={20} /></div>
               <div>
                 <p style={{ margin: 0, fontSize: '12px', color: 'var(--gray-500)', fontWeight: 600 }}>Paiement reçu</p>
@@ -407,12 +412,20 @@ function HomeContent() {
               </div>
             </div>
             
-            <div className="floating-badge badge-right" style={{ position: 'absolute', bottom: '15%', right: '-10%', background: 'var(--white)', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 7s ease-in-out infinite', zIndex: 3 }}>
+            <div className="floating-badge badge-right" style={{ position: 'absolute', bottom: '15%', right: '-15%', background: 'var(--white)', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 7s ease-in-out infinite', zIndex: 3 }}>
               <div style={{ background: '#fef3c7', color: '#d97706', padding: '8px', borderRadius: '50%' }}><Sparkles size={20} /></div>
               <div>
                 <p style={{ margin: 0, fontSize: '12px', color: 'var(--gray-500)', fontWeight: 600 }}>Locataire satisfait</p>
                 <p style={{ margin: 0, fontSize: '14px', color: 'var(--gray-900)', fontWeight: 800 }}>Quittance envoyée</p>
               </div>
+            </div>
+
+            {/* Location pins */}
+            <div className="floating-pin" style={{ position: 'absolute', top: '30%', right: '5%', background: '#16a34a', color: 'white', padding: '6px', borderRadius: '50%', boxShadow: '0 4px 10px rgba(22, 163, 74, 0.4)', animation: 'float 4s ease-in-out infinite', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 4 }}>
+              <MapPin size={16} fill="white" />
+            </div>
+            <div className="floating-pin" style={{ position: 'absolute', bottom: '35%', left: '0%', background: '#f97316', color: 'white', padding: '6px', borderRadius: '50%', boxShadow: '0 4px 10px rgba(249, 115, 22, 0.4)', animation: 'float 5s ease-in-out infinite reverse', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 4 }}>
+              <MapPin size={16} fill="white" />
             </div>
           </div>
 
