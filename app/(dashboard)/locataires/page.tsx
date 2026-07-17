@@ -212,17 +212,24 @@ function LocatairesContent() {
         
         const tenant = tenants.find(t => t.id === targetId);
         if (tenant) {
-          setUploadProgress(80);
-          await db.updateTenant({ ...tenant, avatar_url: compressedBase64 });
-          await loadData();
-          setUploadProgress(100);
-          setTimeout(() => {
+          try {
+            setUploadProgress(80);
+            await db.updateTenant({ ...tenant, avatar_url: compressedBase64 });
+            await loadData();
+            setUploadProgress(100);
+            setTimeout(() => {
+              setUploadingId(null);
+              setUploadProgress(0);
+            }, 400);
+            window.dispatchEvent(new Event("storage"));
+          } catch (error) {
+            console.error("Error uploading photo:", error);
             setUploadingId(null);
             setUploadProgress(0);
-          }, 400);
-          window.dispatchEvent(new Event("storage"));
+          }
         } else {
           setUploadingId(null);
+          setUploadProgress(0);
         }
       };
     };

@@ -916,14 +916,16 @@ export const db = {
   },
   updateTenant: async (tenant: Tenant): Promise<void> => {
     if (isSupabaseConfigured()) {
-      const { error: profileError } = await supabase.from("profiles").update({
-        full_name: tenant.full_name,
-        email: tenant.email,
-        phone: tenant.phone,
-        avatar_url: tenant.avatar_url
-      }).eq("id", tenant.profile_id);
-      if (profileError) {
-        console.warn("Could not update profile (likely RLS), proceeding to update tenant record:", profileError);
+      if (tenant.profile_id) {
+        const { error: profileError } = await supabase.from("profiles").update({
+          full_name: tenant.full_name,
+          email: tenant.email,
+          phone: tenant.phone,
+          avatar_url: tenant.avatar_url
+        }).eq("id", tenant.profile_id);
+        if (profileError) {
+          console.warn("Could not update profile (likely RLS), proceeding to update tenant record:", profileError);
+        }
       }
 
       const { error } = await supabase.from("tenants").update({
