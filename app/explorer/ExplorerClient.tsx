@@ -431,7 +431,7 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
                           className="form-control" 
                           required 
                           placeholder="Votre nom complet"
-                          style={{ paddingLeft: "36px", width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none" }}
+                          style={{ paddingLeft: "36px", width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", backgroundColor: "transparent" }}
                         />
                       </div>
                     </div>
@@ -447,7 +447,7 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
                             className="form-control" 
                             required 
                             placeholder="+225..."
-                            style={{ paddingLeft: "36px", width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none" }}
+                            style={{ paddingLeft: "36px", width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", backgroundColor: "transparent" }}
                           />
                         </div>
                       </div>
@@ -461,7 +461,7 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
                             className="form-control" 
                             required 
                             placeholder="votre@email.com"
-                            style={{ paddingLeft: "36px", width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none" }}
+                            style={{ paddingLeft: "36px", width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", backgroundColor: "transparent" }}
                           />
                         </div>
                       </div>
@@ -474,7 +474,7 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
                           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-4)" }}>
                             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                               <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Type de pièce <span style={{color: "var(--danger)"}}>*</span></label>
-                              <select name="id_type" required className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px" }}>
+                              <select name="id_type" required className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px", backgroundColor: "transparent" }}>
                                 <option value="CNI">CNI</option>
                                 <option value="Passeport">Passeport</option>
                                 <option value="Attestation">Attestation d'identité</option>
@@ -483,12 +483,12 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
                             </div>
                             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                               <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>N° de Pièce <span style={{color: "var(--danger)"}}>*</span></label>
-                              <input type="text" name="id_number" required placeholder="Ex: 119015..." className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px" }} />
+                              <input type="text" name="id_number" required placeholder="Ex: 119015..." className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px", backgroundColor: "transparent" }} />
                             </div>
                           </div>
                           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                             <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Date d'expiration <span style={{color: "var(--danger)"}}>*</span></label>
-                            <input type="date" name="id_expiry_date" required className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px" }} />
+                            <input type="date" name="id_expiry_date" required className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px", backgroundColor: "transparent" }} />
                           </div>
                         </div>
 
@@ -497,22 +497,22 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
                           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-4)" }}>
                             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                               <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Prix du bien (FCFA)</label>
-                              <input type="number" name="proposed_price" value={selectedProperty.sale_price || ""} readOnly className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px", backgroundColor: "var(--gray-100)", color: "var(--gray-500)", cursor: "not-allowed" }} />
+                              <input type="number" name="proposed_price" value={selectedProperty.sale_price || ""} readOnly className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px", backgroundColor: "transparent", color: "var(--gray-500)", cursor: "not-allowed" }} />
                             </div>
                             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                               <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Avance requise (FCFA)</label>
-                              <input type="number" name="proposed_advance" value={(selectedProperty as any).advance_payment || ""} placeholder="-" readOnly className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px", backgroundColor: "var(--gray-100)", color: "var(--gray-500)", cursor: "not-allowed" }} />
+                              <input type="number" name="proposed_advance" value={(selectedProperty as any).advance_payment || ""} placeholder="-" readOnly className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px", backgroundColor: "transparent", color: "var(--gray-500)", cursor: "not-allowed" }} />
                             </div>
                           </div>
                           
                           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-4)" }}>
                             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                               <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Mensualité exigée (FCFA)</label>
-                              <input type="number" name="installment_amount" value={(selectedProperty as any).installment_amount || ""} placeholder="-" readOnly className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px", backgroundColor: "var(--gray-100)", color: "var(--gray-500)", cursor: "not-allowed" }} />
+                              <input type="number" name="installment_amount" value={(selectedProperty as any).installment_amount || ""} placeholder="-" readOnly className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px", backgroundColor: "transparent", color: "var(--gray-500)", cursor: "not-allowed" }} />
                             </div>
                             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                               <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--gray-700)" }}>Date de conclusion souhaitée <span style={{color: "var(--danger)"}}>*</span></label>
-                              <input type="date" name="proposed_date" required className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px" }} />
+                              <input type="date" name="proposed_date" required className="form-control" style={{ width: "100%", height: "48px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", padding: "0 12px", backgroundColor: "transparent" }} />
                             </div>
                           </div>
                         </div>
@@ -527,7 +527,7 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
                         placeholder={selectedProperty?.type === 'terrain' || selectedProperty?.type === 'lotissement' ? "Précisez votre projet d'achat, vos conditions de financement, etc." : "Précisez votre situation, votre date d'emménagement souhaitée, etc."}
                         value={message}
                         onChange={(e) => setMessage(e.target.value)}
-                        style={{ width: "100%", padding: "12px", resize: "vertical", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none" }}
+                        style={{ width: "100%", padding: "12px", resize: "vertical", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-300)", outline: "none", backgroundColor: "transparent" }}
                       ></textarea>
                     </div>
 
