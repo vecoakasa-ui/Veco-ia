@@ -234,11 +234,11 @@ function HomeContent() {
           {/* Desktop Menu */}
           <nav className="navbar-menu hide-mobile">
             <Link href="/explorer" className="navbar-link" style={{ fontWeight: 'bold', color: 'var(--orange)' }}>Biens Disponibles</Link>
-            <a href="#about" className="navbar-link">À propos</a>
-            <a href="#services" className="navbar-link">Nos services</a>
-            <a href="#why-us" className="navbar-link">Pourquoi nous choisir</a>
+            <Link href="/#about" className="navbar-link">À propos</Link>
+            <Link href="/#services" className="navbar-link">Nos services</Link>
+            <Link href="/#why-us" className="navbar-link">Pourquoi nous choisir</Link>
             <Link href="/tarifs" className="navbar-link">Tarifs</Link>
-            <a href="#contact" className="navbar-link">Contact</a>
+            <Link href="/#contact" className="navbar-link">Contact</Link>
           </nav>
 
           <div className="navbar-actions hide-mobile">
@@ -288,30 +288,30 @@ function HomeContent() {
             >
               Biens Disponibles
             </Link>
-            <a 
-              href="#about" 
+            <Link 
+              href="/#about" 
               className="navbar-link" 
               onClick={() => setMobileMenuOpen(false)}
               style={{ fontSize: 'var(--text-lg)', padding: 'var(--space-2) 0' }}
             >
               À propos
-            </a>
-            <a 
-              href="#services" 
+            </Link>
+            <Link 
+              href="/#services" 
               className="navbar-link" 
               onClick={() => setMobileMenuOpen(false)}
               style={{ fontSize: 'var(--text-lg)', padding: 'var(--space-2) 0' }}
             >
               Nos services
-            </a>
-            <a 
-              href="#why-us" 
+            </Link>
+            <Link 
+              href="/#why-us" 
               className="navbar-link" 
               onClick={() => setMobileMenuOpen(false)}
               style={{ fontSize: 'var(--text-lg)', padding: 'var(--space-2) 0' }}
             >
               Pourquoi nous choisir
-            </a>
+            </Link>
             <Link 
               href="/tarifs" 
               className="navbar-link" 
@@ -320,14 +320,14 @@ function HomeContent() {
             >
               Tarifs
             </Link>
-            <a 
-              href="#contact" 
+            <Link 
+              href="/#contact" 
               className="navbar-link" 
               onClick={() => setMobileMenuOpen(false)}
               style={{ fontSize: 'var(--text-lg)', padding: 'var(--space-2) 0' }}
             >
               Contact
-            </a>
+            </Link>
             <hr style={{ border: 'none', borderTop: '1px solid var(--gray-200)', margin: 'var(--space-2) 0' }} />
             <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
               <Link href="/login" className="btn btn-outline" style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
@@ -1180,23 +1180,23 @@ function HomeContent() {
           <div>
             <h4 className="gestimmo-footer-title">Liens rapides</h4>
             <div className="footer-links">
-              <a href="#about" className="footer-link">À propos</a>
-              <a href="#services" className="footer-link">Nos services</a>
-              <a href="#why-us" className="footer-link">Pourquoi nous choisir</a>
+              <Link href="/#about" className="footer-link">À propos</Link>
+              <Link href="/#services" className="footer-link">Nos services</Link>
+              <Link href="/#why-us" className="footer-link">Pourquoi nous choisir</Link>
               <Link href="/tarifs" className="footer-link">Tarifs</Link>
               <Link href="/marketing" className="footer-link">Stratégie Pitch</Link>
-              <a href="#contact" className="footer-link">Contact</a>
+              <Link href="/#contact" className="footer-link">Contact</Link>
             </div>
           </div>
 
           <div>
             <h4 className="gestimmo-footer-title">Nos services</h4>
             <div className="footer-links">
-              <a href="#services" className="footer-link">Gestion locative</a>
-              <a href="#services" className="footer-link">Gestion technique</a>
-              <a href="#services" className="footer-link">Gestion administrative</a>
-              <a href="#services" className="footer-link">Gestion financière</a>
-              <a href="#services" className="footer-link">Conseil & valorisation</a>
+              <Link href="/#services" className="footer-link">Gestion locative</Link>
+              <Link href="/#services" className="footer-link">Gestion technique</Link>
+              <Link href="/#services" className="footer-link">Gestion administrative</Link>
+              <Link href="/#services" className="footer-link">Gestion financière</Link>
+              <Link href="/#services" className="footer-link">Conseil & valorisation</Link>
             </div>
           </div>
 
