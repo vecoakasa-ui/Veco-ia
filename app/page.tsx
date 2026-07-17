@@ -26,7 +26,8 @@ import {
   Calendar,
   ChevronDown,
   HelpCircle,
-  Star
+  Star,
+  TrendingUp
 } from "lucide-react";
 
 
@@ -337,166 +338,86 @@ function HomeContent() {
       <section 
         className="hero-section"
         style={{
-          background: 'linear-gradient(135deg, var(--gray-50) 0%, var(--gray-200) 100%)',
+          backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url(/gestimmo_hero_bg.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
           paddingTop: 'calc(var(--navbar-height) + var(--space-20))',
           paddingBottom: 'var(--space-24)',
           position: 'relative',
-          overflow: 'hidden'
+          overflow: 'hidden',
+          color: 'var(--white)'
         }}
       >
-        <div className="container" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-12)', alignItems: 'center' }}>
+        <div className="container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', position: 'relative', zIndex: 2 }}>
           
-          {/* Left Column : Text */}
-          <div className="hero-content animate-fade-in-up" style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left' }}>
-            {/* Dotted pattern behind "Solution N°1" */}
-            <div style={{ position: 'absolute', top: '-30px', left: '-20px', width: '120px', height: '120px', backgroundImage: 'radial-gradient(var(--gray-400) 2px, transparent 2px)', backgroundSize: '16px 16px', opacity: 0.3, zIndex: -1, borderRadius: '50%' }}></div>
-
-            {/* Faint Phone Mockup Background */}
-            <div style={{ position: 'absolute', top: '-40px', left: '50%', transform: 'translateX(-50%)', opacity: 0.04, zIndex: -1, pointerEvents: 'none', display: 'flex', justifyContent: 'center' }}>
-              <Smartphone size={320} strokeWidth={0.75} color="var(--gray-900)" />
-              <MapPin size={36} style={{ position: 'absolute', top: '25%', left: '35%', color: 'var(--gray-900)' }} />
-              <MapPin size={24} style={{ position: 'absolute', top: '45%', right: '35%', color: 'var(--gray-900)' }} />
-              <MapPin size={48} style={{ position: 'absolute', top: '65%', left: '25%', color: 'var(--gray-900)' }} />
-            </div>
-
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'var(--white)', padding: '6px 14px', borderRadius: 'var(--radius-full)', color: 'var(--gray-900)', fontSize: 'var(--text-xs)', fontWeight: '700', marginBottom: 'var(--space-6)', border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-sm)' }}>
-              <span style={{ display: 'inline-flex', width: '16px', height: '12px', background: 'linear-gradient(to right, #E25822 33.3%, white 33.3%, white 66.6%, #0A3D2A 66.6%)', borderRadius: '1px' }}></span>
-              🚀 Plateforme N°1 de Gestion Nouvelle Génération
-            </div>
-            
-            <h1 className="hero-title" style={{ color: 'var(--gray-900)', fontSize: 'calc(var(--text-4xl) + 1vw)', fontWeight: '900', lineHeight: 1.15, marginBottom: 'var(--space-6)', letterSpacing: '-0.03em' }}>
-              Ne courez plus après vos loyers. <span style={{ color: 'var(--orange)' }}>Automatisez tout.</span>
-            </h1>
-            
-            <p style={{ fontSize: 'var(--text-lg)', color: 'var(--gray-600)', lineHeight: 1.65, marginBottom: 'var(--space-8)', maxWidth: '90%' }}>
-              Dites adieu aux impayés et à la paperasse. Centralisez vos biens, automatisez l'envoi de vos quittances et encaissez vos paiements instantanément via Mobile Money. La sérénité n'a jamais été aussi accessible.
-            </p>
-            
-            <div className="hero-buttons hide-mobile" style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
-              <a href="/register" className="btn btn-orange pulse-btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', transition: 'transform 0.2s, box-shadow 0.2s', display: 'flex', alignItems: 'center', gap: '8px', background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', borderRadius: 'var(--radius-lg)' }}>
-                Créer mon compte gratuit
-              </a>
-              <a href="#services" className="btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', background: 'var(--white)', color: 'var(--gray-900)', border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-sm)', transition: 'transform 0.2s, box-shadow 0.2s' }}>
-                Voir comment ça marche
-              </a>
-            </div>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(255, 255, 255, 0.1)', padding: '6px 16px', borderRadius: 'var(--radius-full)', color: 'var(--white)', fontSize: 'var(--text-sm)', fontWeight: '600', marginBottom: 'var(--space-6)', border: '1px solid rgba(255,255,255,0.2)', backdropFilter: 'blur(10px)' }}>
+            <span style={{ display: 'inline-flex', width: '16px', height: '12px', background: 'linear-gradient(to right, #E25822 33.3%, white 33.3%, white 66.6%, #0A3D2A 66.6%)', borderRadius: '1px' }}></span>
+            🚀 Plateforme N°1 de Gestion Nouvelle Génération
           </div>
-
-          {/* Right Column : Image with animations */}
-          <div className="hero-image-wrapper" style={{ position: 'relative', display: 'flex', justifyContent: 'center', animation: 'float 6s ease-in-out infinite' }}>
-            <img 
-              src="/hero-immo-mockup.png" 
-              alt="Vision Immo 2.0 Mockup" 
-              style={{ width: '100%', maxWidth: '380px', height: 'auto', filter: 'drop-shadow(0 25px 50px rgba(0, 0, 0, 0.25))', borderRadius: '24px', zIndex: 2, position: 'relative' }} 
-            />
-            {/* Floating badges for extra animation */}
-            <div className="floating-badge badge-left" style={{ position: 'absolute', top: '10%', left: '-15%', background: 'var(--white)', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 5s ease-in-out infinite reverse', zIndex: 3 }}>
-              <div style={{ background: '#dcfce7', color: '#16a34a', padding: '8px', borderRadius: '50%' }}><Check size={20} /></div>
-              <div>
-                <p style={{ margin: 0, fontSize: '12px', color: 'var(--gray-500)', fontWeight: 600 }}>Paiement reçu</p>
-                <p style={{ margin: 0, fontSize: '14px', color: 'var(--gray-900)', fontWeight: 800 }}>+ 150 000 FCFA</p>
-              </div>
-            </div>
-            
-            <div className="floating-badge badge-right" style={{ position: 'absolute', bottom: '15%', right: '-15%', background: 'var(--white)', padding: '12px 16px', borderRadius: '12px', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '12px', animation: 'float 7s ease-in-out infinite', zIndex: 3 }}>
-              <div style={{ background: '#fef3c7', color: '#d97706', padding: '8px', borderRadius: '50%' }}><Sparkles size={20} /></div>
-              <div>
-                <p style={{ margin: 0, fontSize: '12px', color: 'var(--gray-500)', fontWeight: 600 }}>Locataire satisfait</p>
-                <p style={{ margin: 0, fontSize: '14px', color: 'var(--gray-900)', fontWeight: 800 }}>Quittance envoyée</p>
-              </div>
-            </div>
-
-            {/* Location pins */}
-            <div className="floating-pin" style={{ position: 'absolute', top: '30%', right: '5%', background: '#16a34a', color: 'white', padding: '6px', borderRadius: '50%', boxShadow: '0 4px 10px rgba(22, 163, 74, 0.4)', animation: 'float 4s ease-in-out infinite', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 4 }}>
-              <MapPin size={16} fill="white" />
-            </div>
-            <div className="floating-pin" style={{ position: 'absolute', bottom: '35%', left: '0%', background: '#f97316', color: 'white', padding: '6px', borderRadius: '50%', boxShadow: '0 4px 10px rgba(249, 115, 22, 0.4)', animation: 'float 5s ease-in-out infinite reverse', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 4 }}>
-              <MapPin size={16} fill="white" />
-            </div>
-          </div>
-
-          {/* Mobile Buttons : Shown only on mobile below the image */}
-          <div className="hero-buttons hide-desktop" style={{ display: 'none', gap: 'var(--space-4)', flexWrap: 'wrap', justifyContent: 'center', marginTop: 'var(--space-4)' }}>
-            <a href="/register" className="btn btn-orange pulse-btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', transition: 'transform 0.2s, box-shadow 0.2s', display: 'flex', alignItems: 'center', gap: '8px', background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', borderRadius: 'var(--radius-lg)' }}>
+          
+          <h1 className="hero-title" style={{ color: 'var(--white)', fontSize: 'calc(var(--text-4xl) + 1.5vw)', fontWeight: '900', lineHeight: 1.2, marginBottom: 'var(--space-6)', letterSpacing: '-0.02em', maxWidth: '900px' }}>
+            Ne courez plus après vos loyers.<br />
+            <span style={{ color: 'var(--orange)' }}>Automatisez tout.</span>
+          </h1>
+          
+          <p style={{ fontSize: 'var(--text-xl)', color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.6, marginBottom: 'var(--space-10)', maxWidth: '800px', fontWeight: '400' }}>
+            Dites adieu aux impayés et à la paperasse. Centralisez vos biens, automatisez l'envoi de vos quittances et encaissez vos paiements instantanément via Mobile Money. La sérénité n'a jamais été aussi accessible.
+          </p>
+          
+          <div className="hero-buttons" style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap', justifyContent: 'center' }}>
+            <a href="/register" className="btn pulse-btn" style={{ padding: '14px 32px', fontSize: 'var(--text-lg)', fontWeight: '700', transition: 'transform 0.2s, box-shadow 0.2s', display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--orange)', color: 'white', borderRadius: 'var(--radius-lg)' }}>
               Créer mon compte gratuit
             </a>
-            <a href="#services" className="btn" style={{ padding: '12px 28px', fontSize: 'var(--text-base)', fontWeight: '700', background: 'var(--white)', color: 'var(--gray-900)', border: '1px solid var(--gray-200)', boxShadow: 'var(--shadow-sm)', transition: 'transform 0.2s, box-shadow 0.2s' }}>
+            <a href="#services" className="btn" style={{ padding: '14px 32px', fontSize: 'var(--text-lg)', fontWeight: '700', background: 'transparent', color: 'var(--white)', border: '2px solid var(--white)', borderRadius: 'var(--radius-lg)', transition: 'background 0.2s, color 0.2s' }}
+               onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--white)'; e.currentTarget.style.color = 'var(--gray-900)'; }}
+               onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--white)'; }}>
               Voir comment ça marche
             </a>
           </div>
 
+          {/* Overlapping Value Cards from Mockup */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--space-6)', width: '100%', marginTop: 'var(--space-16)', textAlign: 'left' }}>
+            <div style={{ background: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(12px)', padding: 'var(--space-6)', borderRadius: 'var(--radius-xl)', border: '1px solid rgba(255,255,255,0.15)' }}>
+              <Building2 size={32} color="var(--orange)" style={{ marginBottom: 'var(--space-4)' }} />
+              <h3 style={{ color: 'var(--white)', fontSize: 'var(--text-xl)', marginBottom: 'var(--space-2)' }}>Gestion complète</h3>
+              <p style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 'var(--text-sm)' }}>Nous gérons tout de A à Z. Ne vous souciez plus de la paperasse ou des relances.</p>
+            </div>
+            
+            <div style={{ background: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(12px)', padding: 'var(--space-6)', borderRadius: 'var(--radius-xl)', border: '1px solid rgba(255,255,255,0.15)' }}>
+              <Smartphone size={32} color="var(--orange)" style={{ marginBottom: 'var(--space-4)' }} />
+              <h3 style={{ color: 'var(--white)', fontSize: 'var(--text-xl)', marginBottom: 'var(--space-2)' }}>Transparence</h3>
+              <p style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 'var(--text-sm)' }}>Suivez vos dossiers en temps réel. Paiements, incidents, tout est sur votre tableau de bord.</p>
+            </div>
+            
+            <div style={{ background: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(12px)', padding: 'var(--space-6)', borderRadius: 'var(--radius-xl)', border: '1px solid rgba(255,255,255,0.15)' }}>
+              <TrendingUp size={32} color="var(--orange)" style={{ marginBottom: 'var(--space-4)' }} />
+              <h3 style={{ color: 'var(--white)', fontSize: 'var(--text-xl)', marginBottom: 'var(--space-2)' }}>Performance</h3>
+              <p style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 'var(--text-sm)' }}>Maximisez vos rendements avec des encaissements fluides via Mobile Money et cartes.</p>
+            </div>
+          </div>
         </div>
         
-        {/* CSS for float and mobile responsiveness */}
+        {/* CSS for float and animations */}
         <style dangerouslySetInnerHTML={{__html: `
-          @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0px); }
-          }
           @keyframes pulse-btn-anim {
-            0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.6); }
-            70% { box-shadow: 0 0 0 15px rgba(249, 115, 22, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(226, 88, 34, 0.6); }
+            70% { box-shadow: 0 0 0 15px rgba(226, 88, 34, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(226, 88, 34, 0); }
           }
           .pulse-btn {
             animation: pulse-btn-anim 2s infinite;
           }
+          .hero-title {
+            text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+          }
           @media (max-width: 992px) {
-            .hero-section .container {
-              grid-template-columns: 1fr !important;
-              gap: var(--space-8) !important;
-            }
-            .hide-mobile {
-              display: none !important;
-            }
-            .hide-desktop {
-              display: flex !important;
-            }
-            .hero-content {
-              align-items: center !important;
-              text-align: center !important;
-            }
-            .hero-title {
-              font-size: var(--text-4xl) !important;
-            }
-            .hero-buttons {
-              justify-content: center !important;
-            }
-            .hero-image-wrapper {
-              margin-top: 1rem;
-              padding: 0 1rem;
-            }
-            .hero-image-wrapper img {
-              max-width: 90% !important;
-            }
-            /* Adjust badges so they don't overflow screen horizontally */
-            .badge-left {
-              left: -5% !important;
-              transform: scale(0.85);
-              transform-origin: left center;
-            }
-            .badge-right {
-              right: -5% !important;
-              transform: scale(0.85);
-              transform-origin: right center;
-            }
-            .floating-pin {
-              transform: scale(0.9);
+            .hero-section {
+              padding-top: calc(var(--navbar-height) + var(--space-12)) !important;
+              padding-bottom: var(--space-12) !important;
             }
           }
-          @media (max-width: 480px) {
-            .badge-left {
-              top: 5% !important;
-              left: 5% !important;
-              transform: scale(0.75);
-            }
-            .badge-right {
-              bottom: 10% !important;
-              right: 5% !important;
-              transform: scale(0.75);
-            }
-          }
+
+
         `}} />
       </section>
 
