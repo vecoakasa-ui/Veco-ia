@@ -69,11 +69,11 @@ export default function ResidentLayout({ children }: { children: React.ReactNode
         bottom: 0,
         zIndex: 50
       }}>
-        <Link href="/resident/dashboard" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px", color: "var(--primary-dark)", textDecoration: "none" }}>
+        <Link href="/dashboard" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px", color: "var(--primary-dark)", textDecoration: "none" }}>
           <Home size={24} />
           <span style={{ fontSize: "10px", fontWeight: "600" }}>Accueil</span>
         </Link>
-        <Link href="/resident/tickets/new" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px", color: "var(--gray-500)", textDecoration: "none" }}>
+        <Link href="/tickets/new" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px", color: "var(--gray-500)", textDecoration: "none" }}>
           <Wrench size={24} />
           <span style={{ fontSize: "10px", fontWeight: "600" }}>Assistance</span>
         </Link>

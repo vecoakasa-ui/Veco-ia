@@ -149,7 +149,7 @@ export default function ResidentDashboard() {
           <h3 style={{ fontSize: "var(--text-md)", fontWeight: "700", margin: 0 }}>Assistance technique</h3>
         </div>
         
-        <Link href="/resident/tickets/new" className="card card-interactive" style={{ padding: "var(--space-4)", display: "flex", justifyContent: "space-between", alignItems: "center", textDecoration: "none", color: "inherit", background: "var(--warning-lightest)", borderColor: "var(--warning)" }}>
+        <Link href="/tickets/new" className="card card-interactive" style={{ padding: "var(--space-4)", display: "flex", justifyContent: "space-between", alignItems: "center", textDecoration: "none", color: "inherit", background: "var(--warning-lightest)", borderColor: "var(--warning)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <div style={{ background: "white", padding: "8px", borderRadius: "50%" }}>
               <AlertTriangle size={20} style={{ color: "var(--warning)" }} />
