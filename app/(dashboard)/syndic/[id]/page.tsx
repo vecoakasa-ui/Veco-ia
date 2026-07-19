@@ -72,7 +72,7 @@ export default function SyndicDetailPage() {
 
       // 3. Get Tenants in these units
       if (uData && uData.length > 0) {
-        const unitIds = uData.map(u => u.id);
+        const unitIds = uData.map((u: any) => u.id);
         const { data: tData } = await supabase.from('tenants').select('*').in('property_id', unitIds).eq('status', 'active');
         if (tData) setTenants(tData);
       }
@@ -83,7 +83,7 @@ export default function SyndicDetailPage() {
 
       // 5. Get Apportionments (with unit details)
       if (cData && cData.length > 0) {
-        const chargeIds = cData.map(c => c.id);
+        const chargeIds = cData.map((c: any) => c.id);
         const { data: aData } = await supabase.from('syndic_apportionments').select(`
           *,
           unit:properties!unit_id(*),
