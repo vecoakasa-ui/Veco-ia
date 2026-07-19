@@ -18,9 +18,11 @@ import {
   ArrowRight,
   Compass,
   Sparkles,
-  Sun
+  Sun,
+  Banknote
 } from "lucide-react";
 import { db } from "@/lib/store";
+import { supabase } from "@/lib/supabase";
 import { Tenant, Lease, Payment, Incident } from "@/lib/types";
 import { formatCurrency, formatDate, getPaymentStatusClass, getPaymentStatusLabel } from "@/lib/utils";
 import Link from "next/link";
@@ -34,6 +36,7 @@ export default function PortailLocatairePage() {
   const [lease, setLease] = useState<Lease | null>(null);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [incidents, setIncidents] = useState<Incident[]>([]);
+  const [syndicCharges, setSyndicCharges] = useState<any[]>([]);
 
   // Incident Modal
   const [showIncidentModal, setShowIncidentModal] = useState(false);
@@ -96,10 +99,18 @@ export default function PortailLocatairePage() {
 
       const allIncidents = await db.getIncidents();
       setIncidents(allIncidents.filter(i => i.tenant_id === currentTenant?.id));
+
+      const { data: sData } = await supabase.from('syndic_apportionments')
+        .select('*, charge:syndic_charges(*)')
+        .eq('tenant_id', currentTenant?.id)
+        .order('created_at', { ascending: false });
+      if (sData) setSyndicCharges(sData);
+
     } else {
       setLease(null);
       setPayments([]);
       setIncidents([]);
+      setSyndicCharges([]);
     }
     
     setLoading(false);
@@ -337,6 +348,38 @@ export default function PortailLocatairePage() {
               </div>
             )}
           </section>
+
+          {/* Syndic Charges */}
+          {syndicCharges.length > 0 && (
+            <section id="syndic" className="card" style={{ padding: "var(--space-5)" }}>
+              <h3 style={{ fontSize: "var(--text-lg)", fontWeight: 800, marginBottom: "var(--space-5)", display: "flex", alignItems: "center", gap: "10px" }}>
+                <Banknote size={20} style={{ color: "var(--primary)" }} /> Charges de Copropriété
+              </h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)" }}>
+                {syndicCharges.map(app => (
+                  <div key={app.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "var(--space-3)", borderBottom: "1px solid var(--gray-100)" }}>
+                    <div>
+                      <h4 style={{ fontWeight: 700, margin: "0 0 4px 0", fontSize: "var(--text-md)", color: "var(--gray-800)" }}>{app.charge?.title}</h4>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "12px", color: "var(--gray-500)" }}>
+                        <span className={`badge ${app.status === 'paid' ? 'badge-success' : 'badge-warning'}`} style={{ padding: "2px 8px", fontSize: "10px" }}>
+                          {app.status === 'paid' ? 'Payé' : 'En attente'}
+                        </span>
+                        {app.charge?.due_date && <span>• Échéance : {formatDate(app.charge.due_date)}</span>}
+                      </div>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
+                      <span style={{ fontWeight: 800, color: app.status === 'paid' ? "var(--success)" : "var(--gray-900)" }}>{formatCurrency(app.amount_due)}</span>
+                      {app.status === 'pending' && (
+                        <button className="btn btn-primary btn-sm" style={{ padding: "6px 12px", fontSize: "12px" }} onClick={() => alert("Redirection vers le paiement mobile...")}>
+                          Payer
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* Payments History */}
           <section id="paiements" className="card" style={{ padding: "var(--space-5)" }}>
