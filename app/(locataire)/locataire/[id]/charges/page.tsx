@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import { Banknote, CheckCircle2, Clock, AlertTriangle } from "lucide-react";
+import { db } from "@/lib/store";
+import { Banknote, CheckCircle2, Clock, AlertTriangle, ArrowLeft } from "lucide-react";
 import { formatCurrency, formatDate } from "@/lib/utils";
+import Link from "next/link";
 
 export default function SyndicChargesPage() {
   const params = useParams();
@@ -16,9 +18,23 @@ export default function SyndicChargesPage() {
     const loadCharges = async () => {
       setLoading(true);
       try {
+        const profile = await db.getProfile();
+        if (!profile) {
+          setLoading(false);
+          return;
+        }
+
+        const allTenants = await db.getTenants();
+        let currentTenantId = tenantId;
+
+        if (profile.role === "tenant") {
+          const t = allTenants.find(t => t.profile_id === profile.id || (t.email && profile.email && t.email.toLowerCase() === profile.email.toLowerCase()));
+          if (t) currentTenantId = t.id;
+        }
+
         const { data } = await supabase.from('syndic_apportionments')
           .select('*, charge:syndic_charges(*)')
-          .eq('tenant_id', tenantId)
+          .eq('tenant_id', currentTenantId)
           .order('created_at', { ascending: false });
         
         if (data) {
@@ -52,16 +68,21 @@ export default function SyndicChargesPage() {
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
       {/* Page Header */}
-      <div>
-        <h1 style={{ fontSize: "var(--text-2xl)", fontWeight: "800", color: "var(--gray-900)", margin: "0 0 8px 0", display: "flex", alignItems: "center", gap: "12px" }}>
-          <div style={{ background: "var(--primary-lightest)", padding: "12px", borderRadius: "var(--radius-lg)" }}>
-            <Banknote size={28} style={{ color: "var(--primary)" }} />
-          </div>
-          Charges de Copropriété (Syndic)
-        </h1>
-        <p style={{ color: "var(--gray-600)", margin: 0, fontSize: "15px" }}>
-          Consultez et réglez vos quotes-parts pour l'entretien et la gestion de votre immeuble.
-        </p>
+      <div style={{ display: "flex", alignItems: "flex-start", gap: "var(--space-4)" }}>
+        <Link href={`/locataire/${tenantId}`} className="btn btn-ghost" style={{ padding: "8px", marginTop: "4px" }}>
+          <ArrowLeft size={20} />
+        </Link>
+        <div>
+          <h1 style={{ fontSize: "var(--text-2xl)", fontWeight: "800", color: "var(--gray-900)", margin: "0 0 8px 0", display: "flex", alignItems: "center", gap: "12px" }}>
+            <div style={{ background: "var(--primary-lightest)", padding: "12px", borderRadius: "var(--radius-lg)" }}>
+              <Banknote size={28} style={{ color: "var(--primary)" }} />
+            </div>
+            Charges de Copropriété (Syndic)
+          </h1>
+          <p style={{ color: "var(--gray-600)", margin: 0, fontSize: "15px" }}>
+            Consultez et réglez vos quotes-parts pour l'entretien et la gestion de votre immeuble.
+          </p>
+        </div>
       </div>
 
       {syndicCharges.length === 0 ? (
