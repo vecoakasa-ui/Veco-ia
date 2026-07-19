@@ -639,18 +639,43 @@ export default function PortailLocatairePage() {
             )}
 
             {paymentStep === "qr" && (
-              <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-4)", textAlign: "center" }}>
-                <p style={{ margin: 0, fontWeight: "600", color: "var(--gray-700)" }}>Scannez ce code QR avec votre application <strong style={{ color: "var(--primary)" }}>{selectedMethod}</strong></p>
-                <div style={{ background: "white", padding: "16px", borderRadius: "16px", border: "2px solid var(--gray-200)", display: "inline-block" }}>
-                  <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=paiement_test_vision_immo_${selectedChargeId}`} alt="QR Code" style={{ width: "150px", height: "150px" }} />
+              <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
+                <p style={{ margin: 0, fontWeight: "600", color: "var(--gray-700)", textAlign: "center", fontSize: "16px" }}>
+                  Paiement via <strong style={{ color: "var(--primary)" }}>{selectedMethod}</strong>
+                </p>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+                  {/* Option 1: QR Code */}
+                  <div style={{ background: "var(--gray-50)", padding: "16px", borderRadius: "16px", border: "1px solid var(--gray-200)", display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", textAlign: "center" }}>
+                    <span style={{ fontSize: "14px", fontWeight: "700", color: "var(--gray-800)" }}>Option 1 : Scannez le code QR</span>
+                    <div style={{ background: "white", padding: "12px", borderRadius: "12px", border: "1px solid var(--gray-200)", display: "inline-block" }}>
+                      <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=paiement_test_vision_immo_${selectedChargeId}`} alt="QR Code" style={{ width: "120px", height: "120px" }} />
+                    </div>
+                    <button 
+                      className="btn btn-outline btn-sm" 
+                      style={{ width: "100%", justifyContent: "center", border: "2px solid var(--gray-200)" }}
+                      onClick={() => setPaymentStep("processing")}
+                    >
+                      J'ai scanné le code
+                    </button>
+                  </div>
+
+                  <div style={{ textAlign: "center", fontSize: "12px", fontWeight: "800", color: "var(--gray-400)", textTransform: "uppercase" }}>OU</div>
+
+                  {/* Option 2: Phone Number */}
+                  <div style={{ background: "var(--gray-50)", padding: "16px", borderRadius: "16px", border: "1px solid var(--gray-200)", display: "flex", flexDirection: "column", gap: "12px" }}>
+                    <span style={{ fontSize: "14px", fontWeight: "700", textAlign: "center", color: "var(--gray-800)" }}>Option 2 : Numéro de téléphone</span>
+                    <input type="tel" placeholder="Ex: 01 23 45 67 89" className="form-control" style={{ width: "100%", background: "white" }} />
+                    <button 
+                      className="btn btn-primary btn-sm" 
+                      style={{ width: "100%", justifyContent: "center" }}
+                      onClick={() => setPaymentStep("processing")}
+                    >
+                      Payer maintenant
+                    </button>
+                  </div>
                 </div>
-                <button 
-                  className="btn btn-primary" 
-                  style={{ width: "100%", justifyContent: "center", marginTop: "8px" }}
-                  onClick={() => setPaymentStep("processing")}
-                >
-                  J'ai scanné le QR Code
-                </button>
+
                 <button 
                   className="btn btn-ghost" 
                   style={{ width: "100%", justifyContent: "center", fontSize: "13px" }}
