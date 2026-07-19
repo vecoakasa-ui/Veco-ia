@@ -61,7 +61,12 @@ export default function BiensPage() {
     setIsLoading(true);
     try {
       const props = await db.getProperties();
-      setProperties(props);
+      
+      // Ne pas afficher les super-structures (parents) ni les terrains dans la liste des biens locatifs
+      const hiddenTypes = ["immeuble", "cours_commune", "residence", "terrain", "lotissement"];
+      const filteredProps = props.filter(p => !hiddenTypes.includes(p.type));
+      
+      setProperties(filteredProps);
       setLandlords(await db.getLandlords());
       
       // Fetch owner emails
