@@ -20,6 +20,18 @@ import { Property, Tenant } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 import Link from "next/link";
 
+type Ticket = {
+  id: string;
+  tenant_id: string;
+  property_id: string;
+  title: string;
+  description: string;
+  status: string;
+  created_at: string;
+  tenant?: Tenant;
+  unit?: Property;
+};
+
 type SyndicCharge = {
   id: string;
   title: string;
@@ -49,6 +61,7 @@ export default function SyndicDetailPage() {
   const [tenants, setTenants] = useState<Tenant[]>([]);
   const [charges, setCharges] = useState<SyndicCharge[]>([]);
   const [apportionments, setApportionments] = useState<Apportionment[]>([]);
+  const [tickets, setTickets] = useState<Ticket[]>([]);
   
   const [isLoading, setIsLoading] = useState(true);
   const [showAddCharge, setShowAddCharge] = useState(false);
@@ -93,6 +106,18 @@ export default function SyndicDetailPage() {
         if (aData) setApportionments(aData as any[]);
       }
 
+      // 6. Get Tickets
+      const allPropIds = [id];
+      if (uData) {
+        allPropIds.push(...uData.map((u: any) => u.id));
+      }
+      const { data: tkData } = await supabase.from('tickets').select(`
+        *,
+        tenant:tenants!tenant_id(*),
+        unit:properties!property_id(*)
+      `).in('property_id', allPropIds).order('created_at', { ascending: false });
+      if (tkData) setTickets(tkData as any[]);
+
     } catch (error) {
       console.error("Error loading syndic details:", error);
     } finally {
@@ -103,6 +128,17 @@ export default function SyndicDetailPage() {
   useEffect(() => {
     if (id) loadData();
   }, [id]);
+
+  const handleUpdateTicketStatus = async (ticketId: string, newStatus: string) => {
+    try {
+      const { error } = await supabase.from('tickets').update({ status: newStatus }).eq('id', ticketId);
+      if (error) throw error;
+      setTickets(tickets.map(t => t.id === ticketId ? { ...t, status: newStatus } : t));
+    } catch (error) {
+      console.error("Error updating ticket:", error);
+      alert("Erreur lors de la mise à jour du ticket.");
+    }
+  };
 
   const handleAddCharge = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -298,11 +334,38 @@ export default function SyndicDetailPage() {
               <h3 style={{ fontSize: "var(--text-sm)", fontWeight: "700", margin: 0, color: "var(--gray-900)", display: "flex", alignItems: "center", gap: "6px" }}>
                 <AlertTriangle size={16} style={{ color: "var(--warning)" }} /> Tickets (Pannes)
               </h3>
-              <span className="badge badge-warning" style={{ fontSize: "10px" }}>Bientôt</span>
+              <span className="badge badge-warning" style={{ fontSize: "10px" }}>{tickets.length}</span>
             </div>
-            <p style={{ fontSize: "12px", color: "var(--gray-500)", margin: 0, textAlign: "center", padding: "16px 0" }}>
-              Les signalements de pannes des résidents apparaîtront ici.
-            </p>
+            
+            {tickets.length === 0 ? (
+              <p style={{ fontSize: "12px", color: "var(--gray-500)", margin: 0, textAlign: "center", padding: "16px 0" }}>
+                Aucun ticket signalé pour cet immeuble.
+              </p>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-3)", maxHeight: "400px", overflowY: "auto" }}>
+                {tickets.map(ticket => (
+                  <div key={ticket.id} style={{ padding: "var(--space-3)", border: "1px solid var(--gray-200)", borderRadius: "var(--radius-md)", background: "var(--gray-50)" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "4px" }}>
+                      <h4 style={{ margin: 0, fontSize: "13px", fontWeight: "600" }}>{ticket.title}</h4>
+                      <select 
+                        value={ticket.status} 
+                        onChange={(e) => handleUpdateTicketStatus(ticket.id, e.target.value)}
+                        style={{ fontSize: "11px", padding: "2px 4px", borderRadius: "4px", border: "1px solid var(--gray-300)" }}
+                      >
+                        <option value="open">Ouvert</option>
+                        <option value="in_progress">En cours</option>
+                        <option value="resolved">Résolu</option>
+                      </select>
+                    </div>
+                    <p style={{ margin: "0 0 8px 0", fontSize: "12px", color: "var(--gray-600)" }}>{ticket.description}</p>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: "11px", color: "var(--gray-500)" }}>
+                      <span>Par: {ticket.tenant?.full_name || 'Locataire'} ({ticket.unit?.name || 'Unité'})</span>
+                      <span>{new Date(ticket.created_at).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
