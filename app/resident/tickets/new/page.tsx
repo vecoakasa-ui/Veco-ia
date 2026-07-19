@@ -42,7 +42,7 @@ export default function NewTicketPage() {
       if (error) throw error;
       
       alert("Votre signalement a bien été envoyé !");
-      router.push("/dashboard");
+      router.push("/resident/dashboard");
     } catch (error) {
       console.error("Failed to submit ticket:", error);
       alert("Erreur lors de l'envoi du signalement.");
@@ -54,7 +54,7 @@ export default function NewTicketPage() {
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
       <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)" }}>
-        <Link href="/dashboard" className="btn btn-ghost" style={{ padding: "8px" }}>
+        <Link href="/resident/dashboard" className="btn btn-ghost" style={{ padding: "8px" }}>
           <ArrowLeft size={20} />
         </Link>
         <h1 style={{ fontSize: "var(--text-lg)", fontWeight: "800", color: "var(--gray-900)", margin: 0 }}>
