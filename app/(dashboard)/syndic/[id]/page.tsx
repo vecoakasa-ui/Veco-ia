@@ -220,7 +220,7 @@ export default function SyndicDetailPage() {
   return (
     <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", gap: "var(--space-4)" }}>
+      <div className="syndic-header" style={{ display: "flex", alignItems: "center", gap: "var(--space-4)" }}>
         <Link href="/syndic" className="btn btn-ghost" style={{ padding: "8px" }}>
           <ArrowLeft size={20} />
         </Link>
@@ -241,7 +241,7 @@ export default function SyndicDetailPage() {
         </button>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "var(--space-6)" }}>
+      <div className="syndic-grid" style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "var(--space-6)" }}>
         {/* Left Column: Charges List */}
         <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-6)" }}>
           <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "700", margin: 0 }}>Historique des Charges</h3>
@@ -276,7 +276,7 @@ export default function SyndicDetailPage() {
                   {/* Répartitions / Locataires */}
                   <div style={{ padding: "var(--space-4)" }}>
                     <p style={{ fontSize: "12px", fontWeight: "700", color: "var(--gray-500)", textTransform: "uppercase", marginBottom: "var(--space-3)", margin: 0 }}>Répartition par lot</p>
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-3)" }}>
+                    <div className="apportionment-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--space-3)" }}>
                       {apportionments.filter(a => a.charge_id === charge.id).map(app => (
                         <div key={app.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", background: "white", border: "1px solid var(--gray-200)", borderRadius: "var(--radius-md)" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -406,6 +406,32 @@ export default function SyndicDetailPage() {
           </div>
         </div>
       )}
+
+      {/* Global Style overrides for responsive layout */}
+      <style jsx global>{`
+        @media (max-width: 768px) {
+          .syndic-header {
+            flex-direction: column;
+            align-items: flex-start !important;
+            gap: 12px !important;
+          }
+          .syndic-header > div:nth-child(2) {
+            margin-bottom: 8px;
+            width: 100%;
+          }
+          .syndic-header .btn-primary {
+            margin-left: 0 !important;
+            width: 100%;
+            justify-content: center;
+          }
+          .syndic-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .apportionment-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
