@@ -19,7 +19,9 @@ import {
   Compass,
   Sparkles,
   Sun,
-  Banknote
+  Banknote,
+  CreditCard,
+  ShieldCheck
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
@@ -37,6 +39,12 @@ export default function PortailLocatairePage() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [syndicCharges, setSyndicCharges] = useState<any[]>([]);
+
+  // Payment Modal
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedChargeId, setSelectedChargeId] = useState<string | null>(null);
+  const [paymentStep, setPaymentStep] = useState<"options" | "qr" | "processing" | "success">("options");
+  const [selectedMethod, setSelectedMethod] = useState<string>("");
 
   // Incident Modal
   const [showIncidentModal, setShowIncidentModal] = useState(false);
@@ -102,10 +110,15 @@ export default function PortailLocatairePage() {
 
       const { data: sData } = await supabase.from('syndic_apportionments')
         .select('*, charge:syndic_charges(*)')
-        .eq('tenant_id', currentTenant?.id)
-        .order('created_at', { ascending: false });
-      if (sData) setSyndicCharges(sData);
-
+      try {
+        const { data: sData } = await supabase.from('syndic_apportionments')
+          .select('*, charge:syndic_charges(*)')
+          .eq('tenant_id', currentTenant?.id)
+          .order('created_at', { ascending: false });
+        if (sData) setSyndicCharges(sData);
+      } catch (error) {
+        console.error("Error loading syndic charges:", error);
+      }
     } else {
       setLease(null);
       setPayments([]);
@@ -118,6 +131,43 @@ export default function PortailLocatairePage() {
 
   useEffect(() => {
     loadData();
+  }, [tenantId]);
+
+  useEffect(() => {
+    if (paymentStep === "processing" && selectedChargeId) {
+      const processPayment = async () => {
+        // Simulation d'une redirection et retour d'API (Wave/Orange Money/etc)
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        try {
+          const { error } = await supabase.from('syndic_apportionments').update({ status: 'paid' }).eq('id', selectedChargeId);
+          if (error) throw error;
+          
+          setPaymentStep("success");
+          
+          // Fermer la modale et recharger la page après succès
+          setTimeout(() => {
+            setShowPaymentModal(false);
+            loadData();
+          }, 2000);
+        } catch (error) {
+          alert("Erreur de connexion au service de paiement.");
+          setPaymentStep("options");
+        }
+      };
+      
+      processPayment();
+    }
+  }, [paymentStep, selectedChargeId]);
+
+  const handlePayCharge = (chargeId: string) => {
+    setSelectedChargeId(chargeId);
+    setSelectedMethod("");
+    setPaymentStep("options");
+    setShowPaymentModal(true);
+  };
+
+  useEffect(() => {
     const handleStorage = () => loadData();
     window.addEventListener("storage", handleStorage);
     return () => window.removeEventListener("storage", handleStorage);
@@ -370,7 +420,7 @@ export default function PortailLocatairePage() {
                     <div style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}>
                       <span style={{ fontWeight: 800, color: app.status === 'paid' ? "var(--success)" : "var(--gray-900)" }}>{formatCurrency(app.amount_due)}</span>
                       {app.status === 'pending' && (
-                        <button className="btn btn-primary btn-sm" style={{ padding: "6px 12px", fontSize: "12px" }} onClick={() => alert("Redirection vers le paiement mobile...")}>
+                        <button className="btn btn-primary btn-sm" style={{ padding: "6px 12px", fontSize: "12px" }} onClick={() => handlePayCharge(app.id)}>
                           Payer
                         </button>
                       )}
@@ -540,6 +590,96 @@ export default function PortailLocatairePage() {
         </div>
       )}
 
+      {/* Payment Modal */}
+      {showPaymentModal && (
+        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div className="card animate-scale-in" style={{ width: "100%", maxWidth: "400px", padding: "var(--space-6)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--space-6)" }}>
+              <h3 style={{ fontSize: "var(--text-lg)", fontWeight: "800", margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
+                <CreditCard size={20} style={{ color: "var(--primary)" }} /> Payer la charge
+              </h3>
+              {paymentStep !== "processing" && paymentStep !== "success" && (
+                <button onClick={() => setShowPaymentModal(false)} className="btn btn-ghost btn-sm" style={{ padding: 4 }}><X size={20} /></button>
+              )}
+            </div>
+            
+            {paymentStep === "options" && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "var(--space-4)" }}>
+                <div style={{ background: "var(--gray-50)", padding: "16px", borderRadius: "var(--radius-md)", border: "1px solid var(--gray-200)", textAlign: "center" }}>
+                  <p style={{ margin: "0 0 8px 0", fontSize: "14px", color: "var(--gray-600)" }}>Montant à régler :</p>
+                  <div style={{ fontSize: "24px", fontWeight: "800", color: "var(--gray-900)" }}>
+                    {formatCurrency(syndicCharges.find(c => c.id === selectedChargeId)?.amount_due || 0)}
+                  </div>
+                </div>
+                
+                <h4 style={{ margin: "8px 0 0 0", fontSize: "14px", fontWeight: "700", textAlign: "center" }}>Choisissez votre mode de paiement :</h4>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+                  <button className="btn btn-outline" style={{ display: "flex", flexDirection: "column", gap: "12px", padding: "16px", height: "auto", borderColor: "#1dc5ce", background: "rgba(29, 197, 206, 0.05)" }} onClick={() => { setSelectedMethod("Wave"); setPaymentStep("qr"); }}>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Wave_logo.svg/1024px-Wave_logo.svg.png" alt="Wave" style={{ height: "24px", objectFit: "contain" }} />
+                    <span style={{ fontSize: "12px", fontWeight: "700", color: "#1dc5ce" }}>Wave</span>
+                  </button>
+                  <button className="btn btn-outline" style={{ display: "flex", flexDirection: "column", gap: "12px", padding: "16px", height: "auto", borderColor: "#ff7900", background: "rgba(255, 121, 0, 0.05)" }} onClick={() => { setSelectedMethod("Orange Money"); setPaymentStep("qr"); }}>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Orange_logo.svg/1024px-Orange_logo.svg.png" alt="Orange Money" style={{ height: "24px", objectFit: "contain" }} />
+                    <span style={{ fontSize: "12px", fontWeight: "700", color: "#ff7900" }}>Orange Money</span>
+                  </button>
+                  <button className="btn btn-outline" style={{ display: "flex", flexDirection: "column", gap: "12px", padding: "16px", height: "auto", borderColor: "#ffcc00", background: "rgba(255, 204, 0, 0.05)" }} onClick={() => { setSelectedMethod("MTN Mobile Money"); setPaymentStep("qr"); }}>
+                    <div style={{ height: "24px", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "900", color: "#000", background: "#ffcc00", padding: "0 8px", borderRadius: "12px" }}>MTN</div>
+                    <span style={{ fontSize: "12px", fontWeight: "700", color: "#d4a900" }}>MTN MoMo</span>
+                  </button>
+                  <button className="btn btn-outline" style={{ display: "flex", flexDirection: "column", gap: "12px", padding: "16px", height: "auto", borderColor: "#0055A5", background: "rgba(0, 85, 165, 0.05)" }} onClick={() => { setSelectedMethod("Moov Money"); setPaymentStep("qr"); }}>
+                    <div style={{ height: "24px", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "900", color: "#fff", background: "#0055A5", padding: "0 8px", borderRadius: "12px" }}>Moov</div>
+                    <span style={{ fontSize: "12px", fontWeight: "700", color: "#0055A5" }}>Moov Money</span>
+                  </button>
+                </div>
+                
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", justifyContent: "center", marginTop: "16px", color: "var(--gray-500)", fontSize: "12px" }}>
+                  <ShieldCheck size={14} style={{ color: "var(--success)" }} /> Transactions 100% sécurisées
+                </div>
+              </div>
+            )}
+
+            {paymentStep === "qr" && (
+              <div className="animate-fade-in" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "var(--space-4)", textAlign: "center" }}>
+                <p style={{ margin: 0, fontWeight: "600", color: "var(--gray-700)" }}>Scannez ce code QR avec votre application <strong style={{ color: "var(--primary)" }}>{selectedMethod}</strong></p>
+                <div style={{ background: "white", padding: "16px", borderRadius: "16px", border: "2px solid var(--gray-200)", display: "inline-block" }}>
+                  <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=paiement_test_vision_immo_${selectedChargeId}`} alt="QR Code" style={{ width: "150px", height: "150px" }} />
+                </div>
+                <button 
+                  className="btn btn-primary" 
+                  style={{ width: "100%", justifyContent: "center", marginTop: "8px" }}
+                  onClick={() => setPaymentStep("processing")}
+                >
+                  J'ai scanné le QR Code
+                </button>
+                <button 
+                  className="btn btn-ghost" 
+                  style={{ width: "100%", justifyContent: "center", fontSize: "13px" }}
+                  onClick={() => setPaymentStep("options")}
+                >
+                  Changer de méthode
+                </button>
+              </div>
+            )}
+            
+            {paymentStep === "processing" && (
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", padding: "32px 0" }}>
+                <div className="spinner" style={{ width: "40px", height: "40px", border: "3px solid var(--gray-200)", borderTopColor: "var(--primary)", borderRadius: "50%", animation: "spin 1s linear infinite" }}></div>
+                <p style={{ margin: 0, fontWeight: "600", color: "var(--gray-700)" }}>Validation du paiement en cours...</p>
+                <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+              </div>
+            )}
+
+            {paymentStep === "success" && (
+              <div className="animate-scale-in" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px", padding: "24px 0", textAlign: "center" }}>
+                <CheckCircle2 size={56} style={{ color: "var(--success)" }} />
+                <h4 style={{ margin: 0, fontSize: "20px", fontWeight: "800", color: "var(--gray-900)" }}>Paiement réussi !</h4>
+                <p style={{ margin: 0, color: "var(--gray-500)", fontSize: "14px" }}>Votre paiement a été traité avec succès et votre charge de copropriété a bien été réglée.</p>
+              </div>
+            )}
+            
+          </div>
+        </div>
+      )}
     </div>
   );
 }
