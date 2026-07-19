@@ -23,7 +23,8 @@ import {
   Mail,
   Phone,
   Map,
-  Briefcase
+  Briefcase,
+  Layers
 } from "lucide-react";
 import { db } from "@/lib/store";
 import { Profile } from "@/lib/types";
@@ -184,6 +185,12 @@ export default function DashboardLayout({
         { name: "Comptabilité", href: "/comptabilite", icon: Wallet },
         { name: "Relances", href: "/relances", icon: MessageSquare },
         { name: "Cautions & États", href: "/cautions", icon: ClipboardCheck },
+      ]
+    },
+    {
+      groupName: "Copropriété",
+      items: [
+        { name: "Gestion Syndic", href: "/syndic", icon: Layers },
       ]
     },
     {
