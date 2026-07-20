@@ -529,7 +529,7 @@ export const db = {
         } else {
           // Si le profil n'existe pas (ex: connexion Google), on le crée
           const savedRole = typeof window !== 'undefined' ? localStorage.getItem('oauth_role') : null;
-          let role = savedRole === 'tenant' ? 'tenant' : 'owner';
+          let role: "tenant" | "owner" = savedRole === 'tenant' ? 'tenant' : 'owner';
           
           if (session.user.email) {
             const { data: tenantMatches } = await supabase.from('tenants').select('id').ilike('email', session.user.email.trim()).limit(1);
