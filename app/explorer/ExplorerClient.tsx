@@ -76,7 +76,10 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
 
       let query = supabase
         .from('properties')
-        .select('*')
+        .select(`
+          *,
+          owner:profiles!owner_id(email, phone, full_name)
+        `)
         .eq('status', 'vacant')
         .order('name', { ascending: true })
         .range(start, end);
@@ -331,6 +334,13 @@ export default function PublicExplorerClient({ initialProperties }: { initialPro
                       <MapPin size={12} style={{ color: "var(--gray-400)", flexShrink: 0 }} />
                       <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>{property.address}, {property.city}</span>
                     </p>
+                    
+                    {property.owner?.email && (
+                      <p style={{ fontSize: "11px", color: "var(--gray-500)", display: "flex", alignItems: "center", gap: "4px", margin: "0", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        <Mail size={12} style={{ color: "var(--gray-400)", flexShrink: 0 }} />
+                        <span style={{ overflow: "hidden", textOverflow: "ellipsis" }} title={property.owner.email}>{property.owner.email}</span>
+                      </p>
+                    )}
 
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto", borderTop: "1px solid var(--gray-100)", paddingTop: "6px" }}>
                       <span style={{ fontSize: "var(--text-sm)", fontWeight: 800, color: "var(--primary)" }}>

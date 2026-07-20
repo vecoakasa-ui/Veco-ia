@@ -104,6 +104,16 @@ export default function LoginPage({ searchParams }: PageProps) {
         if (acceptedInqs && acceptedInqs.length > 0) {
           isBuyer = true;
           await supabase.from('profiles').update({ role: 'buyer' }).eq('id', profile.id);
+        } else if (profile.role !== "admin" && profile.role !== "buyer") {
+          // Vérifier si l'utilisateur est un locataire pour corriger son rôle automatiquement
+          const { data: tenantMatches } = await supabase.from('tenants').select('id').ilike('email', profile.email.trim()).limit(1);
+          if (tenantMatches && tenantMatches.length > 0) {
+            // Si le rôle actuel n'est pas tenant, on le corrige silencieusement
+            if (profile.role !== 'tenant') {
+              await supabase.from('profiles').update({ role: 'tenant' }).eq('id', profile.id);
+              profile.role = 'tenant';
+            }
+          }
         }
       }
 

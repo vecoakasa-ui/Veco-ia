@@ -79,6 +79,11 @@ export interface Property {
   lat?: number;
   lng?: number;
   parent_id?: string;
+  owner?: {
+    email?: string;
+    phone?: string;
+    full_name?: string;
+  };
 }
 
 export type PaymentStatus = 'paid' | 'pending' | 'late' | 'upcoming';

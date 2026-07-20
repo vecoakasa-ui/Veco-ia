@@ -14,7 +14,10 @@ export default async function PublicExplorerPage() {
   
   const { data } = await supabase
     .from("properties")
-    .select("*")
+    .select(`
+      *,
+      owner:profiles!owner_id(email, phone, full_name)
+    `)
     .eq("status", "vacant")
     .in("type", ['apartment', 'studio', 'villa', 'house', 'terrain'])
     .order("name", { ascending: true })

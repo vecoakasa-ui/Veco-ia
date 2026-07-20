@@ -72,11 +72,15 @@ export default function RegisterPage({ searchParams }: PageProps) {
         const startDate = new Date();
         const endDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
+        // Vérifier si cet email est déjà enregistré comme locataire par un propriétaire
+        const { data: tenantMatches } = await supabase.from('tenants').select('id').ilike('email', email.trim()).limit(1);
+        const finalRole = (tenantMatches && tenantMatches.length > 0) ? 'tenant' : role;
+
         await supabase.from("profiles").upsert({
           id: data.user.id,
           full_name: fullName,
           email: email,
-          role: role,
+          role: finalRole,
           phone: "",
           subscription_status: 'trialing',
           trial_start_date: startDate.toISOString(),
@@ -86,7 +90,10 @@ export default function RegisterPage({ searchParams }: PageProps) {
 
       if (data?.session) {
         // Inscription réussie avec connexion immédiate
-        if (role === "tenant") {
+        const { data: tenantCheck } = await supabase.from('tenants').select('id').ilike('email', email.trim()).limit(1);
+        const isTenant = tenantCheck && tenantCheck.length > 0;
+        
+        if (role === "tenant" || isTenant) {
           router.push("/explorer");
         } else {
           router.push("/dashboard");
