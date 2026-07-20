@@ -511,9 +511,17 @@ export const db = {
             }).eq("id", ownerId).then();
           }
 
-          // Restore avatar from local storage if supabase doesn't have it
+          // Restore avatar from Auth metadata or local storage
+          const authAvatar = session?.user?.user_metadata?.avatar_url;
           const localAvatar = getAvatarLocal(ownerId);
-          if (localAvatar) {
+          
+          if (authAvatar && authAvatar !== "/owner_avatar.png") {
+            data.avatar_url = authAvatar;
+            // Mettre à jour le cache local si différent
+            if (localAvatar !== authAvatar) {
+              saveAvatarLocal(ownerId, authAvatar);
+            }
+          } else if (localAvatar) {
             data.avatar_url = localAvatar;
           }
 
@@ -589,9 +597,19 @@ export const db = {
     }
     if (isSupabaseConfigured()) {
       try {
+        // Sauvegarder la photo de profil dans les métadonnées Auth de Supabase
+        // pour s'assurer qu'elle persiste entre les sessions et appareils
+        if (profile.avatar_url && profile.avatar_url !== "/owner_avatar.png") {
+          await supabase.auth.updateUser({
+            data: { avatar_url: profile.avatar_url }
+          });
+        }
+        
+        // Retirer avatar_url avant la mise à jour Supabase pour éviter l'erreur de colonne inexistante
+        const { avatar_url, ...profileData } = profile;
         const { error } = await supabase
           .from("profiles")
-          .upsert(profile);
+          .upsert(profileData);
         if (error) throw error;
       } catch (err) {
         console.error("Error updating profile in Supabase:", err);
